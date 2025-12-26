@@ -4,15 +4,9 @@ import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 import { MobileMenu } from "@/components/islands/mobile-menu";
 
 export function Header() {
-    const waitlistTrigger = (
-        <JoinWaitlistDialog
-            trigger={<Button>Get Early Access</Button>}
-        />
-    );
-
     const signInTrigger = (
         <JoinWaitlistDialog
-            trigger={<Button variant="ghost">Sign In</Button>}
+            trigger={<Button variant="outline">Sign In</Button>}
         />
     );
 
@@ -44,21 +38,11 @@ export function Header() {
                         </a>
                     </div>
 
-                    {/* Desktop Actions */}
-                    <div className="hidden md:flex md:items-center md:gap-4">
+                    {/* Actions */}
+                    <div className="flex items-center gap-4">
                         {signInTrigger}
-                        {waitlistTrigger}
+                        <MobileMenu />
                     </div>
-
-                    {/* Mobile Menu */}
-                    {/* We pass a simplified trigger for mobile, or the component itself allows composition */}
-                    <MobileMenu
-                        waitlistTrigger={
-                            <JoinWaitlistDialog
-                                trigger={<Button className="w-full">Get Early Access</Button>}
-                            />
-                        }
-                    />
                 </div>
             </nav>
         </header>

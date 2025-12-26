@@ -34,7 +34,7 @@ export function Hero() {
                     <JoinWaitlistDialog
                         trigger={
                             <Button size="lg" className="min-w-[200px] h-14 text-lg">
-                                Launch App
+                                Get Early Access
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         }

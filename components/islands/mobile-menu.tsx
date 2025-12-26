@@ -1,15 +1,11 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 
 import { Menu, X } from "lucide-react";
 
 
-interface MobileMenuProps {
-    waitlistTrigger: ReactNode;
-}
-
-export function MobileMenu({ waitlistTrigger }: MobileMenuProps) {
+export function MobileMenu() {
     const [open, setOpen] = useState(false);
 
     return (
@@ -43,15 +39,6 @@ export function MobileMenu({ waitlistTrigger }: MobileMenuProps) {
                         >
                             Pricing
                         </a>
-                        <div className="pt-2 flex flex-col gap-2">
-                            {waitlistTrigger}
-                            <div onClick={() => setOpen(false)}>
-                                {/* Re-render trigger isn't ideal but simplest for this island pattern. 
-                     Ideally pass a specialized component. 
-                     For now, assumption is passed trigger is a JoinWaitlistDialog wrapping a Button
-                 */}
-                            </div>
-                        </div>
                     </div>
                 </div>
             )}
