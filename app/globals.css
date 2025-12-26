@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
+/* ===== Custom Color Palette ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary - Soft Sage */
+  --primary: 145 28% 50%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary - Warm Gray */
+  --secondary: 30 10% 96%;
+  --secondary-foreground: 30 5% 25%;
+
+  /* Accent - Gentle Coral */
+  --accent: 15 60% 75%;
+  --accent-foreground: 15 40% 25%;
+
+  /* Backgrounds */
+  --background: 30 20% 98%;
+  --foreground: 30 5% 15%;
+
+  /* Muted */
+  --muted: 30 10% 94%;
+  --muted-foreground: 30 5% 45%;
+
+  /* Card */
+  --card: 0 0% 100%;
+  --card-foreground: 30 5% 15%;
+
+  /* Border */
+  --border: 30 10% 90%;
+
+  /* Input */
+  --input: 30 10% 90%;
+
+  /* Ring */
+  --ring: 145 28% 50%;
+
+  /* UI Radius */
+  --radius: 0.75rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+.shadow-soft {
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.05),
+    0 4px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-soft-lg {
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.06),
+    0 8px 24px -8px rgba(0, 0, 0, 0.1);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
