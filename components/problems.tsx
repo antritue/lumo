@@ -1,4 +1,4 @@
-import { CalendarX, FileSpreadsheet, StickyNote, ArrowRight, Sparkles } from "lucide-react";
+import { CalendarX, FileSpreadsheet, StickyNote, Lightbulb } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function Problems() {
@@ -54,7 +54,7 @@ export function Problems() {
                 {/* Solution */}
                 <div className="max-w-2xl mx-auto text-center">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
-                        <Sparkles className="h-8 w-8 text-primary" />
+                        <Lightbulb className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="text-2xl font-bold text-foreground mb-4">
                         There&apos;s a simpler way

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Sparkles } from "lucide-react";
+import { Mail, Sun } from "lucide-react";
 
 interface JoinWaitlistDialogProps {
     children?: ReactNode;
@@ -43,7 +43,7 @@ export function JoinWaitlistDialog({ children, trigger }: JoinWaitlistDialogProp
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                        <Sparkles className="h-6 w-6 text-primary" />
+                        <Sun className="h-6 w-6 text-primary" />
                     </div>
                     <DialogTitle className="text-center">Lumo is not ready yet</DialogTitle>
                     <DialogDescription className="text-center">

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Sun } from "lucide-react";
+import { ArrowRight, Sun } from "lucide-react";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 
 export function Hero() {
@@ -14,7 +14,7 @@ export function Hero() {
             <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
                 {/* Badge */}
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 animate-in fade-in zoom-in duration-500">
-                    <Sparkles className="h-4 w-4 text-primary" />
+                    <Sun className="h-4 w-4 text-primary" />
                     <span className="text-sm font-medium text-primary">Simple rent tracking is here</span>
                 </div>
 

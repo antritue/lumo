@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sun } from "lucide-react";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 
 export function CtaSection() {
@@ -13,7 +13,7 @@ export function CtaSection() {
 
                     <div className="relative z-10">
                         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white shadow-sm mb-6">
-                            <Sparkles className="h-7 w-7 text-primary" />
+                            <Sun className="h-7 w-7 text-primary" />
                         </div>
 
                         <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">
