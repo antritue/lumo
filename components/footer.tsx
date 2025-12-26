@@ -13,7 +13,7 @@ export function Footer() {
                     </div>
 
                     <p className="flex items-center gap-1 text-sm text-muted-foreground">
-                        Made with <Heart className="h-3 w-3 text-red-400 fill-red-400" /> for small landlords.
+                        Made with <Heart className="h-3 w-3 text-red-400 fill-red-400" /> for independent property owners.
                     </p>
 
                     <p className="text-xs text-muted-foreground/60">

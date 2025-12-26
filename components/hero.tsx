@@ -1,21 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sun } from "lucide-react";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
+import { Section } from "@/components/ui/section";
 
 export function Hero() {
     return (
-        <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        <Section variant="transparent" className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden px-0 py-0">
             {/* Decorative Background Elements */}
             <div className="absolute inset-0 -z-10 overflow-hidden">
                 <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl opacity-60" />
                 <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-60" />
             </div>
 
-            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+            <div className="text-center">
                 {/* Badge */}
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 animate-in fade-in zoom-in duration-500">
                     <Sun className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium text-primary">Simple rent tracking is here</span>
+                    <span className="text-sm font-medium text-primary">Peace of mind for property owners</span>
                 </div>
 
                 {/* Headline */}
@@ -25,7 +26,7 @@ export function Hero() {
 
                 {/* Subtext */}
                 <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
-                    Lumo helps landlords stay organized. No spreadsheets, no stress. <br />
+                    Lumo helps you stay organized. No spreadsheets, no stress. <br />
                     Track rooms, payments, and tenants in one calm place.
                 </p>
 
@@ -53,6 +54,6 @@ export function Hero() {
                     </div>
                 </div>
             </div>
-        </section>
+        </Section>
     );
 }
