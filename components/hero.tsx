@@ -20,12 +20,12 @@ export function Hero() {
 
                 {/* Headline */}
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-6 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-100">
-                    Rent tracking, made simple.
+                    Rent tracking, made simple
                 </h1>
 
                 {/* Subtext */}
                 <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
-                    Lumo helps small landlords stay organized—no spreadsheets, no stress.
+                    Lumo helps landlords stay organized. No spreadsheets, no stress. <br />
                     Track rooms, payments, and tenants in one calm place.
                 </p>
 
@@ -34,17 +34,11 @@ export function Hero() {
                     <JoinWaitlistDialog
                         trigger={
                             <Button size="lg" className="min-w-[200px] h-14 text-lg">
-                                Get Early Access
+                                Launch App
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         }
                     />
-
-                    <a href="#features">
-                        <Button variant="outline" size="lg" className="min-w-[200px] h-14 text-lg">
-                            See How It Works
-                        </Button>
-                    </a>
                 </div>
 
                 {/* Preview UI */}
