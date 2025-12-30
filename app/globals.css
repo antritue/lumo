@@ -6,6 +6,10 @@
   --primary: 145 28% 50%;
   --primary-foreground: 0 0% 100%;
 
+  /* Destructive - Soft Red/Coral */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
   /* Secondary - Warm Gray */
   --secondary: 30 10% 96%;
   --secondary-foreground: 30 5% 25%;
@@ -44,6 +48,8 @@
   --color-foreground: hsl(var(--foreground));
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
   --color-accent: hsl(var(--accent));
