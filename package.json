@@ -8,7 +8,8 @@
 		"start": "next start",
 		"lint": "biome check --write",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@radix-ui/react-dialog": "1.1.15",
@@ -29,6 +30,7 @@
 		"@types/node": "25",
 		"@types/react": "19",
 		"@types/react-dom": "19",
+		"husky": "9.1.7",
 		"supabase": "2.70.5",
 		"tailwindcss": "4",
 		"typescript": "5",
