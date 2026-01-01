@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2, Mail, Sun } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ export function JoinWaitlistDialog({
 	children,
 	trigger,
 }: JoinWaitlistDialogProps) {
+	const t = useTranslations("waitlist");
 	const [email, setEmail] = useState("");
 	const [submitted, setSubmitted] = useState(false);
 	const [open, setOpen] = useState(false);
@@ -50,15 +52,12 @@ export function JoinWaitlistDialog({
 			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.message || "Failed to join waitlist");
+				throw new Error(data.message || t("error"));
 			}
 
 			setSubmitted(true);
 		} catch (err) {
-			const message =
-				err instanceof Error
-					? err.message
-					: "Something went wrong. Please try again.";
+			const message = err instanceof Error ? err.message : t("error");
 			setErrorMessage(message);
 			setErrorOpen(true);
 		} finally {
@@ -85,21 +84,12 @@ export function JoinWaitlistDialog({
 						<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
 							<Sun className="h-6 w-6 text-primary" />
 						</div>
-						<DialogTitle className="text-center">
-							Lumo is not ready yet
-						</DialogTitle>
+						<DialogTitle className="text-center">{t("title")}</DialogTitle>
 						<DialogDescription className="text-center">
 							{submitted ? (
-								<span className="text-primary font-medium">
-									Thanks! We will be in touch soon.
-								</span>
+								<span className="text-primary font-medium">{t("success")}</span>
 							) : (
-								<>
-									<span className="block mb-1">
-										We are working hard to build something special.
-									</span>
-									<span>Leave your email to be notified when we launch.</span>
-								</>
+								t("description")
 							)}
 						</DialogDescription>
 					</DialogHeader>
@@ -110,7 +100,7 @@ export function JoinWaitlistDialog({
 								<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 								<Input
 									type="email"
-									placeholder="your@email.com"
+									placeholder={t("emailPlaceholder")}
 									value={email}
 									onChange={(e) => setEmail(e.target.value)}
 									className="pl-10"
@@ -126,15 +116,12 @@ export function JoinWaitlistDialog({
 								{loading ? (
 									<>
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										Joining...
+										{t("submit")}...
 									</>
 								) : (
-									"Notify Me"
+									t("submit")
 								)}
 							</Button>
-							<p className="text-xs text-center text-muted-foreground">
-								We respect your privacy. No spam, ever.
-							</p>
 						</form>
 					) : (
 						<div className="flex justify-center pt-2">
@@ -143,7 +130,7 @@ export function JoinWaitlistDialog({
 								className="w-full"
 								onClick={() => setOpen(false)}
 							>
-								Done
+								OK
 							</Button>
 						</div>
 					)}

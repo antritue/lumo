@@ -1,0 +1,109 @@
+{
+	"metadata": {
+		"title": "Lumo - Quản lý tiền thuê đơn giản",
+		"description": "Lumo giúp chủ nhà trọ nhỏ theo dõi tiền thuê, phòng và người thuê trong một ứng dụng đơn giản. Không bảng tính, không căng thẳng.",
+		"keywords": "quản lý tiền thuê, phần mềm quản lý nhà trọ, ứng dụng quản lý nhà cho thuê, theo dõi tiền phòng, nhắc nợ tiền thuê"
+	},
+	"header": {
+		"features": "Tính năng",
+		"pricing": "Bảng giá",
+		"signIn": "Đăng nhập"
+	},
+	"hero": {
+		"badge": "Sự an tâm tuyệt đối cho chủ nhà",
+		"headline": "Theo dõi tiền thuê, thật đơn giản",
+		"subtext": "Lumo giúp bạn quản lý khoa học. Không bảng tính, không áp lực.\nTheo dõi phòng, thanh toán và người thuê tại một nơi duy nhất.",
+		"cta": "Đăng ký sớm",
+		"preview": "Xem trước giao diện"
+	},
+	"features": {
+		"title": "Đầy đủ tính năng, gọn nhẹ tối ưu",
+		"subtitle": "Công cụ đơn giản thiết kế riêng cho việc quản lý cho thuê",
+		"items": [
+			{
+				"title": "Theo dõi phòng & người thuê",
+				"description": "Xem toàn bộ danh sách phòng và người thuê chỉ trong một giao diện"
+			},
+			{
+				"title": "Chi tiết trạng thái thanh toán",
+				"description": "Biết ngay ai đã đóng tiền, ai chưa. Không còn phải lục tìm sổ sách"
+			},
+			{
+				"title": "Dành cho cá nhân, không phải công ty",
+				"description": "Thiết kế cho chủ nhà trọ, không dành cho các công ty quản lý chuyên nghiệp"
+			}
+		]
+	},
+	"pricing": {
+		"title": "Bảng giá đơn giản, minh bạch",
+		"subtitle": "Bảng giá sẽ sớm được công bố",
+		"comingSoon": "Sắp ra mắt",
+		"tiers": {
+			"free": {
+				"name": "Miễn phí",
+				"description": "Trải nghiệm cơ bản",
+				"price": "0đ",
+				"features": [
+					"Theo dõi 01 phòng",
+					"Quản lý thanh toán cơ bản",
+					"Bảng điều khiển tinh gọn"
+				],
+				"buttonText": "Bắt đầu miễn phí"
+			},
+			"pro": {
+				"name": "Pro",
+				"description": "Không giới hạn phòng & tính năng mới",
+				"price": "—",
+				"features": [
+					"Không giới hạn phòng",
+					"Tự động nhắc thanh toán",
+					"Hỗ trợ ưu tiên 24/7"
+				],
+				"buttonText": "Đăng ký chờ"
+			}
+		}
+	},
+	"problems": {
+		"title": "Chúng tôi thấu hiểu những khó khăn của bạn",
+		"subtitle": "Quản lý nhà cho thuê không nên là một gánh nặng",
+		"items": [
+			{
+				"title": "Quên ngày đóng tiền",
+				"description": "Để lỡ kỳ thanh toán vì không có cách nào theo dõi ai đã đóng, ai chưa"
+			},
+			{
+				"title": "Bảng tính lộn xộn",
+				"description": "Các tệp Excel ngày càng phức tạp, công thức dễ bị lỗi ngoài ý muốn"
+			},
+			{
+				"title": "Ghi chép rải rác",
+				"description": "Sổ tay và giấy ghi chú khắp nơi, rất dễ bị thất lạc hoặc bỏ quên"
+			}
+		],
+		"solution": {
+			"title": "Có một cách đơn giản hơn",
+			"description": "Lumo được thiết kế riêng cho các chủ nhà trọ độc lập. Tinh gọn, dễ dùng và giúp bạn nắm bắt mọi thứ mà không cần đau đầu"
+		}
+	},
+	"cta": {
+		"title": "Sẵn sàng để quản lý nhà cho thuê đơn giản hơn?",
+		"subtitle": "Tham gia cùng những chủ nhà đã tạm biệt bảng tính lộn xộn",
+		"button": "Đăng ký sớm"
+	},
+	"footer": {
+		"madeWith": "Được tạo với",
+		"forOwners": "dành cho chủ nhà trọ độc lập.",
+		"copyright": "© {year} Lumo. Bảo lưu mọi quyền."
+	},
+	"waitlist": {
+		"title": "Tham gia danh sách chờ",
+		"description": "Hãy là người đầu tiên trải nghiệm khi Lumo ra mắt.",
+		"emailPlaceholder": "email@cuaban.com",
+		"submit": "Đăng ký ngay",
+		"success": "Bạn đã đăng ký thành công!",
+		"error": "Có lỗi xảy ra. Vui lòng thử lại sau."
+	},
+	"languageSwitcher": {
+		"label": "Ngôn ngữ"
+	}
+}

@@ -1,9 +1,12 @@
 import { ArrowRight, Sun } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 
-export function Hero() {
+export async function Hero() {
+	const t = await getTranslations("hero");
+
 	return (
 		<Section
 			variant="transparent"
@@ -19,20 +22,17 @@ export function Hero() {
 				{/* Badge */}
 				<div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 animate-in fade-in zoom-in duration-500">
 					<Sun className="h-4 w-4 text-primary" />
-					<span className="text-sm font-medium text-primary">
-						Peace of mind for property owners
-					</span>
+					<span className="text-sm font-medium text-primary">{t("badge")}</span>
 				</div>
 
 				{/* Headline */}
 				<h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-6 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-100">
-					Rent tracking, made simple
+					{t("headline")}
 				</h1>
 
 				{/* Subtext */}
-				<p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
-					Lumo helps you stay organized. No spreadsheets, no stress. <br />
-					Track rooms, payments, and tenants in one calm place.
+				<p className="whitespace-pre-line text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
+					{t("subtext")}
 				</p>
 
 				{/* CTAs */}
@@ -40,7 +40,7 @@ export function Hero() {
 					<JoinWaitlistDialog
 						trigger={
 							<Button size="lg" className="min-w-[200px] h-14 text-lg">
-								Get Early Access
+								{t("cta")}
 								<ArrowRight className="ml-2 h-5 w-5" />
 							</Button>
 						}
@@ -55,7 +55,7 @@ export function Hero() {
 								<Sun className="h-8 w-8 text-primary" />
 							</div>
 							<p className="text-muted-foreground font-medium">
-								App Interface Preview
+								{t("preview")}
 							</p>
 						</div>
 					</div>

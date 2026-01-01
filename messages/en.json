@@ -1,0 +1,109 @@
+{
+	"metadata": {
+		"title": "Lumo - Simple Rent Tracking",
+		"description": "Lumo helps small landlords stay organized by tracking rent, rooms, and tenants in one simple app. No spreadsheets, no stress.",
+		"keywords": "rent tracking, landlord app, property management, small landlord, rent reminder"
+	},
+	"header": {
+		"features": "Features",
+		"pricing": "Pricing",
+		"signIn": "Sign In"
+	},
+	"hero": {
+		"badge": "Peace of mind for property owners",
+		"headline": "Rent tracking, made simple",
+		"subtext": "Lumo helps you stay organized. No spreadsheets, no stress.\nTrack rooms, payments, and tenants in one calm place.",
+		"cta": "Get Early Access",
+		"preview": "App Interface Preview"
+	},
+	"features": {
+		"title": "Everything you need, nothing you don't",
+		"subtitle": "Simple tools designed for managing your rentals",
+		"items": [
+			{
+				"title": "Track rooms & tenants",
+				"description": "See all your rooms and who's renting them in one simple view"
+			},
+			{
+				"title": "See payment status clearly",
+				"description": "Know instantly who has paid and who hasn't. No digging through files"
+			},
+			{
+				"title": "Built for you, not companies",
+				"description": "Designed for property owners, not property management companies"
+			}
+		]
+	},
+	"pricing": {
+		"title": "Simple, honest pricing",
+		"subtitle": "Pricing will be announced soon",
+		"comingSoon": "Coming Soon",
+		"tiers": {
+			"free": {
+				"name": "Free",
+				"description": "Try the basics",
+				"price": "$0",
+				"features": [
+					"Track one room",
+					"Basic payment tracking",
+					"Simple dashboard"
+				],
+				"buttonText": "Get Started Free"
+			},
+			"pro": {
+				"name": "Pro",
+				"description": "Unlimited rooms, future features",
+				"price": "—",
+				"features": [
+					"Unlimited rooms",
+					"Payment reminders",
+					"Priority support"
+				],
+				"buttonText": "Join Waitlist"
+			}
+		}
+	},
+	"problems": {
+		"title": "We understand your challenges",
+		"subtitle": "Managing rentals shouldn't feel overwhelming",
+		"items": [
+			{
+				"title": "Forgetting rent dates",
+				"description": "Missing payments because there's no easy way to track who paid and when"
+			},
+			{
+				"title": "Messy spreadsheets",
+				"description": "Excel files that grow confusing over time, with formulas breaking unexpectedly"
+			},
+			{
+				"title": "Paper notes everywhere",
+				"description": "Scattered notebooks and sticky notes that are easy to lose or misplace"
+			}
+		],
+		"solution": {
+			"title": "There's a simpler way",
+			"description": "Lumo is purpose-built for individual property owners. It's calm, simple, and helps you stay on top of your rentals without the complexity"
+		}
+	},
+	"cta": {
+		"title": "Ready to simplify your rental tracking?",
+		"subtitle": "Join property owners who are leaving spreadsheets behind",
+		"button": "Get Early Access"
+	},
+	"footer": {
+		"madeWith": "Made with",
+		"forOwners": "for independent property owners.",
+		"copyright": "© {year} Lumo. All rights reserved."
+	},
+	"waitlist": {
+		"title": "Join the Waitlist",
+		"description": "Be the first to know when Lumo launches.",
+		"emailPlaceholder": "your@email.com",
+		"submit": "Join Waitlist",
+		"success": "You're on the list!",
+		"error": "Something went wrong. Please try again."
+	},
+	"languageSwitcher": {
+		"label": "Language"
+	}
+}
