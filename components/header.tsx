@@ -1,8 +1,8 @@
 import { Sun } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
+import { LanguageSwitcher } from "@/components/islands/language-switcher";
 import { MobileMenu } from "@/components/islands/mobile-menu";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/lib/navigation";
 
