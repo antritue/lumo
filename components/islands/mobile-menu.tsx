@@ -1,10 +1,12 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 export function MobileMenu() {
 	const [open, setOpen] = useState(false);
+	const t = useTranslations("header");
 
 	return (
 		<div className="md:hidden">
@@ -28,7 +30,7 @@ export function MobileMenu() {
 								window.location.hash = "features";
 							}}
 						>
-							Features
+							{t("features")}
 						</button>
 						<button
 							type="button"
@@ -38,7 +40,7 @@ export function MobileMenu() {
 								window.location.hash = "pricing";
 							}}
 						>
-							Pricing
+							{t("pricing")}
 						</button>
 					</div>
 				</div>

@@ -1,9 +1,12 @@
 import { ArrowRight, Sun } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 
-export function CtaSection() {
+export async function CtaSection() {
+	const t = await getTranslations("cta");
+
 	return (
 		<Section variant="transparent" containerClassName="max-w-4xl">
 			<div className="relative rounded-3xl bg-linear-to-br from-primary/10 via-accent/5 to-secondary p-12 text-center overflow-hidden">
@@ -17,17 +20,17 @@ export function CtaSection() {
 					</div>
 
 					<h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">
-						Ready to simplify your rental tracking?
+						{t("title")}
 					</h2>
 
 					<p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-						Join property owners who are leaving spreadsheets behind
+						{t("subtitle")}
 					</p>
 
 					<JoinWaitlistDialog
 						trigger={
 							<Button size="lg" className="h-12 px-8">
-								Get Early Access
+								{t("button")}
 								<ArrowRight className="ml-2 h-4 w-4" />
 							</Button>
 						}

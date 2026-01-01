@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,26 +23,24 @@ interface Tier {
 	isPopular?: boolean;
 }
 
-export function Pricing() {
+export async function Pricing() {
+	const t = await getTranslations("pricing");
+
 	const tiers: Tier[] = [
 		{
-			name: "Free",
-			description: "Try the basics",
-			price: "$0",
-			features: [
-				"Track one room",
-				"Basic payment tracking",
-				"Simple dashboard",
-			],
-			buttonText: "Get Started Free",
+			name: t("tiers.free.name"),
+			description: t("tiers.free.description"),
+			price: t("tiers.free.price"),
+			features: t.raw("tiers.free.features") as string[],
+			buttonText: t("tiers.free.buttonText"),
 			buttonVariant: "outline",
 		},
 		{
-			name: "Pro",
-			description: "Unlimited rooms, future features",
-			price: "—",
-			features: ["Unlimited rooms", "Payment reminders", "Priority support"],
-			buttonText: "Join Waitlist",
+			name: t("tiers.pro.name"),
+			description: t("tiers.pro.description"),
+			price: t("tiers.pro.price"),
+			features: t.raw("tiers.pro.features") as string[],
+			buttonText: t("tiers.pro.buttonText"),
 			buttonVariant: "default",
 			isComingSoon: true,
 			isPopular: true,
@@ -52,11 +51,9 @@ export function Pricing() {
 		<Section id="pricing" variant="secondary">
 			<div className="text-center mb-16">
 				<h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-					Simple, honest pricing
+					{t("title")}
 				</h2>
-				<p className="text-lg text-muted-foreground">
-					Pricing will be announced soon
-				</p>
+				<p className="text-lg text-muted-foreground">{t("subtitle")}</p>
 			</div>
 
 			<div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
@@ -72,7 +69,7 @@ export function Pricing() {
 						{tier.isComingSoon && (
 							<div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
 								<span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium shadow-sm">
-									Coming Soon
+									{t("comingSoon")}
 								</span>
 							</div>
 						)}
@@ -87,7 +84,6 @@ export function Pricing() {
 								<span className="text-4xl font-bold text-foreground">
 									{tier.price}
 								</span>
-								{/* <span className="text-muted-foreground">/month</span> */}
 							</div>
 							<ul className="space-y-4 mb-8">
 								{tier.features.map((feature) => (
