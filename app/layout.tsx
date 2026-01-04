@@ -1,9 +1,28 @@
+import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
 import "./globals.css";
+
+const inter = Inter({
+	variable: "--font-inter",
+	subsets: ["latin", "vietnamese"],
+	display: "swap",
+});
 
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	return children;
+	return (
+		<html lang="en" suppressHydrationWarning>
+			<body
+				className={cn(
+					"min-h-screen bg-background font-sans antialiased",
+					inter.variable,
+				)}
+			>
+				{children}
+			</body>
+		</html>
+	);
 }

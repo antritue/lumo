@@ -14,6 +14,7 @@
 		"headline": "Theo dõi tiền thuê, thật đơn giản",
 		"subtext": "Lumo giúp bạn quản lý khoa học. Không bảng tính, không áp lực.\nTheo dõi phòng, thanh toán và người thuê tại một nơi duy nhất.",
 		"cta": "Đăng ký sớm",
+		"launchApp": "Mở ứng dụng",
 		"preview": "Xem trước giao diện"
 	},
 	"features": {
@@ -88,7 +89,8 @@
 	"cta": {
 		"title": "Sẵn sàng để quản lý nhà cho thuê đơn giản hơn?",
 		"subtitle": "Tham gia cùng những chủ nhà đã tạm biệt bảng tính lộn xộn",
-		"button": "Đăng ký sớm"
+		"button": "Đăng ký sớm",
+		"launchApp": "Mở ứng dụng"
 	},
 	"footer": {
 		"madeWith": "Được tạo với",
@@ -105,5 +107,16 @@
 	},
 	"languageSwitcher": {
 		"label": "Ngôn ngữ"
+	},
+	"app": {
+		"sidebar": {
+			"properties": "Nhà cho thuê"
+		},
+		"properties": {
+			"emptyTitle": "Chưa có nhà cho thuê",
+			"emptySubtitle": "Thêm nhà cho thuê đầu tiên để bắt đầu",
+			"inDevelopment": "Ứng dụng này hiện đang trong quá trình phát triển. Một số tính năng có thể chưa hoàn thiện hoặc chưa khả dụng.",
+			"devBadge": "Bản thử nghiệm"
+		}
 	}
 }

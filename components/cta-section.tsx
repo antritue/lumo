@@ -1,4 +1,5 @@
 import { ArrowRight, Sun } from "lucide-react";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
@@ -27,14 +28,21 @@ export async function CtaSection() {
 						{t("subtitle")}
 					</p>
 
-					<JoinWaitlistDialog
-						trigger={
+					<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+						<Link href="/app" target="_blank">
 							<Button size="lg" className="h-12 px-8">
-								{t("button")}
+								{t("launchApp")}
 								<ArrowRight className="ml-2 h-4 w-4" />
 							</Button>
-						}
-					/>
+						</Link>
+						<JoinWaitlistDialog
+							trigger={
+								<Button size="lg" variant="outline" className="h-12 px-8">
+									{t("button")}
+								</Button>
+							}
+						/>
+					</div>
 				</div>
 			</div>
 		</Section>

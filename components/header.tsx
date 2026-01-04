@@ -1,8 +1,8 @@
-import { Sun } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
 import { LanguageSwitcher } from "@/components/islands/language-switcher";
 import { MobileMenu } from "@/components/islands/mobile-menu";
+import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/lib/navigation";
 
@@ -21,10 +21,7 @@ export async function Header() {
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-2">
-						<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-							<Sun className="h-4 w-4 text-primary-foreground" />
-						</div>
-						<span className="text-xl font-semibold text-foreground">Lumo</span>
+						<Logo />
 					</Link>
 
 					{/* Desktop Navigation */}
