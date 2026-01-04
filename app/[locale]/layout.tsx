@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { type Locale, locales } from "@/i18n";
-import { cn } from "@/lib/utils";
-
-const inter = Inter({
-	variable: "--font-inter",
-	subsets: ["latin", "vietnamese"],
-	display: "swap",
-});
 
 export async function generateMetadata({
 	params,
@@ -72,18 +64,8 @@ export default async function LocaleLayout({
 	const messages = await getMessages();
 
 	return (
-		<html lang={locale} className="scroll-smooth">
-			<body
-				suppressHydrationWarning
-				className={cn(
-					"min-h-screen bg-background font-sans antialiased",
-					inter.variable,
-				)}
-			>
-				<NextIntlClientProvider messages={messages}>
-					{children}
-				</NextIntlClientProvider>
-			</body>
-		</html>
+		<NextIntlClientProvider messages={messages}>
+			{children}
+		</NextIntlClientProvider>
 	);
 }

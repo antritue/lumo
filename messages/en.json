@@ -14,6 +14,7 @@
 		"headline": "Rent tracking, made simple",
 		"subtext": "Lumo helps you stay organized. No spreadsheets, no stress.\nTrack rooms, payments, and tenants in one calm place.",
 		"cta": "Get Early Access",
+		"launchApp": "Launch App",
 		"preview": "App Interface Preview"
 	},
 	"features": {
@@ -88,7 +89,8 @@
 	"cta": {
 		"title": "Ready to simplify your rental tracking?",
 		"subtitle": "Join property owners who are leaving spreadsheets behind",
-		"button": "Get Early Access"
+		"button": "Get Early Access",
+		"launchApp": "Launch App"
 	},
 	"footer": {
 		"madeWith": "Made with",
@@ -105,5 +107,16 @@
 	},
 	"languageSwitcher": {
 		"label": "Language"
+	},
+	"app": {
+		"sidebar": {
+			"properties": "Properties"
+		},
+		"properties": {
+			"emptyTitle": "No properties yet",
+			"emptySubtitle": "Add your first property to get started",
+			"inDevelopment": "This app is currently under active development. Some features may be missing or incomplete.",
+			"devBadge": "Developer Preview"
+		}
 	}
 }
