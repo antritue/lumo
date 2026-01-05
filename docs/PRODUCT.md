@@ -2,13 +2,13 @@
 
 ## 1. What is Lumo?
 
-**Lumo** is a simple, calm, and reliable tool that helps small landlords manage rental rooms clearly — without spreadsheets, notebooks, or messy records.
+**Lumo** is a simple, calm, and reliable tool that helps independent landlords manage rental rooms clearly — without spreadsheets, notebooks, or messy records.
 
 Lumo focuses on the **core problem**:
 > Tracking monthly rent, payment history, and rooms across one or more houses — clearly and without confusion.
 
 The product is intentionally minimal, built for landlords who:
-- Manage multiple rooms (3+)
+- Manage a modest number of rooms (typically 3+)
 - Still rely on Excel, paper, or memory
 - Want clarity, not complexity
 
@@ -17,7 +17,7 @@ The product is intentionally minimal, built for landlords who:
 ## 2. Target Users
 
 ### Primary
-- Small landlords managing **3–10 rooms**
+- Independent landlords managing **3–10 rooms**
 - Not highly technical
 - Prefer simple, familiar workflows
 - Often older, practical, value clarity and reliability
@@ -164,7 +164,7 @@ Only after the core workflow is proven and loved.
 ## 13. Guiding Question (Always Ask)
 
 Before adding anything:
-> Does this make rent tracking clearer for a small landlord?
+> Does this make rent tracking clearer for an independent landlord?
 
 If the answer is not clearly “yes”, don’t build it.
 
@@ -172,5 +172,5 @@ If the answer is not clearly “yes”, don’t build it.
 
 **Product name:** Lumo  
 **Domain:** https://lumo.homes  
-**Audience:** Small landlords  
+**Audience:** Independent landlords  
 **Promise:** Clear rent tracking, without complexity
