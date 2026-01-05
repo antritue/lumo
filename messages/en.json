@@ -1,10 +1,11 @@
 {
 	"metadata": {
 		"title": "Lumo - Simple Rent Tracking",
-		"description": "Lumo helps small landlords stay organized by tracking rent, rooms, and tenants in one simple app. No spreadsheets, no stress.",
-		"keywords": "rent tracking, landlord app, property management, small landlord, rent reminder"
+		"description": "Lumo helps independent landlords stay organized by tracking rent, rooms, and tenants in one simple app. No spreadsheets, no stress.",
+		"keywords": "rent tracking, landlord app, property management, independent landlord, rent reminder"
 	},
 	"header": {
+		"problems": "Challenges",
 		"features": "Features",
 		"pricing": "Pricing",
 		"signIn": "Sign In"

@@ -1,7 +1,7 @@
 import { ArrowRight, Sun } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
+import { JoinWaitlistDialog } from "@/components/marketing/islands/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 

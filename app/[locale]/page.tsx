@@ -1,10 +1,10 @@
-import { CtaSection } from "@/components/cta-section";
-import { Features } from "@/components/features";
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
-import { Hero } from "@/components/hero";
-import { Pricing } from "@/components/pricing";
-import { Problems } from "@/components/problems";
+import { CtaSection } from "@/components/marketing/cta-section";
+import { Features } from "@/components/marketing/features";
+import { Footer } from "@/components/marketing/footer";
+import { Header } from "@/components/marketing/header";
+import { Hero } from "@/components/marketing/hero";
+import { Pricing } from "@/components/marketing/pricing";
+import { Problems } from "@/components/marketing/problems";
 
 export default async function Home() {
 	return (
