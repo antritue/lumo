@@ -1,6 +1,6 @@
 import { Check } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
+import { JoinWaitlistDialog } from "@/components/marketing/islands/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Card,

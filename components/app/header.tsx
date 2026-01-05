@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { AppLanguageSwitcher } from "@/components/islands/app-language-switcher";
-import { Logo } from "@/components/shared/logo";
+import { LanguageSwitcher } from "@/components/app/islands/language-switcher";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
 
 export function AppHeader() {
 	const t = useTranslations("header");
@@ -17,7 +17,7 @@ export function AppHeader() {
 						<Logo />
 					</Link>
 					<div className="flex items-center gap-4">
-						<AppLanguageSwitcher />
+						<LanguageSwitcher />
 						<Button variant="outline">{t("signIn")}</Button>
 					</div>
 				</div>

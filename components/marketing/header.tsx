@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
-import { JoinWaitlistDialog } from "@/components/islands/join-waitlist-dialog";
-import { LanguageSwitcher } from "@/components/islands/language-switcher";
-import { MobileMenu } from "@/components/islands/mobile-menu";
-import { Logo } from "@/components/shared/logo";
+import { JoinWaitlistDialog } from "@/components/marketing/islands/join-waitlist-dialog";
+import { LanguageSwitcher } from "@/components/marketing/islands/language-switcher";
+import { MobileMenu } from "@/components/marketing/islands/mobile-menu";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
 import { Link } from "@/lib/navigation";
 
 export async function Header() {

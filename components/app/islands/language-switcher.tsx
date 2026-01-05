@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const localeNames: Record<Locale, string> = { en: "EN", vi: "VI" };
 
-export function AppLanguageSwitcher() {
+export function LanguageSwitcher() {
 	const currentLocale = getAppLocale();
 	const t = useTranslations("languageSwitcher");
 
