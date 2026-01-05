@@ -27,6 +27,12 @@ export async function Header() {
 					{/* Desktop Navigation */}
 					<div className="hidden md:flex md:items-center md:gap-8">
 						<Link
+							href="/#problems"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+						>
+							{t("problems")}
+						</Link>
+						<Link
 							href="/#features"
 							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 						>

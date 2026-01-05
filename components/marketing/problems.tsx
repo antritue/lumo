@@ -20,7 +20,7 @@ export async function Problems() {
 	const items = t.raw("items") as ProblemItem[];
 
 	return (
-		<Section variant="secondary">
+		<Section id="problems" variant="secondary">
 			<div className="text-center mb-16">
 				<h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
 					{t("title")}
