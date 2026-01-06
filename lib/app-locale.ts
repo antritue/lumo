@@ -1,29 +1,28 @@
-import { defaultLocale, type Locale, locales } from "@/i18n";
+"use server";
 
-const LOCALE_COOKIE = "app-locale";
+import { cookies } from "next/headers";
+import {
+	defaultLocale,
+	LOCALE_COOKIE_NAME,
+	type Locale,
+	locales,
+} from "@/lib/constants";
 
-export function getAppLocale(): Locale {
-	if (typeof document === "undefined") return defaultLocale;
-
-	const cookie = document.cookie
-		.split("; ")
-		.find((row) => row.startsWith(`${LOCALE_COOKIE}=`));
-	const value = cookie?.split("=")[1] as Locale;
+export async function getAppLocale(): Promise<Locale> {
+	const cookieStore = await cookies();
+	const cookie = cookieStore.get(LOCALE_COOKIE_NAME);
+	const value = cookie?.value as Locale;
 
 	if (value && locales.includes(value)) return value;
 
-	// Fallback: browser preference
-	const browserLang = navigator.language.slice(0, 2) as Locale;
-	return locales.includes(browserLang) ? browserLang : defaultLocale;
+	return defaultLocale;
 }
 
 export async function setAppLocale(locale: Locale) {
-	await cookieStore.set({
-		name: LOCALE_COOKIE,
-		value: locale,
-		path: "/app",
-		expires: Date.now() + 31536000 * 1000, // 1 year in milliseconds
+	const cookieStore = await cookies();
+	cookieStore.set(LOCALE_COOKIE_NAME, locale, {
+		path: "/",
+		maxAge: 31536000, // 1 year
 		sameSite: "lax",
 	});
-	window.location.reload();
 }

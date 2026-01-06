@@ -1,16 +1,13 @@
-import { notFound } from "next/navigation";
 import { getRequestConfig } from "next-intl/server";
-
-export const locales = ["en", "vi"] as const;
-export const defaultLocale = "en" as const;
-
-export type Locale = (typeof locales)[number];
+import { getAppLocale } from "@/lib/app-locale";
+import { type Locale, locales } from "@/lib/constants";
 
 export default getRequestConfig(async ({ requestLocale }) => {
-	const locale = await requestLocale;
+	let locale = await requestLocale;
 
 	if (!locale || !locales.includes(locale as Locale)) {
-		notFound();
+		// Fallback for non-localized routes (like /app)
+		locale = await getAppLocale();
 	}
 
 	return {

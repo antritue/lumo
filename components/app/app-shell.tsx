@@ -1,5 +1,3 @@
-"use client";
-
 import { AppHeader } from "@/components/app/header";
 import { AppSidebar } from "@/components/app/sidebar";
 
