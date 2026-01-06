@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { LanguageSwitcher } from "@/components/app/islands/language-switcher";
+import { LanguageSwitcher } from "@/components/dashboard/islands/language-switcher";
+import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/ui/logo";
 
 export function AppHeader() {
 	const t = useTranslations("header");

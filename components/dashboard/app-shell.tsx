@@ -1,5 +1,5 @@
-import { AppHeader } from "@/components/app/header";
-import { AppSidebar } from "@/components/app/sidebar";
+import { AppHeader } from "@/components/dashboard/header";
+import { AppSidebar } from "@/components/dashboard/sidebar";
 
 interface AppShellProps {
 	children: React.ReactNode;
