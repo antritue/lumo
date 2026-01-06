@@ -69,6 +69,17 @@
 	--radius-sm: calc(var(--radius) - 4px);
 }
 
+/* Smooth scrolling for anchor links, respecting user motion preferences */
+html {
+	scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
 body {
 	background: hsl(var(--background));
 	color: hsl(var(--foreground));
