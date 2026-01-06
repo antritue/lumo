@@ -21,9 +21,11 @@ export async function Hero() {
 
 			<div className="text-center">
 				{/* Badge */}
-				<div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 animate-in fade-in zoom-in duration-500">
-					<Sun className="h-4 w-4 text-primary" />
-					<span className="text-sm font-medium text-primary">{t("badge")}</span>
+				<div className="inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 w-[320px] animate-in fade-in zoom-in duration-500">
+					<Sun className="h-4 w-4 text-primary shrink-0" />
+					<span className="text-sm font-medium text-primary line-clamp-1">
+						{t("badge")}
+					</span>
 				</div>
 
 				{/* Headline */}
@@ -39,7 +41,7 @@ export async function Hero() {
 				{/* CTAs */}
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
 					<Link href="/dashboard" target="_blank">
-						<Button size="lg" className="h-12 px-8 text-base">
+						<Button size="lg" className="h-12 px-8 text-base w-[220px]">
 							{t("launchApp")}
 							<ArrowRight className="ml-2 h-5 w-5" />
 						</Button>
@@ -49,7 +51,7 @@ export async function Hero() {
 							<Button
 								size="lg"
 								variant="outline"
-								className="h-12 px-8 text-base"
+								className="h-12 px-8 text-base w-[220px]"
 							>
 								{t("cta")}
 							</Button>

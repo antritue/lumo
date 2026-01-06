@@ -38,7 +38,7 @@ export function LanguageSwitcher() {
 					type="button"
 					onClick={() => handleLocaleChange(locale)}
 					className={cn(
-						"px-2 py-0.5 rounded-full text-[10px] font-bold transition-all",
+						"px-2 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer",
 						locale === currentLocale
 							? "bg-white text-primary shadow-sm"
 							: "text-muted-foreground hover:text-foreground",

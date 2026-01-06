@@ -27,6 +27,16 @@ export function MobileMenu() {
 							className="text-left text-sm font-medium text-muted-foreground hover:text-foreground px-2 py-2 rounded-md hover:bg-secondary"
 							onClick={() => {
 								setOpen(false);
+								window.location.hash = "problems";
+							}}
+						>
+							{t("problems")}
+						</button>
+						<button
+							type="button"
+							className="text-left text-sm font-medium text-muted-foreground hover:text-foreground px-2 py-2 rounded-md hover:bg-secondary"
+							onClick={() => {
+								setOpen(false);
 								window.location.hash = "features";
 							}}
 						>

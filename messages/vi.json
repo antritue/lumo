@@ -46,7 +46,7 @@
 				"description": "Trải nghiệm cơ bản",
 				"price": "0đ",
 				"features": [
-					"Theo dõi 01 phòng",
+					"Theo dõi tới 5 phòng",
 					"Quản lý thanh toán cơ bản",
 					"Bảng điều khiển tinh gọn"
 				],
@@ -59,7 +59,8 @@
 				"features": [
 					"Không giới hạn phòng",
 					"Tự động nhắc thanh toán",
-					"Hỗ trợ ưu tiên 24/7"
+					"Cập nhật các tính năng mới",
+					"Hỗ trợ ưu tiên"
 				],
 				"buttonText": "Đăng ký chờ"
 			}
@@ -101,7 +102,7 @@
 	"waitlist": {
 		"title": "Tham gia danh sách chờ",
 		"description": "Hãy là người đầu tiên trải nghiệm khi Lumo ra mắt.",
-		"emailPlaceholder": "email@cuaban.com",
+		"emailPlaceholder": "diachi@email.com",
 		"submit": "Đăng ký ngay",
 		"success": "Bạn đã đăng ký thành công!",
 		"error": "Có lỗi xảy ra. Vui lòng thử lại sau."
@@ -110,6 +111,10 @@
 		"label": "Ngôn ngữ"
 	},
 	"app": {
+		"metadata": {
+			"title": "Lumo - Bảng điều khiển",
+			"description": "Quản lý nhà cho thuê, phòng và người thuê trong một bảng điều khiển đơn giản"
+		},
 		"sidebar": {
 			"properties": "Nhà cho thuê"
 		},

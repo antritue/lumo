@@ -61,7 +61,7 @@ export async function Pricing() {
 					<Card
 						key={tier.name}
 						className={cn(
-							"relative group hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300",
+							"relative group hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col",
 							tier.isPopular &&
 								"border-primary/20 bg-linear-to-b from-primary/5 to-transparent",
 						)}
@@ -73,13 +73,11 @@ export async function Pricing() {
 								</span>
 							</div>
 						)}
-						<CardHeader
-							className={cn("text-center pb-4", tier.isPopular && "pt-8")}
-						>
+						<CardHeader className="text-center pb-4 pt-8">
 							<CardTitle className="text-2xl">{tier.name}</CardTitle>
 							<CardDescription>{tier.description}</CardDescription>
 						</CardHeader>
-						<CardContent>
+						<CardContent className="flex flex-col flex-1">
 							<div className="text-center mb-6">
 								<span className="text-4xl font-bold text-foreground">
 									{tier.price}
@@ -108,13 +106,15 @@ export async function Pricing() {
 								))}
 							</ul>
 
-							<JoinWaitlistDialog
-								trigger={
-									<Button variant={tier.buttonVariant} className="w-full">
-										{tier.buttonText}
-									</Button>
-								}
-							/>
+							<div className="mt-auto">
+								<JoinWaitlistDialog
+									trigger={
+										<Button variant={tier.buttonVariant} className="w-full">
+											{tier.buttonText}
+										</Button>
+									}
+								/>
+							</div>
 						</CardContent>
 					</Card>
 				))}
