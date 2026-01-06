@@ -3,6 +3,7 @@
 import { Loader2, Mail, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type FormEvent, type ReactNode, useState } from "react";
+import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -12,7 +13,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { ErrorDialog } from "@/components/ui/error-dialog";
 import { Input } from "@/components/ui/input";
 
 interface JoinWaitlistDialogProps {

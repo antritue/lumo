@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
-import { AppShell } from "@/components/app/app-shell";
+import { AppShell } from "@/components/dashboard/app-shell";
 import { getAppLocale } from "@/lib/app-locale";
 
 export default async function AppLayout({
