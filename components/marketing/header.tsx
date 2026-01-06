@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/marketing/islands/language-switcher";
 import { MobileMenu } from "@/components/marketing/islands/mobile-menu";
 import { Logo } from "@/components/shared/logo";
-import { Button } from "@/components/ui/button";
 import { Link } from "@/lib/navigation";
 
 export async function Header() {
