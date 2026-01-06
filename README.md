@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lumo
 
-## Getting Started
+**Clear rent tracking for independent landlords, without the complexity.**
 
-First, run the development server:
+Lumo is a simple, calm, and reliable tool designed to help landlords manage rental rooms, payments, and history without needing spreadsheets or messy notebooks.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📖 Documentation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project documentation is split into two main guides:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **[Product Overview](./docs/PRODUCT.md)**: Understand the "Why" behind Lumo - target audience, core problems we solve, principles, and roadmap.
+*   **[Development Guide](./docs/DEVELOPMENT.md)**: Understand the "How" - tech stack, project structure, setup instructions, and coding conventions.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Quick Start
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If you just want to get the app running locally:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
+- Node.js 24.x
+- Supabase Project (URL and Anon Key)
 
-## Deploy on Vercel
+### Setup
+1. `npm install`
+2. Create `.env.local` (refer to `DEVELOPMENT.md` for required variables)
+3. `npm run dev`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Navigate to [http://localhost:3000](http://localhost:3000).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🛠️ Tech Stack
+
+*   **Framework**: Next.js 16
+*   **Database**: Supabase
+*   **Styling**: Tailwind CSS 4
+*   **UI Primitives**: shadcn/ui & Radix UI
+*   **Linting**: Biome
