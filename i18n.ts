@@ -6,7 +6,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
 	let locale = await requestLocale;
 
 	if (!locale || !locales.includes(locale as Locale)) {
-		// Fallback for non-localized routes (like /app)
+		// Fallback for non-localized routes (like /dashboard)
 		locale = await getAppLocale();
 	}
 

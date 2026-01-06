@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-	{ href: "/app/properties", icon: Home, labelKey: "properties" },
+	{ href: "/dashboard/properties", icon: Home, labelKey: "properties" },
 ] as const;
 
 export function AppSidebar() {

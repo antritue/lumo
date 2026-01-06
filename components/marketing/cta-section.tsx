@@ -29,7 +29,7 @@ export async function CtaSection() {
 					</p>
 
 					<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-						<Link href="/app" target="_blank">
+						<Link href="/dashboard" target="_blank">
 							<Button size="lg" className="h-12 px-8">
 								{t("launchApp")}
 								<ArrowRight className="ml-2 h-4 w-4" />
