@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-import { type Locale, locales } from "@/i18n";
+import { type Locale, locales } from "@/lib/constants";
 
 export async function generateMetadata({
 	params,
