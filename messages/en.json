@@ -110,6 +110,10 @@
 		"label": "Language"
 	},
 	"app": {
+		"metadata": {
+			"title": "Lumo - Dashboard",
+			"description": "Manage your properties, rooms, and tenants in one simple dashboard"
+		},
 		"sidebar": {
 			"properties": "Properties"
 		},

@@ -110,6 +110,10 @@
 		"label": "Ngôn ngữ"
 	},
 	"app": {
+		"metadata": {
+			"title": "Lumo - Dashboard",
+			"description": "Quản lý nhà cho thuê, phòng và người thuê trong một bảng điều khiển đơn giản"
+		},
 		"sidebar": {
 			"properties": "Nhà cho thuê"
 		},
