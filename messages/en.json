@@ -46,7 +46,7 @@
 				"description": "Try the basics",
 				"price": "$0",
 				"features": [
-					"Track one room",
+					"Track up to 5 rooms",
 					"Basic payment tracking",
 					"Simple dashboard"
 				],
@@ -59,6 +59,7 @@
 				"features": [
 					"Unlimited rooms",
 					"Payment reminders",
+					"Future updates & new features",
 					"Priority support"
 				],
 				"buttonText": "Join Waitlist"
