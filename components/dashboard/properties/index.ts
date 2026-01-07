@@ -4,4 +4,5 @@ export { EditPropertyDialog } from "./edit-property-dialog";
 export { EmptyState } from "./empty-state";
 export { PropertyCard } from "./property-card";
 export { PropertyList } from "./property-list";
+export { usePropertiesStore } from "./store";
 export type { Property } from "./types";

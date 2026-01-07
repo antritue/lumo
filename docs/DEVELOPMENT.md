@@ -16,6 +16,7 @@ We use a modern, type-safe stack designed for stability and developer experience
 -   **Component Library**: [shadcn/ui](https://ui.shadcn.com) - Reusable components built with Radix UI and Tailwind.
 -   **UI Primitives**: [Radix UI](https://www.radix-ui.com) - The underlying accessible primitives.
 -   **Database**: [Supabase](https://supabase.com) - Postgres database and authentication.
+-   **State Management**: [Zustand](https://zustand-demo.pmnd.rs) - Lightweight state management for domain logic.
 -   **Validation**: [Zod](https://zod.dev) - Schema validation for API and forms.
 -   **Internationalization**: [next-intl](https://next-intl-docs.vercel.app) - App-wide localization.
 -   **Linting/Formatting**: [Biome](https://biomejs.dev) - Fast, all-in-one linter and formatter (replaces ESLint/Prettier).
@@ -102,7 +103,14 @@ We use **Tailwind CSS 4**. All styles are defined in classes or the CSS theme.
 
 ## Data & State
 
--   **Data Fetching**: We use Client Components for now, with Supabase client-side fetching where needed.
+We use **Zustand** for domain state (properties, rooms, rent data). Stores live within feature folders (e.g., `components/dashboard/properties/store.ts`).
+
+-   **Store Access**: Components use hooks directly—no prop drilling.
+    ```typescript
+    const properties = usePropertiesStore((state) => state.properties);
+    ```
+-   **State Boundaries**: Domain data goes in stores. UI state (dialogs, form visibility) stays local to components.
+-   **Data Fetching**: Client Components with Supabase client-side fetching.
 -   **Forms**: Use `zod` for schema validation (see `lib/validations`).
 -   **Supabase**: The client is initialized in `lib/supabase.ts`. It relies on environment variables being present; otherwise, it throws an error to fail fast.
 -   **Internationalization**: Data passed to components should be localized. Use `next-intl` hooks (`useTranslations`) in client components and `getTranslations` in server components.

@@ -8,22 +8,16 @@ import { CreatePropertyForm } from "./create-property-form";
 import { DeletePropertyDialog } from "./delete-property-dialog";
 import { EditPropertyDialog } from "./edit-property-dialog";
 import { PropertyCard } from "./property-card";
+import { usePropertiesStore } from "./store";
 import type { Property } from "./types";
 
-interface PropertyListProps {
-	properties: Property[];
-	onCreateProperty: (name: string) => void;
-	onUpdateProperty: (id: string, name: string) => void;
-	onDeleteProperty: (id: string) => void;
-}
-
-export function PropertyList({
-	properties,
-	onCreateProperty,
-	onUpdateProperty,
-	onDeleteProperty,
-}: PropertyListProps) {
+export function PropertyList() {
 	const t = useTranslations("app.properties");
+	const properties = usePropertiesStore((state) => state.properties);
+	const createProperty = usePropertiesStore((state) => state.createProperty);
+	const updateProperty = usePropertiesStore((state) => state.updateProperty);
+	const deleteProperty = usePropertiesStore((state) => state.deleteProperty);
+
 	const [isAdding, setIsAdding] = useState(false);
 	const [editingProperty, setEditingProperty] = useState<Property | null>(null);
 	const [deletingProperty, setDeletingProperty] = useState<Property | null>(
@@ -31,7 +25,7 @@ export function PropertyList({
 	);
 
 	const handleCreate = (name: string) => {
-		onCreateProperty(name);
+		createProperty(name);
 		setIsAdding(false);
 	};
 
@@ -78,14 +72,14 @@ export function PropertyList({
 				property={editingProperty}
 				open={!!editingProperty}
 				onOpenChange={(open) => !open && setEditingProperty(null)}
-				onSave={onUpdateProperty}
+				onSave={updateProperty}
 			/>
 
 			<DeletePropertyDialog
 				property={deletingProperty}
 				open={!!deletingProperty}
 				onOpenChange={(open) => !open && setDeletingProperty(null)}
-				onDelete={onDeleteProperty}
+				onDelete={deleteProperty}
 			/>
 		</>
 	);
