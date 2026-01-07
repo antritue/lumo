@@ -1,4 +1,5 @@
 import { AppHeader } from "@/components/dashboard/header";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { AppSidebar } from "@/components/dashboard/sidebar";
 
 interface AppShellProps {
@@ -10,9 +11,10 @@ export function AppShell({ children }: AppShellProps) {
 		<div className="min-h-screen bg-background">
 			<AppHeader />
 			<AppSidebar />
-			<main className="pl-64 pt-16">
-				<div className="p-6">{children}</div>
+			<main className="pt-16 pb-16 md:pb-6 lg:pl-64">
+				<div className="p-4 sm:p-6">{children}</div>
 			</main>
+			<MobileNav />
 		</div>
 	);
 }
