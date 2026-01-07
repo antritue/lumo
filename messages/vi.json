@@ -123,7 +123,12 @@
 			"emptyTitle": "Chưa có nhà cho thuê",
 			"emptySubtitle": "Thêm nhà cho thuê đầu tiên để bắt đầu",
 			"inDevelopment": "Ứng dụng này hiện đang trong quá trình phát triển. Một số tính năng có thể chưa hoàn thiện hoặc chưa khả dụng.",
-			"devBadge": "Bản thử nghiệm"
+			"devBadge": "Bản thử nghiệm",
+			"inputPlaceholder": "Tên hoặc địa chỉ nhà cho thuê",
+			"addButton": "Thêm nhà cho thuê",
+			"listTitle": "Nhà cho thuê của bạn",
+			"addAnother": "Thêm nhà cho thuê khác",
+			"cancel": "Hủy"
 		}
 	}
 }

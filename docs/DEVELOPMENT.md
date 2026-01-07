@@ -34,9 +34,10 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 │   └── api/              # API endpoints (e.g., waitlist)
 ├── components/           # React Components
 │   ├── ui/               # Reusable primitives (Buttons, Inputs, etc.)
-│   ├── shared/           # Global shared components (Logo, ErrorDialog)
+│   ├── shared/           # Global shared components (Logo, ErrorDialog, DevelopmentBanner)
 │   ├── marketing/        # Landing page specific components
 │   └── dashboard/        # Core application logic components
+│       └── [feature]/    # Feature-based folders (e.g., properties/, rooms/)
 ├── lib/                  # Shared Utilities
 ├── messages/             # Localization JSON files
 └── public/               # Static assets
@@ -45,6 +46,7 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 ### Key Folders
 -   **`app/[locale]`**: The public-facing marketing site. Routes here are localized (e.g., `/en`, `/vi`).
 -   **`app/dashboard`**: The core authenticated product. This is where landlords manage their properties.
+-   **`components/dashboard/[feature]`**: Feature-based component folders for isolation and scalability.
 
 ---
 
@@ -139,9 +141,39 @@ The project is built to deploy on Vercel (or any Next.js compatible host).
 
 ### Architecture
 -   **Colocation**: Keep related things close. If a component is only used in the dashboard, put it in `app/dashboard` or a `dashboard` subfolder in components.
--   **"UI" vs "Dashboard"**:
-    -   `components/ui`: Generic, reusable, unopinionated.
-    -   `components/dashboard`: Application-specific, business-logic heavy.
+-   **Feature-Based Organization**: Dashboard components are organized by feature (e.g., `components/dashboard/properties/`, `components/dashboard/rooms/`). Each feature folder contains all UI and logic specific to that feature.
+-   **Component Hierarchy**:
+    -   `components/ui`: Generic, reusable, unopinionated primitives (Button, Input, Card). Use direct imports.
+    -   `components/shared`: Cross-cutting components used across multiple features (Logo, ErrorDialog, DevelopmentBanner). Use direct imports.
+    -   `components/dashboard/[feature]`: Feature-specific components with business logic. Use barrel exports (`index.ts`) for cleaner imports.
+-   **Single Responsibility**: Each component should have one clear job. Prefer small, composable components over large multipurpose ones.
+-   **Barrel Exports for Features**: Feature folders should include an `index.ts` that exports all public components and types. This provides a clean API and shorter import paths for feature modules.
+
+### Component Design Principles
+-   **Composition over Conditionals**: Prefer composing small components rather than large components with many conditional branches.
+-   **State Boundaries**: Keep state at the appropriate level:
+    -   **Page-level**: Source of truth and data mutations
+    -   **Component-level**: UI-specific state (form visibility, input values)
+    -   **Shared state**: Use context or stores only when multiple features need access
+-   **Name by Intent**: Component names should describe what they do, not how they do it (e.g., `EmptyState` not `IconWithForm`).
+
+### Example Feature Structure
+```
+components/dashboard/properties/
+├── index.ts                      # Barrel exports (public API)
+├── types.ts                      # Shared types
+├── empty-state.tsx               # Empty state UI
+├── create-property-form.tsx      # Form component
+├── property-card.tsx             # Individual property display
+└── property-list.tsx             # List view with add functionality
+```
+
+Each component is small, testable, and reusable. The `index.ts` provides a clean import path:
+```tsx
+import { EmptyState, PropertyList, type Property } from "@/components/dashboard/properties";
+```
+
+Adding new features (like rooms) won't require changes to existing feature folders.
 
 ### What NOT to do
 -   ❌ Don't add heavy libraries (e.g., lodash, moment) without discussion.

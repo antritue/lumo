@@ -123,7 +123,12 @@
 			"emptyTitle": "No properties yet",
 			"emptySubtitle": "Add your first property to get started",
 			"inDevelopment": "This app is currently under active development. Some features may be missing or incomplete.",
-			"devBadge": "Developer Preview"
+			"devBadge": "Developer Preview",
+			"inputPlaceholder": "Property name or address",
+			"addButton": "Add property",
+			"listTitle": "Your properties",
+			"addAnother": "Add another property",
+			"cancel": "Cancel"
 		}
 	}
 }
