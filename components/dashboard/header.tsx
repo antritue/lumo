@@ -49,7 +49,7 @@ export function AppHeader() {
 					</div>
 					<div className="flex items-center gap-2 sm:gap-4">
 						<LanguageSwitcher />
-						<Button variant="outline" className="hidden sm:flex">
+						<Button variant="outline" className="w-24 text-sm px-3">
 							{t("signIn")}
 						</Button>
 					</div>
