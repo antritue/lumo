@@ -11,7 +11,7 @@ export async function Hero() {
 	return (
 		<Section
 			variant="transparent"
-			className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden px-0 py-0"
+			className="relative min-h-screen flex items-center justify-center overflow-hidden px-0 pb-0 pt-24"
 		>
 			{/* Decorative Background Elements */}
 			<div className="absolute inset-0 -z-10 overflow-hidden">
