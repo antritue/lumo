@@ -128,7 +128,15 @@
 			"addButton": "Add property",
 			"listTitle": "Your properties",
 			"addAnother": "Add another property",
-			"cancel": "Cancel"
+			"cancel": "Cancel",
+			"edit": "Edit",
+			"delete": "Delete",
+			"editTitle": "Edit property",
+			"saveButton": "Save",
+			"deleteTitle": "Delete property?",
+			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
+			"deleteConfirm": "Delete property",
+			"actions": "Actions"
 		}
 	}
 }
