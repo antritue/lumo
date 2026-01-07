@@ -3,13 +3,11 @@
 import { Home } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CreatePropertyForm } from "./create-property-form";
+import { usePropertiesStore } from "./store";
 
-interface EmptyStateProps {
-	onCreateProperty: (name: string) => void;
-}
-
-export function EmptyState({ onCreateProperty }: EmptyStateProps) {
+export function EmptyState() {
 	const t = useTranslations("app.properties");
+	const createProperty = usePropertiesStore((state) => state.createProperty);
 
 	return (
 		<div className="flex flex-col items-center justify-center py-16 sm:py-24">
@@ -24,7 +22,7 @@ export function EmptyState({ onCreateProperty }: EmptyStateProps) {
 			</p>
 
 			<div className="w-full max-w-md">
-				<CreatePropertyForm onSubmit={onCreateProperty} />
+				<CreatePropertyForm onSubmit={createProperty} />
 			</div>
 		</div>
 	);
