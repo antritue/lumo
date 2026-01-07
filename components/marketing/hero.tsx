@@ -9,10 +9,7 @@ export async function Hero() {
 	const t = await getTranslations("hero");
 
 	return (
-		<Section
-			variant="transparent"
-			className="relative min-h-screen flex items-center justify-center overflow-hidden px-0 pb-0 pt-24"
-		>
+		<Section variant="transparent" className="relative overflow-hidden">
 			{/* Decorative Background Elements */}
 			<div className="absolute inset-0 -z-10 overflow-hidden">
 				<div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl opacity-60" />
