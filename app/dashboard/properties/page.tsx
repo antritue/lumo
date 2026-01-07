@@ -20,6 +20,18 @@ export default function PropertiesPage() {
 		setProperties([...properties, newProperty]);
 	};
 
+	const handleUpdateProperty = (id: string, name: string) => {
+		setProperties(
+			properties.map((property) =>
+				property.id === id ? { ...property, name } : property,
+			),
+		);
+	};
+
+	const handleDeleteProperty = (id: string) => {
+		setProperties(properties.filter((property) => property.id !== id));
+	};
+
 	return (
 		<div className="max-w-4xl mx-auto py-8 px-4">
 			{properties.length === 0 ? (
@@ -28,6 +40,8 @@ export default function PropertiesPage() {
 				<PropertyList
 					properties={properties}
 					onCreateProperty={handleCreateProperty}
+					onUpdateProperty={handleUpdateProperty}
+					onDeleteProperty={handleDeleteProperty}
 				/>
 			)}
 		</div>

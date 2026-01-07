@@ -128,7 +128,15 @@
 			"addButton": "Thêm nhà cho thuê",
 			"listTitle": "Nhà cho thuê của bạn",
 			"addAnother": "Thêm nhà cho thuê khác",
-			"cancel": "Hủy"
+			"cancel": "Hủy",
+			"edit": "Chỉnh sửa",
+			"delete": "Xóa",
+			"editTitle": "Chỉnh sửa nhà cho thuê",
+			"saveButton": "Lưu",
+			"deleteTitle": "Xóa nhà cho thuê?",
+			"deleteMessage": "Thao tác này sẽ xóa vĩnh viễn \"{name}\". Không thể hoàn tác.",
+			"deleteConfirm": "Xóa nhà cho thuê",
+			"actions": "Hành động"
 		}
 	}
 }
