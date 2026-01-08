@@ -138,7 +138,8 @@
 			"deleteConfirm": "Delete property",
 			"actions": "Actions",
 			"backToProperties": "Back to properties",
-			"notFound": "Property not found"
+			"notFound": "Property not found",
+			"notFoundMessage": "This property doesn't exist or may have been deleted"
 		},
 		"rooms": {
 			"emptyTitle": "No rooms yet",
