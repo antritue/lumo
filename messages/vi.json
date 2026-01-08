@@ -136,7 +136,18 @@
 			"deleteTitle": "Xóa nhà cho thuê?",
 			"deleteMessage": "Thao tác này sẽ xóa vĩnh viễn \"{name}\". Không thể hoàn tác.",
 			"deleteConfirm": "Xóa nhà cho thuê",
-			"actions": "Hành động"
+			"actions": "Hành động",
+			"backToProperties": "Quay lại danh sách",
+			"notFound": "Không tìm thấy nhà cho thuê"
+		},
+		"rooms": {
+			"emptyTitle": "Chưa có phòng",
+			"emptySubtitle": "Thêm phòng đầu tiên cho nhà cho thuê này",
+			"inputPlaceholder": "Tên hoặc số phòng",
+			"addButton": "Thêm phòng",
+			"listTitle": "Phòng",
+			"addAnother": "Thêm phòng khác",
+			"cancel": "Hủy"
 		}
 	}
 }

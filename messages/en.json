@@ -136,7 +136,18 @@
 			"deleteTitle": "Delete property?",
 			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
 			"deleteConfirm": "Delete property",
-			"actions": "Actions"
+			"actions": "Actions",
+			"backToProperties": "Back to properties",
+			"notFound": "Property not found"
+		},
+		"rooms": {
+			"emptyTitle": "No rooms yet",
+			"emptySubtitle": "Add your first room to this property",
+			"inputPlaceholder": "Room name or number",
+			"addButton": "Add room",
+			"listTitle": "Rooms",
+			"addAnother": "Add another room",
+			"cancel": "Cancel"
 		}
 	}
 }
