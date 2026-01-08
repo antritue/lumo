@@ -138,7 +138,8 @@
 			"deleteConfirm": "Xóa nhà cho thuê",
 			"actions": "Hành động",
 			"backToProperties": "Quay lại danh sách",
-			"notFound": "Không tìm thấy nhà cho thuê"
+			"notFound": "Không tìm thấy nhà cho thuê",
+			"notFoundMessage": "Nhà cho thuê này không tồn tại hoặc đã bị xóa"
 		},
 		"rooms": {
 			"emptyTitle": "Chưa có phòng",

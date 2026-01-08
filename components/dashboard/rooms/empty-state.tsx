@@ -18,7 +18,7 @@ export function EmptyState({ propertyId }: EmptyStateProps) {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-center py-16 sm:py-24">
+		<div className="flex flex-col items-center justify-center pb-8 sm:pb-12">
 			<div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary/50 mb-6">
 				<DoorOpen className="h-10 w-10 text-muted-foreground" />
 			</div>

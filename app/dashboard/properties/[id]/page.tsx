@@ -27,7 +27,23 @@ export default function PropertyDetailPage({
 	if (!property) {
 		return (
 			<div className="max-w-4xl mx-auto py-8 px-4">
-				<p className="text-muted-foreground">{t("notFound")}</p>
+				<div className="flex flex-col items-center justify-center py-12 sm:py-16">
+					<div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary/50 mb-6">
+						<Home className="h-10 w-10 text-muted-foreground" />
+					</div>
+					<h1 className="text-2xl sm:text-3xl font-semibold text-foreground mb-2">
+						{t("notFound")}
+					</h1>
+					<p className="text-sm sm:text-base text-muted-foreground mb-8 text-center max-w-md">
+						{t("notFoundMessage")}
+					</p>
+					<Button asChild size="lg">
+						<Link href="/dashboard/properties">
+							<ArrowLeft className="mr-2 h-4 w-4" />
+							{t("backToProperties")}
+						</Link>
+					</Button>
+				</div>
 			</div>
 		);
 	}
