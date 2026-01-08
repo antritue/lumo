@@ -44,11 +44,6 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 └── public/               # Static assets
 ```
 
-### Key Folders
--   **`app/[locale]`**: The public-facing marketing site. Routes here are localized (e.g., `/en`, `/vi`).
--   **`app/dashboard`**: The core authenticated product. This is where landlords manage their properties.
--   **`components/dashboard/[feature]`**: Feature-based component folders for isolation and scalability.
-
 ---
 
 ## Local Development
@@ -89,15 +84,11 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 
 ## Styling & UI
 
-We use **Tailwind CSS 4**. All styles are defined in classes or the CSS theme.
-
--   **Global Styles**: Defined in `app/globals.css`. We use CSS variables for colors (HSL format) to support easy theming.
--   **Components**: We use `cva` (Class Variance Authority) to manage component variants (e.g., `Button` variants like `default`, `outline`, `ghost`).
--   **Design Philosophy**:
-    -   Keep it "Calm & Premium".
-    -   Use `shadow-soft` and `glass` utility classes for depth.
-    -   Avoid inline styles; use Tailwind utilities.
-    -   Use the `cn()` utility (`clsx` + `tailwind-merge`) when combining classes conditionally.
+-   **Framework**: Tailwind CSS 4. All styles in utility classes or `app/globals.css` (CSS variables for theming).
+-   **Variants**: Use `cva` (Class Variance Authority) for component variants.
+-   **Design Tone**: Keep it "Calm & Premium"—avoid visual noise.
+-   **Class Merging**: Use `cn()` utility (`clsx` + `tailwind-merge`) for conditional classes.
+-   **No Inline Styles**: Always use Tailwind utilities.
 
 ---
 
@@ -117,6 +108,16 @@ We use **Zustand** for domain state (properties, rooms, rent data). Stores live 
 
 ---
 
+## Navigation & Routing
+
+-   **Link vs useRouter**: Prefer `Link` for navigation. Use `useRouter` only for programmatic flows (after form submission, conditional redirects).
+-   **Localized Routes**: Marketing (`app/[locale]/`) uses `import { Link } from "@/lib/navigation"` (adds `/en` or `/vi`).
+-   **Non-Localized Routes**: Dashboard (`app/dashboard/`) uses `import Link from "next/link"` (no locale prefix).
+-   **Dynamic Params**: Route params are async. Unwrap with `use(params)` from React.
+-   **Server/Client Split**: Avoid unnecessary splits. Use single client component unless you need server-only logic (auth, cookies, fetching).
+
+---
+
 ## Validation, Linting & Formatting
 
 We strictly use **Biome** for both linting and formatting.
@@ -128,6 +129,27 @@ We strictly use **Biome** for both linting and formatting.
 **Common Pitfalls**:
 -   Do **not** use `console.log` in production code.
 -   Do **not** ignore lint errors without a very good reason (and a comment).
+
+---
+
+## Git Conventions
+
+-   **Branch Naming**: Always create a branch before working. Format: `prefix/description`
+    -   `feat/add-room-management`
+    -   `fix/property-card-navigation`
+    -   `docs/update-readme`
+-   **Commit Messages**: Use conventional format: `prefix: description`
+    -   `feat: add room creation flow`
+    -   `fix: resolve infinite loop in property detail`
+    -   `docs: update DEVELOPMENT.md`
+-   **Prefixes**:
+    -   `feat`: New feature
+    -   `fix`: Bug fix
+    -   `chore`: Maintenance (dependencies, configs)
+    -   `docs`: Documentation changes
+    -   `test`: Adding or updating tests
+    -   `refactor`: Code refactoring (no behavior change)
+    -   `perf`: Performance improvements
 
 ---
 
@@ -148,40 +170,16 @@ The project is built to deploy on Vercel (or any Next.js compatible host).
 -   **Utilities**: `camelCase` (e.g., `formatDate`).
 
 ### Architecture
--   **Colocation**: Keep related things close. If a component is only used in the dashboard, put it in `app/dashboard` or a `dashboard` subfolder in components.
--   **Feature-Based Organization**: Dashboard components are organized by feature (e.g., `components/dashboard/properties/`, `components/dashboard/rooms/`). Each feature folder contains all UI and logic specific to that feature.
+-   **Colocation**: Keep related things close. Component only used in dashboard? Put it in `components/dashboard/`.
+-   **Feature-Based Organization**: Dashboard components organized by feature (`properties/`, `rooms/`). Each folder contains all UI and logic for that feature.
 -   **Component Hierarchy**:
-    -   `components/ui`: Generic, reusable, unopinionated primitives (Button, Input, Card). Use direct imports.
-    -   `components/shared`: Cross-cutting components used across multiple features (Logo, ErrorDialog, DevelopmentBanner). Use direct imports.
-    -   `components/dashboard/[feature]`: Feature-specific components with business logic. Use barrel exports (`index.ts`) for cleaner imports.
--   **Single Responsibility**: Each component should have one clear job. Prefer small, composable components over large multipurpose ones.
--   **Barrel Exports for Features**: Feature folders should include an `index.ts` that exports all public components and types. This provides a clean API and shorter import paths for feature modules.
-
-### Component Design Principles
--   **Composition over Conditionals**: Prefer composing small components rather than large components with many conditional branches.
--   **State Boundaries**: Keep state at the appropriate level:
-    -   **Page-level**: Source of truth and data mutations
-    -   **Component-level**: UI-specific state (form visibility, input values)
-    -   **Shared state**: Use context or stores only when multiple features need access
--   **Name by Intent**: Component names should describe what they do, not how they do it (e.g., `EmptyState` not `IconWithForm`).
-
-### Example Feature Structure
-```
-components/dashboard/properties/
-├── index.ts                      # Barrel exports (public API)
-├── types.ts                      # Shared types
-├── empty-state.tsx               # Empty state UI
-├── create-property-form.tsx      # Form component
-├── property-card.tsx             # Individual property display
-└── property-list.tsx             # List view with add functionality
-```
-
-Each component is small, testable, and reusable. The `index.ts` provides a clean import path:
-```tsx
-import { EmptyState, PropertyList, type Property } from "@/components/dashboard/properties";
-```
-
-Adding new features (like rooms) won't require changes to existing feature folders.
+    -   `components/ui`: Generic primitives (Button, Input, Card). Direct imports.
+    -   `components/shared`: Cross-feature components (Logo, ErrorDialog). Direct imports.
+    -   `components/dashboard/[feature]`: Feature-specific with business logic. Use barrel exports (`index.ts`).
+-   **Single Responsibility**: One component, one job. Prefer small, composable components.
+-   **State Boundaries**: Domain data → stores. UI state → local to component. Page-level for source of truth.
+-   **Composition over Conditionals**: Compose small components rather than large ones with many branches.
+-   **Name by Intent**: Describe what it does, not how (`EmptyState` not `IconWithForm`).
 
 ### What NOT to do
 -   ❌ Don't add heavy libraries (e.g., lodash, moment) without discussion.
