@@ -79,7 +79,8 @@ If a feature adds complexity without removing confusion, it does not belong in L
 - Create properties (houses/buildings)
 - Create rooms within each property
 - Set monthly rent amount per room
-- Record payment status (paid / unpaid)
+- Record payment events (manually log each payment)
+- Mark payment status (paid / unpaid)
 - View payment history per room
 - See overview of all rooms and their current status
 
