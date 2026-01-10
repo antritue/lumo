@@ -7,12 +7,17 @@ interface RoomsState {
 	rooms: Room[];
 
 	// Actions
-	createRoom: (propertyId: string, name: string) => void;
-	updateRoom: (id: string, name: string) => void;
+	createRoom: (
+		propertyId: string,
+		name: string,
+		monthlyRent?: number | null,
+	) => void;
+	updateRoom: (id: string, name: string, monthlyRent?: number | null) => void;
 	deleteRoom: (id: string) => void;
 
 	// Selectors
 	getRoomsByProperty: (propertyId: string) => Room[];
+	getRoomById: (id: string) => Room | undefined;
 }
 
 export const useRoomsStore = create<RoomsState>()(
@@ -20,7 +25,7 @@ export const useRoomsStore = create<RoomsState>()(
 		(set, get) => ({
 			rooms: [],
 
-			createRoom: (propertyId, name) =>
+			createRoom: (propertyId, name, monthlyRent = null) =>
 				set((state) => ({
 					rooms: [
 						...state.rooms,
@@ -28,15 +33,22 @@ export const useRoomsStore = create<RoomsState>()(
 							id: crypto.randomUUID(),
 							propertyId,
 							name,
+							monthlyRent,
 							createdAt: new Date(),
 						},
 					],
 				})),
 
-			updateRoom: (id, name) =>
+			updateRoom: (id, name, monthlyRent) =>
 				set((state) => ({
 					rooms: state.rooms.map((room) =>
-						room.id === id ? { ...room, name } : room,
+						room.id === id
+							? {
+									...room,
+									name,
+									...(monthlyRent !== undefined && { monthlyRent }),
+								}
+							: room,
 					),
 				})),
 
@@ -47,6 +59,8 @@ export const useRoomsStore = create<RoomsState>()(
 
 			getRoomsByProperty: (propertyId) =>
 				get().rooms.filter((room) => room.propertyId === propertyId),
+
+			getRoomById: (id) => get().rooms.find((room) => room.id === id),
 		}),
 		{ name: "rooms" },
 	),

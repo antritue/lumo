@@ -146,7 +146,15 @@
 			"saveButton": "Save",
 			"deleteTitle": "Delete room?",
 			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
-			"deleteConfirm": "Delete room"
+			"deleteConfirm": "Delete room",
+			"backToProperty": "Back to property",
+			"notFound": "Room not found",
+			"notFoundMessage": "This room doesn't exist or may have been deleted",
+			"details": {
+				"title": "Room Details",
+				"monthlyRent": "Monthly Rent",
+				"notSet": "Not set"
+			}
 		}
 	}
 }
