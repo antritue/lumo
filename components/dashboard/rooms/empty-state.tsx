@@ -13,8 +13,12 @@ export function EmptyState({ propertyId }: EmptyStateProps) {
 	const t = useTranslations("app.rooms");
 	const createRoom = useRoomsStore((state) => state.createRoom);
 
-	const handleCreate = (name: string) => {
-		createRoom(propertyId, name);
+	const handleCreate = (
+		name: string,
+		monthlyRent: number | null,
+		notes: string | null,
+	) => {
+		createRoom(propertyId, name, monthlyRent, notes);
 	};
 
 	return (

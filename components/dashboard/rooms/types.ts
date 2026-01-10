@@ -3,5 +3,6 @@ export interface Room {
 	propertyId: string;
 	name: string;
 	monthlyRent: number | null;
+	notes: string | null;
 	createdAt: Date;
 }

@@ -55,8 +55,8 @@ export default function RoomDetailPage({
 						{t("backToProperty")}
 					</Link>
 				</Button>
-				{/* Room Header */}
-				<div className="flex items-center gap-3">
+
+				<div className="flex items-center gap-3 mb-8">
 					<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
 						<DoorOpen className="h-6 w-6 text-muted-foreground" />
 					</div>
@@ -65,26 +65,36 @@ export default function RoomDetailPage({
 					</h1>
 				</div>
 
-				{/* Room Details Card */}
 				<Card>
 					<CardHeader>
 						<CardTitle className="text-lg">{t("details.title")}</CardTitle>
 					</CardHeader>
-					<CardContent className="space-y-4">
-						<div className="flex justify-between items-center py-3 border-b">
-							<span className="text-sm text-muted-foreground">
-								{t("details.monthlyRent")}
-							</span>
-							<span className="text-base font-medium">
-								{room.monthlyRent
-									? new Intl.NumberFormat("en-US", {
-											style: "currency",
-											currency: "USD",
-											minimumFractionDigits: 0,
-										}).format(room.monthlyRent)
-									: t("details.notSet")}
-							</span>
-						</div>
+					<CardContent className="space-y-6">
+						{room.monthlyRent && (
+							<div className="space-y-1">
+								<p className="text-sm text-muted-foreground">
+									{t("details.monthlyRent")}
+								</p>
+								<p className="text-xl font-semibold">
+									{new Intl.NumberFormat("en-US", {
+										style: "currency",
+										currency: "USD",
+										minimumFractionDigits: 0,
+									}).format(room.monthlyRent)}
+								</p>
+							</div>
+						)}
+
+						{room.notes && (
+							<div className="space-y-2 pt-2">
+								<p className="text-sm text-muted-foreground">
+									{t("details.notes")}
+								</p>
+								<p className="text-sm leading-relaxed whitespace-pre-wrap">
+									{room.notes}
+								</p>
+							</div>
+						)}
 					</CardContent>
 				</Card>
 

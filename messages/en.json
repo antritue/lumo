@@ -136,6 +136,9 @@
 			"emptyTitle": "No rooms yet",
 			"emptySubtitle": "Add your first room to this property",
 			"inputPlaceholder": "Room name or number",
+			"rentPlaceholder": "Monthly rent",
+			"notesPlaceholder": "Notes (Service fee...)",
+			"optionalDetails": "Optional details",
 			"addButton": "Add room",
 			"listTitle": "Rooms",
 			"addAnother": "Add another room",
@@ -151,9 +154,10 @@
 			"notFound": "Room not found",
 			"notFoundMessage": "This room doesn't exist or may have been deleted",
 			"details": {
-				"title": "Room Details",
+				"title": "Room details",
 				"monthlyRent": "Monthly Rent",
-				"notSet": "Not set"
+				"notSet": "Not set",
+				"notes": "Notes"
 			}
 		}
 	}
