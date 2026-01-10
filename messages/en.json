@@ -139,7 +139,14 @@
 			"addButton": "Add room",
 			"listTitle": "Rooms",
 			"addAnother": "Add another room",
-			"cancel": "Cancel"
+			"cancel": "Cancel",
+			"edit": "Edit",
+			"delete": "Delete",
+			"editTitle": "Edit room",
+			"saveButton": "Save",
+			"deleteTitle": "Delete room?",
+			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
+			"deleteConfirm": "Delete room"
 		}
 	}
 }

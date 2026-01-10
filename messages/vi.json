@@ -139,7 +139,14 @@
 			"addButton": "Thêm phòng",
 			"listTitle": "Phòng",
 			"addAnother": "Thêm phòng khác",
-			"cancel": "Hủy"
+			"cancel": "Hủy",
+			"edit": "Chỉnh sửa",
+			"delete": "Xóa",
+			"editTitle": "Chỉnh sửa phòng",
+			"saveButton": "Lưu",
+			"deleteTitle": "Xóa phòng?",
+			"deleteMessage": "Thao tác này sẽ xóa vĩnh viễn \"{name}\". Không thể hoàn tác.",
+			"deleteConfirm": "Xóa phòng"
 		}
 	}
 }
