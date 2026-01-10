@@ -146,7 +146,15 @@
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa phòng?",
 			"deleteMessage": "Thao tác này sẽ xóa vĩnh viễn \"{name}\". Không thể hoàn tác.",
-			"deleteConfirm": "Xóa phòng"
+			"deleteConfirm": "Xóa phòng",
+			"backToProperty": "Quay lại nhà cho thuê",
+			"notFound": "Không tìm thấy phòng",
+			"notFoundMessage": "Phòng này không tồn tại hoặc đã bị xóa",
+			"details": {
+				"title": "Chi tiết phòng",
+				"monthlyRent": "Tiền thuê hàng tháng",
+				"notSet": "Chưa thiết lập"
+			}
 		}
 	}
 }
