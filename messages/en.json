@@ -1,7 +1,7 @@
 {
 	"metadata": {
 		"title": "Lumo - Simple Rent Tracking",
-		"description": "Lumo helps independent landlords stay organized by tracking rent, rooms, and tenants in one simple app. No spreadsheets, no stress.",
+		"description": "Lumo gives independent landlords clear answers about rent payments. Track rooms and rent status without spreadsheets or stress.",
 		"keywords": "rent tracking, landlord app, property management, independent landlord, rent reminder"
 	},
 	"header": {
@@ -12,20 +12,20 @@
 		"menu": "Menu"
 	},
 	"hero": {
-		"badge": "Peace of mind for property owners",
+		"badge": "Clear rent payment tracking",
 		"headline": "Rent tracking, made simple",
-		"subtext": "Lumo helps you stay organized. No spreadsheets, no stress.\nTrack rooms, payments, and tenants in one calm place.",
+		"subtext": "Lumo gives you clear answers about rent payments. No spreadsheets, no stress.\nTrack rooms and payment status in one calm place.",
 		"cta": "Get Early Access",
 		"launchApp": "Launch App",
 		"preview": "App Interface Preview"
 	},
 	"features": {
 		"title": "Everything you need, nothing you don't",
-		"subtitle": "Simple tools designed for managing your rentals",
+		"subtitle": "Tools designed for tracking your rent",
 		"items": [
 			{
-				"title": "Track rooms & tenants",
-				"description": "See all your rooms and who's renting them in one simple view"
+				"title": "Track rooms & rent status",
+				"description": "See all your rooms and their payment status at a glance"
 			},
 			{
 				"title": "See payment status clearly",
@@ -33,7 +33,7 @@
 			},
 			{
 				"title": "Built for you, not companies",
-				"description": "Designed for property owners, not property management companies"
+				"description": "Designed for independent property owners who track rent personally"
 			}
 		]
 	},
@@ -44,32 +44,23 @@
 		"tiers": {
 			"free": {
 				"name": "Free",
-				"description": "Try the basics",
+				"description": "Track up to 5 rooms",
 				"price": "$0",
-				"features": [
-					"Track up to 5 rooms",
-					"Basic payment tracking",
-					"Simple dashboard"
-				],
+				"features": [],
 				"buttonText": "Get Started Free"
 			},
 			"pro": {
 				"name": "Pro",
-				"description": "Unlimited rooms, future features",
+				"description": "Unlimited rooms",
 				"price": "—",
-				"features": [
-					"Unlimited rooms",
-					"Payment reminders",
-					"Future updates & new features",
-					"Priority support"
-				],
+				"features": [],
 				"buttonText": "Join Waitlist"
 			}
 		}
 	},
 	"problems": {
 		"title": "We understand your challenges",
-		"subtitle": "Managing rentals shouldn't feel overwhelming",
+		"subtitle": "Tracking rent shouldn't be confusing",
 		"items": [
 			{
 				"title": "Forgetting rent dates",
@@ -85,13 +76,13 @@
 			}
 		],
 		"solution": {
-			"title": "There's a simpler way",
-			"description": "Lumo is purpose-built for individual property owners. It's calm, simple, and helps you stay on top of your rentals without the complexity"
+			"title": "There's a clearer way",
+			"description": "Lumo is purpose-built for independent property owners. It's calm, simple, and helps you know where things stand without the complexity"
 		}
 	},
 	"cta": {
-		"title": "Ready to simplify your rental tracking?",
-		"subtitle": "Join property owners who are leaving spreadsheets behind",
+		"title": "Track rent with clarity",
+		"subtitle": "No spreadsheets, no stress",
 		"button": "Get Early Access",
 		"launchApp": "Launch App"
 	},
@@ -114,7 +105,7 @@
 	"app": {
 		"metadata": {
 			"title": "Lumo - Dashboard",
-			"description": "Manage your properties, rooms, and tenants in one simple dashboard"
+			"description": "Track your properties, rooms, and rent status in one dashboard"
 		},
 		"sidebar": {
 			"properties": "Properties"
