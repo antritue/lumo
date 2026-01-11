@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,8 @@ export function CreateRoomForm({
 	showCancel = false,
 }: CreateRoomFormProps) {
 	const t = useTranslations("app.rooms");
+	const locale = useLocale();
+	const currency = locale === "vi" ? "VND" : "USD";
 
 	const [roomName, setRoomName] = useState("");
 	const [monthlyRent, setMonthlyRent] = useState("");
@@ -70,15 +72,20 @@ export function CreateRoomForm({
 					<div className="h-px flex-1 bg-border" />
 				</div>
 
-				<Input
-					type="number"
-					value={monthlyRent}
-					onChange={(e) => setMonthlyRent(e.target.value)}
-					placeholder={t("rentPlaceholder")}
-					className="text-base h-12"
-					min="0"
-					step="0.01"
-				/>
+				<div className="relative">
+					<Input
+						type="number"
+						value={monthlyRent}
+						onChange={(e) => setMonthlyRent(e.target.value)}
+						placeholder={t("rentPlaceholder")}
+						className="text-base h-12 pr-16"
+						min="0"
+						step="0.01"
+					/>
+					<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+						{currency}
+					</span>
+				</div>
 
 				<Textarea
 					value={notes}
