@@ -24,7 +24,6 @@ export const usePropertiesStore = create<PropertiesState>()(
 						{
 							id: crypto.randomUUID(),
 							name,
-							createdAt: new Date(),
 						},
 					],
 				})),
