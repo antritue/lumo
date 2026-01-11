@@ -2,7 +2,7 @@
 
 import { ArrowLeft, DoorOpen } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { use } from "react";
 import { usePropertiesStore } from "@/components/dashboard/properties";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
@@ -16,6 +16,7 @@ export default function RoomDetailPage({
 }) {
 	const { id, roomId } = use(params);
 	const t = useTranslations("app.rooms");
+	const locale = useLocale();
 
 	const property = usePropertiesStore((state) =>
 		state.properties.find((p) => p.id === id),
@@ -76,9 +77,9 @@ export default function RoomDetailPage({
 									{t("details.monthlyRent")}
 								</p>
 								<p className="text-xl font-semibold">
-									{new Intl.NumberFormat("en-US", {
+									{new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
 										style: "currency",
-										currency: "USD",
+										currency: locale === "vi" ? "VND" : "USD",
 										minimumFractionDigits: 0,
 									}).format(room.monthlyRent)}
 								</p>
