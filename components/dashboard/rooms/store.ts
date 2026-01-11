@@ -11,8 +11,14 @@ interface RoomsState {
 		propertyId: string,
 		name: string,
 		monthlyRent?: number | null,
+		notes?: string | null,
 	) => void;
-	updateRoom: (id: string, name: string, monthlyRent?: number | null) => void;
+	updateRoom: (
+		id: string,
+		name: string,
+		monthlyRent?: number | null,
+		notes?: string | null,
+	) => void;
 	deleteRoom: (id: string) => void;
 
 	// Selectors
@@ -25,7 +31,7 @@ export const useRoomsStore = create<RoomsState>()(
 		(set, get) => ({
 			rooms: [],
 
-			createRoom: (propertyId, name, monthlyRent = null) =>
+			createRoom: (propertyId, name, monthlyRent = null, notes = null) =>
 				set((state) => ({
 					rooms: [
 						...state.rooms,
@@ -34,12 +40,13 @@ export const useRoomsStore = create<RoomsState>()(
 							propertyId,
 							name,
 							monthlyRent,
+							notes,
 							createdAt: new Date(),
 						},
 					],
 				})),
 
-			updateRoom: (id, name, monthlyRent) =>
+			updateRoom: (id, name, monthlyRent, notes) =>
 				set((state) => ({
 					rooms: state.rooms.map((room) =>
 						room.id === id
@@ -47,6 +54,7 @@ export const useRoomsStore = create<RoomsState>()(
 									...room,
 									name,
 									...(monthlyRent !== undefined && { monthlyRent }),
+									...(notes !== undefined && { notes }),
 								}
 							: room,
 					),

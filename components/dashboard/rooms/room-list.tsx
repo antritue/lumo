@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CreateRoomForm } from "./create-room-form";
 import { DeleteRoomDialog } from "./delete-room-dialog";
@@ -25,9 +25,21 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 	const [isAdding, setIsAdding] = useState(false);
 	const [editingRoom, setEditingRoom] = useState<Room | null>(null);
 	const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
+	const formRef = useRef<HTMLDivElement>(null);
 
-	const handleCreate = (name: string) => {
-		createRoom(propertyId, name);
+	// Scroll to form when it becomes visible
+	useEffect(() => {
+		if (isAdding && formRef.current) {
+			formRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+		}
+	}, [isAdding]);
+
+	const handleCreate = (
+		name: string,
+		monthlyRent: number | null,
+		notes: string | null,
+	) => {
+		createRoom(propertyId, name, monthlyRent, notes);
 		setIsAdding(false);
 	};
 
@@ -35,8 +47,13 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 		setEditingRoom(room);
 	};
 
-	const handleSave = (id: string, name: string) => {
-		updateRoom(id, name);
+	const handleSave = (
+		id: string,
+		name: string,
+		monthlyRent: number | null,
+		notes: string | null,
+	) => {
+		updateRoom(id, name, monthlyRent, notes);
 		setEditingRoom(null);
 	};
 
@@ -50,7 +67,7 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6" ref={formRef}>
 			<div className="flex items-center justify-between">
 				<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
 					{t("listTitle")} ({rooms.length})
@@ -79,11 +96,13 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 					{t("addAnother")}
 				</Button>
 			) : (
-				<CreateRoomForm
-					onSubmit={handleCreate}
-					onCancel={() => setIsAdding(false)}
-					showCancel
-				/>
+				<div ref={formRef}>
+					<CreateRoomForm
+						onSubmit={handleCreate}
+						onCancel={() => setIsAdding(false)}
+						showCancel
+					/>
+				</div>
 			)}
 
 			<EditRoomDialog
