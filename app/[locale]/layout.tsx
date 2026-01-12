@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
+import { LangUpdater } from "@/components/shared/lang-updater";
 import { type Locale, locales } from "@/lib/constants";
 
 export async function generateMetadata({
@@ -20,6 +21,16 @@ export async function generateMetadata({
 		keywords: t("keywords")
 			.split(",")
 			.map((k) => k.trim()),
+		// icon.png moved to /public to avoid Turbopack build crash with duplicate file names (icon.png, icon.svg)
+		// https://github.com/vercel/next.js/discussions/85232#discussioncomment-14764248
+		icons: {
+			icon: [
+				{ url: "/icon.svg", type: "image/svg+xml" },
+				{ url: "/icon.png", sizes: "32x32", type: "image/png" },
+			],
+			shortcut: "/favicon.ico",
+			apple: "/apple-icon.png",
+		},
 		alternates: {
 			canonical: `${baseUrl}/${locale}`,
 			languages: {
@@ -65,6 +76,7 @@ export default async function LocaleLayout({
 
 	return (
 		<NextIntlClientProvider messages={messages}>
+			<LangUpdater locale={locale} />
 			{children}
 		</NextIntlClientProvider>
 	);
