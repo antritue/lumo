@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import { getAppLocale } from "@/lib/app-locale";
 
 const inter = Inter({
 	variable: "--font-inter",
@@ -8,13 +9,15 @@ const inter = Inter({
 	display: "swap",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const locale = await getAppLocale();
+
 	return (
-		<html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+		<html lang={locale} suppressHydrationWarning data-scroll-behavior="smooth">
 			<body
 				className={cn(
 					"min-h-screen bg-background font-sans antialiased",
