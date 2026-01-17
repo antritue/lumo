@@ -159,6 +159,16 @@
 				"notSet": "Not set",
 				"notes": "Notes"
 			}
+		},
+		"rentPayments": {
+			"addButton": "Add payment record",
+			"listTitle": "Payment Records",
+			"periodLabel": "Payment Period",
+			"amountLabel": "Amount",
+			"amountPlaceholder": "Enter amount",
+			"saveButton": "Save record",
+			"cancel": "Cancel",
+			"emptyMessage": "No payment records yet"
 		}
 	}
 }
