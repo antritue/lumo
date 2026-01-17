@@ -159,6 +159,16 @@
 				"notSet": "Chưa thiết lập",
 				"notes": "Ghi chú"
 			}
+		},
+		"rentPayments": {
+			"addButton": "Thêm ghi nhận thanh toán",
+			"listTitle": "Ghi nhận thanh toán",
+			"periodLabel": "Kỳ thanh toán",
+			"amountLabel": "Số tiền",
+			"amountPlaceholder": "Nhập số tiền",
+			"saveButton": "Lưu ghi nhận",
+			"cancel": "Hủy",
+			"emptyMessage": "Chưa có ghi nhận thanh toán nào"
 		}
 	}
 }
