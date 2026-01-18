@@ -17,16 +17,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function RoomDetailPage({
 	params,
 }: {
-	params: Promise<{ id: string; roomId: string }>;
+	params: Promise<{ roomId: string }>;
 }) {
-	const { id, roomId } = use(params);
+	const { roomId } = use(params);
 	const t = useTranslations("app");
 	const locale = useLocale();
 
-	const property = usePropertiesStore((state) =>
-		state.properties.find((p) => p.id === id),
-	);
 	const room = useRoomsStore((state) => state.getRoomById(roomId));
+	const property = usePropertiesStore((state) =>
+		state.properties.find((p) => p.id === room?.propertyId),
+	);
 	const allRentPayments = useRentPaymentsStore((state) => state.rentPayments);
 	const rentPayments = allRentPayments
 		.filter((payment) => payment.roomId === roomId)
@@ -37,7 +37,7 @@ export default function RoomDetailPage({
 
 	const [isAddingPayment, setIsAddingPayment] = useState(false);
 
-	if (!property || !room) {
+	if (!room) {
 		return (
 			<div className="max-w-4xl mx-auto py-8 px-4">
 				<div className="flex flex-col items-center justify-center py-12 sm:py-16">
@@ -51,9 +51,9 @@ export default function RoomDetailPage({
 						{t("rooms.notFoundMessage")}
 					</p>
 					<Button asChild size="lg">
-						<Link href={`/dashboard/properties/${id}`}>
+						<Link href="/dashboard/properties">
 							<ArrowLeft className="mr-2 h-4 w-4" />
-							{t("rooms.backToProperty")}
+							{t("properties.backToProperties")}
 						</Link>
 					</Button>
 				</div>
@@ -70,19 +70,26 @@ export default function RoomDetailPage({
 		<div className="max-w-4xl mx-auto py-8 px-4">
 			<div className="space-y-6">
 				<Button variant="ghost" asChild className="mb-4 -ml-3">
-					<Link href={`/dashboard/properties/${id}`}>
+					<Link href="/dashboard/properties">
 						<ArrowLeft className="mr-2 h-4 w-4" />
-						{t("rooms.backToProperty")}
+						{t("properties.backToProperties")}
 					</Link>
 				</Button>
 
-				<div className="flex items-center gap-3 mb-8">
-					<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-						<DoorOpen className="h-6 w-6 text-muted-foreground" />
+				<div className="space-y-2">
+					<div className="flex items-center gap-3">
+						<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+							<DoorOpen className="h-6 w-6 text-muted-foreground" />
+						</div>
+						<h1 className="text-3xl sm:text-4xl font-semibold text-foreground">
+							{room.name}
+						</h1>
 					</div>
-					<h1 className="text-3xl sm:text-4xl font-semibold text-foreground">
-						{room.name}
-					</h1>
+					{property && (
+						<p className="text-sm text-muted-foreground ml-[60px]">
+							{property.name}
+						</p>
+					)}
 				</div>
 
 				<Card>

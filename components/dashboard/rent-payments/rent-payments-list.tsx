@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils";
 import type { PaymentRecord } from "./types";
 
 interface RentPaymentsListProps {
@@ -35,14 +36,6 @@ export function RentPaymentsList({ payments }: RentPaymentsListProps) {
 		}).format(date);
 	};
 
-	const formatAmount = (amount: number) => {
-		return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
-			style: "currency",
-			currency: locale === "vi" ? "VND" : "USD",
-			minimumFractionDigits: 0,
-		}).format(amount);
-	};
-
 	return (
 		<div className="space-y-3">
 			{payments.map((payment) => (
@@ -55,7 +48,7 @@ export function RentPaymentsList({ payments }: RentPaymentsListProps) {
 								</p>
 							</div>
 							<p className="text-xl font-semibold text-foreground">
-								{formatAmount(payment.amount)}
+								{formatCurrency(payment.amount, locale)}
 							</p>
 						</div>
 					</CardContent>
