@@ -129,8 +129,7 @@
 			"deleteConfirm": "Delete property",
 			"actions": "Actions",
 			"backToProperties": "Back to properties",
-			"notFound": "Property not found",
-			"notFoundMessage": "This property doesn't exist or may have been deleted"
+			"roomCount": "{count, plural, =0 {no rooms} =1 {1 room} other {# rooms}}"
 		},
 		"rooms": {
 			"emptyTitle": "No rooms yet",
@@ -140,7 +139,6 @@
 			"notesPlaceholder": "Notes (Service fee...)",
 			"optionalDetails": "Optional details",
 			"addButton": "Add room",
-			"listTitle": "Rooms",
 			"addAnother": "Add another room",
 			"cancel": "Cancel",
 			"edit": "Edit",
@@ -150,7 +148,7 @@
 			"deleteTitle": "Delete room?",
 			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
 			"deleteConfirm": "Delete room",
-			"backToProperty": "Back to property",
+			"backToProperties": "Back to properties",
 			"notFound": "Room not found",
 			"notFoundMessage": "This room doesn't exist or may have been deleted",
 			"details": {

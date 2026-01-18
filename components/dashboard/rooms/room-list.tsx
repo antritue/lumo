@@ -1,13 +1,13 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { DoorOpen, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CreateRoomForm } from "./create-room-form";
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import { EditRoomDialog } from "./edit-room-dialog";
-import { RoomCard } from "./room-card";
+import { RoomItem } from "./room-item";
 import { useRoomsStore } from "./store";
 import type { Room } from "./types";
 
@@ -25,14 +25,6 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 	const [isAdding, setIsAdding] = useState(false);
 	const [editingRoom, setEditingRoom] = useState<Room | null>(null);
 	const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
-	const formRef = useRef<HTMLDivElement>(null);
-
-	// Scroll to form when it becomes visible
-	useEffect(() => {
-		if (isAdding && formRef.current) {
-			formRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-		}
-	}, [isAdding]);
 
 	const handleCreate = (
 		name: string,
@@ -66,37 +58,52 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 		setDeletingRoom(null);
 	};
 
+	// Empty state: no rooms yet
+	if (rooms.length === 0 && !isAdding) {
+		return (
+			<div className="py-6 space-y-4">
+				<div className="flex flex-col items-center justify-center py-4">
+					<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/50 mb-3">
+						<DoorOpen className="h-6 w-6 text-muted-foreground" />
+					</div>
+					<p className="text-sm text-muted-foreground mb-4 text-center">
+						{t("emptySubtitle")}
+					</p>
+				</div>
+				<CreateRoomForm onSubmit={handleCreate} />
+			</div>
+		);
+	}
+
 	return (
-		<div className="space-y-6" ref={formRef}>
-			<div className="flex items-center justify-between">
-				<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
-					{t("listTitle")} ({rooms.length})
-				</h2>
-			</div>
+		<div className="space-y-3">
+			{/* Room list */}
+			{rooms.length > 0 && (
+				<div className="space-y-2">
+					{rooms.map((room) => (
+						<RoomItem
+							key={room.id}
+							room={room}
+							onEdit={handleEdit}
+							onDelete={handleDelete}
+						/>
+					))}
+				</div>
+			)}
 
-			<div className="grid gap-4">
-				{rooms.map((room) => (
-					<RoomCard
-						key={room.id}
-						room={room}
-						onEdit={handleEdit}
-						onDelete={handleDelete}
-					/>
-				))}
-			</div>
-
+			{/* Add room section */}
 			{!isAdding ? (
 				<Button
 					onClick={() => setIsAdding(true)}
-					variant="outline"
-					size="lg"
-					className="w-full"
+					size="sm"
+					variant="ghost"
+					className="w-full border border-dashed border-border/50 hover:border-border hover:bg-muted/30"
 				>
-					<Plus className="mr-2" />
-					{t("addAnother")}
+					<Plus className="mr-2 h-4 w-4" />
+					{rooms.length === 0 ? t("addButton") : t("addAnother")}
 				</Button>
 			) : (
-				<div ref={formRef}>
+				<div className="pt-2">
 					<CreateRoomForm
 						onSubmit={handleCreate}
 						onCancel={() => setIsAdding(false)}
@@ -105,6 +112,7 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 				</div>
 			)}
 
+			{/* Edit and Delete Dialogs */}
 			<EditRoomDialog
 				room={editingRoom}
 				open={!!editingRoom}

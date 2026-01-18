@@ -52,7 +52,6 @@ export function PropertyList() {
 				{!isAdding ? (
 					<Button
 						onClick={() => setIsAdding(true)}
-						variant="outline"
 						size="lg"
 						className="w-full"
 					>
