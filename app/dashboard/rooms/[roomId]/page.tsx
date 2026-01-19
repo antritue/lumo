@@ -1,15 +1,15 @@
 "use client";
 
-import { ArrowLeft, DoorOpen, Plus } from "lucide-react";
+import { ArrowLeft, DoorOpen, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { use, useState } from "react";
-import { usePropertiesStore } from "@/components/dashboard/properties";
 import {
 	CreateRentPaymentForm,
 	RentPaymentsList,
 	useRentPaymentsStore,
 } from "@/components/dashboard/rent-payments";
+import { DeleteRoomDialog, EditRoomDialog } from "@/components/dashboard/rooms";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,9 +24,7 @@ export default function RoomDetailPage({
 	const locale = useLocale();
 
 	const room = useRoomsStore((state) => state.getRoomById(roomId));
-	const property = usePropertiesStore((state) =>
-		state.properties.find((p) => p.id === room?.propertyId),
-	);
+
 	const allRentPayments = useRentPaymentsStore((state) => state.rentPayments);
 	const rentPayments = allRentPayments
 		.filter((payment) => payment.roomId === roomId)
@@ -34,8 +32,12 @@ export default function RoomDetailPage({
 	const createRentPayment = useRentPaymentsStore(
 		(state) => state.createRentPayment,
 	);
+	const updateRoom = useRoomsStore((state) => state.updateRoom);
+	const deleteRoom = useRoomsStore((state) => state.deleteRoom);
 
 	const [isAddingPayment, setIsAddingPayment] = useState(false);
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
 	if (!room) {
 		return (
@@ -66,6 +68,23 @@ export default function RoomDetailPage({
 		setIsAddingPayment(false);
 	};
 
+	const handleSave = (
+		id: string,
+		name: string,
+		monthlyRent: number | null,
+		notes: string | null,
+	) => {
+		updateRoom(id, name, monthlyRent, notes);
+		setIsEditDialogOpen(false);
+	};
+
+	const handleConfirmDelete = (id: string) => {
+		deleteRoom(id);
+		setIsDeleteDialogOpen(false);
+		// Redirect to properties page after delete
+		window.location.href = "/dashboard/properties";
+	};
+
 	return (
 		<div className="max-w-4xl mx-auto py-8 px-4">
 			<div className="space-y-6">
@@ -77,19 +96,36 @@ export default function RoomDetailPage({
 				</Button>
 
 				<div className="space-y-2">
-					<div className="flex items-center gap-3">
-						<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-							<DoorOpen className="h-6 w-6 text-muted-foreground" />
+					<div className="flex items-center justify-between gap-3">
+						<div className="flex items-center gap-3 flex-1 min-w-0">
+							<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+								<DoorOpen className="h-6 w-6 text-muted-foreground" />
+							</div>
+							<h1 className="text-3xl sm:text-4xl font-semibold text-foreground">
+								{room.name}
+							</h1>
 						</div>
-						<h1 className="text-3xl sm:text-4xl font-semibold text-foreground">
-							{room.name}
-						</h1>
+						<div className="flex items-center gap-2">
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setIsEditDialogOpen(true)}
+								aria-label={t("rooms.edit")}
+								className="h-9 w-9"
+							>
+								<Pencil className="h-4 w-4" />
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setIsDeleteDialogOpen(true)}
+								aria-label={t("rooms.delete")}
+								className="h-9 w-9 text-muted-foreground hover:text-destructive"
+							>
+								<Trash2 className="h-4 w-4" />
+							</Button>
+						</div>
 					</div>
-					{property && (
-						<p className="text-sm text-muted-foreground ml-[60px]">
-							{property.name}
-						</p>
-					)}
 				</div>
 
 				<Card>
@@ -155,6 +191,21 @@ export default function RoomDetailPage({
 					</h2>
 					<RentPaymentsList payments={rentPayments} />
 				</div>
+
+				{/* Edit and Delete Dialogs */}
+				<EditRoomDialog
+					room={room}
+					open={isEditDialogOpen}
+					onOpenChange={setIsEditDialogOpen}
+					onSave={handleSave}
+				/>
+
+				<DeleteRoomDialog
+					room={room}
+					open={isDeleteDialogOpen}
+					onOpenChange={setIsDeleteDialogOpen}
+					onDelete={handleConfirmDelete}
+				/>
 			</div>
 		</div>
 	);
