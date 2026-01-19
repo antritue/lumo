@@ -61,16 +61,30 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 	// Empty state: no rooms yet
 	if (rooms.length === 0 && !isAdding) {
 		return (
-			<div className="py-6 space-y-4">
-				<div className="flex flex-col items-center justify-center py-4">
-					<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/50 mb-3">
-						<DoorOpen className="h-6 w-6 text-muted-foreground" />
-					</div>
-					<p className="text-sm text-muted-foreground mb-4 text-center">
-						{t("emptySubtitle")}
-					</p>
+			<div className="flex flex-col items-center justify-center">
+				<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary mb-3">
+					<DoorOpen className="h-6 w-6 text-muted-foreground" />
 				</div>
-				<CreateRoomForm onSubmit={handleCreate} />
+				<p className="text-sm text-muted-foreground mb-4 text-center">
+					{t("emptySubtitle")}
+				</p>
+				<Button onClick={() => setIsAdding(true)} size="lg">
+					<Plus className="mr-2 h-5 w-5" />
+					{t("addButton")}
+				</Button>
+			</div>
+		);
+	}
+
+	// Empty state with form visible
+	if (rooms.length === 0 && isAdding) {
+		return (
+			<div className="pt-2">
+				<CreateRoomForm
+					onSubmit={handleCreate}
+					onCancel={() => setIsAdding(false)}
+					showCancel
+				/>
 			</div>
 		);
 	}
@@ -93,15 +107,17 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 
 			{/* Add room section */}
 			{!isAdding ? (
-				<Button
-					onClick={() => setIsAdding(true)}
-					size="sm"
-					variant="ghost"
-					className="w-full border border-dashed border-border/50 hover:border-border hover:bg-muted/30"
-				>
-					<Plus className="mr-2 h-4 w-4" />
-					{rooms.length === 0 ? t("addButton") : t("addAnother")}
-				</Button>
+				<div className="flex justify-center">
+					<Button
+						onClick={() => setIsAdding(true)}
+						size="default"
+						variant="secondary"
+						className="border border-dashed border-border/50 hover:border-border hover:bg-muted/30"
+					>
+						<Plus className="mr-2 h-4 w-4" />
+						{rooms.length === 0 ? t("addButton") : t("addAnother")}
+					</Button>
+				</div>
 			) : (
 				<div className="pt-2">
 					<CreateRoomForm

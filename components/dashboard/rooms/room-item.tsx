@@ -31,7 +31,7 @@ export function RoomItem({ room, onEdit, onDelete }: RoomItemProps) {
 
 	return (
 		<Link href={`/dashboard/rooms/${room.id}`} className="block">
-			<div className="flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-background hover:bg-muted/90 transition-colors group">
+			<div className="flex items-center gap-3 p-3 rounded-lg border border-border/40 bg-background hover:bg-muted/50 transition-colors group">
 				<div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary/50 flex-shrink-0">
 					<DoorOpen className="h-4 w-4 text-muted-foreground" />
 				</div>
@@ -49,7 +49,7 @@ export function RoomItem({ room, onEdit, onDelete }: RoomItemProps) {
 						size="icon"
 						onClick={handleEdit}
 						aria-label={t("edit")}
-						className="h-8 w-8 hover:bg-accent"
+						className="h-8 w-8 hover:bg-muted"
 					>
 						<Pencil className="h-3.5 w-3.5" />
 					</Button>
@@ -58,7 +58,7 @@ export function RoomItem({ room, onEdit, onDelete }: RoomItemProps) {
 						size="icon"
 						onClick={handleDelete}
 						aria-label={t("delete")}
-						className="h-8 w-8 hover:bg-accent"
+						className="h-8 w-8 hover:bg-muted hover:text-destructive"
 					>
 						<Trash2 className="h-3.5 w-3.5" />
 					</Button>
