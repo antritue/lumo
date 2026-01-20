@@ -49,7 +49,13 @@ export function PropertyList() {
 					))}
 				</div>
 
-				{!isAdding ? (
+				{isAdding ? (
+					<CreatePropertyForm
+						onSubmit={handleCreate}
+						onCancel={() => setIsAdding(false)}
+						showCancel
+					/>
+				) : (
 					<Button
 						onClick={() => setIsAdding(true)}
 						size="lg"
@@ -58,12 +64,6 @@ export function PropertyList() {
 						<Plus className="mr-2" />
 						{t("addAnother")}
 					</Button>
-				) : (
-					<CreatePropertyForm
-						onSubmit={handleCreate}
-						onCancel={() => setIsAdding(false)}
-						showCancel
-					/>
 				)}
 			</div>
 
