@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
@@ -50,6 +51,9 @@ export function EditPropertyDialog({
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>{t("editTitle")}</DialogTitle>
+					<DialogDescription className="sr-only">
+						{t("editTitle")}
+					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit} className="space-y-4">
