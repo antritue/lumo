@@ -153,6 +153,28 @@ We strictly use **Biome** for both linting and formatting.
 
 ---
 
+## Testing
+
+We use **Vitest** with Testing Library. Tests are co-located with components (`component.test.tsx`).
+
+-   **Render Helper**: Use `renderWithProviders()` from `test/render.tsx` (includes i18n)
+-   **User Events**: Use `@testing-library/user-event` for interactions
+-   **Query Priority**: `getByRole()` > `getByPlaceholderText()` > `getByText()`
+-   **Text Matching**: Use regex for i18n safety: `/add property/i` (not exact strings)
+-   **Organization**: Group tests with nested `describe` blocks for 10+ tests or 3+ feature areas
+
+**What to Test**:
+-   ✅ User-visible behavior and workflows
+-   ✅ Validation rules and error states
+-   ✅ Store operations
+
+**What NOT to Test**:
+-   ❌ Implementation details
+-   ❌ Third-party internals
+-   ❌ Redundant scenarios
+
+---
+
 ## Deployment
 
 The project is built to deploy on Vercel (or any Next.js compatible host).
