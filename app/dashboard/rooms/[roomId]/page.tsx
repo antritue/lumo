@@ -4,8 +4,11 @@ import { ArrowLeft, DoorOpen, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { use, useState } from "react";
+import type { PaymentRecord } from "@/components/dashboard/rent-payments";
 import {
 	AddRentPaymentDialog,
+	DeleteRentPaymentDialog,
+	EditRentPaymentDialog,
 	RentPaymentsList,
 	useRentPaymentsStore,
 } from "@/components/dashboard/rent-payments";
@@ -32,10 +35,22 @@ export default function RoomDetailPage({
 	const createRentPayment = useRentPaymentsStore(
 		(state) => state.createRentPayment,
 	);
+	const updateRentPayment = useRentPaymentsStore(
+		(state) => state.updateRentPayment,
+	);
+	const deleteRentPayment = useRentPaymentsStore(
+		(state) => state.deleteRentPayment,
+	);
 	const updateRoom = useRoomsStore((state) => state.updateRoom);
 	const deleteRoom = useRoomsStore((state) => state.deleteRoom);
 
 	const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
+	const [isEditPaymentDialogOpen, setIsEditPaymentDialogOpen] = useState(false);
+	const [isDeletePaymentDialogOpen, setIsDeletePaymentDialogOpen] =
+		useState(false);
+	const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(
+		null,
+	);
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -66,6 +81,28 @@ export default function RoomDetailPage({
 	const handleCreatePayment = (period: string, amount: number) => {
 		createRentPayment(roomId, period, amount);
 		setIsAddPaymentDialogOpen(false);
+	};
+
+	const handleEditPayment = (payment: PaymentRecord) => {
+		setSelectedPayment(payment);
+		setIsEditPaymentDialogOpen(true);
+	};
+
+	const handleSavePayment = (id: string, period: string, amount: number) => {
+		updateRentPayment(id, period, amount);
+		setIsEditPaymentDialogOpen(false);
+		setSelectedPayment(null);
+	};
+
+	const handleDeletePayment = (payment: PaymentRecord) => {
+		setSelectedPayment(payment);
+		setIsDeletePaymentDialogOpen(true);
+	};
+
+	const handleConfirmDeletePayment = (id: string) => {
+		deleteRentPayment(id);
+		setIsDeletePaymentDialogOpen(false);
+		setSelectedPayment(null);
 	};
 
 	const handleSave = (
@@ -179,7 +216,11 @@ export default function RoomDetailPage({
 						</Button>
 					</div>
 
-					<RentPaymentsList payments={rentPayments} />
+					<RentPaymentsList
+						payments={rentPayments}
+						onEdit={handleEditPayment}
+						onDelete={handleDeletePayment}
+					/>
 				</div>
 
 				{/* Dialogs */}
@@ -189,6 +230,24 @@ export default function RoomDetailPage({
 					onSubmit={handleCreatePayment}
 					defaultAmount={room.monthlyRent}
 				/>
+
+				{selectedPayment && (
+					<>
+						<EditRentPaymentDialog
+							payment={selectedPayment}
+							open={isEditPaymentDialogOpen}
+							onOpenChange={setIsEditPaymentDialogOpen}
+							onSave={handleSavePayment}
+						/>
+
+						<DeleteRentPaymentDialog
+							payment={selectedPayment}
+							open={isDeletePaymentDialogOpen}
+							onOpenChange={setIsDeletePaymentDialogOpen}
+							onConfirm={handleConfirmDeletePayment}
+						/>
+					</>
+				)}
 
 				<EditRoomDialog
 					room={room}

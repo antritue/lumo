@@ -166,7 +166,20 @@
 			"amountPlaceholder": "Nhập số tiền",
 			"saveButton": "Lưu ghi nhận",
 			"cancel": "Hủy",
-			"emptyMessage": "Chưa có ghi nhận thanh toán nào"
+			"emptyMessage": "Chưa có ghi nhận thanh toán nào",
+			"edit": "Chỉnh sửa",
+			"delete": "Xóa",
+			"editTitle": "Chỉnh sửa ghi nhận thanh toán",
+			"editDescription": "Cập nhật kỳ thanh toán hoặc số tiền",
+			"deleteTitle": "Xóa ghi nhận thanh toán?",
+			"deleteDescription": "Thao tác này sẽ xóa vĩnh viễn ghi nhận thanh toán. Không thể hoàn tác.",
+			"deleteConfirm": "Xóa ghi nhận",
+			"form": {
+				"period": "Kỳ thanh toán",
+				"amount": "Số tiền",
+				"cancel": "Hủy",
+				"save": "Lưu"
+			}
 		}
 	}
 }

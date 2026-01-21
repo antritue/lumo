@@ -33,6 +33,113 @@ describe("RentPaymentsStore", () => {
 		});
 	});
 
+	describe("updateRentPayment", () => {
+		it("updates payment period and amount", () => {
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
+
+			const { rentPayments } = useRentPaymentsStore.getState();
+			const paymentId = rentPayments[0].id;
+
+			useRentPaymentsStore
+				.getState()
+				.updateRentPayment(paymentId, "2025-04", 1500);
+
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toHaveLength(1);
+			expect(updatedPayments[0].id).toBe(paymentId);
+			expect(updatedPayments[0].period).toBe("2025-04");
+			expect(updatedPayments[0].amount).toBe(1500);
+		});
+
+		it("only updates the specified payment", () => {
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-04", 1300);
+
+			const { rentPayments } = useRentPaymentsStore.getState();
+			const firstPaymentId = rentPayments[0].id;
+
+			useRentPaymentsStore
+				.getState()
+				.updateRentPayment(firstPaymentId, "2025-05", 1500);
+
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toHaveLength(2);
+			expect(updatedPayments[0].period).toBe("2025-05");
+			expect(updatedPayments[0].amount).toBe(1500);
+			expect(updatedPayments[1].period).toBe("2025-04");
+			expect(updatedPayments[1].amount).toBe(1300);
+		});
+
+		it("does nothing if payment ID does not exist", () => {
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
+
+			const initialPayments = useRentPaymentsStore.getState().rentPayments;
+
+			useRentPaymentsStore
+				.getState()
+				.updateRentPayment("non-existent-id", "2025-04", 1500);
+
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toEqual(initialPayments);
+		});
+	});
+
+	describe("deleteRentPayment", () => {
+		it("removes payment from state", () => {
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
+
+			const { rentPayments } = useRentPaymentsStore.getState();
+			const paymentId = rentPayments[0].id;
+
+			useRentPaymentsStore.getState().deleteRentPayment(paymentId);
+
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toHaveLength(0);
+		});
+
+		it("only removes the specified payment", () => {
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-04", 1300);
+
+			const { rentPayments } = useRentPaymentsStore.getState();
+			const firstPaymentId = rentPayments[0].id;
+
+			useRentPaymentsStore.getState().deleteRentPayment(firstPaymentId);
+
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toHaveLength(1);
+			expect(updatedPayments[0].period).toBe("2025-04");
+			expect(updatedPayments[0].amount).toBe(1300);
+		});
+
+		it("does nothing if payment ID does not exist", () => {
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
+
+			const initialPayments = useRentPaymentsStore.getState().rentPayments;
+
+			useRentPaymentsStore.getState().deleteRentPayment("non-existent-id");
+
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toEqual(initialPayments);
+		});
+	});
+
 	describe("filtering and sorting", () => {
 		beforeEach(() => {
 			useRentPaymentsStore

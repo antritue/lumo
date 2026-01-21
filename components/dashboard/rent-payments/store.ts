@@ -8,6 +8,8 @@ interface RentPaymentsState {
 
 	// Actions
 	createRentPayment: (roomId: string, period: string, amount: number) => void;
+	updateRentPayment: (id: string, period: string, amount: number) => void;
+	deleteRentPayment: (id: string) => void;
 }
 
 export const useRentPaymentsStore = create<RentPaymentsState>()(
@@ -26,6 +28,20 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 							amount,
 						},
 					],
+				})),
+
+			updateRentPayment: (id, period, amount) =>
+				set((state) => ({
+					rentPayments: state.rentPayments.map((payment) =>
+						payment.id === id ? { ...payment, period, amount } : payment,
+					),
+				})),
+
+			deleteRentPayment: (id) =>
+				set((state) => ({
+					rentPayments: state.rentPayments.filter(
+						(payment) => payment.id !== id,
+					),
 				})),
 		}),
 		{ name: "rent-payments" },
