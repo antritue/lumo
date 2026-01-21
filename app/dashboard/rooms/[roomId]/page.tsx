@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { use, useState } from "react";
 import {
-	CreateRentPaymentForm,
+	AddRentPaymentDialog,
 	RentPaymentsList,
 	useRentPaymentsStore,
 } from "@/components/dashboard/rent-payments";
@@ -35,7 +35,7 @@ export default function RoomDetailPage({
 	const updateRoom = useRoomsStore((state) => state.updateRoom);
 	const deleteRoom = useRoomsStore((state) => state.deleteRoom);
 
-	const [isAddingPayment, setIsAddingPayment] = useState(false);
+	const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -65,7 +65,7 @@ export default function RoomDetailPage({
 
 	const handleCreatePayment = (period: string, amount: number) => {
 		createRentPayment(roomId, period, amount);
-		setIsAddingPayment(false);
+		setIsAddPaymentDialogOpen(false);
 	};
 
 	const handleSave = (
@@ -164,35 +164,32 @@ export default function RoomDetailPage({
 				</Card>
 
 				{/* Payment Records Section */}
-				{!isAddingPayment ? (
-					<Button
-						onClick={() => setIsAddingPayment(true)}
-						size="lg"
-						className="w-full"
-					>
-						<Plus className="mr-2" />
-						{t("rentPayments.addButton")}
-					</Button>
-				) : (
-					<Card>
-						<CardContent className="pt-6">
-							<CreateRentPaymentForm
-								onSubmit={handleCreatePayment}
-								onCancel={() => setIsAddingPayment(false)}
-								defaultAmount={room.monthlyRent}
-							/>
-						</CardContent>
-					</Card>
-				)}
-
 				<div className="space-y-4">
-					<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
-						{t("rentPayments.listTitle")}
-					</h2>
+					<div className="flex items-center justify-between">
+						<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
+							{t("rentPayments.listTitle")}
+						</h2>
+						<Button
+							onClick={() => setIsAddPaymentDialogOpen(true)}
+							variant="outline"
+							size="sm"
+						>
+							<Plus className="mr-2 h-4 w-4" />
+							{t("rentPayments.addButton")}
+						</Button>
+					</div>
+
 					<RentPaymentsList payments={rentPayments} />
 				</div>
 
-				{/* Edit and Delete Dialogs */}
+				{/* Dialogs */}
+				<AddRentPaymentDialog
+					open={isAddPaymentDialogOpen}
+					onOpenChange={setIsAddPaymentDialogOpen}
+					onSubmit={handleCreatePayment}
+					defaultAmount={room.monthlyRent}
+				/>
+
 				<EditRoomDialog
 					room={room}
 					open={isEditDialogOpen}
