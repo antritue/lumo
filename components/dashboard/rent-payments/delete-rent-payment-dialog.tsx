@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
@@ -39,6 +40,9 @@ export function DeleteRentPaymentDialog({
 						<AlertTriangle className="h-5 w-5 text-amber-600" />
 						{t("deleteTitle")}
 					</DialogTitle>
+					<DialogDescription className="sr-only">
+						{t("deleteTitle")}
+					</DialogDescription>
 				</DialogHeader>
 
 				<div className="space-y-4">

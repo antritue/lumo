@@ -99,7 +99,13 @@ export function CreateRentPaymentForm({
 					{t("saveButton")}
 				</Button>
 				{onCancel && (
-					<Button type="button" variant="outline" size="lg" onClick={onCancel}>
+					<Button
+						type="button"
+						variant="outline"
+						size="lg"
+						className="flex-1"
+						onClick={onCancel}
+					>
 						{t("cancel")}
 					</Button>
 				)}

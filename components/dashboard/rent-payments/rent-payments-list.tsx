@@ -78,7 +78,7 @@ export function RentPaymentsList({
 											aria-label={t("edit")}
 											className="h-8 w-8 hover:bg-muted"
 										>
-											<Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+											<Pencil className="h-3.5 w-3.5" />
 										</Button>
 									)}
 									{onDelete && (
@@ -89,7 +89,7 @@ export function RentPaymentsList({
 											aria-label={t("delete")}
 											className="h-8 w-8 hover:bg-muted hover:text-destructive"
 										>
-											<Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
+											<Trash2 className="h-3.5 w-3.5" />
 										</Button>
 									)}
 								</div>
