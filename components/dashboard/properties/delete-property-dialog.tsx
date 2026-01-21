@@ -56,6 +56,15 @@ export function DeletePropertyDialog({
 					<div className="flex gap-3">
 						<Button
 							type="button"
+							variant="destructive"
+							size="lg"
+							className="flex-1"
+							onClick={handleDelete}
+						>
+							{t("deleteConfirm")}
+						</Button>
+						<Button
+							type="button"
 							variant="outline"
 							size="lg"
 							className="flex-1"
@@ -63,15 +72,6 @@ export function DeletePropertyDialog({
 							autoFocus
 						>
 							{t("cancel")}
-						</Button>
-						<Button
-							type="button"
-							variant="destructive"
-							size="lg"
-							className="flex-1"
-							onClick={handleDelete}
-						>
-							{t("deleteConfirm")}
 						</Button>
 					</div>
 				</div>

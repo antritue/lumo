@@ -131,6 +131,7 @@ export function EditRoomDialog({
 							type="button"
 							variant="outline"
 							size="lg"
+							className="flex-1"
 							onClick={() => onOpenChange(false)}
 						>
 							{t("cancel")}
