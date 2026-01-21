@@ -166,7 +166,20 @@
 			"amountPlaceholder": "Enter amount",
 			"saveButton": "Save record",
 			"cancel": "Cancel",
-			"emptyMessage": "No payment records yet"
+			"emptyMessage": "No payment records yet",
+			"edit": "Edit",
+			"delete": "Delete",
+			"editTitle": "Edit payment record",
+			"editDescription": "Update the payment period or amount",
+			"deleteTitle": "Delete payment record?",
+			"deleteDescription": "This will permanently delete this payment record. This cannot be undone.",
+			"deleteConfirm": "Delete record",
+			"form": {
+				"period": "Payment period",
+				"amount": "Amount",
+				"cancel": "Cancel",
+				"save": "Save"
+			}
 		}
 	}
 }
