@@ -6,10 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { use, useState } from "react";
 import type { PaymentRecord } from "@/components/dashboard/rent-payments";
 import {
-	AddRentPaymentDialog,
 	DeleteRentPaymentDialog,
-	EditRentPaymentDialog,
 	RentPaymentsList,
+	UpsertRentPaymentDialog,
 	useRentPaymentsStore,
 } from "@/components/dashboard/rent-payments";
 import { DeleteRoomDialog, EditRoomDialog } from "@/components/dashboard/rooms";
@@ -44,8 +43,9 @@ export default function RoomDetailPage({
 	const updateRoom = useRoomsStore((state) => state.updateRoom);
 	const deleteRoom = useRoomsStore((state) => state.deleteRoom);
 
-	const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
-	const [isEditPaymentDialogOpen, setIsEditPaymentDialogOpen] = useState(false);
+	const [paymentDialogMode, setPaymentDialogMode] = useState<
+		"add" | "edit" | null
+	>(null);
 	const [isDeletePaymentDialogOpen, setIsDeletePaymentDialogOpen] =
 		useState(false);
 	const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(
@@ -78,19 +78,27 @@ export default function RoomDetailPage({
 		);
 	}
 
-	const handleCreatePayment = (period: string, amount: number) => {
-		createRentPayment(roomId, period, amount);
-		setIsAddPaymentDialogOpen(false);
+	const handleOpenAddPayment = () => {
+		setSelectedPayment(null);
+		setPaymentDialogMode("add");
 	};
 
 	const handleEditPayment = (payment: PaymentRecord) => {
 		setSelectedPayment(payment);
-		setIsEditPaymentDialogOpen(true);
+		setPaymentDialogMode("edit");
 	};
 
-	const handleSavePayment = (id: string, period: string, amount: number) => {
-		updateRentPayment(id, period, amount);
-		setIsEditPaymentDialogOpen(false);
+	const handleSavePayment = (
+		id: string | null,
+		period: string,
+		amount: number,
+	) => {
+		if (id) {
+			updateRentPayment(id, period, amount);
+		} else {
+			createRentPayment(roomId, period, amount);
+		}
+		setPaymentDialogMode(null);
 		setSelectedPayment(null);
 	};
 
@@ -206,11 +214,7 @@ export default function RoomDetailPage({
 						<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
 							{t("rentPayments.listTitle")}
 						</h2>
-						<Button
-							onClick={() => setIsAddPaymentDialogOpen(true)}
-							variant="outline"
-							size="sm"
-						>
+						<Button onClick={handleOpenAddPayment} variant="outline" size="sm">
 							<Plus className="mr-2 h-4 w-4" />
 							{t("rentPayments.addButton")}
 						</Button>
@@ -224,29 +228,29 @@ export default function RoomDetailPage({
 				</div>
 
 				{/* Dialogs */}
-				<AddRentPaymentDialog
-					open={isAddPaymentDialogOpen}
-					onOpenChange={setIsAddPaymentDialogOpen}
-					onSubmit={handleCreatePayment}
-					defaultAmount={room.monthlyRent}
-				/>
+				{paymentDialogMode && (
+					<UpsertRentPaymentDialog
+						mode={paymentDialogMode}
+						payment={selectedPayment ?? undefined}
+						open={true}
+						onOpenChange={(open) => {
+							if (!open) {
+								setPaymentDialogMode(null);
+								setSelectedPayment(null);
+							}
+						}}
+						onSave={handleSavePayment}
+						defaultAmount={room.monthlyRent}
+					/>
+				)}
 
 				{selectedPayment && (
-					<>
-						<EditRentPaymentDialog
-							payment={selectedPayment}
-							open={isEditPaymentDialogOpen}
-							onOpenChange={setIsEditPaymentDialogOpen}
-							onSave={handleSavePayment}
-						/>
-
-						<DeleteRentPaymentDialog
-							payment={selectedPayment}
-							open={isDeletePaymentDialogOpen}
-							onOpenChange={setIsDeletePaymentDialogOpen}
-							onConfirm={handleConfirmDeletePayment}
-						/>
-					</>
+					<DeleteRentPaymentDialog
+						payment={selectedPayment}
+						open={isDeletePaymentDialogOpen}
+						onOpenChange={setIsDeletePaymentDialogOpen}
+						onConfirm={handleConfirmDeletePayment}
+					/>
 				)}
 
 				<EditRoomDialog
