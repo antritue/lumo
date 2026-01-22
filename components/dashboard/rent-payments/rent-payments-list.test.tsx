@@ -53,7 +53,7 @@ describe("RentPaymentsList", () => {
 		});
 	});
 
-	describe("Actions", () => {
+	describe("Interactions", () => {
 		it("calls onEdit with payment when edit button clicked", async () => {
 			const user = userEvent.setup();
 			const handleEdit = vi.fn();

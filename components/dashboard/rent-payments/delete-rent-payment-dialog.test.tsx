@@ -62,7 +62,7 @@ describe("DeleteRentPaymentDialog", () => {
 		});
 	});
 
-	describe("Actions", () => {
+	describe("Interactions", () => {
 		it("calls onConfirm with payment id when delete button is clicked", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
