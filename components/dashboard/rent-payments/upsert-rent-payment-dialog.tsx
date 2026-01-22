@@ -13,31 +13,51 @@ import {
 import { Input } from "@/components/ui/input";
 import type { PaymentRecord } from "./types";
 
-interface EditRentPaymentDialogProps {
-	payment: PaymentRecord;
+interface UpsertRentPaymentDialogProps {
+	mode: "add" | "edit";
+	payment?: PaymentRecord;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	onSave: (id: string, period: string, amount: number) => void;
+	onSave: (id: string | null, period: string, amount: number) => void;
+	defaultAmount?: number | null;
 }
 
-export function EditRentPaymentDialog({
+export function UpsertRentPaymentDialog({
+	mode,
 	payment,
 	open,
 	onOpenChange,
 	onSave,
-}: EditRentPaymentDialogProps) {
+	defaultAmount,
+}: UpsertRentPaymentDialogProps) {
 	const t = useTranslations("app.rentPayments");
 	const locale = useLocale();
 	const currency = locale === "vi" ? "VND" : "USD";
 
-	const [period, setPeriod] = useState(payment.period);
-	const [amount, setAmount] = useState(payment.amount.toString());
+	// Default to current month for add mode
+	const currentMonth = new Date().toISOString().slice(0, 7);
 
-	// Reset form when dialog opens with new payment
+	const [period, setPeriod] = useState(
+		mode === "edit" && payment ? payment.period : currentMonth,
+	);
+	const [amount, setAmount] = useState(
+		mode === "edit" && payment
+			? payment.amount.toString()
+			: defaultAmount
+				? defaultAmount.toString()
+				: "",
+	);
+
+	// Reset form when dialog opens with new payment or mode changes
 	useEffect(() => {
-		setPeriod(payment.period);
-		setAmount(payment.amount.toString());
-	}, [payment]);
+		if (mode === "edit" && payment) {
+			setPeriod(payment.period);
+			setAmount(payment.amount.toString());
+		} else {
+			setPeriod(currentMonth);
+			setAmount(defaultAmount ? defaultAmount.toString() : "");
+		}
+	}, [mode, payment, defaultAmount, currentMonth]);
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
@@ -47,19 +67,20 @@ export function EditRentPaymentDialog({
 	const handleSave = () => {
 		const parsedAmount = Number.parseFloat(amount);
 		if (period && !Number.isNaN(parsedAmount) && parsedAmount > 0) {
-			onSave(payment.id, period, parsedAmount);
+			const id = mode === "edit" && payment ? payment.id : null;
+			onSave(id, period, parsedAmount);
 			onOpenChange(false);
 		}
 	};
+
+	const title = mode === "edit" ? t("editTitle") : t("addButton");
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{t("editTitle")}</DialogTitle>
-					<DialogDescription className="sr-only">
-						{t("editTitle")}
-					</DialogDescription>
+					<DialogTitle>{title}</DialogTitle>
+					<DialogDescription className="sr-only">{title}</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit} className="space-y-6">
