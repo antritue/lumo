@@ -1,7 +1,14 @@
 export { CreateRoomForm } from "./create-room-form";
 export { DeleteRoomDialog } from "./delete-room-dialog";
 export { EditRoomDialog } from "./edit-room-dialog";
+export { RoomDetail } from "./room-detail";
+export { RoomDetailHeader } from "./room-detail-header";
+export { RoomDetailsCard } from "./room-details-card";
 export { RoomItem } from "./room-item";
 export { RoomList } from "./room-list";
+export { RoomNotFound } from "./room-not-found";
+export { RoomPaymentsSection } from "./room-payments-section";
 export { useRoomsStore } from "./store";
 export type { Room } from "./types";
+export { useRoomDialogs } from "./use-room-dialogs";
+export { useRoomPayments } from "./use-room-payments";
