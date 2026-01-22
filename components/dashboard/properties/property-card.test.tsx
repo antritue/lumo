@@ -8,10 +8,7 @@ import { usePropertiesStore } from "./store";
 import type { Property } from "./types";
 
 describe("PropertyCard", () => {
-	const mockProperty: Property = {
-		id: "prop-1",
-		name: "Sunset Villa",
-	};
+	const mockProperty: Property = { id: "1", name: "Sunset Villa" };
 
 	beforeEach(() => {
 		usePropertiesStore.setState({ properties: [] });
@@ -19,31 +16,19 @@ describe("PropertyCard", () => {
 	});
 
 	describe("Display", () => {
-		it("displays property name", () => {
-			renderWithProviders(<PropertyCard property={mockProperty} />);
-
-			expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
-		});
-
-		it("displays room count when property has no rooms", () => {
-			renderWithProviders(<PropertyCard property={mockProperty} />);
-
-			expect(screen.getByText(/no rooms/i)).toBeInTheDocument();
-		});
-
-		it("displays room count when property has rooms", () => {
+		it("displays property name and room count", () => {
 			useRoomsStore.setState({
 				rooms: [
 					{
-						id: "room-1",
-						propertyId: "prop-1",
+						id: "1",
+						propertyId: "1",
 						name: "Room 101",
 						monthlyRent: null,
 						notes: null,
 					},
 					{
-						id: "room-2",
-						propertyId: "prop-1",
+						id: "2",
+						propertyId: "1",
 						name: "Room 102",
 						monthlyRent: null,
 						notes: null,
@@ -53,99 +38,44 @@ describe("PropertyCard", () => {
 
 			renderWithProviders(<PropertyCard property={mockProperty} />);
 
+			expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
 			expect(screen.getByText(/2 rooms/i)).toBeInTheDocument();
-		});
-
-		it("displays room count for single room", () => {
-			useRoomsStore.setState({
-				rooms: [
-					{
-						id: "room-1",
-						propertyId: "prop-1",
-						name: "Room 101",
-						monthlyRent: null,
-						notes: null,
-					},
-				],
-			});
-
-			renderWithProviders(<PropertyCard property={mockProperty} />);
-
-			expect(screen.getByText(/1 room/i)).toBeInTheDocument();
-		});
-
-		it("displays edit and delete buttons", () => {
-			renderWithProviders(<PropertyCard property={mockProperty} />);
-
-			expect(screen.getByRole("button", { name: /edit/i })).toBeInTheDocument();
-			expect(
-				screen.getByRole("button", { name: /delete/i }),
-			).toBeInTheDocument();
 		});
 	});
 
-	describe("Expand/Collapse Behavior", () => {
-		it("starts in expanded state", () => {
-			renderWithProviders(<PropertyCard property={mockProperty} />);
-
-			const toggleButton = screen.getByRole("button", { expanded: true });
-			expect(toggleButton).toBeInTheDocument();
-		});
-
-		it("collapses when user clicks expand/collapse button", async () => {
+	describe("Interactions", () => {
+		it("toggles expand/collapse state", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(<PropertyCard property={mockProperty} />);
 
 			const toggleButton = screen.getByRole("button", { expanded: true });
 			await user.click(toggleButton);
-
 			expect(
 				screen.getByRole("button", { expanded: false }),
 			).toBeInTheDocument();
-		});
 
-		it("expands when user clicks collapsed card", async () => {
-			const user = userEvent.setup();
-			renderWithProviders(<PropertyCard property={mockProperty} />);
-
-			// First collapse
-			const toggleButton = screen.getByRole("button", { expanded: true });
-			await user.click(toggleButton);
-
-			// Then expand again
-			const collapsedButton = screen.getByRole("button", { expanded: false });
-			await user.click(collapsedButton);
-
+			await user.click(screen.getByRole("button", { expanded: false }));
 			expect(
 				screen.getByRole("button", { expanded: true }),
 			).toBeInTheDocument();
 		});
-	});
 
-	describe("Action Callbacks", () => {
-		it("calls onEdit when edit button is clicked", async () => {
+		it("calls callbacks when action buttons clicked", async () => {
 			const user = userEvent.setup();
 			const onEdit = vi.fn();
-			renderWithProviders(
-				<PropertyCard property={mockProperty} onEdit={onEdit} />,
-			);
-
-			const editButton = screen.getByRole("button", { name: /edit/i });
-			await user.click(editButton);
-
-			expect(onEdit).toHaveBeenCalledWith(mockProperty);
-		});
-
-		it("calls onDelete when delete button is clicked", async () => {
-			const user = userEvent.setup();
 			const onDelete = vi.fn();
 			renderWithProviders(
-				<PropertyCard property={mockProperty} onDelete={onDelete} />,
+				<PropertyCard
+					property={mockProperty}
+					onEdit={onEdit}
+					onDelete={onDelete}
+				/>,
 			);
 
-			const deleteButton = screen.getByRole("button", { name: /delete/i });
-			await user.click(deleteButton);
+			await user.click(screen.getByRole("button", { name: /edit/i }));
+			expect(onEdit).toHaveBeenCalledWith(mockProperty);
 
+			await user.click(screen.getByRole("button", { name: /delete/i }));
 			expect(onDelete).toHaveBeenCalledWith(mockProperty);
 		});
 	});

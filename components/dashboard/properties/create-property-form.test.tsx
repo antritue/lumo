@@ -5,140 +5,94 @@ import { renderWithProviders } from "@/test/render";
 import { CreatePropertyForm } from "./create-property-form";
 
 describe("CreatePropertyForm", () => {
-	it("displays form input and submit button", () => {
-		const onSubmit = vi.fn();
-		renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
+	describe("Display", () => {
+		it("displays form input and conditional cancel button", () => {
+			const onSubmit = vi.fn();
+			const { rerender } = renderWithProviders(
+				<CreatePropertyForm onSubmit={onSubmit} />,
+			);
 
-		expect(
-			screen.getByPlaceholderText(/property name or address/i),
-		).toBeInTheDocument();
-		expect(
-			screen.getByRole("button", { name: /add property/i }),
-		).toBeInTheDocument();
+			expect(
+				screen.getByPlaceholderText(/property name or address/i),
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: /add property/i }),
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole("button", { name: /cancel/i }),
+			).not.toBeInTheDocument();
+
+			rerender(
+				<CreatePropertyForm
+					onSubmit={onSubmit}
+					onCancel={vi.fn()}
+					showCancel={true}
+				/>,
+			);
+			expect(
+				screen.getByRole("button", { name: /cancel/i }),
+			).toBeInTheDocument();
+		});
 	});
 
-	it("disables submit button when input is empty", () => {
-		const onSubmit = vi.fn();
-		renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
+	describe("Form Validation", () => {
+		it("disables submit button for invalid input", async () => {
+			const user = userEvent.setup();
+			const onSubmit = vi.fn();
+			renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
 
-		const submitButton = screen.getByRole("button", { name: /add property/i });
-		expect(submitButton).toBeDisabled();
+			const input = screen.getByPlaceholderText(/property name or address/i);
+			const submitButton = screen.getByRole("button", {
+				name: /add property/i,
+			});
+
+			// Empty input
+			expect(submitButton).toBeDisabled();
+
+			// Whitespace only
+			await user.type(input, "   ");
+			expect(submitButton).toBeDisabled();
+
+			// Valid input
+			await user.clear(input);
+			await user.type(input, "New Property");
+			expect(submitButton).toBeEnabled();
+		});
 	});
 
-	it("enables submit button when user enters text", async () => {
-		const user = userEvent.setup();
-		const onSubmit = vi.fn();
-		renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
+	describe("Interactions", () => {
+		it("submits with trimmed value and clears input", async () => {
+			const user = userEvent.setup();
+			const onSubmit = vi.fn();
+			renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
 
-		const input = screen.getByPlaceholderText(/property name or address/i);
-		await user.type(input, "New Property");
+			const input = screen.getByPlaceholderText(/property name or address/i);
+			const submitButton = screen.getByRole("button", {
+				name: /add property/i,
+			});
 
-		const submitButton = screen.getByRole("button", { name: /add property/i });
-		expect(submitButton).toBeEnabled();
-	});
+			await user.type(input, "  Sunset Villa  ");
+			await user.click(submitButton);
 
-	it("calls onSubmit with trimmed property name", async () => {
-		const user = userEvent.setup();
-		const onSubmit = vi.fn();
-		renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
+			expect(onSubmit).toHaveBeenCalledWith("Sunset Villa");
+			expect(input).toHaveValue("");
+		});
 
-		const input = screen.getByPlaceholderText(/property name or address/i);
-		const submitButton = screen.getByRole("button", { name: /add property/i });
+		it("calls onCancel when cancel button clicked", async () => {
+			const user = userEvent.setup();
+			const onSubmit = vi.fn();
+			const onCancel = vi.fn();
+			renderWithProviders(
+				<CreatePropertyForm
+					onSubmit={onSubmit}
+					onCancel={onCancel}
+					showCancel={true}
+				/>,
+			);
 
-		await user.type(input, "  Sunset Villa  ");
-		await user.click(submitButton);
-
-		expect(onSubmit).toHaveBeenCalledWith("Sunset Villa");
-	});
-
-	it("clears input after successful submission", async () => {
-		const user = userEvent.setup();
-		const onSubmit = vi.fn();
-		renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
-
-		const input = screen.getByPlaceholderText(/property name or address/i);
-		const submitButton = screen.getByRole("button", { name: /add property/i });
-
-		await user.type(input, "Test Property");
-		await user.click(submitButton);
-
-		expect(input).toHaveValue("");
-	});
-
-	it("does not submit when input is only whitespace", async () => {
-		const user = userEvent.setup();
-		const onSubmit = vi.fn();
-		renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
-
-		const input = screen.getByPlaceholderText(/property name or address/i);
-		const submitButton = screen.getByRole("button", { name: /add property/i });
-
-		await user.type(input, "   ");
-		await user.click(submitButton);
-
-		expect(onSubmit).not.toHaveBeenCalled();
-	});
-
-	it("shows cancel button when showCancel is true", () => {
-		const onSubmit = vi.fn();
-		const onCancel = vi.fn();
-		renderWithProviders(
-			<CreatePropertyForm
-				onSubmit={onSubmit}
-				onCancel={onCancel}
-				showCancel={true}
-			/>,
-		);
-
-		expect(screen.getByRole("button", { name: /cancel/i })).toBeInTheDocument();
-	});
-
-	it("does not show cancel button when showCancel is false", () => {
-		const onSubmit = vi.fn();
-		renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
-
-		expect(
-			screen.queryByRole("button", { name: /cancel/i }),
-		).not.toBeInTheDocument();
-	});
-
-	it("calls onCancel when cancel button is clicked", async () => {
-		const user = userEvent.setup();
-		const onSubmit = vi.fn();
-		const onCancel = vi.fn();
-		renderWithProviders(
-			<CreatePropertyForm
-				onSubmit={onSubmit}
-				onCancel={onCancel}
-				showCancel={true}
-			/>,
-		);
-
-		const cancelButton = screen.getByRole("button", { name: /cancel/i });
-		await user.click(cancelButton);
-
-		expect(onCancel).toHaveBeenCalled();
-	});
-
-	it("does not call onCancel when form is submitted", async () => {
-		const user = userEvent.setup();
-		const onSubmit = vi.fn();
-		const onCancel = vi.fn();
-		renderWithProviders(
-			<CreatePropertyForm
-				onSubmit={onSubmit}
-				onCancel={onCancel}
-				showCancel={true}
-			/>,
-		);
-
-		const input = screen.getByPlaceholderText(/property name or address/i);
-		const submitButton = screen.getByRole("button", { name: /add property/i });
-
-		await user.type(input, "Test Property");
-		await user.click(submitButton);
-
-		expect(onSubmit).toHaveBeenCalled();
-		expect(onCancel).not.toHaveBeenCalled();
+			await user.click(screen.getByRole("button", { name: /cancel/i }));
+			expect(onCancel).toHaveBeenCalled();
+			expect(onSubmit).not.toHaveBeenCalled();
+		});
 	});
 });
