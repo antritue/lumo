@@ -167,6 +167,7 @@
 			"saveButton": "Lưu ghi nhận",
 			"cancel": "Hủy",
 			"emptyMessage": "Chưa có ghi nhận thanh toán nào",
+			"emptySubtitle": "Thêm thanh toán đầu tiên để theo dõi lịch sử",
 			"edit": "Chỉnh sửa",
 			"delete": "Xóa",
 			"editTitle": "Chỉnh sửa ghi nhận thanh toán",

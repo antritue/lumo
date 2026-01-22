@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Receipt, Trash2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,15 +23,17 @@ export function RentPaymentsList({
 
 	if (payments.length === 0) {
 		return (
-			<Card>
-				<CardContent className="py-12">
-					<div className="text-center">
-						<p className="text-base text-muted-foreground">
-							{t("emptyMessage")}
-						</p>
-					</div>
-				</CardContent>
-			</Card>
+			<div className="flex flex-col items-center justify-center text-center">
+				<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary mb-4">
+					<Receipt className="h-6 w-6 text-muted-foreground" />
+				</div>
+				<p className="text-base font-medium text-foreground mb-1">
+					{t("emptyMessage")}
+				</p>
+				<p className="text-sm text-muted-foreground max-w-sm">
+					{t("emptySubtitle")}
+				</p>
+			</div>
 		);
 	}
 

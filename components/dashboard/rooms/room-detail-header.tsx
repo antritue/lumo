@@ -32,7 +32,7 @@ export function RoomDetailHeader({
 				<div className="flex items-center justify-between gap-3">
 					<div className="flex items-center gap-3 flex-1 min-w-0">
 						<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-							<DoorOpen className="h-6 w-6" />
+							<DoorOpen className="h-6 w-6 text-muted-foreground" />
 						</div>
 						<h1 className="text-3xl sm:text-4xl font-semibold text-foreground">
 							{room.name}

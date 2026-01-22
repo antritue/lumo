@@ -167,6 +167,7 @@
 			"saveButton": "Save record",
 			"cancel": "Cancel",
 			"emptyMessage": "No payment records yet",
+			"emptySubtitle": "Add your first rent payment to start tracking history",
 			"edit": "Edit",
 			"delete": "Delete",
 			"editTitle": "Edit payment record",
