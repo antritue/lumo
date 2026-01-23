@@ -152,7 +152,7 @@
 			"notFound": "Không tìm thấy phòng",
 			"notFoundMessage": "Phòng này không tồn tại hoặc đã bị xóa",
 			"details": {
-				"title": "Chi tiết phòng",
+				"title": "Thông tin thêm",
 				"monthlyRent": "Tiền thuê hàng tháng",
 				"notSet": "Chưa thiết lập",
 				"notes": "Ghi chú"

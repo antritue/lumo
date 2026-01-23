@@ -64,7 +64,7 @@ describe("RoomDetailPage", () => {
 		).toBeInTheDocument();
 	});
 
-	it("displays room details card when room has details", async () => {
+	it("displays additional info section when room has details", async () => {
 		mockUse.mockReturnValue({ roomId: "room-1" });
 		useRoomsStore.setState({
 			rooms: [mockRoom],
@@ -72,9 +72,9 @@ describe("RoomDetailPage", () => {
 
 		renderWithProviders(<RoomDetailPage {...createParams("room-1")} />);
 
-		expect(screen.getByText("Room details")).toBeInTheDocument();
-		expect(screen.getByText(/\$1,200/)).toBeInTheDocument();
-		expect(screen.getByText("Large room with balcony")).toBeInTheDocument();
+		expect(
+			screen.getByRole("button", { name: /additional info/i }),
+		).toBeInTheDocument();
 	});
 
 	it("displays rent payments section", async () => {
