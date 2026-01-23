@@ -3,7 +3,7 @@ export { DeleteRoomDialog } from "./delete-room-dialog";
 export { EditRoomDialog } from "./edit-room-dialog";
 export { RoomDetail } from "./room-detail";
 export { RoomDetailHeader } from "./room-detail-header";
-export { RoomDetailsCard } from "./room-details-card";
+export { RoomInfo } from "./room-info";
 export { RoomItem } from "./room-item";
 export { RoomList } from "./room-list";
 export { RoomNotFound } from "./room-not-found";

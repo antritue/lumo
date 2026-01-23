@@ -152,7 +152,7 @@
 			"notFound": "Room not found",
 			"notFoundMessage": "This room doesn't exist or may have been deleted",
 			"details": {
-				"title": "Room details",
+				"title": "Additional info",
 				"monthlyRent": "Monthly Rent",
 				"notSet": "Not set",
 				"notes": "Notes"

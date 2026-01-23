@@ -7,7 +7,7 @@ import {
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import { EditRoomDialog } from "./edit-room-dialog";
 import { RoomDetailHeader } from "./room-detail-header";
-import { RoomDetailsCard } from "./room-details-card";
+import { RoomInfo } from "./room-info";
 import { RoomPaymentsSection } from "./room-payments-section";
 import { useRoomsStore } from "./store";
 import type { Room } from "./types";
@@ -82,7 +82,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 					onDelete={openDeleteRoom}
 				/>
 
-				<RoomDetailsCard room={room} />
+				<RoomInfo room={room} />
 
 				<RoomPaymentsSection
 					payments={rentPayments}
