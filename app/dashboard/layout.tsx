@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { AppShell } from "@/components/dashboard/app-shell";
+import { AppShell } from "@/components/dashboard/layout";
 import { getAppLocale } from "@/lib/app-locale";
 
 export async function generateMetadata(): Promise<Metadata> {

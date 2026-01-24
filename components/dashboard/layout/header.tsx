@@ -4,7 +4,6 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/dashboard/islands/language-switcher";
-import { TabletNav } from "@/components/dashboard/tablet-nav";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +13,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
+import { TabletNav } from "./tablet-nav";
 
 export function AppHeader() {
 	const t = useTranslations("header");

@@ -1,14 +1,10 @@
 "use client";
 
-import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-	{ href: "/dashboard/properties", icon: Home, labelKey: "properties" },
-] as const;
+import { isPathActive, navItems } from "./nav-config";
 
 export function TabletNav() {
 	const pathname = usePathname();
@@ -17,7 +13,7 @@ export function TabletNav() {
 	return (
 		<nav className="flex flex-col gap-1 mt-6">
 			{navItems.map((item) => {
-				const isActive = pathname.startsWith(item.href);
+				const isActive = isPathActive(pathname ?? "", item);
 				return (
 					<Link
 						key={item.href}
