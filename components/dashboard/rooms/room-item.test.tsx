@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { useRentPaymentsStore } from "@/components/dashboard/rent-payments";
 import { renderWithProviders } from "@/test/render";
 import { RoomItem } from "./room-item";
 import type { Room } from "./types";
@@ -28,6 +29,56 @@ describe("RoomItem", () => {
 
 			expect(screen.getByText("Master Bedroom")).toBeInTheDocument();
 			expect(screen.queryByText(/1[,.]500[,.]000/)).not.toBeInTheDocument();
+		});
+
+		describe("Latest payment dot", () => {
+			it("renders green dot for latest paid payment", () => {
+				useRentPaymentsStore.setState({
+					rentPayments: [
+						{
+							id: "p1",
+							roomId: "1",
+							period: "2026-01",
+							amount: 1000,
+							status: "paid",
+						},
+					],
+				});
+
+				renderWithProviders(<RoomItem room={mockRoom} />);
+
+				expect(
+					screen.getByText(/latest payment status:\s*paid/i),
+				).toBeInTheDocument();
+			});
+
+			it("renders amber dot for latest pending payment", () => {
+				useRentPaymentsStore.setState({
+					rentPayments: [
+						{
+							id: "p2",
+							roomId: "1",
+							period: "2026-02",
+							amount: 1000,
+							status: "pending",
+						},
+					],
+				});
+
+				renderWithProviders(<RoomItem room={mockRoom} />);
+
+				expect(
+					screen.getByText(/latest payment status:\s*pending/i),
+				).toBeInTheDocument();
+			});
+
+			it("renders no dot when no payments", () => {
+				useRentPaymentsStore.setState({ rentPayments: [] });
+				renderWithProviders(<RoomItem room={mockRoom} />);
+				expect(
+					screen.queryByText(/latest payment status:/i),
+				).not.toBeInTheDocument();
+			});
 		});
 	});
 
