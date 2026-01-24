@@ -1,14 +1,10 @@
 "use client";
 
-import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-	{ href: "/dashboard/properties", icon: Home, labelKey: "properties" },
-] as const;
+import { isPathActive, navItems } from "./nav-config";
 
 export function AppSidebar() {
 	const pathname = usePathname();
@@ -18,7 +14,8 @@ export function AppSidebar() {
 		<aside className="hidden lg:fixed lg:left-0 lg:top-16 lg:bottom-0 lg:w-64 lg:flex lg:flex-col border-r border-border/50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
 			<nav className="flex flex-col gap-1 p-4">
 				{navItems.map((item) => {
-					const isActive = pathname.startsWith(item.href);
+					const isActive = isPathActive(pathname ?? "", item);
+
 					return (
 						<Link
 							key={item.href}

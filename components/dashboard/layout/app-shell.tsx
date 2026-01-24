@@ -1,6 +1,6 @@
-import { AppHeader } from "@/components/dashboard/header";
-import { MobileNav } from "@/components/dashboard/mobile-nav";
-import { AppSidebar } from "@/components/dashboard/sidebar";
+import { AppHeader } from "./header";
+import { MobileNav } from "./mobile-nav";
+import { AppSidebar } from "./sidebar";
 
 interface AppShellProps {
 	children: React.ReactNode;
