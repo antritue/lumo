@@ -1,4 +1,5 @@
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments";
+import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
 
 export function useRoomPayments(roomId: string) {
 	const allRentPayments = useRentPaymentsStore((state) => state.rentPayments);
@@ -20,11 +21,12 @@ export function useRoomPayments(roomId: string) {
 		id: string | null,
 		period: string,
 		amount: number,
+		status: PaymentStatus,
 	) => {
 		if (id) {
-			updateRentPayment(id, period, amount);
+			updateRentPayment(id, period, amount, status);
 		} else {
-			createRentPayment(roomId, period, amount);
+			createRentPayment(roomId, period, amount, status);
 		}
 	};
 

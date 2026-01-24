@@ -4,6 +4,7 @@ import {
 	DeleteRentPaymentDialog,
 	UpsertRentPaymentDialog,
 } from "@/components/dashboard/rent-payments";
+import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import { EditRoomDialog } from "./edit-room-dialog";
 import { RoomDetailHeader } from "./room-detail-header";
@@ -68,8 +69,9 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		id: string | null,
 		period: string,
 		amount: number,
+		status: PaymentStatus,
 	) => {
-		handleSavePayment(id, period, amount);
+		handleSavePayment(id, period, amount, status);
 		closePayment();
 	};
 

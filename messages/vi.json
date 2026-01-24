@@ -178,6 +178,9 @@
 			"form": {
 				"period": "Kỳ thanh toán",
 				"amount": "Số tiền",
+				"status": "Trạng thái",
+				"statusPending": "Chờ thanh toán",
+				"statusPaid": "Đã thanh toán",
 				"cancel": "Hủy",
 				"save": "Lưu"
 			}

@@ -7,8 +7,20 @@ import type { PaymentRecord } from "./types";
 
 describe("RentPaymentsList", () => {
 	const mockPayments: PaymentRecord[] = [
-		{ id: "1", period: "2026-01", amount: 5000000, roomId: "room-1" },
-		{ id: "2", period: "2025-12", amount: 4500000, roomId: "room-1" },
+		{
+			id: "1",
+			period: "2026-01",
+			amount: 5000000,
+			roomId: "room-1",
+			status: "pending",
+		},
+		{
+			id: "2",
+			period: "2025-12",
+			amount: 4500000,
+			roomId: "room-1",
+			status: "paid",
+		},
 	];
 
 	describe("Display", () => {
@@ -21,13 +33,15 @@ describe("RentPaymentsList", () => {
 			).toBeInTheDocument();
 		});
 
-		it("displays payment records with formatted period and amount", () => {
+		it("displays payment records with formatted period, amount and status", () => {
 			renderWithProviders(<RentPaymentsList payments={mockPayments} />);
 
 			expect(screen.getByText(/january 2026/i)).toBeInTheDocument();
-			expect(screen.getByText(/december 2025/i)).toBeInTheDocument();
 			expect(screen.getByText("$5,000,000")).toBeInTheDocument();
+			expect(screen.getByText("Pending")).toBeInTheDocument();
+			expect(screen.getByText(/december 2025/i)).toBeInTheDocument();
 			expect(screen.getByText("$4,500,000")).toBeInTheDocument();
+			expect(screen.getByText("Paid")).toBeInTheDocument();
 		});
 
 		it("shows no action buttons when no handlers provided", () => {

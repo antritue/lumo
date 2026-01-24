@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
+import { PaymentStatusBadge } from "./payment-status-badge";
 import type { PaymentRecord } from "./types";
 
 interface RentPaymentsListProps {
@@ -66,9 +67,12 @@ export function RentPaymentsList({
 								<p className="text-base font-medium text-foreground">
 									{formatPeriod(payment.period)}
 								</p>
-								<p className="text-xl font-semibold text-foreground">
-									{formatCurrency(payment.amount, locale)}
-								</p>
+								<div className="flex items-center gap-2">
+									<p className="text-xl font-semibold text-foreground">
+										{formatCurrency(payment.amount, locale)}
+									</p>
+									<PaymentStatusBadge status={payment.status} />
+								</div>
 							</div>
 							{(onEdit || onDelete) && (
 								<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

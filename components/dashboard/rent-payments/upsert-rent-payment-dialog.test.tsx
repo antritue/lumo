@@ -11,6 +11,7 @@ describe("UpsertRentPaymentDialog", () => {
 		roomId: "room-1",
 		period: "2026-01",
 		amount: 1000,
+		status: "pending",
 	};
 	const mockOnOpenChange = vi.fn();
 	const mockOnSave = vi.fn();
@@ -42,6 +43,9 @@ describe("UpsertRentPaymentDialog", () => {
 
 			const amountInput = within(dialog).getByLabelText(/amount/i);
 			expect(amountInput).toHaveValue(1500);
+
+			const pendingRadio = within(dialog).getByLabelText(/pending/i);
+			expect(pendingRadio).toBeChecked();
 		});
 
 		it("displays edit mode with payment data", () => {
@@ -64,6 +68,9 @@ describe("UpsertRentPaymentDialog", () => {
 				"2026-01",
 			);
 			expect(within(dialog).getByLabelText(/amount/i)).toHaveValue(1000);
+
+			const pendingRadio = within(dialog).getByLabelText(/pending/i);
+			expect(pendingRadio).toBeChecked();
 		});
 	});
 
@@ -123,7 +130,7 @@ describe("UpsertRentPaymentDialog", () => {
 			await user.type(amountInput, "1500");
 			await user.click(within(dialog).getByRole("button", { name: /save/i }));
 
-			expect(mockOnSave).toHaveBeenCalledWith(null, "2026-03", 1500);
+			expect(mockOnSave).toHaveBeenCalledWith(null, "2026-03", 1500, "pending");
 			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
 		});
 
@@ -149,7 +156,7 @@ describe("UpsertRentPaymentDialog", () => {
 			await user.type(amountInput, "1500");
 			await user.click(within(dialog).getByRole("button", { name: /save/i }));
 
-			expect(mockOnSave).toHaveBeenCalledWith("1", "2026-03", 1500);
+			expect(mockOnSave).toHaveBeenCalledWith("1", "2026-03", 1500, "pending");
 			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
 		});
 

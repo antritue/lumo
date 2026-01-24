@@ -11,14 +11,19 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import type { PaymentRecord } from "./types";
+import type { PaymentRecord, PaymentStatus } from "./types";
 
 interface UpsertRentPaymentDialogProps {
 	mode: "add" | "edit";
 	payment?: PaymentRecord;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	onSave: (id: string | null, period: string, amount: number) => void;
+	onSave: (
+		id: string | null,
+		period: string,
+		amount: number,
+		status: PaymentStatus,
+	) => void;
 	defaultAmount?: number | null;
 }
 
@@ -47,15 +52,20 @@ export function UpsertRentPaymentDialog({
 				? defaultAmount.toString()
 				: "",
 	);
+	const [status, setStatus] = useState<PaymentStatus>(
+		mode === "edit" && payment ? payment.status : "pending",
+	);
 
 	// Reset form when dialog opens with new payment or mode changes
 	useEffect(() => {
 		if (mode === "edit" && payment) {
 			setPeriod(payment.period);
 			setAmount(payment.amount.toString());
+			setStatus(payment.status);
 		} else {
 			setPeriod(currentMonth);
 			setAmount(defaultAmount ? defaultAmount.toString() : "");
+			setStatus("pending");
 		}
 	}, [mode, payment, defaultAmount, currentMonth]);
 
@@ -68,7 +78,7 @@ export function UpsertRentPaymentDialog({
 		const parsedAmount = Number.parseFloat(amount);
 		if (period && !Number.isNaN(parsedAmount) && parsedAmount > 0) {
 			const id = mode === "edit" && payment ? payment.id : null;
-			onSave(id, period, parsedAmount);
+			onSave(id, period, parsedAmount, status);
 			onOpenChange(false);
 		}
 	};
@@ -120,6 +130,40 @@ export function UpsertRentPaymentDialog({
 								</span>
 							</div>
 						</div>
+
+						<fieldset className="space-y-2">
+							<legend id="status-legend" className="text-sm font-medium">
+								{t("form.status")}
+							</legend>
+							<div
+								className="flex gap-4 mt-2"
+								role="radiogroup"
+								aria-labelledby="status-legend"
+							>
+								<label className="flex items-center gap-2 cursor-pointer">
+									<input
+										type="radio"
+										name="status"
+										value="pending"
+										checked={status === "pending"}
+										onChange={(e) => setStatus(e.target.value as PaymentStatus)}
+										className="h-4 w-4"
+									/>
+									<span className="text-sm">{t("form.statusPending")}</span>
+								</label>
+								<label className="flex items-center gap-2 cursor-pointer">
+									<input
+										type="radio"
+										name="status"
+										value="paid"
+										checked={status === "paid"}
+										onChange={(e) => setStatus(e.target.value as PaymentStatus)}
+										className="h-4 w-4"
+									/>
+									<span className="text-sm">{t("form.statusPaid")}</span>
+								</label>
+							</div>
+						</fieldset>
 					</div>
 
 					<div className="flex gap-3">
