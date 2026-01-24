@@ -19,6 +19,7 @@ describe("RentPaymentsStore", () => {
 		expect(rentPayments[0].roomId).toBe("room-1");
 		expect(rentPayments[0].period).toBe("2025-03");
 		expect(rentPayments[0].amount).toBe(1200);
+		expect(rentPayments[0].status).toBe("pending");
 		expect(rentPayments[0].id).not.toBe(rentPayments[1].id);
 	});
 
@@ -35,12 +36,13 @@ describe("RentPaymentsStore", () => {
 
 		useRentPaymentsStore
 			.getState()
-			.updateRentPayment(firstPaymentId, "2025-05", 1500);
+			.updateRentPayment(firstPaymentId, "2025-05", 1500, "paid");
 
 		const updatedPayments = useRentPaymentsStore.getState().rentPayments;
 		expect(updatedPayments).toHaveLength(2);
 		expect(updatedPayments[0].period).toBe("2025-05");
 		expect(updatedPayments[0].amount).toBe(1500);
+		expect(updatedPayments[0].status).toBe("paid");
 		expect(updatedPayments[1].period).toBe("2025-04");
 		expect(updatedPayments[1].amount).toBe(1300);
 	});

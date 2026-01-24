@@ -178,6 +178,9 @@
 			"form": {
 				"period": "Payment period",
 				"amount": "Amount",
+				"status": "Status",
+				"statusPending": "Pending",
+				"statusPaid": "Paid",
 				"cancel": "Cancel",
 				"save": "Save"
 			}
