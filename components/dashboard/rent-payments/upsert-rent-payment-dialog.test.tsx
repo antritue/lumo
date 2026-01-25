@@ -37,9 +37,13 @@ describe("UpsertRentPaymentDialog", () => {
 				within(dialog).getByRole("heading", { name: /add payment/i }),
 			).toBeInTheDocument();
 
-			const periodInput = within(dialog).getByLabelText(/payment period/i);
-			const currentMonth = new Date().toISOString().slice(0, 7);
-			expect(periodInput).toHaveValue(currentMonth);
+			const periodTrigger = within(dialog).getByRole("combobox", {
+				name: /payment period/i,
+			});
+			const today = new Date();
+			const month = (today.getMonth() + 1).toString().padStart(2, "0");
+			const year = today.getFullYear();
+			expect(periodTrigger).toHaveTextContent(`${month}/${year}`);
 
 			const amountInput = within(dialog).getByLabelText(/amount/i);
 			expect(amountInput).toHaveValue(1500);
@@ -64,9 +68,9 @@ describe("UpsertRentPaymentDialog", () => {
 				within(dialog).getByRole("heading", { name: /edit payment record/i }),
 			).toBeInTheDocument();
 
-			expect(within(dialog).getByLabelText(/payment period/i)).toHaveValue(
-				"2026-01",
-			);
+			expect(
+				within(dialog).getByRole("combobox", { name: /payment period/i }),
+			).toHaveTextContent("01/2026");
 			expect(within(dialog).getByLabelText(/amount/i)).toHaveValue(1000);
 
 			const pendingRadio = within(dialog).getByLabelText(/pending/i);
@@ -122,15 +126,24 @@ describe("UpsertRentPaymentDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const periodInput = within(dialog).getByLabelText(/payment period/i);
+			const periodTrigger = within(dialog).getByRole("combobox", {
+				name: /payment period/i,
+			});
 			const amountInput = within(dialog).getByLabelText(/amount/i);
 
-			await user.clear(periodInput);
-			await user.type(periodInput, "2026-03");
+			await user.click(periodTrigger);
+			await user.click(screen.getByRole("button", { name: /mar/i }));
+
 			await user.type(amountInput, "1500");
 			await user.click(within(dialog).getByRole("button", { name: /save/i }));
 
-			expect(mockOnSave).toHaveBeenCalledWith(null, "2026-03", 1500, "pending");
+			const currentYear = new Date().getFullYear();
+			expect(mockOnSave).toHaveBeenCalledWith(
+				null,
+				`${currentYear}-03`,
+				1500,
+				"pending",
+			);
 			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
 		});
 
@@ -147,11 +160,14 @@ describe("UpsertRentPaymentDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const periodInput = within(dialog).getByLabelText(/payment period/i);
+			const periodTrigger = within(dialog).getByRole("combobox", {
+				name: /payment period/i,
+			});
 			const amountInput = within(dialog).getByLabelText(/amount/i);
 
-			await user.clear(periodInput);
-			await user.type(periodInput, "2026-03");
+			await user.click(periodTrigger);
+			await user.click(screen.getByRole("button", { name: /mar/i }));
+
 			await user.clear(amountInput);
 			await user.type(amountInput, "1500");
 			await user.click(within(dialog).getByRole("button", { name: /save/i }));

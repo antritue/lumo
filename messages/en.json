@@ -182,7 +182,10 @@
 				"statusPending": "Pending",
 				"statusPaid": "Paid",
 				"cancel": "Cancel",
-				"save": "Save"
+				"save": "Save",
+				"selectMonth": "Select month",
+				"clear": "Clear",
+				"thisMonth": "This month"
 			}
 		}
 	}

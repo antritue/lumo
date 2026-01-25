@@ -182,7 +182,10 @@
 				"statusPending": "Chờ thanh toán",
 				"statusPaid": "Đã thanh toán",
 				"cancel": "Hủy",
-				"save": "Lưu"
+				"save": "Lưu",
+				"selectMonth": "Chọn tháng",
+				"clear": "Xóa",
+				"thisMonth": "Tháng này"
 			}
 		}
 	}

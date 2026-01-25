@@ -11,6 +11,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { MonthPicker } from "./month-picker";
 import type { PaymentRecord, PaymentStatus } from "./types";
 
 interface UpsertRentPaymentDialogProps {
@@ -99,14 +100,11 @@ export function UpsertRentPaymentDialog({
 							<label htmlFor="period" className="text-sm font-medium">
 								{t("form.period")}
 							</label>
-							<Input
+							<MonthPicker
 								id="period"
-								type="month"
 								value={period}
-								onChange={(e) => setPeriod(e.target.value)}
-								className="text-base h-12 mt-2"
-								autoFocus
-								required
+								onChange={setPeriod}
+								className="mt-2"
 							/>
 						</div>
 

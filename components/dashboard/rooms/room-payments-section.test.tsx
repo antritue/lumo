@@ -12,12 +12,14 @@ describe("RoomPaymentsSection", () => {
 			roomId: "room-1",
 			period: "2026-01",
 			amount: 1500000,
+			status: "pending",
 		},
 		{
 			id: "2",
 			roomId: "room-1",
 			period: "2025-12",
 			amount: 1500000,
+			status: "paid",
 		},
 	];
 
@@ -56,8 +58,8 @@ describe("RoomPaymentsSection", () => {
 				/>,
 			);
 
-			expect(screen.getByText(/january 2026/i)).toBeInTheDocument();
-			expect(screen.getByText(/december 2025/i)).toBeInTheDocument();
+			expect(screen.getByText("01/2026")).toBeInTheDocument();
+			expect(screen.getByText("12/2025")).toBeInTheDocument();
 		});
 	});
 
