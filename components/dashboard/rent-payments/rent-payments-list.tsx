@@ -40,11 +40,7 @@ export function RentPaymentsList({
 
 	const formatPeriod = (period: string) => {
 		const [year, month] = period.split("-");
-		const date = new Date(Number(year), Number(month) - 1);
-		return new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
-			year: "numeric",
-			month: "long",
-		}).format(date);
+		return `${month}/${year}`;
 	};
 
 	const handleEdit = (e: React.MouseEvent, payment: PaymentRecord) => {
