@@ -106,6 +106,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 						}}
 						onSave={handleSaveAndClose}
 						defaultAmount={room.monthlyRent}
+						existingPayments={rentPayments}
 					/>
 				)}
 

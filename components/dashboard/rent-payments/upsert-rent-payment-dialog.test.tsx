@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import type { PaymentRecord } from "./types";
 import { UpsertRentPaymentDialog } from "./upsert-rent-payment-dialog";
@@ -17,7 +17,13 @@ describe("UpsertRentPaymentDialog", () => {
 	const mockOnSave = vi.fn();
 
 	beforeEach(() => {
+		// Set the mock current month to January 2026
+		vi.setSystemTime(new Date("2026-01-25"));
 		vi.clearAllMocks();
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
 	});
 
 	describe("Display", () => {
@@ -110,6 +116,36 @@ describe("UpsertRentPaymentDialog", () => {
 			await user.clear(amountInput);
 			await user.type(amountInput, "1200");
 			expect(saveButton).not.toBeDisabled();
+		});
+
+		it("disables save button and shows helper text when month is already taken", async () => {
+			const existingPayments: PaymentRecord[] = [
+				{
+					id: "p1",
+					roomId: "room-1",
+					period: "2026-01",
+					amount: 1000,
+					status: "paid",
+				},
+			];
+
+			renderWithProviders(
+				<UpsertRentPaymentDialog
+					mode="add"
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onSave={mockOnSave}
+					existingPayments={existingPayments}
+				/>,
+			);
+
+			const dialog = screen.getByRole("dialog");
+			const saveButton = within(dialog).getByRole("button", { name: /save/i });
+
+			expect(saveButton).toBeDisabled();
+			expect(
+				screen.getByText(/already exists for this month/i),
+			).toBeInTheDocument();
 		});
 	});
 

@@ -185,7 +185,10 @@
 				"save": "Lưu",
 				"selectMonth": "Chọn tháng",
 				"clear": "Xóa",
-				"thisMonth": "Tháng này"
+				"thisMonth": "Tháng này",
+				"errors": {
+					"monthOccupied": "Đã có ghi nhận thanh toán cho tháng này."
+				}
 			}
 		}
 	}
