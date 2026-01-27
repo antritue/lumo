@@ -26,6 +26,7 @@ interface UpsertRentPaymentDialogProps {
 		status: PaymentStatus,
 	) => void;
 	defaultAmount?: number | null;
+	existingPayments?: PaymentRecord[];
 }
 
 export function UpsertRentPaymentDialog({
@@ -35,6 +36,7 @@ export function UpsertRentPaymentDialog({
 	onOpenChange,
 	onSave,
 	defaultAmount,
+	existingPayments = [],
 }: UpsertRentPaymentDialogProps) {
 	const t = useTranslations("app.rentPayments");
 	const locale = useLocale();
@@ -56,6 +58,17 @@ export function UpsertRentPaymentDialog({
 	const [status, setStatus] = useState<PaymentStatus>(
 		mode === "edit" && payment ? payment.status : "pending",
 	);
+
+	// Calculate months that already have a payment for this room
+	// In edit mode, we exclude the current payment's month so it stays enabled
+	const otherPayments =
+		mode === "add"
+			? existingPayments
+			: existingPayments.filter((p) => p.id !== payment?.id);
+
+	const takenMonths = otherPayments.map((p) => p.period);
+
+	const isPeriodInvalid = period ? takenMonths.includes(period) : false;
 
 	// Reset form when dialog opens with new payment or mode changes
 	useEffect(() => {
@@ -104,6 +117,10 @@ export function UpsertRentPaymentDialog({
 								id="period"
 								value={period}
 								onChange={setPeriod}
+								disabledMonths={takenMonths}
+								helperText={
+									isPeriodInvalid ? t("form.errors.monthOccupied") : undefined
+								}
 								className="mt-2"
 							/>
 						</div>
@@ -169,7 +186,12 @@ export function UpsertRentPaymentDialog({
 							type="button"
 							size="lg"
 							className="flex-1"
-							disabled={!period || !amount || Number.parseFloat(amount) <= 0}
+							disabled={
+								!period ||
+								isPeriodInvalid ||
+								!amount ||
+								Number.parseFloat(amount) <= 0
+							}
 							onClick={handleSave}
 						>
 							{t("form.save")}

@@ -185,7 +185,10 @@
 				"save": "Save",
 				"selectMonth": "Select month",
 				"clear": "Clear",
-				"thisMonth": "This month"
+				"thisMonth": "This month",
+				"errors": {
+					"monthOccupied": "A payment record already exists for this month."
+				}
 			}
 		}
 	}

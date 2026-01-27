@@ -1,11 +1,15 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { MonthPicker } from "./month-picker";
 
 describe("MonthPicker", () => {
 	const mockOnChange = vi.fn();
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
 	describe("Display", () => {
 		it("displays formatted value", () => {
@@ -37,6 +41,18 @@ describe("MonthPicker", () => {
 			expect(screen.getByText("2026")).toBeInTheDocument();
 			expect(screen.getByRole("button", { name: /jan/i })).toBeInTheDocument();
 			expect(screen.getByRole("button", { name: /mar/i })).toBeInTheDocument();
+		});
+
+		it("displays helper text and error styles", () => {
+			renderWithProviders(
+				<MonthPicker
+					value="2026-01"
+					onChange={mockOnChange}
+					helperText="Already taken"
+				/>,
+			);
+
+			expect(screen.getByText("Already taken")).toBeInTheDocument();
 		});
 	});
 
@@ -104,6 +120,25 @@ describe("MonthPicker", () => {
 			await user.click(clearButton);
 
 			expect(mockOnChange).toHaveBeenCalledWith("");
+		});
+
+		it("disables months in the grid", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(
+				<MonthPicker
+					value="2026-01"
+					onChange={mockOnChange}
+					disabledMonths={["2026-03"]}
+				/>,
+			);
+
+			await user.click(screen.getByRole("combobox"));
+
+			const marchButton = screen.getByRole("button", { name: /mar/i });
+			expect(marchButton).toBeDisabled();
+
+			await user.click(marchButton);
+			expect(mockOnChange).not.toHaveBeenCalled();
 		});
 	});
 });
