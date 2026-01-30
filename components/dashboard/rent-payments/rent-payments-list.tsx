@@ -40,7 +40,7 @@ export function RentPaymentsList({
 
 	const formatPeriod = (period: string) => {
 		const [year, month] = period.split("-");
-		return `${month}/${year}`;
+		return `${month}-${year}`;
 	};
 
 	const handleEdit = (e: React.MouseEvent, payment: PaymentRecord) => {

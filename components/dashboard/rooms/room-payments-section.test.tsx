@@ -58,8 +58,8 @@ describe("RoomPaymentsSection", () => {
 				/>,
 			);
 
-			expect(screen.getByText("01/2026")).toBeInTheDocument();
-			expect(screen.getByText("12/2025")).toBeInTheDocument();
+			expect(screen.getByText("01-2026")).toBeInTheDocument();
+			expect(screen.getByText("12-2025")).toBeInTheDocument();
 		});
 	});
 

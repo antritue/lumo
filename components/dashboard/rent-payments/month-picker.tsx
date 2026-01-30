@@ -64,11 +64,11 @@ export function MonthPicker({
 		setIsOpen(false);
 	};
 
-	// Format display value: MM/YYYY (e.g., 01/2026)
+	// Format display value: MM-YYYY (e.g., 01-2026)
 	const displayValue = useMemo(() => {
 		if (!value) return "";
 		const [year, month] = value.split("-");
-		return `${month}/${year}`;
+		return `${month}-${year}`;
 	}, [value]);
 
 	return (

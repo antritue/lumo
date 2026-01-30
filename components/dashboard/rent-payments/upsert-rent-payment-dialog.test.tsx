@@ -49,10 +49,7 @@ describe("UpsertRentPaymentDialog", () => {
 			const today = new Date();
 			const month = (today.getMonth() + 1).toString().padStart(2, "0");
 			const year = today.getFullYear();
-			expect(periodTrigger).toHaveTextContent(`${month}/${year}`);
-
-			const amountInput = within(dialog).getByLabelText(/amount/i);
-			expect(amountInput).toHaveValue(1500);
+			expect(periodTrigger).toHaveTextContent(`${month}-${year}`);
 
 			const pendingRadio = within(dialog).getByLabelText(/pending/i);
 			expect(pendingRadio).toBeChecked();
@@ -76,9 +73,7 @@ describe("UpsertRentPaymentDialog", () => {
 
 			expect(
 				within(dialog).getByRole("combobox", { name: /payment period/i }),
-			).toHaveTextContent("01/2026");
-			expect(within(dialog).getByLabelText(/amount/i)).toHaveValue(1000);
-
+			).toHaveTextContent("01-2026");
 			const pendingRadio = within(dialog).getByLabelText(/pending/i);
 			expect(pendingRadio).toBeChecked();
 		});

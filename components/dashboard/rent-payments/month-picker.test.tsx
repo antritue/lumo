@@ -18,7 +18,7 @@ describe("MonthPicker", () => {
 			);
 
 			const trigger = screen.getByRole("combobox");
-			expect(trigger).toHaveTextContent("01/2026");
+			expect(trigger).toHaveTextContent("01-2026");
 		});
 
 		it("displays placeholder when empty", () => {

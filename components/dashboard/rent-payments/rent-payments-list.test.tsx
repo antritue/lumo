@@ -36,14 +36,13 @@ describe("RentPaymentsList", () => {
 		it("displays payment records with formatted period, amount and status", () => {
 			renderWithProviders(<RentPaymentsList payments={mockPayments} />);
 
-			expect(screen.getByText("01/2026")).toBeInTheDocument();
+			expect(screen.getByText("01-2026")).toBeInTheDocument();
 			expect(screen.getByText("$5,000,000")).toBeInTheDocument();
 			expect(screen.getByText("Pending")).toBeInTheDocument();
-			expect(screen.getByText("12/2025")).toBeInTheDocument();
+			expect(screen.getByText("12-2025")).toBeInTheDocument();
 			expect(screen.getByText("$4,500,000")).toBeInTheDocument();
 			expect(screen.getByText("Paid")).toBeInTheDocument();
 		});
-
 		it("shows no action buttons when no handlers provided", () => {
 			renderWithProviders(<RentPaymentsList payments={mockPayments} />);
 
