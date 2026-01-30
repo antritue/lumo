@@ -50,13 +50,14 @@ describe("RoomDetail", () => {
 
 			await user.click(screen.getByRole("button", { name: /delete/i }));
 
-			expect(screen.getByText(/delete room\?/i)).toBeInTheDocument();
+			expect(
+				screen.getByRole("heading", { name: /delete room\?/i }),
+			).toBeInTheDocument();
 		});
 
 		it("opens add payment dialog when add payment is clicked", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(<RoomDetail room={mockRoom} />);
-
 			await user.click(screen.getByRole("button", { name: /add payment/i }));
 
 			expect(screen.getByText(/payment period/i)).toBeInTheDocument();
