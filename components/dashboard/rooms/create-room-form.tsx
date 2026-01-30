@@ -91,7 +91,7 @@ export function CreateRoomForm({
 					value={notes}
 					onChange={(e) => setNotes(e.target.value)}
 					placeholder={t("notesPlaceholder")}
-					className="text-base min-h-[100px] resize-none"
+					className="text-base min-h-25 resize-none"
 					rows={4}
 				/>
 			</div>

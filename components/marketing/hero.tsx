@@ -17,9 +17,9 @@ export async function Hero() {
 			</div>
 
 			{/* Content Container: Fixed width on sm+ to prevent layout shift */}
-			<div className="text-center w-full sm:w-[640px] lg:w-[768px] mx-auto">
+			<div className="text-center w-full sm:w-160 lg:w-3xl mx-auto">
 				{/* Badge */}
-				<div className="inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 w-[320px] animate-in fade-in zoom-in duration-500">
+				<div className="inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 w-80 animate-in fade-in zoom-in duration-500">
 					<Sun className="h-4 w-4 text-primary shrink-0" />
 					<span className="text-sm font-medium text-primary line-clamp-1">
 						{t("badge")}
@@ -39,7 +39,7 @@ export async function Hero() {
 				{/* CTAs */}
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
 					<Link href="/dashboard" target="_blank">
-						<Button size="lg" className="h-12 px-8 text-base w-[220px]">
+						<Button size="lg" className="h-12 px-8 text-base w-55">
 							{t("launchApp")}
 							<ArrowRight className="ml-2 h-5 w-5" />
 						</Button>
@@ -49,7 +49,7 @@ export async function Hero() {
 							<Button
 								size="lg"
 								variant="outline"
-								className="h-12 px-8 text-base w-[220px]"
+								className="h-12 px-8 text-base w-55"
 							>
 								{t("cta")}
 							</Button>
@@ -59,7 +59,7 @@ export async function Hero() {
 
 				{/* Preview UI */}
 				<div className="mt-16 mx-auto w-full rounded-2xl bg-white border border-border shadow-soft-lg p-2 sm:p-4 animate-in fade-in zoom-in duration-1000 delay-500">
-					<div className="rounded-xl bg-muted/30 p-8 min-h-[300px] flex items-center justify-center border border-dashed border-border">
+					<div className="rounded-xl bg-muted/30 p-8 min-h-75 flex items-center justify-center border border-dashed border-border">
 						<div className="text-center">
 							<div className="mx-auto w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4">
 								<Sun className="h-8 w-8 text-primary" />

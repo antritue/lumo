@@ -12,7 +12,7 @@ export async function Header() {
 			<nav className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
-					<div className="w-[120px]">
+					<div className="w-30">
 						<Link href="/" className="flex items-center gap-2">
 							<Logo />
 						</Link>
@@ -21,26 +21,26 @@ export async function Header() {
 					<div className="hidden md:flex md:items-center md:gap-8">
 						<Link
 							href="/#problems"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-[90px] text-center"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-22 text-center"
 						>
 							{t("problems")}
 						</Link>
 						<Link
 							href="/#features"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-[90px] text-center"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-22 text-center"
 						>
 							{t("features")}
 						</Link>
 						<Link
 							href="/#pricing"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-[90px] text-center"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-22 text-center"
 						>
 							{t("pricing")}
 						</Link>
 					</div>
 
 					{/* Actions */}
-					<div className="flex items-center gap-4 w-[120px] justify-end">
+					<div className="flex items-center gap-4 w-30 justify-end">
 						<LanguageSwitcher />
 						<MobileMenu />
 					</div>
