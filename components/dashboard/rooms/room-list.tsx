@@ -68,7 +68,7 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 				<p className="text-sm text-muted-foreground mb-4 text-center">
 					{t("emptySubtitle")}
 				</p>
-				<Button onClick={() => setIsAdding(true)} size="lg">
+				<Button onClick={() => setIsAdding(true)} size="default">
 					<Plus className="mr-2 h-5 w-5" />
 					{t("addButton")}
 				</Button>

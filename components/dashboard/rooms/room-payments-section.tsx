@@ -27,7 +27,7 @@ export function RoomPaymentsSection({
 				<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
 					{t("listTitle")}
 				</h2>
-				<Button onClick={onAdd} variant="outline" size="sm">
+				<Button onClick={onAdd} variant="default" size="sm">
 					<Plus className="mr-2 h-4 w-4" />
 					{t("addButton")}
 				</Button>

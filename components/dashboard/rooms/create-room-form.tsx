@@ -99,7 +99,7 @@ export function CreateRoomForm({
 			<div className={showCancel ? "flex gap-3" : ""}>
 				<Button
 					type="submit"
-					size="lg"
+					size="default"
 					className={showCancel ? "flex-1" : "w-full"}
 					disabled={!roomName.trim()}
 				>
@@ -107,7 +107,12 @@ export function CreateRoomForm({
 					{t("addButton")}
 				</Button>
 				{showCancel && onCancel && (
-					<Button type="button" variant="outline" size="lg" onClick={onCancel}>
+					<Button
+						type="button"
+						variant="outline"
+						size="default"
+						onClick={onCancel}
+					>
 						{t("cancel")}
 					</Button>
 				)}
