@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/dashboard/islands/language-switcher";
+import { JoinWaitlistDialog } from "@/components/shared/join-waitlist-dialog";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,9 +50,13 @@ export function AppHeader() {
 					</div>
 					<div className="flex items-center gap-2 sm:gap-4">
 						<LanguageSwitcher />
-						<Button variant="outline" className="w-24 text-sm px-3">
-							{t("signIn")}
-						</Button>
+						<JoinWaitlistDialog
+							trigger={
+								<Button variant="outline" className="w-24 text-sm px-3">
+									{t("signIn")}
+								</Button>
+							}
+						/>
 					</div>
 				</div>
 			</nav>
