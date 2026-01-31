@@ -17,7 +17,9 @@
 		"subtext": "Lumo giúp bạn nắm rõ tình trạng thanh toán. Không bảng tính, không áp lực.\nTheo dõi phòng và trạng thái thanh toán tại một nơi duy nhất.",
 		"cta": "Đăng ký sớm",
 		"launchApp": "Mở ứng dụng",
-		"preview": "Xem trước giao diện"
+		"previewProperties": "Giao diện quản lý nhà cho thuê hiển thị phòng và trạng thái thanh toán",
+		"previewRoom": "Giao diện chi tiết phòng hiển thị lịch sử thanh toán",
+		"carouselLabel": "Xem trước các trang"
 	},
 	"features": {
 		"title": "Đầy đủ tính năng, gọn nhẹ tối ưu",

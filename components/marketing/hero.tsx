@@ -2,6 +2,7 @@ import { ArrowRight, Sun } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { JoinWaitlistDialog } from "@/components/marketing/islands/join-waitlist-dialog";
+import { PreviewCarousel } from "@/components/marketing/islands/preview-carousel";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 
@@ -59,16 +60,7 @@ export async function Hero() {
 
 				{/* Preview UI */}
 				<div className="mt-16 mx-auto w-full rounded-2xl bg-white border border-border shadow-soft-lg p-2 sm:p-4 animate-in fade-in zoom-in duration-1000 delay-500">
-					<div className="rounded-xl bg-muted/30 p-8 min-h-75 flex items-center justify-center border border-dashed border-border">
-						<div className="text-center">
-							<div className="mx-auto w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4">
-								<Sun className="h-8 w-8 text-primary" />
-							</div>
-							<p className="text-muted-foreground font-medium">
-								{t("preview")}
-							</p>
-						</div>
-					</div>
+					<PreviewCarousel />
 				</div>
 			</div>
 		</Section>

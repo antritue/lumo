@@ -17,7 +17,9 @@
 		"subtext": "Lumo gives you clear answers about rent payments. No spreadsheets, no stress.\nTrack rooms and payment status in one calm place.",
 		"cta": "Get Early Access",
 		"launchApp": "Launch App",
-		"preview": "App Interface Preview"
+		"previewProperties": "Properties management view showing rooms and rent status",
+		"previewRoom": "Room detail view showing payment records",
+		"carouselLabel": "Preview slides"
 	},
 	"features": {
 		"title": "Everything you need, nothing you don't",
