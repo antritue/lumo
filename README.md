@@ -10,8 +10,8 @@ Lumo is a simple, calm, and reliable tool designed to help landlords manage rent
 
 The project documentation is split into two main guides:
 
-*   **[Product Overview](./docs/PRODUCT.md)**: Understand the "Why" behind Lumo - target audience, core problems we solve, principles, and roadmap.
-*   **[Development Guide](./docs/DEVELOPMENT.md)**: Understand the "How" - tech stack, project structure, setup instructions, and coding conventions.
+*   **[Product Overview](./docs/product.md)**: Understand the "Why" behind Lumo - target audience, core problems we solve, principles, and roadmap.
+*   **[Development Guide](./docs/development.md)**: Understand the "How" - tech stack, project structure, setup instructions, and coding conventions.
 
 ---
 
@@ -25,7 +25,7 @@ If you just want to get the app running locally:
 
 ### Setup
 1. `npm install`
-2. Create `.env.local` (refer to `DEVELOPMENT.md` for required variables)
+2. Create `.env.local` (refer to `development.md` for required variables)
 3. `npm run dev`
 
 Navigate to [http://localhost:3000](http://localhost:3000).

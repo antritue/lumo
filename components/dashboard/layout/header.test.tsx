@@ -13,8 +13,21 @@ vi.mock("next/navigation", () => ({
 	})),
 }));
 
+// Mock useAuth
+const mockUseAuth = vi.fn();
+vi.mock("@/components/dashboard/auth", () => ({
+	useAuth: () => mockUseAuth(),
+}));
+
 describe("AppHeader", () => {
-	it("renders logo and sign in button", () => {
+	it("renders logo and sign in button when signed out", () => {
+		mockUseAuth.mockReturnValue({
+			user: null,
+			loading: false,
+			signInWithGoogle: vi.fn(),
+			signOut: vi.fn(),
+		});
+
 		renderWithProviders(<AppHeader />);
 
 		expect(screen.getByRole("link", { name: /lumo/i })).toBeInTheDocument();
@@ -23,7 +36,29 @@ describe("AppHeader", () => {
 		).toBeInTheDocument();
 	});
 
+	it("renders sign out button when signed in", () => {
+		mockUseAuth.mockReturnValue({
+			user: { email: "test@example.com" },
+			loading: false,
+			signInWithGoogle: vi.fn(),
+			signOut: vi.fn(),
+		});
+
+		renderWithProviders(<AppHeader />);
+
+		expect(
+			screen.getByRole("button", { name: /sign out/i }),
+		).toBeInTheDocument();
+	});
+
 	it("renders mobile menu button", () => {
+		mockUseAuth.mockReturnValue({
+			user: null,
+			loading: false,
+			signInWithGoogle: vi.fn(),
+			signOut: vi.fn(),
+		});
+
 		renderWithProviders(<AppHeader />);
 
 		// The menu button is hidden on desktop but exists in DOM

@@ -15,7 +15,7 @@ We use a modern, type-safe stack designed for stability and developer experience
 -   **Styling**: [Tailwind CSS 4](https://tailwindcss.com) - Utility-first styling with inline themes.
 -   **Component Library**: [shadcn/ui](https://ui.shadcn.com) - Reusable components built with Radix UI and Tailwind.
 -   **UI Primitives**: [Radix UI](https://www.radix-ui.com) - The underlying accessible primitives.
--   **Database**: [Supabase](https://supabase.com) - Postgres database and authentication.
+-   **Database & Auth**: [Supabase](https://supabase.com) - Postgres database and Google-only authentication.
 -   **State Management**: [Zustand](https://zustand-demo.pmnd.rs) - Lightweight state management for domain logic.
 -   **Validation**: [Zod](https://zod.dev) - Schema validation for API and forms.
 -   **Internationalization**: [next-intl](https://next-intl-docs.vercel.app) - App-wide localization.
@@ -94,8 +94,9 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 
 ## Data & State
 
-We use **Zustand** for domain state (properties, rooms, rent data). Stores live within feature folders (e.g., `components/dashboard/properties/store.ts`).
+We use **Zustand** for domain state (properties, rooms, rent data, and auth). Stores live within feature folders (e.g., `components/dashboard/properties/store.ts`).
 
+-   **Authentication**: Managed via Supabase Auth (Google-only). See [auth.md](./auth.md) for flow details and configuration.
 -   **Store Access**: Components use hooks directly—no prop drilling.
     ```typescript
     const properties = usePropertiesStore((state) => state.properties);
@@ -141,7 +142,7 @@ We strictly use **Biome** for both linting and formatting.
 -   **Commit Messages**: Use conventional format: `prefix: description`
     -   `feat: add room creation flow`
     -   `fix: resolve infinite loop in property detail`
-    -   `docs: update DEVELOPMENT.md`
+    -   `docs: update development.md`
 -   **Prefixes**:
     -   `feat`: New feature
     -   `fix`: Bug fix

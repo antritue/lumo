@@ -9,7 +9,14 @@
 		"features": "Features",
 		"pricing": "Pricing",
 		"signIn": "Sign In",
+		"signOut": "Sign Out",
 		"menu": "Menu"
+	},
+	"auth": {
+		"error": {
+			"title": "Auth failed",
+			"description": "Something went wrong during authentication. Please try again."
+		}
 	},
 	"hero": {
 		"badge": "Clear rent payment tracking",

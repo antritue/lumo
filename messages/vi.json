@@ -9,7 +9,14 @@
 		"features": "Tính năng",
 		"pricing": "Bảng giá",
 		"signIn": "Đăng nhập",
+		"signOut": "Đăng xuất",
 		"menu": "Menu"
+	},
+	"auth": {
+		"error": {
+			"title": "Lỗi xác thực",
+			"description": "Đã có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại."
+		}
 	},
 	"hero": {
 		"badge": "Theo dõi tiền thuê rõ ràng",
