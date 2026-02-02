@@ -36,13 +36,20 @@ sequenceDiagram
 ## Configuration Guidelines
 
 ### 1. Google Cloud Console
-- **Project**: Create/Select a project in [Google Cloud Console](https://console.cloud.google.com/).
-- **Authorized redirect URIs**: You must whitelist the Supabase callback URL.
-  - **Development**: `https://[YOUR_PROJECT_ID].supabase.co/auth/v1/callback`
-  - **Production**: Ensure the same project (or a dedicated production one) has this URI whitelisted. *Google requires the Supabase URL, not your domain.*
-- **Publishing Status**: In the "OAuth consent screen" tab, you must click **"Publish App"** to move from *Testing* to *Production*. 
-  - *Testing mode* restricts logins to white-listed "Test users" only.
-  - *Production mode* allows any Google user to log in (within the unverified limit).
+- **Clients** (Edit your OAuth 2.0 Client ID):
+  - **Authorized redirect URIs**: You must whitelist the Supabase callback URL.
+    - **Development**: `https://[YOUR_DEV_PROJECT_ID].supabase.co/auth/v1/callback`
+    - **Production**: `https://[YOUR_PROD_PROJECT_ID].supabase.co/auth/v1/callback`
+  - **Authorized JavaScript origins**: Add your primary domains.
+    - `http://localhost:3000`
+    - `https://www.lumo.homes`
+- **Branding** (OAuth consent screen):
+  - **Authorized domains**: Add your own domain and your provider's domain.
+    - `lumo.homes`
+    - `supabase.co`
+  - **Publishing Status**: Click **"Publish App"** to move from *Testing* to *Production*. 
+    - *Testing mode* restricts logins to white-listed "Test users" only.
+    - *Production mode* allows any Google user to log in (within the unverified limit).
 
 ### 2. Supabase Dashboard
 - **Authentication > Providers**: Enable Google.
@@ -51,9 +58,7 @@ sequenceDiagram
   - **Site URL**: 
     - Development: `http://localhost:3000`
     - Production: `https://www.lumo.homes`
-  - **Redirect URIs**: 
-    - Add `http://localhost:3000/api/auth/callback` for local testing.
-    - Add `https://www.lumo.homes/api/auth/callback` for production.
+  - **Redirect URIs**: Can be left empty. Supabase automatically trusts any redirect that matches the **Site URL** (and its sub-paths).
 
 ### 3. Environment Variables
 Ensure these vary between your environment:

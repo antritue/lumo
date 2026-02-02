@@ -46,6 +46,21 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 
 ---
 
+## Infrastructure & Environments
+
+We use a multi-project setup to balance development speed with production data safety.
+
+-   **Dual Supabase Projects**: We maintain separate projects for **Development** and **Production**. This ensures test user data is isolated and protects real records.
+-   **Single Google Cloud Project**: A single OAuth project is used for both environments to maintain unified branding and simplify the app verification process.
+-   **Site URL Security**: Login security is enforced via the **Site URL** setting in the Supabase Dashboard. This removes the need for additional "Redirect URI" whitelisting as long as the code matches the Site URL.
+    -   **Development**: `http://localhost:3000`
+    -   **Production**: `https://www.lumo.homes`
+-   **Environment Isolation**: Projects are connected via environment variables:
+    -   `Local`: Connected to the Dev project via `.env.local`.
+    -   `Production`: Connected to the Prod project via Vercel settings.
+
+---
+
 ## Local Development
 
 ### Prerequisites
