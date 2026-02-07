@@ -21,6 +21,22 @@ export async function Footer() {
 						{t("forOwners")}
 					</p>
 
+					<div className="flex items-center gap-4 text-sm text-muted-foreground">
+						<a
+							href="/privacy"
+							className="hover:text-foreground transition-colors"
+						>
+							Privacy Policy
+						</a>
+						<span className="text-muted-foreground/40">·</span>
+						<a
+							href="/terms"
+							className="hover:text-foreground transition-colors"
+						>
+							Terms of Service
+						</a>
+					</div>
+
 					<p className="text-xs text-muted-foreground/60">
 						{t("copyright", { year: new Date().getFullYear() })}
 					</p>
