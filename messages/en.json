@@ -116,6 +116,11 @@
 			"title": "Lumo - Dashboard",
 			"description": "Track your properties, rooms, and rent status in one dashboard"
 		},
+		"authBanner": {
+			"title": "You’re not signed in",
+			"message": "Sign in to save your data across devices",
+			"close": "Dismiss"
+		},
 		"sidebar": {
 			"properties": "Properties"
 		},

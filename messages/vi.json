@@ -116,6 +116,11 @@
 			"title": "Lumo - Bảng điều khiển",
 			"description": "Theo dõi nhà cho thuê, phòng và trạng thái thanh toán trong một bảng điều khiển"
 		},
+		"authBanner": {
+			"title": "Bạn chưa đăng nhập",
+			"message": "Đăng nhập để lưu dữ liệu của bạn trên các thiết bị",
+			"close": "Đóng"
+		},
 		"sidebar": {
 			"properties": "Nhà cho thuê"
 		},

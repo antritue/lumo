@@ -13,6 +13,10 @@ describe("AuthStore", () => {
 		expect(loading).toBe(true);
 	});
 
+	it("initializes isAuthBannerDismissed as false by default", () => {
+		expect(useAuthStore.getState().isAuthBannerDismissed).toBe(false);
+	});
+
 	it("updates user state", () => {
 		const mockUser = { id: "123", email: "test@example.com" } as User;
 		useAuthStore.getState().setUser(mockUser);
@@ -24,5 +28,11 @@ describe("AuthStore", () => {
 		useAuthStore.getState().setLoading(false);
 
 		expect(useAuthStore.getState().loading).toBe(false);
+	});
+
+	it("updates dismissal state", () => {
+		useAuthStore.getState().dismissAuthBanner();
+
+		expect(useAuthStore.getState().isAuthBannerDismissed).toBe(true);
 	});
 });

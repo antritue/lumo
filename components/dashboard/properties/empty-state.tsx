@@ -10,7 +10,7 @@ export function EmptyState() {
 	const createProperty = usePropertiesStore((state) => state.createProperty);
 
 	return (
-		<div className="flex flex-col items-center justify-center py-16 sm:py-24">
+		<div className="flex flex-col items-center justify-center">
 			<div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary/50 mb-6">
 				<Home className="h-10 w-10 text-muted-foreground" />
 			</div>
