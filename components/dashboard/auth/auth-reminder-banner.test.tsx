@@ -1,5 +1,6 @@
 import type { User } from "@supabase/supabase-js";
-import { fireEvent, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { AuthReminderBanner } from "./auth-reminder-banner";
@@ -55,14 +56,15 @@ describe("AuthReminderBanner", () => {
 		).not.toBeInTheDocument();
 	});
 
-	it("calls dismissAuthBanner when close button is clicked", () => {
+	it("calls dismissAuthBanner when close button is clicked", async () => {
+		const user = userEvent.setup();
 		const dismissSpy = vi.fn();
 		useAuthStore.setState({ dismissAuthBanner: dismissSpy });
 
 		renderWithProviders(<AuthReminderBanner />);
 
 		const closeButton = screen.getByRole("button", { name: /dismiss/i });
-		fireEvent.click(closeButton);
+		await user.click(closeButton);
 
 		expect(dismissSpy).toHaveBeenCalledTimes(1);
 	});
