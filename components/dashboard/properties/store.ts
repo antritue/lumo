@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { Property } from "./types";
 
 interface PropertiesState {
@@ -17,16 +18,43 @@ export const usePropertiesStore = create<PropertiesState>()(
 		(set, _get) => ({
 			properties: [],
 
-			createProperty: (name) =>
-				set((state) => ({
-					properties: [
-						...state.properties,
-						{
-							id: crypto.randomUUID(),
-							name,
-						},
-					],
-				})),
+			createProperty: async (name) => {
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					try {
+						const res = await fetch("/api/properties", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ name }),
+							credentials: "include",
+						});
+
+						if (!res.ok) {
+							throw new Error("Failed to create property");
+						}
+
+						const data = await res.json();
+
+						set((state) => ({
+							properties: [...state.properties, data],
+						}));
+					} catch (error) {
+						console.error("Failed to create property:", error);
+						// Optional: You could show a toast here or handle error state
+					}
+				} else {
+					set((state) => ({
+						properties: [
+							...state.properties,
+							{
+								id: crypto.randomUUID(),
+								name,
+							},
+						],
+					}));
+				}
+			},
 
 			updateProperty: (id, name) =>
 				set((state) => ({
