@@ -4,6 +4,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { MonthPicker } from "./month-picker";
 
+function getViewYear(value: string): number {
+	return new Date(`${value}-01`).getFullYear();
+}
+
 describe("MonthPicker", () => {
 	const mockOnChange = vi.fn();
 
@@ -30,15 +34,18 @@ describe("MonthPicker", () => {
 
 		it("displays month grid when opened", async () => {
 			const user = userEvent.setup();
+			const testValue = "2026-01";
+			const expectedYear = getViewYear(testValue);
+
 			renderWithProviders(
-				<MonthPicker value="2026-01" onChange={mockOnChange} />,
+				<MonthPicker value={testValue} onChange={mockOnChange} />,
 			);
 
 			const trigger = screen.getByRole("combobox");
 			await user.click(trigger);
 
 			// Check for year and month names
-			expect(screen.getByText("2026")).toBeInTheDocument();
+			expect(screen.getByText(String(expectedYear))).toBeInTheDocument();
 			expect(screen.getByRole("button", { name: /jan/i })).toBeInTheDocument();
 			expect(screen.getByRole("button", { name: /mar/i })).toBeInTheDocument();
 		});
@@ -59,8 +66,11 @@ describe("MonthPicker", () => {
 	describe("Interactions", () => {
 		it("selects a month", async () => {
 			const user = userEvent.setup();
+			const testValue = "2026-01";
+			const expectedYear = getViewYear(testValue);
+
 			renderWithProviders(
-				<MonthPicker value="2026-01" onChange={mockOnChange} />,
+				<MonthPicker value={testValue} onChange={mockOnChange} />,
 			);
 
 			const trigger = screen.getByRole("combobox");
@@ -69,13 +79,16 @@ describe("MonthPicker", () => {
 			const marchButton = screen.getByRole("button", { name: /mar/i });
 			await user.click(marchButton);
 
-			expect(mockOnChange).toHaveBeenCalledWith("2026-03");
+			expect(mockOnChange).toHaveBeenCalledWith(`${expectedYear}-03`);
 		});
 
 		it("changes years", async () => {
 			const user = userEvent.setup();
+			const testValue = "2026-01";
+			const expectedYear = getViewYear(testValue);
+
 			renderWithProviders(
-				<MonthPicker value="2026-01" onChange={mockOnChange} />,
+				<MonthPicker value={testValue} onChange={mockOnChange} />,
 			);
 
 			await user.click(screen.getByRole("combobox"));
@@ -86,10 +99,10 @@ describe("MonthPicker", () => {
 			if (!nextYearButton) throw new Error("Next year button not found");
 
 			await user.click(nextYearButton);
-			expect(screen.getByText("2027")).toBeInTheDocument();
+			expect(screen.getByText(String(expectedYear + 1))).toBeInTheDocument();
 
 			await user.click(screen.getByRole("button", { name: /mar/i }));
-			expect(mockOnChange).toHaveBeenCalledWith("2027-03");
+			expect(mockOnChange).toHaveBeenCalledWith(`${expectedYear + 1}-03`);
 		});
 
 		it("selects current month shortcut", async () => {
@@ -124,11 +137,15 @@ describe("MonthPicker", () => {
 
 		it("disables months in the grid", async () => {
 			const user = userEvent.setup();
+			const testValue = "2026-01";
+			const expectedYear = getViewYear(testValue);
+			const disabledMonth = `${expectedYear}-03`;
+
 			renderWithProviders(
 				<MonthPicker
-					value="2026-01"
+					value={testValue}
 					onChange={mockOnChange}
-					disabledMonths={["2026-03"]}
+					disabledMonths={[disabledMonth]}
 				/>,
 			);
 

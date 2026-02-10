@@ -5,6 +5,10 @@ import { renderWithProviders } from "@/test/render";
 import type { PaymentRecord } from "./types";
 import { UpsertRentPaymentDialog } from "./upsert-rent-payment-dialog";
 
+function getViewYear(value: string): number {
+	return new Date(`${value}-01`).getFullYear();
+}
+
 describe("UpsertRentPaymentDialog", () => {
 	const mockPayment: PaymentRecord = {
 		id: "1",
@@ -168,10 +172,11 @@ describe("UpsertRentPaymentDialog", () => {
 			await user.type(amountInput, "1500");
 			await user.click(within(dialog).getByRole("button", { name: /save/i }));
 
-			const currentYear = new Date().getFullYear();
+			const expectedYear = getViewYear("2026-01");
+
 			expect(mockOnSave).toHaveBeenCalledWith(
 				null,
-				`${currentYear}-03`,
+				`${expectedYear}-03`,
 				1500,
 				"pending",
 			);
@@ -203,7 +208,14 @@ describe("UpsertRentPaymentDialog", () => {
 			await user.type(amountInput, "1500");
 			await user.click(within(dialog).getByRole("button", { name: /save/i }));
 
-			expect(mockOnSave).toHaveBeenCalledWith("1", "2026-03", 1500, "pending");
+			const expectedYear = getViewYear(mockPayment.period);
+
+			expect(mockOnSave).toHaveBeenCalledWith(
+				"1",
+				`${expectedYear}-03`,
+				1500,
+				"pending",
+			);
 			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
 		});
 
