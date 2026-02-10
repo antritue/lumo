@@ -32,10 +32,13 @@ export function MonthPicker({
 	const locale = useLocale();
 	const [isOpen, setIsOpen] = useState(false);
 
-	// Parse current value or use current date
+	// Parse current value or use current date (work with YYYY-MM strings to avoid timezone issues)
 	const today = new Date();
-	const initialDate = value ? new Date(`${value}-01`) : today;
-	const [viewYear, setViewYear] = useState(initialDate.getFullYear());
+	const currentYearMonth = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`;
+	const initialYear = value
+		? parseInt(value.split("-")[0])
+		: today.getFullYear();
+	const [viewYear, setViewYear] = useState(initialYear);
 
 	// Generate month names for the current locale
 	const monthNames = useMemo(() => {
@@ -120,9 +123,7 @@ export function MonthPicker({
 							{monthNames.map((month, index) => {
 								const monthValue = `${viewYear}-${(index + 1).toString().padStart(2, "0")}`;
 								const isSelected = value === monthValue;
-								const isCurrent =
-									today.getFullYear() === viewYear &&
-									today.getMonth() === index;
+								const isCurrent = currentYearMonth === monthValue;
 								const isDisabled = disabledMonths.includes(monthValue);
 
 								return (
