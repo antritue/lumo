@@ -1,15 +1,19 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { supabase } from "@/lib/supabase";
 import type { WaitlistInput } from "@/lib/validations/waitlist";
 import { POST } from "./route";
 
-vi.mock("@/lib/supabase", () => ({
-	supabase: {
-		from: vi.fn(() => ({
-			insert: vi.fn(),
-		})),
-	},
+// Mock the server client
+const mockInsert = vi.fn();
+
+vi.mock("@/lib/supabase-server", () => ({
+	createSupabaseServerClient: vi.fn(() =>
+		Promise.resolve({
+			from: vi.fn(() => ({
+				insert: mockInsert,
+			})),
+		}),
+	),
 }));
 
 describe("POST /api/waitlist", () => {
@@ -25,8 +29,7 @@ describe("POST /api/waitlist", () => {
 	};
 
 	it("should return 201 when valid email is submitted", async () => {
-		const mockInsert = vi.fn().mockResolvedValue({ error: null });
-		vi.mocked(supabase.from).mockReturnValue({ insert: mockInsert } as never);
+		mockInsert.mockResolvedValue({ error: null });
 
 		const req = createRequest({ email: "test@example.com" });
 		const res = await POST(req);
@@ -47,10 +50,9 @@ describe("POST /api/waitlist", () => {
 	});
 
 	it("should return 200 when email already exists (Postgres 23505)", async () => {
-		const mockInsert = vi.fn().mockResolvedValue({
+		mockInsert.mockResolvedValue({
 			error: { code: "23505" },
 		});
-		vi.mocked(supabase.from).mockReturnValue({ insert: mockInsert } as never);
 
 		const req = createRequest({ email: "duplicate@example.com" });
 		const res = await POST(req);
@@ -61,10 +63,9 @@ describe("POST /api/waitlist", () => {
 	});
 
 	it("should return 500 when database error occurs", async () => {
-		const mockInsert = vi.fn().mockResolvedValue({
+		mockInsert.mockResolvedValue({
 			error: { code: "some-other-error", message: "DB failure" },
 		});
-		vi.mocked(supabase.from).mockReturnValue({ insert: mockInsert } as never);
 
 		const req = createRequest({ email: "error@example.com" });
 		const res = await POST(req);

@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { waitlistSchema } from "@/lib/validations/waitlist";
 
 export async function POST(request: NextRequest) {
@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
 		}
 
 		const { email } = validation.data;
+		const supabase = await createSupabaseServerClient();
 
 		const { error } = await supabase
 			.from(DATABASE_TABLES.WAITLIST)

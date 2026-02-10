@@ -1,5 +1,6 @@
 export const DATABASE_TABLES = {
 	WAITLIST: "waitlist",
+	PROPERTIES: "properties",
 };
 
 export const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
