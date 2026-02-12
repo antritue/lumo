@@ -36,7 +36,7 @@ export function MonthPicker({
 	const today = new Date();
 	const currentYearMonth = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}`;
 	const initialYear = value
-		? parseInt(value.split("-")[0])
+		? parseInt(value.split("-")[0], 10)
 		: today.getFullYear();
 	const [viewYear, setViewYear] = useState(initialYear);
 
