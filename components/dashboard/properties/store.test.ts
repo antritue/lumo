@@ -16,9 +16,111 @@ global.fetch = mockFetch;
 
 describe("PropertiesStore", () => {
 	beforeEach(() => {
-		usePropertiesStore.setState({ properties: [] });
+		usePropertiesStore.setState({
+			properties: [],
+			isLoading: false,
+			hasFetched: false,
+		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
+	});
+
+	describe("fetchProperties", () => {
+		it("does not fetch when unauthenticated", async () => {
+			await usePropertiesStore.getState().fetchProperties();
+
+			expect(mockFetch).not.toHaveBeenCalled();
+			expect(usePropertiesStore.getState().properties).toEqual([]);
+		});
+
+		it("fetches and sets properties when authenticated", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			const mockProperties = [
+				{
+					id: "1",
+					name: "Property 1",
+					userId: "user-123",
+				},
+				{
+					id: "2",
+					name: "Property 2",
+					userId: "user-123",
+				},
+			];
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => mockProperties,
+			});
+
+			await usePropertiesStore.getState().fetchProperties();
+
+			const { properties, isLoading } = usePropertiesStore.getState();
+			expect(properties).toEqual(mockProperties);
+			expect(isLoading).toBe(false);
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/properties",
+				expect.objectContaining({
+					method: "GET",
+					credentials: "include",
+				}),
+			);
+		});
+
+		it("handles fetch error gracefully", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+			});
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await usePropertiesStore.getState().fetchProperties();
+
+			const { properties, isLoading } = usePropertiesStore.getState();
+			expect(properties).toEqual([]);
+			expect(isLoading).toBe(false);
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
+		});
+
+		it("prevents duplicate fetches when already fetched", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			const mockProperties = [
+				{
+					id: "1",
+					name: "Property 1",
+					userId: "user-123",
+					createdAt: "2026-01-01",
+					updatedAt: "2026-01-01",
+				},
+			];
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => mockProperties,
+			});
+
+			// First fetch
+			await usePropertiesStore.getState().fetchProperties();
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+
+			// Second fetch should be prevented
+			await usePropertiesStore.getState().fetchProperties();
+			expect(mockFetch).toHaveBeenCalledTimes(1); // Still 1, not 2
+		});
 	});
 
 	describe("createProperty", () => {
@@ -30,6 +132,7 @@ describe("PropertiesStore", () => {
 			expect(properties[0]).toEqual({
 				id: "test-uuid",
 				name: "Local Property",
+				userId: "",
 			});
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
@@ -91,8 +194,8 @@ describe("PropertiesStore", () => {
 		// Setup local properties
 		usePropertiesStore.setState({
 			properties: [
-				{ id: "1", name: "First" },
-				{ id: "2", name: "Second" },
+				{ id: "1", userId: "user-1", name: "First" },
+				{ id: "2", userId: "user-1", name: "Second" },
 			],
 		});
 
@@ -106,8 +209,8 @@ describe("PropertiesStore", () => {
 	it("deletes target property only", () => {
 		usePropertiesStore.setState({
 			properties: [
-				{ id: "1", name: "Keep" },
-				{ id: "2", name: "Delete" },
+				{ id: "1", userId: "user-1", name: "Keep" },
+				{ id: "2", userId: "user-1", name: "Delete" },
 			],
 		});
 

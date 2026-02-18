@@ -6,8 +6,11 @@ import type { Property } from "./types";
 interface PropertiesState {
 	// Domain data
 	properties: Property[];
+	isLoading: boolean;
+	hasFetched: boolean;
 
 	// Actions
+	fetchProperties: () => Promise<void>;
 	createProperty: (name: string) => void;
 	updateProperty: (id: string, name: string) => void;
 	deleteProperty: (id: string) => void;
@@ -15,8 +18,38 @@ interface PropertiesState {
 
 export const usePropertiesStore = create<PropertiesState>()(
 	devtools(
-		(set, _get) => ({
+		(set, get) => ({
 			properties: [],
+			isLoading: false,
+			hasFetched: false,
+
+			fetchProperties: async () => {
+				const { hasFetched, isLoading } = get();
+				const user = useAuthStore.getState().user;
+
+				// Prevent duplicate fetches
+				if (!user || hasFetched || isLoading) {
+					return;
+				}
+
+				try {
+					set({ isLoading: true });
+					const res = await fetch("/api/properties", {
+						method: "GET",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						throw new Error("Failed to fetch properties");
+					}
+
+					const data = await res.json();
+					set({ properties: data, isLoading: false, hasFetched: true });
+				} catch (error) {
+					console.error("Failed to fetch properties:", error);
+					set({ isLoading: false, hasFetched: true });
+				}
+			},
 
 			createProperty: async (name) => {
 				const user = useAuthStore.getState().user;
@@ -49,6 +82,7 @@ export const usePropertiesStore = create<PropertiesState>()(
 							...state.properties,
 							{
 								id: crypto.randomUUID(),
+								userId: "",
 								name,
 							},
 						],

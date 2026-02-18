@@ -4,6 +4,39 @@ import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { propertySchema } from "@/lib/validations/property";
 
+export async function GET() {
+	try {
+		const supabase = await createSupabaseServerClient();
+
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError || !user) {
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		}
+
+		// RLS policies automatically filter by user_id, but we're explicit here for clarity
+		const { data, error } = await supabase
+			.from(DATABASE_TABLES.PROPERTIES)
+			.select("*")
+			.eq("user_id", user.id);
+
+		if (error) {
+			throw error;
+		}
+
+		return NextResponse.json(data, { status: 200 });
+	} catch (err) {
+		console.error("Properties API Error:", err);
+		return NextResponse.json(
+			{ error: "Internal Server Error" },
+			{ status: 500 },
+		);
+	}
+}
+
 export async function POST(request: NextRequest) {
 	try {
 		const supabase = await createSupabaseServerClient();

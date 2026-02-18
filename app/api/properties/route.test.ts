@@ -1,13 +1,14 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { PropertyInput } from "@/lib/validations/property";
-import { POST } from "./route";
+import { GET, POST } from "./route";
 
 // Mock the server client
 const mockGetUser = vi.fn();
 const mockInsert = vi.fn();
 const mockSelect = vi.fn();
 const mockSingle = vi.fn();
+const mockEq = vi.fn();
 
 vi.mock("@/lib/supabase-server", () => ({
 	createSupabaseServerClient: vi.fn(() => ({
@@ -16,9 +17,74 @@ vi.mock("@/lib/supabase-server", () => ({
 		},
 		from: vi.fn(() => ({
 			insert: mockInsert,
+			select: mockSelect,
 		})),
 	})),
 }));
+
+describe("GET /api/properties", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		// Chain mocks for select -> eq
+		mockSelect.mockReturnValue({ eq: mockEq });
+	});
+
+	const mockAuthenticatedUser = () => {
+		mockGetUser.mockResolvedValue({
+			data: { user: { id: "test-user-id" } },
+		});
+	};
+
+	const mockUnauthenticated = () => {
+		mockGetUser.mockResolvedValue({
+			data: { user: null },
+		});
+	};
+
+	it("should return 200 with list of properties for authenticated user", async () => {
+		mockAuthenticatedUser();
+		const mockProperties = [
+			{ id: "prop-1", name: "House A", user_id: "test-user-id" },
+			{ id: "prop-2", name: "House B", user_id: "test-user-id" },
+		];
+		mockEq.mockResolvedValue({
+			data: mockProperties,
+			error: null,
+		});
+
+		const res = await GET();
+		const data = await res.json();
+
+		expect(res.status).toBe(200);
+		expect(data).toEqual(mockProperties);
+		expect(mockSelect).toHaveBeenCalledWith("*");
+		expect(mockEq).toHaveBeenCalledWith("user_id", "test-user-id");
+	});
+
+	it("should return 401 when user is not authenticated", async () => {
+		mockUnauthenticated();
+
+		const res = await GET();
+		const data = await res.json();
+
+		expect(res.status).toBe(401);
+		expect(data.error).toBe("Unauthorized");
+	});
+
+	it("should return 500 when database error occurs", async () => {
+		mockAuthenticatedUser();
+		mockEq.mockResolvedValue({
+			data: null,
+			error: { code: "some-error", message: "DB failure" },
+		});
+
+		const res = await GET();
+		const data = await res.json();
+
+		expect(res.status).toBe(500);
+		expect(data.error).toBe("Internal Server Error");
+	});
+});
 
 describe("POST /api/properties", () => {
 	beforeEach(() => {
