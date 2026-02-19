@@ -3,6 +3,8 @@ export { DeletePropertyDialog } from "./delete-property-dialog";
 export { EditPropertyDialog } from "./edit-property-dialog";
 export { EmptyState } from "./empty-state";
 export { PropertyCard } from "./property-card";
+export { PropertyCardSkeleton } from "./property-card-skeleton";
 export { PropertyList } from "./property-list";
+export { PropertyListSkeleton } from "./property-list-skeleton";
 export { usePropertiesStore } from "./store";
 export type { Property } from "./types";

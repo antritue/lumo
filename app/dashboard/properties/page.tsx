@@ -5,6 +5,7 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import {
 	EmptyState,
 	PropertyList,
+	PropertyListSkeleton,
 	usePropertiesStore,
 } from "@/components/dashboard/properties";
 
@@ -23,7 +24,7 @@ export default function PropertiesPage() {
 	if (isLoading) {
 		return (
 			<div className="max-w-4xl mx-auto py-8 px-4">
-				<div className="text-center text-muted-foreground">Loading...</div>
+				<PropertyListSkeleton />
 			</div>
 		);
 	}

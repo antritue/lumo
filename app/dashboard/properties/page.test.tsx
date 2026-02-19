@@ -15,9 +15,16 @@ describe("PropertiesPage", () => {
 	it("displays loading state while fetching", () => {
 		usePropertiesStore.setState({ isLoading: true });
 
-		renderWithProviders(<PropertiesPage />);
+		const { container } = renderWithProviders(<PropertiesPage />);
 
-		expect(screen.getByText(/loading/i)).toBeInTheDocument();
+		// Check that skeleton loading state is rendered
+		const skeletonElements = container.querySelectorAll(".animate-shimmer");
+		expect(skeletonElements.length).toBeGreaterThan(0);
+
+		// Header should still be visible during loading
+		expect(
+			screen.getByRole("heading", { name: /your properties/i }),
+		).toBeInTheDocument();
 	});
 
 	it("displays empty state when no properties exist", () => {
