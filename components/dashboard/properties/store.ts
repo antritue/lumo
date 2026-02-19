@@ -90,12 +90,41 @@ export const usePropertiesStore = create<PropertiesState>()(
 				}
 			},
 
-			updateProperty: (id, name) =>
-				set((state) => ({
-					properties: state.properties.map((property) =>
-						property.id === id ? { ...property, name } : property,
-					),
-				})),
+			updateProperty: async (id, name) => {
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					try {
+						const res = await fetch(`/api/properties/${id}`, {
+							method: "PATCH",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ name }),
+							credentials: "include",
+						});
+
+						if (!res.ok) {
+							throw new Error("Failed to update property");
+						}
+
+						const data = await res.json();
+
+						set((state) => ({
+							properties: state.properties.map((property) =>
+								property.id === id ? data : property,
+							),
+						}));
+					} catch (error) {
+						console.error("Failed to update property:", error);
+						// Optional: You could show a toast here or handle error state
+					}
+				} else {
+					set((state) => ({
+						properties: state.properties.map((property) =>
+							property.id === id ? { ...property, name } : property,
+						),
+					}));
+				}
+			},
 
 			deleteProperty: async (id) => {
 				const user = useAuthStore.getState().user;

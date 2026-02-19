@@ -190,20 +190,84 @@ describe("PropertiesStore", () => {
 		});
 	});
 
-	it("updates target property only", () => {
-		// Setup local properties
-		usePropertiesStore.setState({
-			properties: [
-				{ id: "1", userId: "user-1", name: "First" },
-				{ id: "2", userId: "user-1", name: "Second" },
-			],
+	describe("updateProperty", () => {
+		it("updates property locally when unauthenticated", async () => {
+			// Setup local properties
+			usePropertiesStore.setState({
+				properties: [
+					{ id: "1", userId: "user-1", name: "First" },
+					{ id: "2", userId: "user-1", name: "Second" },
+				],
+			});
+
+			await usePropertiesStore.getState().updateProperty("2", "Updated");
+
+			const { properties } = usePropertiesStore.getState();
+			expect(properties[0].name).toBe("First");
+			expect(properties[1].name).toBe("Updated");
+			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
-		usePropertiesStore.getState().updateProperty("2", "Updated");
+		it("calls API and updates state when authenticated", async () => {
+			// Mock authenticated user
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
 
-		const { properties } = usePropertiesStore.getState();
-		expect(properties[0].name).toBe("First");
-		expect(properties[1].name).toBe("Updated");
+			usePropertiesStore.setState({
+				properties: [
+					{ id: "1", userId: "user-123", name: "Original" },
+					{ id: "2", userId: "user-123", name: "Second" },
+				],
+			});
+
+			// Mock API response
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({ id: "1", name: "Updated", userId: "user-123" }),
+			});
+
+			await usePropertiesStore.getState().updateProperty("1", "Updated");
+
+			const { properties } = usePropertiesStore.getState();
+			expect(properties[0].name).toBe("Updated");
+			expect(properties[1].name).toBe("Second");
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/properties/1",
+				expect.objectContaining({
+					method: "PATCH",
+					body: JSON.stringify({ name: "Updated" }),
+					credentials: "include",
+				}),
+			);
+		});
+
+		it("handles API error gracefully", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			usePropertiesStore.setState({
+				properties: [{ id: "1", userId: "user-123", name: "Original" }],
+			});
+
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+			});
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await usePropertiesStore.getState().updateProperty("1", "Updated");
+
+			const { properties } = usePropertiesStore.getState();
+			expect(properties[0].name).toBe("Original"); // Property should not change after error
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
+		});
 	});
 
 	describe("deleteProperty", () => {
