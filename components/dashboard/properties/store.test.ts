@@ -206,18 +206,81 @@ describe("PropertiesStore", () => {
 		expect(properties[1].name).toBe("Updated");
 	});
 
-	it("deletes target property only", () => {
-		usePropertiesStore.setState({
-			properties: [
-				{ id: "1", userId: "user-1", name: "Keep" },
-				{ id: "2", userId: "user-1", name: "Delete" },
-			],
+	describe("deleteProperty", () => {
+		it("deletes property locally when unauthenticated", async () => {
+			usePropertiesStore.setState({
+				properties: [
+					{ id: "1", userId: "user-1", name: "Keep" },
+					{ id: "2", userId: "user-1", name: "Delete" },
+				],
+			});
+
+			await usePropertiesStore.getState().deleteProperty("2");
+
+			const { properties } = usePropertiesStore.getState();
+			expect(properties).toHaveLength(1);
+			expect(properties[0].name).toBe("Keep");
+			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
-		usePropertiesStore.getState().deleteProperty("2");
+		it("calls API and updates state when authenticated", async () => {
+			// Mock authenticated user
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
 
-		const { properties } = usePropertiesStore.getState();
-		expect(properties).toHaveLength(1);
-		expect(properties[0].name).toBe("Keep");
+			usePropertiesStore.setState({
+				properties: [
+					{ id: "1", userId: "user-123", name: "Keep" },
+					{ id: "2", userId: "user-123", name: "Delete" },
+				],
+			});
+
+			// Mock API response
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({ id: "2", name: "Delete", userId: "user-123" }),
+			});
+
+			await usePropertiesStore.getState().deleteProperty("2");
+
+			const { properties } = usePropertiesStore.getState();
+			expect(properties).toHaveLength(1);
+			expect(properties[0].name).toBe("Keep");
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/properties/2",
+				expect.objectContaining({
+					method: "DELETE",
+					credentials: "include",
+				}),
+			);
+		});
+
+		it("handles API error gracefully", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			usePropertiesStore.setState({
+				properties: [{ id: "1", userId: "user-123", name: "Property 1" }],
+			});
+
+			mockFetch.mockResolvedValueOnce({
+				ok: false,
+			});
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await usePropertiesStore.getState().deleteProperty("1");
+
+			const { properties } = usePropertiesStore.getState();
+			expect(properties).toHaveLength(1); // Property should still exist after error
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
+		});
 	});
 });

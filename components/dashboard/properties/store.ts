@@ -97,10 +97,37 @@ export const usePropertiesStore = create<PropertiesState>()(
 					),
 				})),
 
-			deleteProperty: (id) =>
-				set((state) => ({
-					properties: state.properties.filter((property) => property.id !== id),
-				})),
+			deleteProperty: async (id) => {
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					try {
+						const res = await fetch(`/api/properties/${id}`, {
+							method: "DELETE",
+							credentials: "include",
+						});
+
+						if (!res.ok) {
+							throw new Error("Failed to delete property");
+						}
+
+						set((state) => ({
+							properties: state.properties.filter(
+								(property) => property.id !== id,
+							),
+						}));
+					} catch (error) {
+						console.error("Failed to delete property:", error);
+						// Optional: You could show a toast here or handle error state
+					}
+				} else {
+					set((state) => ({
+						properties: state.properties.filter(
+							(property) => property.id !== id,
+						),
+					}));
+				}
+			},
 		}),
 		{ name: "properties" },
 	),
