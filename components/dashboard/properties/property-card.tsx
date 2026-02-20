@@ -62,7 +62,7 @@ export function PropertyCard({
 						</div>
 						<CardTitle className="flex-1 min-w-0">
 							<div className="flex items-baseline gap-2 flex-wrap">
-								<span>{property.name}</span>
+								<span className="break-all">{property.name}</span>
 								<span className="text-sm font-normal text-muted-foreground">
 									{t("roomCount", { count: rooms.length })}
 								</span>
