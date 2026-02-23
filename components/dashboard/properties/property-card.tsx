@@ -57,12 +57,14 @@ export function PropertyCard({
 						) : (
 							<ChevronRight className="h-5 w-5 text-muted-foreground" />
 						)}
-						<div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
-							<Home className="h-5 w-5 text-muted-foreground" />
+						<div className="flex items-center justify-center rounded-full bg-secondary p-2 sm:p-2.5">
+							<Home className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
 						</div>
 						<CardTitle className="flex-1 min-w-0">
 							<div className="flex items-baseline gap-2 flex-wrap">
-								<span className="break-all">{property.name}</span>
+								<span className="text-lg sm:text-xl break-words">
+									{property.name}
+								</span>
 								<span className="text-sm font-normal text-muted-foreground">
 									{t("roomCount", { count: rooms.length })}
 								</span>
