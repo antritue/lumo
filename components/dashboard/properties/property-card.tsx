@@ -62,7 +62,7 @@ export function PropertyCard({
 						</div>
 						<CardTitle className="flex-1 min-w-0">
 							<div className="flex items-baseline gap-2 flex-wrap">
-								<span className="text-lg sm:text-xl break-words leading-tight">
+								<span className="text-lg sm:text-xl leading-tight wrap-anywhere">
 									{property.name}
 								</span>
 								<span className="text-sm font-normal text-muted-foreground">
