@@ -106,4 +106,20 @@ describe("RoomsStore", () => {
 			expect(result).toBeUndefined();
 		});
 	});
+
+	describe("clearStore", () => {
+		it("resets all store data to initial state", () => {
+			// Add some rooms
+			useRoomsStore.getState().createRoom("prop-1", "Room 1", 1500);
+			useRoomsStore.getState().createRoom("prop-1", "Room 2", 2000);
+
+			expect(useRoomsStore.getState().rooms).toHaveLength(2);
+
+			// Clear the store
+			useRoomsStore.getState().clearStore();
+
+			// Verify all state is reset
+			expect(useRoomsStore.getState().rooms).toEqual([]);
+		});
+	});
 });

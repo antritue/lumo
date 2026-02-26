@@ -347,4 +347,31 @@ describe("PropertiesStore", () => {
 			consoleSpy.mockRestore();
 		});
 	});
+
+	describe("clearStore", () => {
+		it("resets all store data to initial state", () => {
+			// Set some state
+			usePropertiesStore.setState({
+				properties: [
+					{ id: "1", userId: "user-123", name: "Property 1" },
+					{ id: "2", userId: "user-123", name: "Property 2" },
+				],
+				isLoading: true,
+				hasFetched: true,
+			});
+
+			// Verify state is set
+			expect(usePropertiesStore.getState().properties).toHaveLength(2);
+			expect(usePropertiesStore.getState().isLoading).toBe(true);
+			expect(usePropertiesStore.getState().hasFetched).toBe(true);
+
+			// Clear the store
+			usePropertiesStore.getState().clearStore();
+
+			// Verify all state is reset
+			expect(usePropertiesStore.getState().properties).toEqual([]);
+			expect(usePropertiesStore.getState().isLoading).toBe(false);
+			expect(usePropertiesStore.getState().hasFetched).toBe(false);
+		});
+	});
 });

@@ -35,4 +35,26 @@ describe("AuthStore", () => {
 
 		expect(useAuthStore.getState().isAuthBannerDismissed).toBe(true);
 	});
+
+	it("clears all store data when clearStore is called", () => {
+		const mockUser = { id: "123", email: "test@example.com" } as User;
+
+		// Set some state
+		useAuthStore.getState().setUser(mockUser);
+		useAuthStore.getState().dismissAuthBanner();
+		useAuthStore.getState().setLoading(false);
+
+		// Verify state is set
+		expect(useAuthStore.getState().user).toEqual(mockUser);
+		expect(useAuthStore.getState().isAuthBannerDismissed).toBe(true);
+		expect(useAuthStore.getState().loading).toBe(false);
+
+		// Clear the store
+		useAuthStore.getState().clearStore();
+
+		// Verify all state is reset
+		expect(useAuthStore.getState().user).toBeNull();
+		expect(useAuthStore.getState().isAuthBannerDismissed).toBe(false);
+		expect(useAuthStore.getState().loading).toBe(false);
+	});
 });

@@ -20,6 +20,7 @@ interface RoomsState {
 		notes?: string | null,
 	) => void;
 	deleteRoom: (id: string) => void;
+	clearStore: () => void;
 
 	// Selectors
 	getRoomById: (id: string) => Room | undefined;
@@ -62,6 +63,11 @@ export const useRoomsStore = create<RoomsState>()(
 				set((state) => ({
 					rooms: state.rooms.filter((room) => room.id !== id),
 				})),
+
+			clearStore: () =>
+				set({
+					rooms: [],
+				}),
 
 			getRoomById: (id) => get().rooms.find((room) => room.id === id),
 		}),

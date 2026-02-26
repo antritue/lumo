@@ -20,6 +20,7 @@ interface RentPaymentsState {
 		status: PaymentStatus,
 	) => void;
 	deleteRentPayment: (id: string) => void;
+	clearStore: () => void;
 }
 
 export const useRentPaymentsStore = create<RentPaymentsState>()(
@@ -56,6 +57,11 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 						(payment) => payment.id !== id,
 					),
 				})),
+
+			clearStore: () =>
+				set({
+					rentPayments: [],
+				}),
 		}),
 		{ name: "rent-payments" },
 	),

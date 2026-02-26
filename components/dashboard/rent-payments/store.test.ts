@@ -65,4 +65,24 @@ describe("RentPaymentsStore", () => {
 		expect(updatedPayments[0].period).toBe("2025-04");
 		expect(updatedPayments[0].amount).toBe(1300);
 	});
+
+	describe("clearStore", () => {
+		it("resets all store data to initial state", () => {
+			// Add some payments
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-04", 1300);
+
+			expect(useRentPaymentsStore.getState().rentPayments).toHaveLength(2);
+
+			// Clear the store
+			useRentPaymentsStore.getState().clearStore();
+
+			// Verify all state is reset
+			expect(useRentPaymentsStore.getState().rentPayments).toEqual([]);
+		});
+	});
 });

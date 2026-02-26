@@ -14,6 +14,7 @@ interface PropertiesState {
 	createProperty: (name: string) => void;
 	updateProperty: (id: string, name: string) => void;
 	deleteProperty: (id: string) => void;
+	clearStore: () => void;
 }
 
 export const usePropertiesStore = create<PropertiesState>()(
@@ -156,6 +157,14 @@ export const usePropertiesStore = create<PropertiesState>()(
 						),
 					}));
 				}
+			},
+
+			clearStore: () => {
+				set({
+					properties: [],
+					isLoading: false,
+					hasFetched: false,
+				});
 			},
 		}),
 		{ name: "properties" },

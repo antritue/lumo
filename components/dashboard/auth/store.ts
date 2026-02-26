@@ -9,6 +9,7 @@ interface AuthState {
 	setUser: (user: User | null) => void;
 	setLoading: (loading: boolean) => void;
 	dismissAuthBanner: () => void;
+	clearStore: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -21,6 +22,13 @@ export const useAuthStore = create<AuthState>()(
 			setLoading: (loading) => set({ loading }),
 			dismissAuthBanner: () => {
 				set({ isAuthBannerDismissed: true });
+			},
+			clearStore: () => {
+				set({
+					user: null,
+					loading: false,
+					isAuthBannerDismissed: false,
+				});
 			},
 		}),
 		{ name: "auth" },
