@@ -83,7 +83,7 @@ export async function Pricing() {
 									{tier.price}
 								</span>
 							</div>
-							<ul className="space-y-4 mb-8">
+							<ul className="space-y-4 mb-8 flex-1">
 								{tier.features.map((feature) => (
 									<li key={feature} className="flex items-center gap-3">
 										<div
@@ -107,13 +107,23 @@ export async function Pricing() {
 							</ul>
 
 							<div className="mt-auto">
-								<JoinWaitlistDialog
-									trigger={
-										<Button variant={tier.buttonVariant} className="w-full">
-											{tier.buttonText}
-										</Button>
-									}
-								/>
+								{tier.isComingSoon ? (
+									<Button
+										variant={tier.buttonVariant}
+										className="w-full"
+										disabled
+									>
+										{tier.buttonText}
+									</Button>
+								) : (
+									<JoinWaitlistDialog
+										trigger={
+											<Button variant={tier.buttonVariant} className="w-full">
+												{tier.buttonText}
+											</Button>
+										}
+									/>
+								)}
 							</div>
 						</CardContent>
 					</Card>

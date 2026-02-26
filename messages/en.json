@@ -53,17 +53,17 @@
 		"tiers": {
 			"free": {
 				"name": "Free",
-				"description": "Track up to 5 rooms",
+				"description": "Free during early access",
 				"price": "$0",
 				"features": [],
-				"buttonText": "Get Started Free"
+				"buttonText": "Get Early Access"
 			},
 			"pro": {
 				"name": "Pro",
-				"description": "Unlimited rooms",
-				"price": "—",
+				"description": "Details to be announced",
+				"price": "TBA",
 				"features": [],
-				"buttonText": "Join Waitlist"
+				"buttonText": "Coming Later"
 			}
 		}
 	},

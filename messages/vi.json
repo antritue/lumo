@@ -53,17 +53,17 @@
 		"tiers": {
 			"free": {
 				"name": "Miễn phí",
-				"description": "Theo dõi tới 5 phòng",
+				"description": "Miễn phí trong thời gian truy cập sớm",
 				"price": "0đ",
 				"features": [],
-				"buttonText": "Bắt đầu miễn phí"
+				"buttonText": "Truy cập sớm"
 			},
 			"pro": {
 				"name": "Pro",
-				"description": "Không giới hạn phòng",
-				"price": "—",
+				"description": "Chi tiết sẽ được công bố",
+				"price": "TBA",
 				"features": [],
-				"buttonText": "Đăng ký chờ"
+				"buttonText": "Sắp ra mắt"
 			}
 		}
 	},
