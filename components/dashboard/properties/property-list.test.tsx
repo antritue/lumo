@@ -1,6 +1,6 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { PropertyList } from "./property-list";
 import { usePropertiesStore } from "./store";
@@ -10,6 +10,7 @@ describe("PropertyList", () => {
 		usePropertiesStore.setState({
 			properties: [{ id: "1", name: "Test Property" }],
 		});
+		vi.restoreAllMocks();
 	});
 
 	describe("Display", () => {
@@ -20,6 +21,13 @@ describe("PropertyList", () => {
 					{ id: "2", name: "Ocean View" },
 				],
 			});
+
+			global.fetch = vi.fn(() =>
+				Promise.resolve({
+					ok: true,
+					json: () => Promise.resolve({ id: 1, name: "Sunset Villa" }),
+				}),
+			) as unknown as typeof fetch;
 
 			renderWithProviders(<PropertyList />);
 
