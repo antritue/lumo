@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { EmptyState } from "./empty-state";
 import { usePropertiesStore } from "./store";
@@ -8,6 +8,7 @@ import { usePropertiesStore } from "./store";
 describe("EmptyState", () => {
 	beforeEach(() => {
 		usePropertiesStore.setState({ properties: [] });
+		vi.restoreAllMocks();
 	});
 
 	it("displays empty state message and creation form", () => {
@@ -26,6 +27,14 @@ describe("EmptyState", () => {
 
 	it("creates first property when user submits form", async () => {
 		const user = userEvent.setup();
+
+		global.fetch = vi.fn(() =>
+			Promise.resolve({
+				ok: true,
+				json: () => Promise.resolve({ id: 1, name: "Sunset Villa" }),
+			}),
+		) as unknown as typeof fetch;
+
 		renderWithProviders(<EmptyState />);
 
 		const input = screen.getByPlaceholderText(/property name or address/i);
