@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { CreatePropertyForm } from "./create-property-form";
 
@@ -61,9 +61,21 @@ describe("CreatePropertyForm", () => {
 	});
 
 	describe("Interactions", () => {
+		beforeEach(() => {
+			vi.restoreAllMocks();
+		});
+
 		it("submits with trimmed value and clears input", async () => {
 			const user = userEvent.setup();
 			const onSubmit = vi.fn();
+
+			global.fetch = vi.fn(() =>
+				Promise.resolve({
+					ok: true,
+					json: () => Promise.resolve({ id: 1, name: "Sunset Villa" }),
+				}),
+			) as unknown as typeof fetch;
+
 			renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
 
 			const input = screen.getByPlaceholderText(/property name or address/i);
