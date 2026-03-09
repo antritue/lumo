@@ -69,13 +69,6 @@ describe("CreatePropertyForm", () => {
 			const user = userEvent.setup();
 			const onSubmit = vi.fn();
 
-			global.fetch = vi.fn(() =>
-				Promise.resolve({
-					ok: true,
-					json: () => Promise.resolve({ id: 1, name: "Sunset Villa" }),
-				}),
-			) as unknown as typeof fetch;
-
 			renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
 
 			const input = screen.getByPlaceholderText(/property name or address/i);

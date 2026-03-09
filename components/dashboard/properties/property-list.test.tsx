@@ -22,13 +22,6 @@ describe("PropertyList", () => {
 				],
 			});
 
-			global.fetch = vi.fn(() =>
-				Promise.resolve({
-					ok: true,
-					json: () => Promise.resolve({ id: 1, name: "Sunset Villa" }),
-				}),
-			) as unknown as typeof fetch;
-
 			renderWithProviders(<PropertyList />);
 
 			expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
