@@ -24,8 +24,8 @@ export function PropertyList() {
 		null,
 	);
 
-	const handleCreate = (name: string) => {
-		createProperty(name);
+	const handleCreate = async (name: string) => {
+		await createProperty(name);
 		setIsAdding(false);
 	};
 

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface CreatePropertyFormProps {
-	onSubmit: (name: string) => void;
+	onSubmit: (name: string) => Promise<void> | void;
 	onCancel?: () => void;
 	showCancel?: boolean;
 }
@@ -32,22 +32,7 @@ export function CreatePropertyForm({
 		if (!trimmedName) return;
 
 		try {
-			const response = await fetch("/api/properties", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ name: trimmedName }),
-			});
-
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.message || "error");
-			}
-
-			onSubmit(trimmedName);
-
+			await onSubmit(trimmedName);
 			setPropertyName("");
 		} catch (err) {
 			const message = err instanceof Error ? err.message : "error";
