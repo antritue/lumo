@@ -11,7 +11,7 @@ interface PropertiesState {
 
 	// Actions
 	fetchProperties: () => Promise<void>;
-	createProperty: (name: string) => void;
+	createProperty: (name: string) => Promise<void>;
 	updateProperty: (id: string, name: string) => void;
 	deleteProperty: (id: string) => void;
 	clearStore: () => void;
@@ -75,7 +75,7 @@ export const usePropertiesStore = create<PropertiesState>()(
 						}));
 					} catch (error) {
 						console.error("Failed to create property:", error);
-						// Optional: You could show a toast here or handle error state
+						throw error;
 					}
 				} else {
 					set((state) => ({

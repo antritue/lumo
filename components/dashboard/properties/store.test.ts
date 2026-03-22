@@ -180,7 +180,9 @@ describe("PropertiesStore", () => {
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
 
-			await usePropertiesStore.getState().createProperty("Error Property");
+			await expect(
+				usePropertiesStore.getState().createProperty("Error Property"),
+			).rejects.toThrow("Failed to create property");
 
 			const { properties } = usePropertiesStore.getState();
 			expect(properties).toHaveLength(0);

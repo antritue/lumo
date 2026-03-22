@@ -3,11 +3,12 @@
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface CreatePropertyFormProps {
-	onSubmit: (name: string) => void;
+	onSubmit: (name: string) => Promise<void> | void;
 	onCancel?: () => void;
 	showCancel?: boolean;
 }
@@ -20,14 +21,24 @@ export function CreatePropertyForm({
 	const t = useTranslations("app.properties");
 	const [propertyName, setPropertyName] = useState("");
 
-	const handleSubmit = (e: FormEvent) => {
+	const [errorOpen, setErrorOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
+
 		const trimmedName = propertyName.trim();
 
 		if (!trimmedName) return;
 
-		onSubmit(trimmedName);
-		setPropertyName("");
+		try {
+			await onSubmit(trimmedName);
+			setPropertyName("");
+		} catch (err) {
+			const message = err instanceof Error ? err.message : "error";
+			setErrorMessage?.(message);
+			setErrorOpen?.(true);
+		}
 	};
 
 	return (
@@ -56,6 +67,11 @@ export function CreatePropertyForm({
 					</Button>
 				)}
 			</div>
+			<ErrorDialog
+				open={errorOpen}
+				onOpenChange={setErrorOpen}
+				description={errorMessage}
+			/>
 		</form>
 	);
 }
