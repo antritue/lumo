@@ -72,9 +72,9 @@ CardFooter.displayName = "CardFooter";
 
 export {
 	Card,
-	CardHeader,
-	CardFooter,
-	CardTitle,
-	CardDescription,
 	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
 };
