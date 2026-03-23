@@ -35,7 +35,7 @@ describe("GET /api/rooms/:id", () => {
 	});
 
 	const createRequest = (id: string) => {
-		return new NextRequest(`http://localhost/api/rooms/${id}`, {
+		return new NextRequest(`http://localhost:3000/api/rooms/${id}`, {
 			method: "GET",
 		});
 	};
@@ -133,7 +133,7 @@ describe("DELETE /api/rooms/:id", () => {
 	});
 
 	const createRequest = (id: string) => {
-		return new NextRequest(`http://localhost/api/rooms/${id}`, {
+		return new NextRequest(`http://localhost:3000/api/rooms/${id}`, {
 			method: "DELETE",
 		});
 	};
@@ -226,7 +226,7 @@ describe("PATCH /api/rooms/:id", () => {
 		id: string,
 		body: Partial<RoomInput> | Record<string, unknown>,
 	) => {
-		return new NextRequest(`http://localhost/api/rooms/${id}`, {
+		return new NextRequest(`http://localhost:3000/api/rooms/${id}`, {
 			method: "PATCH",
 			body: JSON.stringify(body),
 		});

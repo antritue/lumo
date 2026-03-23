@@ -22,7 +22,7 @@ describe("POST /api/waitlist", () => {
 	});
 
 	const createRequest = (body: WaitlistInput) => {
-		return new NextRequest("http://localhost/api/waitlist", {
+		return new NextRequest("http://localhost:3000/api/waitlist", {
 			method: "POST",
 			body: JSON.stringify(body),
 		});

@@ -95,7 +95,7 @@ describe("POST /api/properties", () => {
 	});
 
 	const createRequest = (body: PropertyInput | Record<string, unknown>) => {
-		return new NextRequest("http://localhost/api/properties", {
+		return new NextRequest("http://localhost:3000/api/properties", {
 			method: "POST",
 			body: JSON.stringify(body),
 		});

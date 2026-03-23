@@ -1,0 +1,499 @@
+openapi: 3.1.0
+info:
+  title: Lumo API
+  description: API for managing properties and rooms
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sb-access-token
+      description: Supabase session cookie
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Property:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        user_id:
+          type: string
+          format: uuid
+      required:
+        - id
+        - name
+        - user_id
+
+    PropertyInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+        - name
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        property_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        monthly_rent:
+          type: number
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+        - property_id
+        - user_id
+
+    RoomInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        propertyId:
+          type: string
+          format: uuid
+        monthlyRent:
+          type: number
+          minimum: 0
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required:
+        - name
+        - propertyId
+
+    RoomUpdateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        monthlyRent:
+          type: number
+          minimum: 0
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    WaitlistInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+        - email
+
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: Unauthorized
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: Internal Server Error
+
+security:
+  - cookieAuth: []
+
+paths:
+  /api/properties:
+    get:
+      summary: List properties
+      description: Returns all properties for the authenticated user
+      operationId: listProperties
+      tags:
+        - Properties
+      responses:
+        "200":
+          description: List of properties
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Property"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      summary: Create property
+      description: Creates a new property for the authenticated user
+      operationId: createProperty
+      tags:
+        - Properties
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyInput"
+      responses:
+        "201":
+          description: Property created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/properties/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Property UUID
+        schema:
+          type: string
+          format: uuid
+
+    patch:
+      summary: Update property
+      description: Updates an existing property
+      operationId: updateProperty
+      tags:
+        - Properties
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyInput"
+      responses:
+        "200":
+          description: Property updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      summary: Delete property
+      description: Deletes a property
+      operationId: deleteProperty
+      tags:
+        - Properties
+      responses:
+        "204":
+          description: Property deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/rooms:
+    get:
+      summary: List rooms
+      description: Returns all rooms for a specific property
+      operationId: listRooms
+      tags:
+        - Rooms
+      parameters:
+        - name: property_id
+          in: query
+          required: true
+          description: Property UUID to filter rooms by
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Room"
+        "400":
+          description: Missing property_id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: property_id is required
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      summary: Create room
+      description: Creates a new room for a property
+      operationId: createRoom
+      tags:
+        - Rooms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomInput"
+            example:
+              name: Room 101
+              propertyId: 550e8400-e29b-41d4-a716-446655440000
+              monthlyRent: 500
+              notes: Corner room with window
+      responses:
+        "201":
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Property not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Property not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/rooms/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Room UUID
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: Get room
+      description: Returns a single room by ID
+      operationId: getRoom
+      tags:
+        - Rooms
+      responses:
+        "200":
+          description: Room details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Room not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    patch:
+      summary: Update room
+      description: Updates an existing room. All fields are optional.
+      operationId: updateRoom
+      tags:
+        - Rooms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomUpdateInput"
+            example:
+              name: Updated Room Name
+              monthlyRent: 600
+      responses:
+        "200":
+          description: Room updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Room not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      summary: Delete room
+      description: Deletes a room
+      operationId: deleteRoom
+      tags:
+        - Rooms
+      responses:
+        "204":
+          description: Room deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Room not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/auth/callback:
+    get:
+      summary: OAuth callback
+      description: Handles OAuth callback from Supabase authentication. Exchanges the authorization code for a session and redirects to dashboard.
+      operationId: authCallback
+      tags:
+        - Auth
+      security: []
+      parameters:
+        - name: code
+          in: query
+          required: false
+          description: Authorization code from OAuth provider
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect to dashboard after successful authentication
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Redirect URL (/dashboard)
+
+  /api/waitlist:
+    post:
+      summary: Join waitlist
+      description: Adds an email to the waitlist. Returns success even if email already exists.
+      operationId: joinWaitlist
+      tags:
+        - Waitlist
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitlistInput"
+            example:
+              email: user@example.com
+      responses:
+        "201":
+          description: Successfully joined the waitlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+              example:
+                message: Successfully joined the waitlist!
+        "200":
+          description: Email already on waitlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+              example:
+                message: You're already on the waitlist!
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"

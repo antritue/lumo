@@ -30,8 +30,8 @@ describe("GET /api/rooms", () => {
 
 	const createRequest = (propertyId?: string) => {
 		const url = propertyId
-			? `http://localhost/api/rooms?property_id=${propertyId}`
-			: "http://localhost/api/rooms";
+			? `http://localhost:3000/api/rooms?property_id=${propertyId}`
+			: "http://localhost:3000/api/rooms";
 		return new NextRequest(url, { method: "GET" });
 	};
 
@@ -125,7 +125,7 @@ describe("POST /api/rooms", () => {
 	const createRequest = (
 		body: Partial<RoomInput> | Record<string, unknown>,
 	) => {
-		return new NextRequest("http://localhost/api/rooms", {
+		return new NextRequest("http://localhost:3000/api/rooms", {
 			method: "POST",
 			body: JSON.stringify(body),
 		});
