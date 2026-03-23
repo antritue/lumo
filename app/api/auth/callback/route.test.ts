@@ -31,21 +31,21 @@ describe("GET /api/auth/callback", () => {
 		mockExchangeCodeForSession.mockResolvedValue({ data: {}, error: null });
 
 		const req = createRequest(
-			`http://localhost/api/auth/callback?code=${code}`,
+			`http://localhost:3000/api/auth/callback?code=${code}`,
 		);
 		const res = await GET(req);
 
 		expect(mockExchangeCodeForSession).toHaveBeenCalledWith(code);
 		expect(res.status).toBe(307); // NextResponse.redirect uses 307 Temporary Redirect by default
-		expect(res.headers.get("location")).toBe("http://localhost/dashboard");
+		expect(res.headers.get("location")).toBe("http://localhost:3000/dashboard");
 	});
 
 	it("should skip exchange and redirect to dashboard when code is missing", async () => {
-		const req = createRequest("http://localhost/api/auth/callback");
+		const req = createRequest("http://localhost:3000/api/auth/callback");
 		const res = await GET(req);
 
 		expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
 		expect(res.status).toBe(307);
-		expect(res.headers.get("location")).toBe("http://localhost/dashboard");
+		expect(res.headers.get("location")).toBe("http://localhost:3000/dashboard");
 	});
 });

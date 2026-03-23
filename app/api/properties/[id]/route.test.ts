@@ -33,7 +33,7 @@ describe("DELETE /api/properties/:id", () => {
 	});
 
 	const createRequest = (id: string) => {
-		return new NextRequest(`http://localhost/api/properties/${id}`, {
+		return new NextRequest(`http://localhost:3000/api/properties/${id}`, {
 			method: "DELETE",
 		});
 	};
@@ -125,7 +125,7 @@ describe("DELETE /api/properties/:id", () => {
 			id: string,
 			body: PropertyInput | Record<string, unknown>,
 		) => {
-			return new NextRequest(`http://localhost/api/properties/${id}`, {
+			return new NextRequest(`http://localhost:3000/api/properties/${id}`, {
 				method: "PATCH",
 				body: JSON.stringify(body),
 			});

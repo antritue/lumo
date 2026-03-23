@@ -113,6 +113,7 @@ We use **Zustand** for domain state (properties, rooms, rent data, and auth). St
 
 -   **Authentication**: Managed via Supabase Auth (Google-only). See [auth.md](./auth.md) for flow details and configuration.
 -   **Database Schema**: Documented in [database.md](./database.md). Relationship between users and properties is managed via foreign keys and secured with RLS.
+-   **API Reference**: OpenAPI 3.1 spec available in [openapi.yaml](./openapi.yaml). Import into [Swagger Editor](https://editor.swagger.io/) or Postman to view/test.
 -   **Store Access**: Components use hooks directly—no prop drilling.
     ```typescript
     const properties = usePropertiesStore((state) => state.properties);
