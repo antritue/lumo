@@ -20,6 +20,7 @@ We use a modern, type-safe stack designed for stability and developer experience
 -   **Validation**: [Zod](https://zod.dev) - Schema validation for API and forms.
 -   **Internationalization**: [next-intl](https://next-intl-docs.vercel.app) - App-wide localization.
 -   **Linting/Formatting**: [Biome](https://biomejs.dev) - Fast, all-in-one linter and formatter (replaces ESLint/Prettier).
+-   **Email**: [Resend](https://resend.com) - Transactional email for owner notifications.
 -   **Testing**: [Vitest](https://vitest.dev) - Unit and integration testing.
 
 ---
@@ -75,11 +76,14 @@ We use a multi-project setup to balance development speed with production data s
     ```
 
 2.  **Environment Setup**
-    Create a `.env.local` file in the root. You will need Supabase credentials.
+    Create a `.env.local` file in the root. You will need Supabase and Resend credentials.
     ```
     NEXT_PUBLIC_SUPABASE_URL=your_project_url
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_anon_key
+    RESEND_API_KEY=your_resend_api_key
+    OWNER_EMAIL=your_email@example.com
     ```
+    Get your Resend API key from the [Resend dashboard](https://resend.com) under **API Keys**.
 
 3.  **Run Development Server**
     ```bash
