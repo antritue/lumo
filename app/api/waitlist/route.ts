@@ -1,8 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { waitlistSchema } from "@/lib/validations/waitlist";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
 	try {
@@ -33,6 +36,13 @@ export async function POST(request: NextRequest) {
 			}
 			throw error;
 		}
+
+		await resend.emails.send({
+			from: "Resend <onboarding@resend.dev>",
+			to: process.env.OWNER_EMAIL ?? "",
+			subject: "New waitlist signup",
+			text: `${email} just joined the waitlist.`,
+		});
 
 		return NextResponse.json(
 			{ message: "Successfully joined the waitlist!" },
