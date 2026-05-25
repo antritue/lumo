@@ -4,7 +4,7 @@ import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { propertySchema } from "@/lib/validations/property";
 
-export async function DELETE(
+export async function deleteProperty(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -51,7 +51,7 @@ export async function DELETE(
 	}
 }
 
-export async function PATCH(
+export async function updateProperty(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -110,3 +110,6 @@ export async function PATCH(
 		);
 	}
 }
+
+export const DELETE = deleteProperty;
+export const PATCH = updateProperty;

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { WaitlistInput } from "@/lib/validations/waitlist";
-import { POST } from "./route";
+import { joinWaitlist } from "./route";
 
 const mockSend = vi.hoisted(() => vi.fn());
 const mockInsert = vi.hoisted(() => vi.fn());
@@ -39,7 +39,7 @@ describe("POST /api/waitlist", () => {
 		mockSend.mockResolvedValue({ data: { id: "email-id" }, error: null });
 
 		const req = createRequest({ email: "test@example.com" });
-		const res = await POST(req);
+		const res = await joinWaitlist(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
@@ -55,7 +55,7 @@ describe("POST /api/waitlist", () => {
 
 	it("should return 400 when email is invalid", async () => {
 		const req = createRequest({ email: "not-an-email" });
-		const res = await POST(req);
+		const res = await joinWaitlist(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
@@ -68,7 +68,7 @@ describe("POST /api/waitlist", () => {
 		mockInsert.mockResolvedValue({ error: { code: "23505" } });
 
 		const req = createRequest({ email: "duplicate@example.com" });
-		const res = await POST(req);
+		const res = await joinWaitlist(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -82,7 +82,7 @@ describe("POST /api/waitlist", () => {
 		});
 
 		const req = createRequest({ email: "error@example.com" });
-		const res = await POST(req);
+		const res = await joinWaitlist(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -95,7 +95,7 @@ describe("POST /api/waitlist", () => {
 		mockSend.mockRejectedValue(new Error("Resend failure"));
 
 		const req = createRequest({ email: "resend-error@example.com" });
-		const res = await POST(req);
+		const res = await joinWaitlist(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(500);

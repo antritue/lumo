@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { RoomInput } from "@/lib/validations/room";
-import { GET, POST } from "./route";
+import { createRoom, listRooms } from "./route";
 
 // Mock the server client
 const mockGetUser = vi.fn();
@@ -69,7 +69,7 @@ describe("GET /api/rooms", () => {
 		});
 
 		const req = createRequest("prop-1");
-		const res = await GET(req);
+		const res = await listRooms(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -83,7 +83,7 @@ describe("GET /api/rooms", () => {
 		mockUnauthenticated();
 
 		const req = createRequest("prop-1");
-		const res = await GET(req);
+		const res = await listRooms(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -94,7 +94,7 @@ describe("GET /api/rooms", () => {
 		mockAuthenticatedUser();
 
 		const req = createRequest();
-		const res = await GET(req);
+		const res = await listRooms(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
@@ -109,7 +109,7 @@ describe("GET /api/rooms", () => {
 		});
 
 		const req = createRequest("prop-1");
-		const res = await GET(req);
+		const res = await listRooms(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -197,7 +197,7 @@ describe("POST /api/rooms", () => {
 			propertyId: "550e8400-e29b-41d4-a716-446655440000",
 			monthlyRent: 500,
 		});
-		const res = await POST(req);
+		const res = await createRoom(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
@@ -211,7 +211,7 @@ describe("POST /api/rooms", () => {
 			name: "Room 101",
 			propertyId: "550e8400-e29b-41d4-a716-446655440000",
 		});
-		const res = await POST(req);
+		const res = await createRoom(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -224,7 +224,7 @@ describe("POST /api/rooms", () => {
 		const req = createRequest({
 			propertyId: "550e8400-e29b-41d4-a716-446655440000",
 		});
-		const res = await POST(req);
+		const res = await createRoom(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
@@ -235,7 +235,7 @@ describe("POST /api/rooms", () => {
 		mockAuthenticatedUser();
 
 		const req = createRequest({ name: "Room 101" });
-		const res = await POST(req);
+		const res = await createRoom(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
@@ -257,7 +257,7 @@ describe("POST /api/rooms", () => {
 			name: "Room 101",
 			propertyId: "550e8400-e29b-41d4-a716-446655440000",
 		});
-		const res = await POST(req);
+		const res = await createRoom(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(404);
@@ -284,7 +284,7 @@ describe("POST /api/rooms", () => {
 			name: "Room 101",
 			propertyId: "550e8400-e29b-41d4-a716-446655440000",
 		});
-		const res = await POST(req);
+		const res = await createRoom(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(500);

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { PropertyInput } from "@/lib/validations/property";
-import { GET, POST } from "./route";
+import { createProperty, listProperties } from "./route";
 
 // Mock the server client
 const mockGetUser = vi.fn();
@@ -52,7 +52,7 @@ describe("GET /api/properties", () => {
 			error: null,
 		});
 
-		const res = await GET();
+		const res = await listProperties();
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -64,7 +64,7 @@ describe("GET /api/properties", () => {
 	it("should return 401 when user is not authenticated", async () => {
 		mockUnauthenticated();
 
-		const res = await GET();
+		const res = await listProperties();
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -78,7 +78,7 @@ describe("GET /api/properties", () => {
 			error: { code: "some-error", message: "DB failure" },
 		});
 
-		const res = await GET();
+		const res = await listProperties();
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -121,7 +121,7 @@ describe("POST /api/properties", () => {
 		});
 
 		const req = createRequest({ name: "My House" });
-		const res = await POST(req);
+		const res = await createProperty(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
@@ -135,7 +135,7 @@ describe("POST /api/properties", () => {
 		mockUnauthenticated();
 
 		const req = createRequest({ name: "My House" });
-		const res = await POST(req);
+		const res = await createProperty(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -146,7 +146,7 @@ describe("POST /api/properties", () => {
 		mockAuthenticatedUser();
 
 		const req = createRequest({});
-		const res = await POST(req);
+		const res = await createProperty(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
@@ -161,7 +161,7 @@ describe("POST /api/properties", () => {
 		});
 
 		const req = createRequest({ name: "My House" });
-		const res = await POST(req);
+		const res = await createProperty(req);
 		const data = await res.json();
 
 		expect(res.status).toBe(500);

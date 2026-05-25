@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { PropertyInput } from "@/lib/validations/property";
-import { DELETE, PATCH } from "./route";
+import { deleteProperty, updateProperty } from "./route";
 
 // Mock the server client
 const mockGetUser = vi.fn();
@@ -62,7 +62,7 @@ describe("DELETE /api/properties/:id", () => {
 		});
 
 		const req = createRequest("prop-1");
-		const res = await DELETE(req, createParams("prop-1"));
+		const res = await deleteProperty(req, createParams("prop-1"));
 
 		expect(res.status).toBe(204);
 		expect(mockDelete).toHaveBeenCalledWith({ count: "exact" });
@@ -74,7 +74,7 @@ describe("DELETE /api/properties/:id", () => {
 		mockUnauthenticated();
 
 		const req = createRequest("prop-1");
-		const res = await DELETE(req, createParams("prop-1"));
+		const res = await deleteProperty(req, createParams("prop-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -89,7 +89,7 @@ describe("DELETE /api/properties/:id", () => {
 		});
 
 		const req = createRequest("non-existent-id");
-		const res = await DELETE(req, createParams("non-existent-id"));
+		const res = await deleteProperty(req, createParams("non-existent-id"));
 		const data = await res.json();
 
 		expect(res.status).toBe(404);
@@ -104,7 +104,7 @@ describe("DELETE /api/properties/:id", () => {
 		});
 
 		const req = createRequest("prop-1");
-		const res = await DELETE(req, createParams("prop-1"));
+		const res = await deleteProperty(req, createParams("prop-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -160,7 +160,7 @@ describe("DELETE /api/properties/:id", () => {
 			});
 
 			const req = createRequest("prop-1", { name: "Updated House" });
-			const res = await PATCH(req, createParams("prop-1"));
+			const res = await updateProperty(req, createParams("prop-1"));
 			const data = await res.json();
 
 			expect(res.status).toBe(200);
@@ -174,7 +174,7 @@ describe("DELETE /api/properties/:id", () => {
 			mockUnauthenticated();
 
 			const req = createRequest("prop-1", { name: "Updated House" });
-			const res = await PATCH(req, createParams("prop-1"));
+			const res = await updateProperty(req, createParams("prop-1"));
 			const data = await res.json();
 
 			expect(res.status).toBe(401);
@@ -185,7 +185,7 @@ describe("DELETE /api/properties/:id", () => {
 			mockAuthenticatedUser();
 
 			const req = createRequest("prop-1", {});
-			const res = await PATCH(req, createParams("prop-1"));
+			const res = await updateProperty(req, createParams("prop-1"));
 			const data = await res.json();
 
 			expect(res.status).toBe(400);
@@ -200,7 +200,7 @@ describe("DELETE /api/properties/:id", () => {
 			});
 
 			const req = createRequest("non-existent-id", { name: "Updated House" });
-			const res = await PATCH(req, createParams("non-existent-id"));
+			const res = await updateProperty(req, createParams("non-existent-id"));
 			const data = await res.json();
 
 			expect(res.status).toBe(404);
@@ -215,7 +215,7 @@ describe("DELETE /api/properties/:id", () => {
 			});
 
 			const req = createRequest("prop-1", { name: "Updated House" });
-			const res = await PATCH(req, createParams("prop-1"));
+			const res = await updateProperty(req, createParams("prop-1"));
 			const data = await res.json();
 
 			expect(res.status).toBe(500);
