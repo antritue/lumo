@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { GET } from "./route";
+import { handleAuthCallback } from "./route";
 
 // Mock the server client
 const mockExchangeCodeForSession = vi.fn();
@@ -33,7 +33,7 @@ describe("GET /api/auth/callback", () => {
 		const req = createRequest(
 			`http://localhost:3000/api/auth/callback?code=${code}`,
 		);
-		const res = await GET(req);
+		const res = await handleAuthCallback(req);
 
 		expect(mockExchangeCodeForSession).toHaveBeenCalledWith(code);
 		expect(res.status).toBe(307); // NextResponse.redirect uses 307 Temporary Redirect by default
@@ -42,7 +42,7 @@ describe("GET /api/auth/callback", () => {
 
 	it("should skip exchange and redirect to dashboard when code is missing", async () => {
 		const req = createRequest("http://localhost:3000/api/auth/callback");
-		const res = await GET(req);
+		const res = await handleAuthCallback(req);
 
 		expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
 		expect(res.status).toBe(307);

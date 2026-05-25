@@ -4,7 +4,7 @@ import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { roomSchema } from "@/lib/validations/room";
 
-export async function GET(
+export async function getRoom(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -47,7 +47,7 @@ export async function GET(
 	}
 }
 
-export async function DELETE(
+export async function deleteRoom(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -91,7 +91,7 @@ export async function DELETE(
 	}
 }
 
-export async function PATCH(
+export async function updateRoom(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -156,3 +156,7 @@ export async function PATCH(
 		);
 	}
 }
+
+export const GET = getRoom;
+export const DELETE = deleteRoom;
+export const PATCH = updateRoom;

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { RoomInput } from "@/lib/validations/room";
-import { DELETE, GET, PATCH } from "./route";
+import { deleteRoom, getRoom, updateRoom } from "./route";
 
 // Mock the server client
 const mockGetUser = vi.fn();
@@ -72,7 +72,7 @@ describe("GET /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("room-1");
-		const res = await GET(req, createParams("room-1"));
+		const res = await getRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -86,7 +86,7 @@ describe("GET /api/rooms/:id", () => {
 		mockUnauthenticated();
 
 		const req = createRequest("room-1");
-		const res = await GET(req, createParams("room-1"));
+		const res = await getRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -101,7 +101,7 @@ describe("GET /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("non-existent-id");
-		const res = await GET(req, createParams("non-existent-id"));
+		const res = await getRoom(req, createParams("non-existent-id"));
 		const data = await res.json();
 
 		expect(res.status).toBe(404);
@@ -116,7 +116,7 @@ describe("GET /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("room-1");
-		const res = await GET(req, createParams("room-1"));
+		const res = await getRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -162,7 +162,7 @@ describe("DELETE /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("room-1");
-		const res = await DELETE(req, createParams("room-1"));
+		const res = await deleteRoom(req, createParams("room-1"));
 
 		expect(res.status).toBe(204);
 		expect(mockDelete).toHaveBeenCalledWith({ count: "exact" });
@@ -174,7 +174,7 @@ describe("DELETE /api/rooms/:id", () => {
 		mockUnauthenticated();
 
 		const req = createRequest("room-1");
-		const res = await DELETE(req, createParams("room-1"));
+		const res = await deleteRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -189,7 +189,7 @@ describe("DELETE /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("non-existent-id");
-		const res = await DELETE(req, createParams("non-existent-id"));
+		const res = await deleteRoom(req, createParams("non-existent-id"));
 		const data = await res.json();
 
 		expect(res.status).toBe(404);
@@ -204,7 +204,7 @@ describe("DELETE /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("room-1");
-		const res = await DELETE(req, createParams("room-1"));
+		const res = await deleteRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -264,7 +264,7 @@ describe("PATCH /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("room-1", { name: "Updated Room" });
-		const res = await PATCH(req, createParams("room-1"));
+		const res = await updateRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -290,7 +290,7 @@ describe("PATCH /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("room-1", { monthlyRent: 750 });
-		const res = await PATCH(req, createParams("room-1"));
+		const res = await updateRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -302,7 +302,7 @@ describe("PATCH /api/rooms/:id", () => {
 		mockUnauthenticated();
 
 		const req = createRequest("room-1", { name: "Updated Room" });
-		const res = await PATCH(req, createParams("room-1"));
+		const res = await updateRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -317,7 +317,7 @@ describe("PATCH /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("non-existent-id", { name: "Updated Room" });
-		const res = await PATCH(req, createParams("non-existent-id"));
+		const res = await updateRoom(req, createParams("non-existent-id"));
 		const data = await res.json();
 
 		expect(res.status).toBe(404);
@@ -332,7 +332,7 @@ describe("PATCH /api/rooms/:id", () => {
 		});
 
 		const req = createRequest("room-1", { name: "Updated Room" });
-		const res = await PATCH(req, createParams("room-1"));
+		const res = await updateRoom(req, createParams("room-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);

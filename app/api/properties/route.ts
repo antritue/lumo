@@ -4,7 +4,7 @@ import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { propertySchema } from "@/lib/validations/property";
 
-export async function GET() {
+export async function listProperties() {
 	try {
 		const supabase = await createSupabaseServerClient();
 
@@ -37,7 +37,7 @@ export async function GET() {
 	}
 }
 
-export async function POST(request: NextRequest) {
+export async function createProperty(request: NextRequest) {
 	try {
 		const supabase = await createSupabaseServerClient();
 
@@ -83,3 +83,6 @@ export async function POST(request: NextRequest) {
 		);
 	}
 }
+
+export const GET = listProperties;
+export const POST = createProperty;

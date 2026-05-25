@@ -4,7 +4,7 @@ import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { roomSchema } from "@/lib/validations/room";
 
-export async function GET(request: NextRequest) {
+export async function listRooms(request: NextRequest) {
 	try {
 		const supabase = await createSupabaseServerClient();
 
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 	}
 }
 
-export async function POST(request: NextRequest) {
+export async function createRoom(request: NextRequest) {
 	try {
 		const supabase = await createSupabaseServerClient();
 
@@ -118,3 +118,6 @@ export async function POST(request: NextRequest) {
 		);
 	}
 }
+
+export const GET = listRooms;
+export const POST = createRoom;
