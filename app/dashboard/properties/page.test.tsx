@@ -7,7 +7,11 @@ import PropertiesPage from "./page";
 
 describe("PropertiesPage", () => {
 	beforeEach(() => {
-		usePropertiesStore.setState({ properties: [], isLoading: false });
+		usePropertiesStore.setState({
+			properties: [],
+			isLoading: false,
+			hasFetched: false,
+		});
 		useAuthStore.setState({ user: null });
 		vi.clearAllMocks();
 	});
@@ -28,6 +32,7 @@ describe("PropertiesPage", () => {
 	});
 
 	it("displays empty state when no properties exist", () => {
+		usePropertiesStore.setState({ hasFetched: true });
 		renderWithProviders(<PropertiesPage />);
 
 		expect(
@@ -50,6 +55,7 @@ describe("PropertiesPage", () => {
 				},
 			],
 			isLoading: false,
+			hasFetched: true,
 		});
 
 		renderWithProviders(<PropertiesPage />);
