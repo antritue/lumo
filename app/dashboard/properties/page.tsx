@@ -12,6 +12,7 @@ import {
 export default function PropertiesPage() {
 	const properties = usePropertiesStore((state) => state.properties);
 	const isLoading = usePropertiesStore((state) => state.isLoading);
+	const hasFetched = usePropertiesStore((state) => state.hasFetched);
 	const fetchProperties = usePropertiesStore((state) => state.fetchProperties);
 	const user = useAuthStore((state) => state.user);
 
@@ -21,7 +22,7 @@ export default function PropertiesPage() {
 		}
 	}, [user, fetchProperties]);
 
-	if (isLoading) {
+	if (!hasFetched || isLoading) {
 		return (
 			<div className="max-w-4xl mx-auto py-8 px-4">
 				<PropertyListSkeleton />
