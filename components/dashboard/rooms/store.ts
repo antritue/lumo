@@ -73,6 +73,7 @@ export const useRoomsStore = create<RoomsState>()(
 				} catch (error) {
 					console.error("Failed to fetch rooms:", error);
 					set({ isLoading: false });
+					throw error;
 				}
 			},
 
@@ -156,6 +157,7 @@ export const useRoomsStore = create<RoomsState>()(
 						}));
 					} catch (error) {
 						console.error("Failed to update room:", error);
+						throw error;
 					}
 				} else {
 					set((state) => ({
@@ -194,6 +196,7 @@ export const useRoomsStore = create<RoomsState>()(
 						}));
 					} catch (error) {
 						console.error("Failed to delete room:", error);
+						throw error;
 					}
 				} else {
 					set((state) => ({

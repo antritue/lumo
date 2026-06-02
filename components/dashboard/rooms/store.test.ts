@@ -145,7 +145,9 @@ describe("RoomsStore", () => {
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
 
-			await useRoomsStore.getState().fetchRoomsByPropertyId("prop-1");
+			await expect(
+				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
+			).rejects.toThrow("Failed to fetch rooms");
 
 			const { rooms, isLoading } = useRoomsStore.getState();
 			expect(rooms).toEqual([]);
@@ -375,7 +377,9 @@ describe("RoomsStore", () => {
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
 
-			await useRoomsStore.getState().updateRoom("1", "Updated", 2000, "New");
+			await expect(
+				useRoomsStore.getState().updateRoom("1", "Updated", 2000, "New"),
+			).rejects.toThrow("Failed to update room");
 
 			const { rooms } = useRoomsStore.getState();
 			expect(rooms[0].name).toBe("Original");
@@ -478,7 +482,9 @@ describe("RoomsStore", () => {
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
 
-			await useRoomsStore.getState().deleteRoom("1");
+			await expect(useRoomsStore.getState().deleteRoom("1")).rejects.toThrow(
+				"Failed to delete room",
+			);
 
 			const { rooms } = useRoomsStore.getState();
 			expect(rooms).toHaveLength(1);

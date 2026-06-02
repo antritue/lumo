@@ -83,7 +83,9 @@ describe("PropertiesStore", () => {
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
 
-			await usePropertiesStore.getState().fetchProperties();
+			await expect(
+				usePropertiesStore.getState().fetchProperties(),
+			).rejects.toThrow("Failed to fetch properties");
 
 			const { properties, isLoading } = usePropertiesStore.getState();
 			expect(properties).toEqual([]);
@@ -262,7 +264,9 @@ describe("PropertiesStore", () => {
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
 
-			await usePropertiesStore.getState().updateProperty("1", "Updated");
+			await expect(
+				usePropertiesStore.getState().updateProperty("1", "Updated"),
+			).rejects.toThrow("Failed to update property");
 
 			const { properties } = usePropertiesStore.getState();
 			expect(properties[0].name).toBe("Original"); // Property should not change after error
@@ -340,7 +344,9 @@ describe("PropertiesStore", () => {
 				.spyOn(console, "error")
 				.mockImplementation(() => {});
 
-			await usePropertiesStore.getState().deleteProperty("1");
+			await expect(
+				usePropertiesStore.getState().deleteProperty("1"),
+			).rejects.toThrow("Failed to delete property");
 
 			const { properties } = usePropertiesStore.getState();
 			expect(properties).toHaveLength(1); // Property should still exist after error
