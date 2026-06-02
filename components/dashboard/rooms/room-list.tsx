@@ -31,12 +31,12 @@ export function RoomList({
 	const [editingRoom, setEditingRoom] = useState<Room | null>(null);
 	const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
 
-	const handleCreate = (
+	const handleCreate = async (
 		name: string,
 		monthlyRent: number | null,
 		notes: string | null,
 	) => {
-		createRoom(propertyId, name, monthlyRent, notes);
+		await createRoom(propertyId, name, monthlyRent, notes);
 		setIsAdding(false);
 	};
 

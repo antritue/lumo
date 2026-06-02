@@ -1,8 +1,9 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
+import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +13,7 @@ interface CreateRoomFormProps {
 		name: string,
 		monthlyRent: number | null,
 		notes: string | null,
-	) => void;
+	) => Promise<void>;
 	onCancel?: () => void;
 	showCancel?: boolean;
 }
@@ -30,7 +31,11 @@ export function CreateRoomForm({
 	const [monthlyRent, setMonthlyRent] = useState("");
 	const [notes, setNotes] = useState("");
 
-	const handleSubmit = (e: FormEvent) => {
+	const [errorOpen, setErrorOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		const trimmedName = roomName.trim();
 
@@ -41,11 +46,30 @@ export function CreateRoomForm({
 			: null;
 		const notesValue = notes.trim() || null;
 
-		onSubmit(trimmedName, rentValue, notesValue);
-		setRoomName("");
-		setMonthlyRent("");
-		setNotes("");
+		setIsSubmitting(true);
+
+		try {
+			await onSubmit(trimmedName, rentValue, notesValue);
+			setRoomName("");
+			setMonthlyRent("");
+			setNotes("");
+		} catch {
+			setErrorMessage(t("errors.create.description"));
+			setErrorOpen(true);
+			setIsSubmitting(false);
+		}
 	};
+
+	if (isSubmitting) {
+		return (
+			<div className="flex items-center justify-center py-8">
+				<Loader2
+					className="h-6 w-6 animate-spin text-muted-foreground"
+					data-testid="room-create-loader"
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
@@ -117,6 +141,12 @@ export function CreateRoomForm({
 					</Button>
 				)}
 			</div>
+			<ErrorDialog
+				open={errorOpen}
+				onOpenChange={setErrorOpen}
+				title={t("errors.create.title")}
+				description={errorMessage}
+			/>
 		</form>
 	);
 }

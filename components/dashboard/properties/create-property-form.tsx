@@ -34,10 +34,9 @@ export function CreatePropertyForm({
 		try {
 			await onSubmit(trimmedName);
 			setPropertyName("");
-		} catch (err) {
-			const message = err instanceof Error ? err.message : "error";
-			setErrorMessage?.(message);
-			setErrorOpen?.(true);
+		} catch {
+			setErrorMessage(t("errors.create.description"));
+			setErrorOpen(true);
 		}
 	};
 
@@ -70,6 +69,7 @@ export function CreatePropertyForm({
 			<ErrorDialog
 				open={errorOpen}
 				onOpenChange={setErrorOpen}
+				title={t("errors.create.title")}
 				description={errorMessage}
 			/>
 		</form>

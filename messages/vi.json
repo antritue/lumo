@@ -143,11 +143,39 @@
 			"deleteConfirm": "Xóa nhà cho thuê",
 			"actions": "Hành động",
 			"backToProperties": "Quay lại danh sách",
-			"roomCount": "{count, plural, =0 {chưa có phòng} =1 {1 phòng} other {# phòng}}"
+			"roomCount": "{count, plural, =0 {chưa có phòng} =1 {1 phòng} other {# phòng}}",
+			"errors": {
+				"create": {
+					"title": "Không thể thêm nhà cho thuê",
+					"description": "Đã xảy ra lỗi khi thêm nhà cho thuê. Vui lòng thử lại."
+				},
+				"update": {
+					"title": "Không thể cập nhật nhà cho thuê",
+					"description": "Đã xảy ra lỗi khi cập nhật nhà cho thuê. Vui lòng thử lại."
+				},
+				"delete": {
+					"title": "Không thể xóa nhà cho thuê",
+					"description": "Đã xảy ra lỗi khi xóa nhà cho thuê. Vui lòng thử lại."
+				}
+			}
 		},
 		"rooms": {
 			"emptyTitle": "Chưa có phòng",
 			"emptySubtitle": "Thêm phòng đầu tiên cho nhà cho thuê này",
+			"errors": {
+				"create": {
+					"title": "Không thể thêm phòng",
+					"description": "Đã xảy ra lỗi khi thêm phòng. Vui lòng thử lại."
+				},
+				"update": {
+					"title": "Không thể cập nhật phòng",
+					"description": "Đã xảy ra lỗi khi cập nhật phòng. Vui lòng thử lại."
+				},
+				"delete": {
+					"title": "Không thể xóa phòng",
+					"description": "Đã xảy ra lỗi khi xóa phòng. Vui lòng thử lại."
+				}
+			},
 			"inputPlaceholder": "Tên hoặc số phòng",
 			"rentPlaceholder": "Tiền thuê hàng tháng",
 			"notesPlaceholder": "Ghi chú (Phí dịch vụ...)",
