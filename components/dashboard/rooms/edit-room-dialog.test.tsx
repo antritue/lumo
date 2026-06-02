@@ -1,6 +1,6 @@
-import { screen, within } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { EditRoomDialog } from "./edit-room-dialog";
 import type { Room } from "./types";
@@ -13,12 +13,6 @@ describe("EditRoomDialog", () => {
 		monthlyRent: 1500,
 		notes: "Corner unit",
 	};
-	const mockOnOpenChange = vi.fn();
-	const mockOnSave = vi.fn();
-
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
 
 	describe("Display", () => {
 		it("populates form with room data", () => {
@@ -26,19 +20,14 @@ describe("EditRoomDialog", () => {
 				<EditRoomDialog
 					room={mockRoom}
 					open={true}
-					onOpenChange={mockOnOpenChange}
-					onSave={mockOnSave}
+					onOpenChange={vi.fn()}
+					onSave={vi.fn()}
 				/>,
 			);
 
-			const dialog = screen.getByRole("dialog");
-			expect(
-				within(dialog).getByDisplayValue("Master Bedroom"),
-			).toBeInTheDocument();
-			expect(within(dialog).getByDisplayValue("1500")).toBeInTheDocument();
-			expect(
-				within(dialog).getByDisplayValue("Corner unit"),
-			).toBeInTheDocument();
+			expect(screen.getByDisplayValue("Master Bedroom")).toBeInTheDocument();
+			expect(screen.getByDisplayValue("1500")).toBeInTheDocument();
+			expect(screen.getByDisplayValue("Corner unit")).toBeInTheDocument();
 		});
 	});
 
@@ -49,24 +38,20 @@ describe("EditRoomDialog", () => {
 				<EditRoomDialog
 					room={mockRoom}
 					open={true}
-					onOpenChange={mockOnOpenChange}
-					onSave={mockOnSave}
+					onOpenChange={vi.fn()}
+					onSave={vi.fn()}
 				/>,
 			);
 
-			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByDisplayValue("Master Bedroom");
-			const saveButton = within(dialog).getByRole("button", { name: /save/i });
+			const saveButton = screen.getByRole("button", { name: /save/i });
+			const input = screen.getByDisplayValue("Master Bedroom");
 
-			// Empty input
 			await user.clear(input);
 			expect(saveButton).toBeDisabled();
 
-			// Whitespace only
 			await user.type(input, "   ");
 			expect(saveButton).toBeDisabled();
 
-			// Valid input
 			await user.clear(input);
 			await user.type(input, "Updated Room");
 			expect(saveButton).toBeEnabled();
@@ -76,23 +61,64 @@ describe("EditRoomDialog", () => {
 	describe("Interactions", () => {
 		it("closes dialog on cancel", async () => {
 			const user = userEvent.setup();
+			const onOpenChange = vi.fn();
 			renderWithProviders(
 				<EditRoomDialog
 					room={mockRoom}
 					open={true}
-					onOpenChange={mockOnOpenChange}
-					onSave={mockOnSave}
+					onOpenChange={onOpenChange}
+					onSave={vi.fn()}
 				/>,
 			);
 
-			await user.click(
-				within(screen.getByRole("dialog")).getByRole("button", {
-					name: /cancel/i,
-				}),
+			await user.click(screen.getByRole("button", { name: /cancel/i }));
+			expect(onOpenChange).toHaveBeenCalledWith(false);
+		});
+
+		it("saves with correct arguments and shows loading state", async () => {
+			const onSave = vi.fn();
+			renderWithProviders(
+				<EditRoomDialog
+					room={mockRoom}
+					open={true}
+					onOpenChange={vi.fn()}
+					onSave={onSave}
+				/>,
 			);
 
-			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
-			expect(mockOnSave).not.toHaveBeenCalled();
+			const form = screen.getByRole("dialog").querySelector("form");
+			if (!form) throw new Error("Form not found");
+			fireEvent.submit(form);
+			expect(onSave).toHaveBeenCalledWith(
+				"1",
+				"Master Bedroom",
+				1500,
+				"Corner unit",
+			);
+			expect(screen.getByTestId("room-edit-loader")).toBeInTheDocument();
+			expect(
+				screen.queryByDisplayValue("Master Bedroom"),
+			).not.toBeInTheDocument();
+		});
+
+		it("shows error dialog on save failure and restores form", async () => {
+			const onSave = vi.fn().mockRejectedValue(new Error("API error"));
+			renderWithProviders(
+				<EditRoomDialog
+					room={mockRoom}
+					open={true}
+					onOpenChange={vi.fn()}
+					onSave={onSave}
+				/>,
+			);
+
+			const form = screen.getByRole("dialog").querySelector("form");
+			if (!form) throw new Error("Form not found");
+			fireEvent.submit(form);
+			expect(
+				await screen.findByText(/problem updating this room/i),
+			).toBeInTheDocument();
+			expect(screen.getByDisplayValue("Master Bedroom")).toBeInTheDocument();
 		});
 	});
 });

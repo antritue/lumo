@@ -43,13 +43,13 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	const { rentPayments, handleSavePayment, handleDeletePayment } =
 		useRoomPayments(room.id);
 
-	const handleSaveRoom = (
+	const handleSaveRoom = async (
 		id: string,
 		name: string,
 		monthlyRent: number | null,
 		notes: string | null,
 	) => {
-		updateRoom(id, name, monthlyRent, notes);
+		await updateRoom(id, name, monthlyRent, notes);
 		closeEditRoom();
 	};
 

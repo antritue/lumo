@@ -49,6 +49,7 @@ export const usePropertiesStore = create<PropertiesState>()(
 				} catch (error) {
 					console.error("Failed to fetch properties:", error);
 					set({ isLoading: false, hasFetched: true });
+					throw error;
 				}
 			},
 
@@ -116,7 +117,7 @@ export const usePropertiesStore = create<PropertiesState>()(
 						}));
 					} catch (error) {
 						console.error("Failed to update property:", error);
-						// Optional: You could show a toast here or handle error state
+						throw error;
 					}
 				} else {
 					set((state) => ({
@@ -148,7 +149,7 @@ export const usePropertiesStore = create<PropertiesState>()(
 						}));
 					} catch (error) {
 						console.error("Failed to delete property:", error);
-						// Optional: You could show a toast here or handle error state
+						throw error;
 					}
 				} else {
 					set((state) => ({

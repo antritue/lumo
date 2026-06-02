@@ -44,13 +44,13 @@ export function RoomList({
 		setEditingRoom(room);
 	};
 
-	const handleSave = (
+	const handleSave = async (
 		id: string,
 		name: string,
 		monthlyRent: number | null,
 		notes: string | null,
 	) => {
-		updateRoom(id, name, monthlyRent, notes);
+		await updateRoom(id, name, monthlyRent, notes);
 		setEditingRoom(null);
 	};
 
