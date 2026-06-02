@@ -60,7 +60,7 @@ describe("CreateRoomForm", () => {
 	});
 
 	describe("Interactions", () => {
-		it("submits with required fields and clears form", async () => {
+		it("submits with required fields and shows loading state", async () => {
 			const user = userEvent.setup();
 			const onSubmit = vi.fn();
 			renderWithProviders(<CreateRoomForm onSubmit={onSubmit} />);
@@ -70,7 +70,41 @@ describe("CreateRoomForm", () => {
 			await user.click(screen.getByRole("button", { name: /add room/i }));
 
 			expect(onSubmit).toHaveBeenCalledWith("Master Bedroom", null, null);
-			expect(nameInput).toHaveValue("");
+			expect(
+				screen.queryByPlaceholderText(/room name/i),
+			).not.toBeInTheDocument();
+		});
+
+		it("displays loading spinner while submitting", async () => {
+			const user = userEvent.setup();
+			let resolvePromise!: () => void;
+			const onSubmit = vi.fn(
+				() =>
+					new Promise<void>((resolve) => {
+						resolvePromise = resolve;
+					}),
+			);
+			renderWithProviders(<CreateRoomForm onSubmit={onSubmit} />);
+
+			await user.type(screen.getByPlaceholderText(/room name/i), "Room 1");
+			await user.click(screen.getByRole("button", { name: /add room/i }));
+
+			expect(screen.getByTestId("room-create-loader")).toBeInTheDocument();
+
+			resolvePromise();
+		});
+
+		it("shows error dialog on submission failure and restores form", async () => {
+			const user = userEvent.setup();
+			const onSubmit = vi.fn().mockRejectedValue(new Error("API error"));
+			renderWithProviders(<CreateRoomForm onSubmit={onSubmit} />);
+
+			await user.type(screen.getByPlaceholderText(/room name/i), "Room 1");
+			await user.click(screen.getByRole("button", { name: /add room/i }));
+
+			expect(screen.getByRole("dialog")).toBeInTheDocument();
+			expect(screen.getByText(/problem adding this room/i)).toBeInTheDocument();
+			expect(screen.getByPlaceholderText(/room name/i)).toBeInTheDocument();
 		});
 
 		it("calls onCancel when cancel button clicked", async () => {

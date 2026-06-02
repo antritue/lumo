@@ -143,11 +143,39 @@
 			"deleteConfirm": "Delete property",
 			"actions": "Actions",
 			"backToProperties": "Back to properties",
-			"roomCount": "{count, plural, =0 {no rooms} =1 {1 room} other {# rooms}}"
+			"roomCount": "{count, plural, =0 {no rooms} =1 {1 room} other {# rooms}}",
+			"errors": {
+				"create": {
+					"title": "Failed to add property",
+					"description": "There was a problem adding this property. Please try again."
+				},
+				"update": {
+					"title": "Failed to update property",
+					"description": "There was a problem updating this property. Please try again."
+				},
+				"delete": {
+					"title": "Failed to delete property",
+					"description": "There was a problem deleting this property. Please try again."
+				}
+			}
 		},
 		"rooms": {
 			"emptyTitle": "No rooms yet",
 			"emptySubtitle": "Add your first room to this property",
+			"errors": {
+				"create": {
+					"title": "Failed to add room",
+					"description": "There was a problem adding this room. Please try again."
+				},
+				"update": {
+					"title": "Failed to update room",
+					"description": "There was a problem updating this room. Please try again."
+				},
+				"delete": {
+					"title": "Failed to delete room",
+					"description": "There was a problem deleting this room. Please try again."
+				}
+			},
 			"inputPlaceholder": "Room name or number",
 			"rentPlaceholder": "Monthly rent",
 			"notesPlaceholder": "Notes (Service fee...)",
