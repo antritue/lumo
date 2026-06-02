@@ -2,7 +2,7 @@
 
 import { ChevronDown, ChevronRight, Home, Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RoomList } from "@/components/dashboard/rooms/room-list";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,15 @@ export function PropertyCard({
 	const [isExpanded, setIsExpanded] = useState(true);
 
 	const allRooms = useRoomsStore((state) => state.rooms);
+	const isLoadingRooms = useRoomsStore((state) => state.isLoading);
+	const fetchRoomsByPropertyId = useRoomsStore(
+		(state) => state.fetchRoomsByPropertyId,
+	);
 	const rooms = allRooms.filter((room) => room.propertyId === property.id);
+
+	useEffect(() => {
+		fetchRoomsByPropertyId(property.id);
+	}, [property.id, fetchRoomsByPropertyId]);
 
 	const handleEdit = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -97,7 +105,11 @@ export function PropertyCard({
 
 			{isExpanded && (
 				<CardContent className="pt-0">
-					<RoomList propertyId={property.id} rooms={rooms} />
+					<RoomList
+						propertyId={property.id}
+						rooms={rooms}
+						isLoading={isLoadingRooms}
+					/>
 				</CardContent>
 			)}
 		</Card>

@@ -46,6 +46,17 @@ describe("RoomList", () => {
 				screen.getByRole("button", { name: /add another/i }),
 			).toBeInTheDocument();
 		});
+
+		it("displays loading spinner when isLoading is true", () => {
+			renderWithProviders(
+				<RoomList propertyId="prop-1" rooms={[]} isLoading />,
+			);
+
+			expect(screen.getByTestId("room-list-loader")).toBeInTheDocument();
+			expect(
+				screen.queryByRole("button", { name: /add room/i }),
+			).not.toBeInTheDocument();
+		});
 	});
 
 	describe("Interactions", () => {
