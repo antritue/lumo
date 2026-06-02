@@ -53,10 +53,9 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		closeEditRoom();
 	};
 
-	const handleConfirmDeleteRoom = (id: string) => {
-		deleteRoom(id);
+	const handleConfirmDeleteRoom = async (id: string) => {
+		await deleteRoom(id);
 		closeDeleteRoom();
-		// Redirect to properties page after delete
 		window.location.href = "/dashboard/properties";
 	};
 

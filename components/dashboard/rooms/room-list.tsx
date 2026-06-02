@@ -58,8 +58,8 @@ export function RoomList({
 		setDeletingRoom(room);
 	};
 
-	const handleConfirmDelete = (id: string) => {
-		deleteRoom(id);
+	const handleConfirmDelete = async (id: string) => {
+		await deleteRoom(id);
 		setDeletingRoom(null);
 	};
 
