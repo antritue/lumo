@@ -1,6 +1,6 @@
 "use client";
 
-import { DoorOpen, Plus } from "lucide-react";
+import { DoorOpen, Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,14 @@ import type { Room } from "./types";
 interface RoomListProps {
 	propertyId: string;
 	rooms: Room[];
+	isLoading?: boolean;
 }
 
-export function RoomList({ propertyId, rooms }: RoomListProps) {
+export function RoomList({
+	propertyId,
+	rooms,
+	isLoading = false,
+}: RoomListProps) {
 	const t = useTranslations("app.rooms");
 	const createRoom = useRoomsStore((state) => state.createRoom);
 	const updateRoom = useRoomsStore((state) => state.updateRoom);
@@ -57,6 +62,18 @@ export function RoomList({ propertyId, rooms }: RoomListProps) {
 		deleteRoom(id);
 		setDeletingRoom(null);
 	};
+
+	// Loading state while fetching rooms
+	if (isLoading) {
+		return (
+			<div className="flex items-center justify-center py-8">
+				<Loader2
+					className="h-6 w-6 animate-spin text-muted-foreground"
+					data-testid="room-list-loader"
+				/>
+			</div>
+		);
+	}
 
 	// Empty state: no rooms yet
 	if (rooms.length === 0 && !isAdding) {
