@@ -16,7 +16,11 @@ global.fetch = mockFetch;
 
 describe("RoomsStore", () => {
 	beforeEach(() => {
-		useRoomsStore.setState({ rooms: [], isLoading: false });
+		useRoomsStore.setState({
+			rooms: [],
+			isLoading: false,
+			loadingPropertyIds: [],
+		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
 	});
@@ -157,16 +161,47 @@ describe("RoomsStore", () => {
 			consoleSpy.mockRestore();
 		});
 
-		it("skips fetch when already loading", async () => {
+		it("fetches rooms for different properties independently", async () => {
 			useAuthStore.setState({
 				user: { id: "user-123" } as User,
 			});
 
-			useRoomsStore.setState({ isLoading: true });
+			mockFetch
+				.mockResolvedValueOnce({
+					ok: true,
+					json: async () => [
+						{
+							id: "r1",
+							property_id: "prop-1",
+							name: "Room 1",
+							monthly_rent: 1000,
+							notes: null,
+						},
+					],
+				})
+				.mockResolvedValueOnce({
+					ok: true,
+					json: async () => [
+						{
+							id: "r2",
+							property_id: "prop-2",
+							name: "Room A",
+							monthly_rent: 500,
+							notes: null,
+						},
+					],
+				});
 
-			await useRoomsStore.getState().fetchRoomsByPropertyId("prop-1");
+			await Promise.all([
+				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
+				useRoomsStore.getState().fetchRoomsByPropertyId("prop-2"),
+			]);
 
-			expect(mockFetch).not.toHaveBeenCalled();
+			const { rooms } = useRoomsStore.getState();
+			expect(rooms).toHaveLength(2);
+			expect(rooms.find((r) => r.propertyId === "prop-1")?.name).toBe("Room 1");
+			expect(rooms.find((r) => r.propertyId === "prop-2")?.name).toBe("Room A");
+			expect(mockFetch).toHaveBeenCalledTimes(2);
 		});
 	});
 
@@ -534,12 +569,14 @@ describe("RoomsStore", () => {
 					},
 				],
 				isLoading: true,
+				loadingPropertyIds: ["prop-1"],
 			});
 
 			useRoomsStore.getState().clearStore();
 
 			expect(useRoomsStore.getState().rooms).toEqual([]);
 			expect(useRoomsStore.getState().isLoading).toBe(false);
+			expect(useRoomsStore.getState().loadingPropertyIds).toEqual([]);
 		});
 	});
 });
