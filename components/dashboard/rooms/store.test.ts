@@ -3,14 +3,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { useRoomsStore } from "./store";
 
-// Mock crypto.randomUUID
 Object.defineProperty(global, "crypto", {
 	value: {
 		randomUUID: () => "test-uuid",
 	},
 });
 
-// Mock fetch
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 

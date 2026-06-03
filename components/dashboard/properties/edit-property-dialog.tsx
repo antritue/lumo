@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { type SubmitEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -36,7 +36,7 @@ export function EditPropertyDialog({
 		}
 	}, [property]);
 
-	const handleSubmit = (e: FormEvent) => {
+	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
 		const trimmedName = propertyName.trim();
 

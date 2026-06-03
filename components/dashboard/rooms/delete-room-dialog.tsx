@@ -49,8 +49,8 @@ export function DeleteRoomDialog({
 			await onDelete(room.id);
 			onOpenChange(false);
 		} catch {
-			setErrorOpen(true);
 			setIsSubmitting(false);
+			setErrorOpen(true);
 		}
 	};
 

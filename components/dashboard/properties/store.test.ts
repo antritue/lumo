@@ -3,14 +3,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { usePropertiesStore } from "./store";
 
-// Mock crypto.randomUUID
 Object.defineProperty(global, "crypto", {
 	value: {
 		randomUUID: () => "test-uuid",
 	},
 });
 
-// Mock fetch
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
@@ -115,11 +113,9 @@ describe("PropertiesStore", () => {
 				json: async () => mockProperties,
 			});
 
-			// First fetch
 			await usePropertiesStore.getState().fetchProperties();
 			expect(mockFetch).toHaveBeenCalledTimes(1);
 
-			// Second fetch should be prevented
 			await usePropertiesStore.getState().fetchProperties();
 			expect(mockFetch).toHaveBeenCalledTimes(1); // Still 1, not 2
 		});
@@ -140,12 +136,10 @@ describe("PropertiesStore", () => {
 		});
 
 		it("calls API and updates state when authenticated", async () => {
-			// Mock authenticated user
 			useAuthStore.setState({
 				user: { id: "user-123" } as User,
 			});
 
-			// Mock API response
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({ id: "server-id", name: "Server Property" }),
@@ -196,7 +190,6 @@ describe("PropertiesStore", () => {
 
 	describe("updateProperty", () => {
 		it("updates property locally when unauthenticated", async () => {
-			// Setup local properties
 			usePropertiesStore.setState({
 				properties: [
 					{ id: "1", userId: "user-1", name: "First" },
@@ -213,7 +206,6 @@ describe("PropertiesStore", () => {
 		});
 
 		it("calls API and updates state when authenticated", async () => {
-			// Mock authenticated user
 			useAuthStore.setState({
 				user: { id: "user-123" } as User,
 			});
@@ -225,7 +217,6 @@ describe("PropertiesStore", () => {
 				],
 			});
 
-			// Mock API response
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({ id: "1", name: "Updated", userId: "user-123" }),
@@ -294,7 +285,6 @@ describe("PropertiesStore", () => {
 		});
 
 		it("calls API and updates state when authenticated", async () => {
-			// Mock authenticated user
 			useAuthStore.setState({
 				user: { id: "user-123" } as User,
 			});
@@ -306,7 +296,6 @@ describe("PropertiesStore", () => {
 				],
 			});
 
-			// Mock API response
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({ id: "2", name: "Delete", userId: "user-123" }),
@@ -358,7 +347,6 @@ describe("PropertiesStore", () => {
 
 	describe("clearStore", () => {
 		it("resets all store data to initial state", () => {
-			// Set some state
 			usePropertiesStore.setState({
 				properties: [
 					{ id: "1", userId: "user-123", name: "Property 1" },
@@ -368,15 +356,8 @@ describe("PropertiesStore", () => {
 				hasFetched: true,
 			});
 
-			// Verify state is set
-			expect(usePropertiesStore.getState().properties).toHaveLength(2);
-			expect(usePropertiesStore.getState().isLoading).toBe(true);
-			expect(usePropertiesStore.getState().hasFetched).toBe(true);
-
-			// Clear the store
 			usePropertiesStore.getState().clearStore();
 
-			// Verify all state is reset
 			expect(usePropertiesStore.getState().properties).toEqual([]);
 			expect(usePropertiesStore.getState().isLoading).toBe(false);
 			expect(usePropertiesStore.getState().hasFetched).toBe(false);

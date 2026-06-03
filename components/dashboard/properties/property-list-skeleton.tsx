@@ -18,7 +18,6 @@ export function PropertyListSkeleton() {
 				<PropertyCardSkeleton />
 			</div>
 
-			{/* Add Property button skeleton */}
 			<div className="h-11 w-full rounded-lg bg-muted animate-shimmer" />
 		</div>
 	);
