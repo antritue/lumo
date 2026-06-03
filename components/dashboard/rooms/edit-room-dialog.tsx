@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { type SubmitEvent, useEffect, useState } from "react";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +58,7 @@ export function EditRoomDialog({
 		}
 	}, [room]);
 
-	const handleSubmit = async (e: FormEvent) => {
+	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 		const trimmedName = roomName.trim();
 

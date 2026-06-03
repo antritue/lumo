@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ export function CreatePropertyForm({
 	const [errorOpen, setErrorOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
-	const handleSubmit = async (e: FormEvent) => {
+	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 
 		const trimmedName = propertyName.trim();

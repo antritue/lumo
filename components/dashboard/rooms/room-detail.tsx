@@ -92,7 +92,6 @@ export function RoomDetail({ room }: RoomDetailProps) {
 					onDelete={openDeletePayment}
 				/>
 
-				{/* Dialogs */}
 				{paymentDialogMode && (
 					<UpsertRentPaymentDialog
 						mode={paymentDialogMode}

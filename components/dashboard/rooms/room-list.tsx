@@ -108,21 +108,17 @@ export function RoomList({
 
 	return (
 		<div className="space-y-3">
-			{/* Room list */}
-			{rooms.length > 0 && (
-				<div className="space-y-2">
-					{rooms.map((room) => (
-						<RoomItem
-							key={room.id}
-							room={room}
-							onEdit={handleEdit}
-							onDelete={handleDelete}
-						/>
-					))}
-				</div>
-			)}
+			<div className="space-y-2">
+				{rooms.map((room) => (
+					<RoomItem
+						key={room.id}
+						room={room}
+						onEdit={handleEdit}
+						onDelete={handleDelete}
+					/>
+				))}
+			</div>
 
-			{/* Add room section */}
 			{!isAdding ? (
 				<div className="flex justify-center">
 					<Button
@@ -145,7 +141,6 @@ export function RoomList({
 				</div>
 			)}
 
-			{/* Edit and Delete Dialogs */}
 			<EditRoomDialog
 				room={editingRoom}
 				open={!!editingRoom}

@@ -105,33 +105,29 @@ export const useRoomsStore = create<RoomsState>()(
 				const user = useAuthStore.getState().user;
 
 				if (user) {
-					try {
-						const res = await fetch("/api/rooms", {
-							method: "POST",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({
-								name,
-								propertyId,
-								monthlyRent,
-								notes,
-							}),
-							credentials: "include",
-						});
+					const res = await fetch("/api/rooms", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							name,
+							propertyId,
+							monthlyRent,
+							notes,
+						}),
+						credentials: "include",
+					});
 
-						if (!res.ok) {
-							throw new Error("Failed to create room");
-						}
-
-						const data = await res.json();
-						const room = mapRoomResponse(data);
-
-						set((state) => ({
-							rooms: [...state.rooms, room],
-						}));
-					} catch (error) {
+					if (!res.ok) {
+						const error = new Error("Failed to create room");
 						console.error("Failed to create room:", error);
 						throw error;
 					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						rooms: [...state.rooms, mapRoomResponse(data)],
+					}));
 				} else {
 					set((state) => ({
 						rooms: [
@@ -152,32 +148,30 @@ export const useRoomsStore = create<RoomsState>()(
 				const user = useAuthStore.getState().user;
 
 				if (user) {
-					try {
-						const body: Record<string, unknown> = { name };
-						if (monthlyRent !== undefined) body.monthlyRent = monthlyRent;
-						if (notes !== undefined) body.notes = notes;
+					const body: Record<string, unknown> = { name };
+					if (monthlyRent !== undefined) body.monthlyRent = monthlyRent;
+					if (notes !== undefined) body.notes = notes;
 
-						const res = await fetch(`/api/rooms/${id}`, {
-							method: "PATCH",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify(body),
-							credentials: "include",
-						});
+					const res = await fetch(`/api/rooms/${id}`, {
+						method: "PATCH",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(body),
+						credentials: "include",
+					});
 
-						if (!res.ok) {
-							throw new Error("Failed to update room");
-						}
-
-						const data = await res.json();
-						const room = mapRoomResponse(data);
-
-						set((state) => ({
-							rooms: state.rooms.map((r) => (r.id === id ? room : r)),
-						}));
-					} catch (error) {
+					if (!res.ok) {
+						const error = new Error("Failed to update room");
 						console.error("Failed to update room:", error);
 						throw error;
 					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						rooms: state.rooms.map((r) =>
+							r.id === id ? mapRoomResponse(data) : r,
+						),
+					}));
 				} else {
 					set((state) => ({
 						rooms: state.rooms.map((room) =>
@@ -200,28 +194,21 @@ export const useRoomsStore = create<RoomsState>()(
 				const user = useAuthStore.getState().user;
 
 				if (user) {
-					try {
-						const res = await fetch(`/api/rooms/${id}`, {
-							method: "DELETE",
-							credentials: "include",
-						});
+					const res = await fetch(`/api/rooms/${id}`, {
+						method: "DELETE",
+						credentials: "include",
+					});
 
-						if (!res.ok) {
-							throw new Error("Failed to delete room");
-						}
-
-						set((state) => ({
-							rooms: state.rooms.filter((room) => room.id !== id),
-						}));
-					} catch (error) {
+					if (!res.ok) {
+						const error = new Error("Failed to delete room");
 						console.error("Failed to delete room:", error);
 						throw error;
 					}
-				} else {
-					set((state) => ({
-						rooms: state.rooms.filter((room) => room.id !== id),
-					}));
 				}
+
+				set((state) => ({
+					rooms: state.rooms.filter((room) => room.id !== id),
+				}));
 			},
 
 			clearStore: () =>

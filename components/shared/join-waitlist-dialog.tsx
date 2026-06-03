@@ -2,7 +2,7 @@
 
 import { Loader2, Mail, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type FormEvent, type ReactNode, useState } from "react";
+import { type ReactNode, type SubmitEvent, useState } from "react";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +34,7 @@ export function JoinWaitlistDialog({
 	const [errorOpen, setErrorOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
-	const handleSubmit = async (e: FormEvent) => {
+	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 		if (!email) return;
 
@@ -72,7 +72,6 @@ export function JoinWaitlistDialog({
 				onOpenChange={(val) => {
 					setOpen(val);
 					if (!val) {
-						// Reset state when closing
 						setSubmitted(false);
 						setEmail("");
 					}

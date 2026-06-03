@@ -4,12 +4,10 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { Property } from "./types";
 
 interface PropertiesState {
-	// Domain data
 	properties: Property[];
 	isLoading: boolean;
 	hasFetched: boolean;
 
-	// Actions
 	fetchProperties: () => Promise<void>;
 	createProperty: (name: string) => Promise<void>;
 	updateProperty: (id: string, name: string) => void;
@@ -28,7 +26,6 @@ export const usePropertiesStore = create<PropertiesState>()(
 				const { hasFetched, isLoading } = get();
 				const user = useAuthStore.getState().user;
 
-				// Prevent duplicate fetches
 				if (!user || hasFetched || isLoading) {
 					return;
 				}
@@ -57,27 +54,24 @@ export const usePropertiesStore = create<PropertiesState>()(
 				const user = useAuthStore.getState().user;
 
 				if (user) {
-					try {
-						const res = await fetch("/api/properties", {
-							method: "POST",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ name }),
-							credentials: "include",
-						});
+					const res = await fetch("/api/properties", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ name }),
+						credentials: "include",
+					});
 
-						if (!res.ok) {
-							throw new Error("Failed to create property");
-						}
-
-						const data = await res.json();
-
-						set((state) => ({
-							properties: [...state.properties, data],
-						}));
-					} catch (error) {
+					if (!res.ok) {
+						const error = new Error("Failed to create property");
 						console.error("Failed to create property:", error);
 						throw error;
 					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						properties: [...state.properties, data],
+					}));
 				} else {
 					set((state) => ({
 						properties: [
@@ -96,29 +90,26 @@ export const usePropertiesStore = create<PropertiesState>()(
 				const user = useAuthStore.getState().user;
 
 				if (user) {
-					try {
-						const res = await fetch(`/api/properties/${id}`, {
-							method: "PATCH",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ name }),
-							credentials: "include",
-						});
+					const res = await fetch(`/api/properties/${id}`, {
+						method: "PATCH",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ name }),
+						credentials: "include",
+					});
 
-						if (!res.ok) {
-							throw new Error("Failed to update property");
-						}
-
-						const data = await res.json();
-
-						set((state) => ({
-							properties: state.properties.map((property) =>
-								property.id === id ? data : property,
-							),
-						}));
-					} catch (error) {
+					if (!res.ok) {
+						const error = new Error("Failed to update property");
 						console.error("Failed to update property:", error);
 						throw error;
 					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						properties: state.properties.map((property) =>
+							property.id === id ? data : property,
+						),
+					}));
 				} else {
 					set((state) => ({
 						properties: state.properties.map((property) =>
@@ -132,41 +123,29 @@ export const usePropertiesStore = create<PropertiesState>()(
 				const user = useAuthStore.getState().user;
 
 				if (user) {
-					try {
-						const res = await fetch(`/api/properties/${id}`, {
-							method: "DELETE",
-							credentials: "include",
-						});
+					const res = await fetch(`/api/properties/${id}`, {
+						method: "DELETE",
+						credentials: "include",
+					});
 
-						if (!res.ok) {
-							throw new Error("Failed to delete property");
-						}
-
-						set((state) => ({
-							properties: state.properties.filter(
-								(property) => property.id !== id,
-							),
-						}));
-					} catch (error) {
+					if (!res.ok) {
+						const error = new Error("Failed to delete property");
 						console.error("Failed to delete property:", error);
 						throw error;
 					}
-				} else {
-					set((state) => ({
-						properties: state.properties.filter(
-							(property) => property.id !== id,
-						),
-					}));
 				}
+
+				set((state) => ({
+					properties: state.properties.filter((property) => property.id !== id),
+				}));
 			},
 
-			clearStore: () => {
+			clearStore: () =>
 				set({
 					properties: [],
 					isLoading: false,
 					hasFetched: false,
-				});
-			},
+				}),
 		}),
 		{ name: "properties" },
 	),

@@ -55,7 +55,6 @@ export function useRoomDialogs() {
 	};
 
 	return {
-		// Payment dialog state
 		paymentDialogMode,
 		selectedPayment,
 		isDeletePaymentDialogOpen,
@@ -64,7 +63,6 @@ export function useRoomDialogs() {
 		closePayment,
 		openDeletePayment,
 		closeDeletePayment,
-		// Room dialog state
 		isEditDialogOpen,
 		isDeleteDialogOpen,
 		openEditRoom,
