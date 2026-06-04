@@ -14,10 +14,7 @@ export async function createRentPayment(request: NextRequest) {
 		} = await supabase.auth.getUser();
 
 		if (authError || !user) {
-			return NextResponse.json(
-				{ error: "Unauthorized", code: "UNAUTHORIZED" },
-				{ status: 401 },
-			);
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
 		const body = await request.json();
@@ -25,10 +22,7 @@ export async function createRentPayment(request: NextRequest) {
 		const validation = rentPaymentSchema.safeParse(body);
 		if (!validation.success) {
 			return NextResponse.json(
-				{
-					error: z.treeifyError(validation.error),
-					code: "VALIDATION_ERROR",
-				},
+				{ error: z.treeifyError(validation.error) },
 				{ status: 400 },
 			);
 		}
@@ -44,10 +38,7 @@ export async function createRentPayment(request: NextRequest) {
 			.single();
 
 		if (roomError || !room) {
-			return NextResponse.json(
-				{ error: "Room not found", code: "ROOM_NOT_FOUND" },
-				{ status: 404 },
-			);
+			return NextResponse.json({ error: "Room not found" }, { status: 404 });
 		}
 
 		// Insert payment record
@@ -69,10 +60,7 @@ export async function createRentPayment(request: NextRequest) {
 			// Handle duplicate period for same room
 			if (error.code === "23505") {
 				return NextResponse.json(
-					{
-						error: "A payment record already exists for this period",
-						code: "DUPLICATE_PERIOD",
-					},
+					{ error: "A payment record already exists for this period" },
 					{ status: 409 },
 				);
 			}
@@ -83,7 +71,7 @@ export async function createRentPayment(request: NextRequest) {
 	} catch (err) {
 		console.error("Rent Payments API Error:", err);
 		return NextResponse.json(
-			{ error: "Internal Server Error", code: "INTERNAL_ERROR" },
+			{ error: "Internal Server Error" },
 			{ status: 500 },
 		);
 	}

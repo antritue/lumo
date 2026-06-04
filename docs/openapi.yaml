@@ -170,18 +170,6 @@ components:
         - period
         - amount
 
-    RentPaymentError:
-      type: object
-      properties:
-        error:
-          type: string
-        code:
-          type: string
-          description: Error code for client-side translation mapping
-      required:
-        - error
-        - code
-
     Message:
       type: object
       properties:
@@ -528,10 +516,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RentPaymentError"
+                $ref: "#/components/schemas/Error"
               example:
                 error: "roomId: Room ID must be a valid UUID"
-                code: VALIDATION_ERROR
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -539,19 +526,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RentPaymentError"
+                $ref: "#/components/schemas/Error"
               example:
                 error: Room not found
-                code: ROOM_NOT_FOUND
         "409":
           description: Duplicate payment period
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RentPaymentError"
+                $ref: "#/components/schemas/Error"
               example:
                 error: A payment record already exists for this period
-                code: DUPLICATE_PERIOD
         "500":
           $ref: "#/components/responses/InternalServerError"
 
