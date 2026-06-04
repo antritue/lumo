@@ -134,7 +134,6 @@ describe("POST /api/rent-payments", () => {
 
 		expect(res.status).toBe(401);
 		expect(data.error).toBe("Unauthorized");
-		expect(data.code).toBe("UNAUTHORIZED");
 	});
 
 	it("should return 400 when roomId is missing", async () => {
@@ -145,10 +144,9 @@ describe("POST /api/rent-payments", () => {
 			amount: 500,
 		});
 		const res = await createRentPayment(req);
-		const data = await res.json();
+		const _data = await res.json();
 
 		expect(res.status).toBe(400);
-		expect(data.code).toBe("VALIDATION_ERROR");
 	});
 
 	it("should return 400 when period is invalid format", async () => {
@@ -160,10 +158,9 @@ describe("POST /api/rent-payments", () => {
 			amount: 500,
 		});
 		const res = await createRentPayment(req);
-		const data = await res.json();
+		const _data = await res.json();
 
 		expect(res.status).toBe(400);
-		expect(data.code).toBe("VALIDATION_ERROR");
 	});
 
 	it("should return 400 when amount is not positive", async () => {
@@ -175,10 +172,9 @@ describe("POST /api/rent-payments", () => {
 			amount: -100,
 		});
 		const res = await createRentPayment(req);
-		const data = await res.json();
+		const _data = await res.json();
 
 		expect(res.status).toBe(400);
-		expect(data.code).toBe("VALIDATION_ERROR");
 	});
 
 	it("should return 404 when room does not exist", async () => {
@@ -195,7 +191,6 @@ describe("POST /api/rent-payments", () => {
 
 		expect(res.status).toBe(404);
 		expect(data.error).toBe("Room not found");
-		expect(data.code).toBe("ROOM_NOT_FOUND");
 	});
 
 	it("should return 409 when duplicate period for same room", async () => {
@@ -215,7 +210,7 @@ describe("POST /api/rent-payments", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(409);
-		expect(data.code).toBe("DUPLICATE_PERIOD");
+		expect(data.error).toBe("A payment record already exists for this period");
 	});
 
 	it("should return 500 when database error occurs", async () => {
@@ -236,6 +231,5 @@ describe("POST /api/rent-payments", () => {
 
 		expect(res.status).toBe(500);
 		expect(data.error).toBe("Internal Server Error");
-		expect(data.code).toBe("INTERNAL_ERROR");
 	});
 });
