@@ -2,6 +2,7 @@ export const DATABASE_TABLES = {
 	WAITLIST: "waitlist",
 	PROPERTIES: "properties",
 	ROOMS: "rooms",
+	RENT_PAYMENTS: "rent_payments",
 };
 
 export const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
