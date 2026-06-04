@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { mapToCamelCase } from "@/lib/utils";
 import { roomSchema } from "@/lib/validations/room";
 
 export async function listRooms(request: NextRequest) {
@@ -17,18 +18,16 @@ export async function listRooms(request: NextRequest) {
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
-		// Get required property_id from query params
 		const { searchParams } = new URL(request.url);
-		const propertyId = searchParams.get("property_id");
+		const propertyId = searchParams.get("propertyId");
 
 		if (!propertyId) {
 			return NextResponse.json(
-				{ error: "property_id is required" },
+				{ error: "propertyId is required" },
 				{ status: 400 },
 			);
 		}
 
-		// Get rooms for the property - RLS policies automatically filter by user_id
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.ROOMS)
 			.select("*")
@@ -39,7 +38,7 @@ export async function listRooms(request: NextRequest) {
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 200 });
+		return NextResponse.json(data.map(mapToCamelCase), { status: 200 });
 	} catch (err) {
 		console.error("Rooms API Error:", err);
 		return NextResponse.json(
@@ -64,7 +63,6 @@ export async function createRoom(request: NextRequest) {
 
 		const body = await request.json();
 
-		// Validate request body
 		const validation = roomSchema.safeParse(body);
 		if (!validation.success) {
 			return NextResponse.json(
@@ -75,7 +73,6 @@ export async function createRoom(request: NextRequest) {
 
 		const { name, propertyId, monthlyRent, notes } = validation.data;
 
-		// Verify the property belongs to the user
 		const { data: property, error: propertyError } = await supabase
 			.from(DATABASE_TABLES.PROPERTIES)
 			.select("id")
@@ -90,7 +87,6 @@ export async function createRoom(request: NextRequest) {
 			);
 		}
 
-		// Insert room with authenticated user's ID
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.ROOMS)
 			.insert([
@@ -109,7 +105,7 @@ export async function createRoom(request: NextRequest) {
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 201 });
+		return NextResponse.json(mapToCamelCase(data), { status: 201 });
 	} catch (err) {
 		console.error("Rooms API Error:", err);
 		return NextResponse.json(

@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { mapToCamelCase } from "@/lib/utils";
 import { propertySchema } from "@/lib/validations/property";
 
 export async function deleteProperty(
@@ -22,7 +23,6 @@ export async function deleteProperty(
 
 		const { id } = await params;
 
-		// Delete property - RLS policy ensures user can only delete their own properties
 		const { error, count } = await supabase
 			.from(DATABASE_TABLES.PROPERTIES)
 			.delete({ count: "exact" })
@@ -33,7 +33,6 @@ export async function deleteProperty(
 			throw error;
 		}
 
-		// Check if property was found and deleted
 		if (count === 0) {
 			return NextResponse.json(
 				{ error: "Property not found" },
@@ -70,7 +69,6 @@ export async function updateProperty(
 		const { id } = await params;
 		const body = await request.json();
 
-		// Validate request body
 		const validation = propertySchema.safeParse(body);
 		if (!validation.success) {
 			return NextResponse.json(
@@ -81,7 +79,6 @@ export async function updateProperty(
 
 		const { name } = validation.data;
 
-		// Update property - RLS policy ensures user can only update their own properties
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.PROPERTIES)
 			.update({ name })
@@ -91,7 +88,6 @@ export async function updateProperty(
 			.single();
 
 		if (error) {
-			// Check if property doesn't exist or doesn't belong to user
 			if (error.code === "PGRST116") {
 				return NextResponse.json(
 					{ error: "Property not found" },
@@ -101,7 +97,7 @@ export async function updateProperty(
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 200 });
+		return NextResponse.json(mapToCamelCase(data), { status: 200 });
 	} catch (err) {
 		console.error("Properties API Error:", err);
 		return NextResponse.json(

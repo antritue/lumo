@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { mapToCamelCase } from "@/lib/utils";
 import { propertySchema } from "@/lib/validations/property";
 
 export async function listProperties() {
@@ -27,7 +28,7 @@ export async function listProperties() {
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 200 });
+		return NextResponse.json(data.map(mapToCamelCase), { status: 200 });
 	} catch (err) {
 		console.error("Properties API Error:", err);
 		return NextResponse.json(
@@ -74,7 +75,7 @@ export async function createProperty(request: NextRequest) {
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 201 });
+		return NextResponse.json(mapToCamelCase(data), { status: 201 });
 	} catch (err) {
 		console.error("Properties API Error:", err);
 		return NextResponse.json(

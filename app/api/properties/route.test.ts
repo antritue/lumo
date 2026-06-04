@@ -56,7 +56,10 @@ describe("GET /api/properties", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
-		expect(data).toEqual(mockProperties);
+		expect(data).toEqual([
+			{ id: "prop-1", name: "House A", userId: "test-user-id" },
+			{ id: "prop-2", name: "House B", userId: "test-user-id" },
+		]);
 		expect(mockSelect).toHaveBeenCalledWith("*");
 		expect(mockEq).toHaveBeenCalledWith("user_id", "test-user-id");
 	});
@@ -125,7 +128,11 @@ describe("POST /api/properties", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
-		expect(data.name).toBe("My House");
+		expect(data).toEqual({
+			id: "new-prop-id",
+			name: "My House",
+			userId: "test-user-id",
+		});
 		expect(mockInsert).toHaveBeenCalledWith([
 			{ name: "My House", user_id: "test-user-id" },
 		]);

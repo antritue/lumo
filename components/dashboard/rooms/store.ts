@@ -3,16 +3,6 @@ import { devtools } from "zustand/middleware";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { Room } from "./types";
 
-function mapRoomResponse(data: Record<string, unknown>): Room {
-	return {
-		id: data.id as string,
-		propertyId: data.property_id as string,
-		name: data.name as string,
-		monthlyRent: (data.monthly_rent as number) ?? null,
-		notes: (data.notes as string) ?? null,
-	};
-}
-
 interface RoomsState {
 	rooms: Room[];
 	isLoading: boolean;
@@ -56,7 +46,7 @@ export const useRoomsStore = create<RoomsState>()(
 						isLoading: true,
 						loadingPropertyIds: [...state.loadingPropertyIds, propertyId],
 					}));
-					const res = await fetch(`/api/rooms?property_id=${propertyId}`, {
+					const res = await fetch(`/api/rooms?propertyId=${propertyId}`, {
 						method: "GET",
 						credentials: "include",
 					});
@@ -66,7 +56,6 @@ export const useRoomsStore = create<RoomsState>()(
 					}
 
 					const data = await res.json();
-					const rooms = data.map(mapRoomResponse);
 
 					set((state) => {
 						const newLoadingIds = state.loadingPropertyIds.filter(
@@ -75,7 +64,7 @@ export const useRoomsStore = create<RoomsState>()(
 						return {
 							rooms: [
 								...state.rooms.filter((r) => r.propertyId !== propertyId),
-								...rooms,
+								...data,
 							],
 							isLoading: newLoadingIds.length > 0,
 							loadingPropertyIds: newLoadingIds,
@@ -126,7 +115,7 @@ export const useRoomsStore = create<RoomsState>()(
 					const data = await res.json();
 
 					set((state) => ({
-						rooms: [...state.rooms, mapRoomResponse(data)],
+						rooms: [...state.rooms, data],
 					}));
 				} else {
 					set((state) => ({
@@ -168,9 +157,7 @@ export const useRoomsStore = create<RoomsState>()(
 					const data = await res.json();
 
 					set((state) => ({
-						rooms: state.rooms.map((r) =>
-							r.id === id ? mapRoomResponse(data) : r,
-						),
+						rooms: state.rooms.map((r) => (r.id === id ? data : r)),
 					}));
 				} else {
 					set((state) => ({

@@ -30,7 +30,7 @@ describe("GET /api/rooms", () => {
 
 	const createRequest = (propertyId?: string) => {
 		const url = propertyId
-			? `http://localhost:3000/api/rooms?property_id=${propertyId}`
+			? `http://localhost:3000/api/rooms?propertyId=${propertyId}`
 			: "http://localhost:3000/api/rooms";
 		return new NextRequest(url, { method: "GET" });
 	};
@@ -73,7 +73,20 @@ describe("GET /api/rooms", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
-		expect(data).toEqual(mockRooms);
+		expect(data).toEqual([
+			{
+				id: "room-1",
+				name: "Room A",
+				propertyId: "prop-1",
+				userId: "test-user-id",
+			},
+			{
+				id: "room-2",
+				name: "Room B",
+				propertyId: "prop-1",
+				userId: "test-user-id",
+			},
+		]);
 		expect(mockSelect).toHaveBeenCalledWith("*");
 		expect(mockEq).toHaveBeenCalledWith("user_id", "test-user-id");
 		expect(mockEq2).toHaveBeenCalledWith("property_id", "prop-1");
@@ -90,7 +103,7 @@ describe("GET /api/rooms", () => {
 		expect(data.error).toBe("Unauthorized");
 	});
 
-	it("should return 400 when property_id is missing", async () => {
+	it("should return 400 when propertyId is missing", async () => {
 		mockAuthenticatedUser();
 
 		const req = createRequest();
@@ -98,7 +111,7 @@ describe("GET /api/rooms", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
-		expect(data.error).toBe("property_id is required");
+		expect(data.error).toBe("propertyId is required");
 	});
 
 	it("should return 500 when database error occurs", async () => {
@@ -201,7 +214,14 @@ describe("POST /api/rooms", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
-		expect(data.name).toBe("Room 101");
+		expect(data).toEqual({
+			id: "new-room-id",
+			name: "Room 101",
+			propertyId: "prop-1",
+			userId: "test-user-id",
+			monthlyRent: 500,
+			notes: null,
+		});
 	});
 
 	it("should return 401 when user is not authenticated", async () => {

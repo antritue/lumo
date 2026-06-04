@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { mapToCamelCase } from "@/lib/utils";
 import { rentPaymentSchema } from "@/lib/validations/rent-payment";
 
 export async function createRentPayment(request: NextRequest) {
@@ -29,7 +30,6 @@ export async function createRentPayment(request: NextRequest) {
 
 		const { roomId, period, amount, status } = validation.data;
 
-		// Verify the room belongs to the user
 		const { data: room, error: roomError } = await supabase
 			.from(DATABASE_TABLES.ROOMS)
 			.select("id")
@@ -41,7 +41,6 @@ export async function createRentPayment(request: NextRequest) {
 			return NextResponse.json({ error: "Room not found" }, { status: 404 });
 		}
 
-		// Insert payment record
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.RENT_PAYMENTS)
 			.insert([
@@ -57,7 +56,6 @@ export async function createRentPayment(request: NextRequest) {
 			.single();
 
 		if (error) {
-			// Handle duplicate period for same room
 			if (error.code === "23505") {
 				return NextResponse.json(
 					{ error: "A payment record already exists for this period" },
@@ -67,7 +65,7 @@ export async function createRentPayment(request: NextRequest) {
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 201 });
+		return NextResponse.json(mapToCamelCase(data), { status: 201 });
 	} catch (err) {
 		console.error("Rent Payments API Error:", err);
 		return NextResponse.json(
@@ -91,11 +89,11 @@ export async function listRentPayments(request: NextRequest) {
 		}
 
 		const { searchParams } = new URL(request.url);
-		const roomId = searchParams.get("room_id");
+		const roomId = searchParams.get("roomId");
 
 		if (!roomId) {
 			return NextResponse.json(
-				{ error: "room_id is required" },
+				{ error: "roomId is required" },
 				{ status: 400 },
 			);
 		}
@@ -121,7 +119,7 @@ export async function listRentPayments(request: NextRequest) {
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 200 });
+		return NextResponse.json(data.map(mapToCamelCase), { status: 200 });
 	} catch (err) {
 		console.error("Rent Payments API Error:", err);
 		return NextResponse.json(
