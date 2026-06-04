@@ -488,6 +488,50 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /api/rent-payments:
+    get:
+      summary: List rent payments
+      description: Returns all rent payments for a specific room
+      operationId: listRentPayments
+      tags:
+        - Rent Payments
+      parameters:
+        - name: room_id
+          in: query
+          required: true
+          description: Room UUID to filter payments by
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: List of payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RentPayment"
+        "400":
+          description: Missing room_id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: room_id is required
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Room not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
     post:
       summary: Create rent payment
       description: Creates a new rent payment record for a room

@@ -77,4 +77,59 @@ export async function createRentPayment(request: NextRequest) {
 	}
 }
 
+export async function listRentPayments(request: NextRequest) {
+	try {
+		const supabase = await createSupabaseServerClient();
+
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError || !user) {
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		}
+
+		const { searchParams } = new URL(request.url);
+		const roomId = searchParams.get("room_id");
+
+		if (!roomId) {
+			return NextResponse.json(
+				{ error: "room_id is required" },
+				{ status: 400 },
+			);
+		}
+
+		const { data: room, error: roomError } = await supabase
+			.from(DATABASE_TABLES.ROOMS)
+			.select("id")
+			.eq("id", roomId)
+			.eq("user_id", user.id)
+			.single();
+
+		if (roomError || !room) {
+			return NextResponse.json({ error: "Room not found" }, { status: 404 });
+		}
+
+		const { data, error } = await supabase
+			.from(DATABASE_TABLES.RENT_PAYMENTS)
+			.select("*")
+			.eq("room_id", roomId)
+			.order("period", { ascending: false });
+
+		if (error) {
+			throw error;
+		}
+
+		return NextResponse.json(data, { status: 200 });
+	} catch (err) {
+		console.error("Rent Payments API Error:", err);
+		return NextResponse.json(
+			{ error: "Internal Server Error" },
+			{ status: 500 },
+		);
+	}
+}
+
+export const GET = listRentPayments;
 export const POST = createRentPayment;
