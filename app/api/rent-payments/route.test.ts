@@ -93,9 +93,14 @@ describe("POST /api/rent-payments", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
-		expect(data.period).toBe("2026-03");
-		expect(data.amount).toBe(500);
-		expect(data.status).toBe("pending");
+		expect(data).toEqual({
+			id: "payment-1",
+			roomId: "room-1",
+			userId: "test-user-id",
+			period: "2026-03",
+			amount: 500,
+			status: "pending",
+		});
 	});
 
 	it("should return 201 with paid status when provided", async () => {
@@ -124,6 +129,7 @@ describe("POST /api/rent-payments", () => {
 
 		expect(res.status).toBe(201);
 		expect(data.status).toBe("paid");
+		expect(data.roomId).toBe("room-1");
 	});
 
 	it("should return 401 when user is not authenticated", async () => {
@@ -260,7 +266,7 @@ describe("GET /api/rent-payments", () => {
 
 	const createRequest = (roomId?: string) => {
 		const url = roomId
-			? `http://localhost:3000/api/rent-payments?room_id=${roomId}`
+			? `http://localhost:3000/api/rent-payments?roomId=${roomId}`
 			: "http://localhost:3000/api/rent-payments";
 		return new NextRequest(url, { method: "GET" });
 	};
@@ -315,7 +321,24 @@ describe("GET /api/rent-payments", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
-		expect(data).toEqual(mockPayments);
+		expect(data).toEqual([
+			{
+				id: "payment-2",
+				roomId: "room-1",
+				userId: "test-user-id",
+				period: "2026-04",
+				amount: 600,
+				status: "paid",
+			},
+			{
+				id: "payment-1",
+				roomId: "room-1",
+				userId: "test-user-id",
+				period: "2026-03",
+				amount: 500,
+				status: "pending",
+			},
+		]);
 		expect(mockPaymentSelect).toHaveBeenCalledWith("*");
 		expect(mockPaymentEq).toHaveBeenCalledWith("room_id", "room-1");
 		expect(mockPaymentOrder).toHaveBeenCalledWith("period", {
@@ -350,7 +373,7 @@ describe("GET /api/rent-payments", () => {
 		expect(data.error).toBe("Unauthorized");
 	});
 
-	it("should return 400 when room_id is missing", async () => {
+	it("should return 400 when roomId is missing", async () => {
 		mockAuthenticatedUser();
 
 		const req = createRequest();
@@ -358,7 +381,7 @@ describe("GET /api/rent-payments", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
-		expect(data.error).toBe("room_id is required");
+		expect(data.error).toBe("roomId is required");
 	});
 
 	it("should return 404 when room does not exist", async () => {

@@ -164,7 +164,11 @@ describe("DELETE /api/properties/:id", () => {
 			const data = await res.json();
 
 			expect(res.status).toBe(200);
-			expect(data).toEqual(mockProperty);
+			expect(data).toEqual({
+				id: "prop-1",
+				name: "Updated House",
+				userId: "test-user-id",
+			});
 			expect(mockUpdate).toHaveBeenCalledWith({ name: "Updated House" });
 			expect(mockEq).toHaveBeenCalledWith("id", "prop-1");
 			expect(mockEq2).toHaveBeenCalledWith("user_id", "test-user-id");

@@ -76,7 +76,14 @@ describe("GET /api/rooms/:id", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
-		expect(data).toEqual(mockRoom);
+		expect(data).toEqual({
+			id: "room-1",
+			name: "Room A",
+			propertyId: "prop-1",
+			userId: "test-user-id",
+			monthlyRent: 500,
+			notes: null,
+		});
 		expect(mockSelect).toHaveBeenCalledWith("*");
 		expect(mockEq).toHaveBeenCalledWith("id", "room-1");
 		expect(mockEq2).toHaveBeenCalledWith("user_id", "test-user-id");
@@ -268,7 +275,14 @@ describe("PATCH /api/rooms/:id", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
-		expect(data).toEqual(mockRoom);
+		expect(data).toEqual({
+			id: "room-1",
+			name: "Updated Room",
+			propertyId: "prop-1",
+			userId: "test-user-id",
+			monthlyRent: 500,
+			notes: null,
+		});
 		expect(mockUpdate).toHaveBeenCalledWith({ name: "Updated Room" });
 		expect(mockEq).toHaveBeenCalledWith("id", "room-1");
 		expect(mockEq2).toHaveBeenCalledWith("user_id", "test-user-id");
@@ -294,7 +308,7 @@ describe("PATCH /api/rooms/:id", () => {
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
-		expect(data.monthly_rent).toBe(750);
+		expect(data.monthlyRent).toBe(750);
 		expect(mockUpdate).toHaveBeenCalledWith({ monthly_rent: 750 });
 	});
 

@@ -12,3 +12,15 @@ export function formatCurrency(amount: number, locale: string): string {
 		minimumFractionDigits: 0,
 	}).format(amount);
 }
+
+function toCamelCase(str: string): string {
+	return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+export function mapToCamelCase<T>(obj: Record<string, unknown>): T {
+	const result: Record<string, unknown> = {};
+	for (const key of Object.keys(obj)) {
+		result[toCamelCase(key)] = obj[key];
+	}
+	return result as T;
+}

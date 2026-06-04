@@ -39,16 +39,16 @@ describe("RoomsStore", () => {
 			const mockResponse = [
 				{
 					id: "r1",
-					property_id: "prop-1",
+					propertyId: "prop-1",
 					name: "Room 1",
-					monthly_rent: 1000,
+					monthlyRent: 1000,
 					notes: null,
 				},
 				{
 					id: "r2",
-					property_id: "prop-1",
+					propertyId: "prop-1",
 					name: "Room 2",
-					monthly_rent: null,
+					monthlyRent: null,
 					notes: "Corner unit",
 				},
 			];
@@ -79,7 +79,7 @@ describe("RoomsStore", () => {
 			]);
 			expect(isLoading).toBe(false);
 			expect(mockFetch).toHaveBeenCalledWith(
-				"/api/rooms?property_id=prop-1",
+				"/api/rooms?propertyId=prop-1",
 				expect.objectContaining({
 					method: "GET",
 					credentials: "include",
@@ -116,9 +116,9 @@ describe("RoomsStore", () => {
 				json: async () => [
 					{
 						id: "new-1",
-						property_id: "prop-1",
+						propertyId: "prop-1",
 						name: "New Room",
-						monthly_rent: 500,
+						monthlyRent: 500,
 						notes: null,
 					},
 				],
@@ -170,9 +170,9 @@ describe("RoomsStore", () => {
 					json: async () => [
 						{
 							id: "r1",
-							property_id: "prop-1",
+							propertyId: "prop-1",
 							name: "Room 1",
-							monthly_rent: 1000,
+							monthlyRent: 1000,
 							notes: null,
 						},
 					],
@@ -182,9 +182,9 @@ describe("RoomsStore", () => {
 					json: async () => [
 						{
 							id: "r2",
-							property_id: "prop-2",
+							propertyId: "prop-2",
 							name: "Room A",
-							monthly_rent: 500,
+							monthlyRent: 500,
 							notes: null,
 						},
 					],
@@ -242,9 +242,9 @@ describe("RoomsStore", () => {
 				ok: true,
 				json: async () => ({
 					id: "server-id",
-					property_id: "prop-1",
+					propertyId: "prop-1",
 					name: "Server Room",
-					monthly_rent: 2000,
+					monthlyRent: 2000,
 					notes: "Server notes",
 				}),
 			});
@@ -357,9 +357,9 @@ describe("RoomsStore", () => {
 				ok: true,
 				json: async () => ({
 					id: "1",
-					property_id: "prop-1",
+					propertyId: "prop-1",
 					name: "Updated",
-					monthly_rent: 2000,
+					monthlyRent: 2000,
 					notes: "New notes",
 				}),
 			});
