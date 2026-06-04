@@ -201,6 +201,16 @@
 			}
 		},
 		"rentPayments": {
+			"errors": {
+				"create": {
+					"title": "Không thể thêm thanh toán",
+					"description": "Đã xảy ra lỗi khi thêm thanh toán. Vui lòng thử lại."
+				},
+				"duplicatePeriod": {
+					"title": "Kỳ thanh toán bị trùng",
+					"description": "Đã có ghi nhận thanh toán cho tháng này."
+				}
+			},
 			"addButton": "Thêm ghi nhận thanh toán",
 			"listTitle": "Ghi nhận thanh toán",
 			"periodLabel": "Kỳ thanh toán",
