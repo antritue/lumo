@@ -1,8 +1,9 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { updateRentPayment } from "./route";
+import { deleteRentPayment, updateRentPayment } from "./route";
 
 const mockGetUser = vi.fn();
+const mockDelete = vi.fn();
 const mockUpdate = vi.fn();
 const mockSelect = vi.fn();
 const mockSingle = vi.fn();
@@ -15,6 +16,7 @@ vi.mock("@/lib/supabase-server", () => ({
 			getUser: mockGetUser,
 		},
 		from: vi.fn(() => ({
+			delete: mockDelete,
 			update: mockUpdate,
 		})),
 	})),
@@ -235,6 +237,93 @@ describe("PATCH /api/rent-payments/:id", () => {
 
 		const req = createRequest("payment-1", { amount: 750 });
 		const res = await updateRentPayment(req, createParams("payment-1"));
+		const data = await res.json();
+
+		expect(res.status).toBe(500);
+		expect(data.error).toBe("Internal Server Error");
+	});
+});
+
+describe("DELETE /api/rent-payments/:id", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		mockDelete.mockReturnValue({ eq: mockEq });
+		mockEq.mockReturnValue({ eq: mockEq2 });
+	});
+
+	const createRequest = (id: string) => {
+		return new NextRequest(`http://localhost:3000/api/rent-payments/${id}`, {
+			method: "DELETE",
+		});
+	};
+
+	const createParams = (id: string) => ({
+		params: Promise.resolve({ id }),
+	});
+
+	const mockAuthenticatedUser = () => {
+		mockGetUser.mockResolvedValue({
+			data: { user: { id: "test-user-id" } },
+		});
+	};
+
+	const mockUnauthenticated = () => {
+		mockGetUser.mockResolvedValue({
+			data: { user: null },
+		});
+	};
+
+	it("should return 204 when authenticated user deletes their payment record", async () => {
+		mockAuthenticatedUser();
+		mockEq2.mockResolvedValue({
+			error: null,
+			count: 1,
+		});
+
+		const req = createRequest("payment-1");
+		const res = await deleteRentPayment(req, createParams("payment-1"));
+
+		expect(res.status).toBe(204);
+		expect(mockDelete).toHaveBeenCalledWith({ count: "exact" });
+		expect(mockEq).toHaveBeenCalledWith("id", "payment-1");
+		expect(mockEq2).toHaveBeenCalledWith("user_id", "test-user-id");
+	});
+
+	it("should return 401 when user is not authenticated", async () => {
+		mockUnauthenticated();
+
+		const req = createRequest("payment-1");
+		const res = await deleteRentPayment(req, createParams("payment-1"));
+		const data = await res.json();
+
+		expect(res.status).toBe(401);
+		expect(data.error).toBe("Unauthorized");
+	});
+
+	it("should return 404 when payment record is not found", async () => {
+		mockAuthenticatedUser();
+		mockEq2.mockResolvedValue({
+			error: null,
+			count: 0,
+		});
+
+		const req = createRequest("non-existent-id");
+		const res = await deleteRentPayment(req, createParams("non-existent-id"));
+		const data = await res.json();
+
+		expect(res.status).toBe(404);
+		expect(data.error).toBe("Payment record not found");
+	});
+
+	it("should return 500 when database error occurs", async () => {
+		mockAuthenticatedUser();
+		mockEq2.mockResolvedValue({
+			data: null,
+			error: { code: "some-error", message: "DB failure" },
+		});
+
+		const req = createRequest("payment-1");
+		const res = await deleteRentPayment(req, createParams("payment-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
