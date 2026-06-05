@@ -170,6 +170,19 @@ components:
         - period
         - amount
 
+    RentPaymentUpdateInput:
+      type: object
+      properties:
+        period:
+          type: string
+          pattern: '^\d{4}-\d{2}$'
+        amount:
+          type: number
+          minimum: 0
+        status:
+          type: string
+          enum: [pending, paid]
+
     Message:
       type: object
       properties:
@@ -581,6 +594,60 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 error: A payment record already exists for this period
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/rent-payments/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Payment record UUID
+        schema:
+          type: string
+          format: uuid
+
+    patch:
+      summary: Update rent payment
+      description: Updates an existing rent payment record. All fields are optional.
+      operationId: updateRentPayment
+      tags:
+        - Rent Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RentPaymentUpdateInput"
+            example:
+              period: "2026-04"
+              amount: 600
+              status: paid
+      responses:
+        "200":
+          description: Payment record updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RentPayment"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "amount: Amount must be positive"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Payment record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Payment record not found
         "500":
           $ref: "#/components/responses/InternalServerError"
 
