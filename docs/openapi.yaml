@@ -651,6 +651,28 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+    delete:
+      summary: Delete rent payment
+      description: Deletes a rent payment record
+      operationId: deleteRentPayment
+      tags:
+        - Rent Payments
+      responses:
+        "204":
+          description: Payment record deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Payment record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Payment record not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /api/auth/callback:
     get:
       summary: OAuth callback
