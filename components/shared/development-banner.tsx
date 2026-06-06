@@ -1,16 +1,8 @@
-"use client";
-
 import { Construction } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-interface DevelopmentBannerProps {
-	namespace?: string;
-}
-
-export function DevelopmentBanner({
-	namespace = "app.properties",
-}: DevelopmentBannerProps) {
-	const t = useTranslations(namespace);
+export function DevelopmentBanner() {
+	const t = useTranslations("app.development");
 
 	return (
 		<div className="mb-8 rounded-2xl bg-amber-50 border border-amber-200 p-6 flex items-start gap-4">
@@ -22,7 +14,7 @@ export function DevelopmentBanner({
 					{t("devBadge")}
 				</div>
 				<h2 className="text-lg font-semibold text-amber-900 mb-1">
-					Work in Progress
+					{t("title")}
 				</h2>
 				<p className="text-amber-700 text-sm leading-relaxed">
 					{t("inDevelopment")}
