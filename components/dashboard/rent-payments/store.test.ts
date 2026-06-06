@@ -249,7 +249,7 @@ describe("RentPaymentsStore", () => {
 	});
 
 	describe("updateRentPayment", () => {
-		it("updates target payment only", () => {
+		it("updates payment locally when unauthenticated", async () => {
 			useRentPaymentsStore.setState({
 				rentPayments: [
 					{
@@ -269,10 +269,11 @@ describe("RentPaymentsStore", () => {
 				],
 			});
 
-			useRentPaymentsStore
+			await useRentPaymentsStore
 				.getState()
 				.updateRentPayment("payment-1", "2025-05", 1500, "paid");
 
+			expect(mockFetch).not.toHaveBeenCalled();
 			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
 			expect(updatedPayments).toHaveLength(2);
 			expect(updatedPayments.find((p) => p.id === "payment-1")).toEqual({
@@ -289,6 +290,99 @@ describe("RentPaymentsStore", () => {
 				amount: 1300,
 				status: "pending",
 			});
+		});
+
+		it("calls API and updates payment when authenticated", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "payment-1",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "pending",
+					},
+				],
+			});
+
+			const serverResponse = {
+				id: "payment-1",
+				roomId: "room-1",
+				period: "2025-05",
+				amount: 1500,
+				status: "paid",
+			};
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => serverResponse,
+			});
+
+			await useRentPaymentsStore
+				.getState()
+				.updateRentPayment("payment-1", "2025-05", 1500, "paid");
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rent-payments/payment-1",
+				expect.objectContaining({
+					method: "PATCH",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						period: "2025-05",
+						amount: 1500,
+						status: "paid",
+					}),
+					credentials: "include",
+				}),
+			);
+
+			const updatedPayment = useRentPaymentsStore
+				.getState()
+				.rentPayments.find((p) => p.id === "payment-1");
+			expect(updatedPayment).toEqual(serverResponse);
+		});
+
+		it("handles API error gracefully", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "payment-1",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "pending",
+					},
+				],
+			});
+
+			mockFetch.mockResolvedValueOnce({ ok: false });
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await expect(
+				useRentPaymentsStore
+					.getState()
+					.updateRentPayment("payment-1", "2025-05", 1500, "paid"),
+			).rejects.toThrow("Failed to update rent payment");
+
+			const updatedPayment = useRentPaymentsStore
+				.getState()
+				.rentPayments.find((p) => p.id === "payment-1");
+			expect(updatedPayment?.amount).toBe(1200);
+			expect(updatedPayment?.period).toBe("2025-03");
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
 		});
 	});
 

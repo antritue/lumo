@@ -206,6 +206,10 @@
 					"title": "Không thể thêm thanh toán",
 					"description": "Đã xảy ra lỗi khi thêm thanh toán. Vui lòng thử lại."
 				},
+				"update": {
+					"title": "Không thể cập nhật thanh toán",
+					"description": "Đã xảy ra lỗi khi cập nhật thanh toán. Vui lòng thử lại."
+				},
 				"delete": {
 					"title": "Không thể xóa thanh toán",
 					"description": "Đã xảy ra lỗi khi xóa thanh toán. Vui lòng thử lại."

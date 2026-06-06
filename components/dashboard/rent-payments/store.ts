@@ -24,7 +24,7 @@ interface RentPaymentsState {
 		period: string,
 		amount: number,
 		status: PaymentStatus,
-	) => void;
+	) => Promise<void>;
 	deleteRentPayment: (id: string) => Promise<void>;
 	clearStore: () => void;
 }
@@ -116,14 +116,40 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 				}
 			},
 
-			updateRentPayment: (id, period, amount, status) =>
-				set((state) => ({
-					rentPayments: state.rentPayments.map((payment) =>
-						payment.id === id
-							? { ...payment, period, amount, status }
-							: payment,
-					),
-				})),
+			updateRentPayment: async (id, period, amount, status) => {
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					const res = await fetch(`/api/rent-payments/${id}`, {
+						method: "PATCH",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ period, amount, status }),
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						const error = new Error("Failed to update rent payment");
+						console.error("Failed to update rent payment:", error);
+						throw error;
+					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						rentPayments: state.rentPayments.map((payment) =>
+							payment.id === id ? data : payment,
+						),
+					}));
+				} else {
+					set((state) => ({
+						rentPayments: state.rentPayments.map((payment) =>
+							payment.id === id
+								? { ...payment, period, amount, status }
+								: payment,
+						),
+					}));
+				}
+			},
 
 			deleteRentPayment: async (id) => {
 				const user = useAuthStore.getState().user;
