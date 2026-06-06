@@ -206,6 +206,10 @@
 					"title": "Failed to add payment",
 					"description": "There was a problem adding this payment. Please try again."
 				},
+				"delete": {
+					"title": "Failed to delete payment",
+					"description": "There was a problem deleting this payment. Please try again."
+				},
 				"duplicatePeriod": {
 					"title": "Duplicate payment period",
 					"description": "A payment record already exists for this month."
