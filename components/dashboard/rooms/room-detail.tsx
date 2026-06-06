@@ -40,7 +40,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		closeDeleteRoom,
 	} = useRoomDialogs();
 
-	const { rentPayments, handleSavePayment, handleDeletePayment } =
+	const { rentPayments, handleSavePayment, handleDeletePayment, isLoading } =
 		useRoomPayments(room.id);
 
 	const handleSaveRoom = async (
@@ -90,6 +90,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 					onAdd={openAddPayment}
 					onEdit={openEditPayment}
 					onDelete={openDeletePayment}
+					isLoading={isLoading}
 				/>
 
 				{paymentDialogMode && (

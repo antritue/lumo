@@ -1,88 +1,275 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import type { User } from "@supabase/supabase-js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useAuthStore } from "@/components/dashboard/auth/store";
 import { useRentPaymentsStore } from "./store";
+
+Object.defineProperty(global, "crypto", {
+	value: {
+		randomUUID: () => "test-uuid",
+	},
+});
+
+const mockFetch = vi.fn();
+global.fetch = mockFetch;
 
 describe("RentPaymentsStore", () => {
 	beforeEach(() => {
-		useRentPaymentsStore.setState({ rentPayments: [] });
+		useRentPaymentsStore.setState({
+			rentPayments: [],
+			isLoading: false,
+			loadingRoomIds: [],
+		});
+		useAuthStore.setState({ user: null });
+		mockFetch.mockReset();
 	});
 
-	it("creates payments with unique IDs", () => {
-		useRentPaymentsStore
-			.getState()
-			.createRentPayment("room-1", "2025-03", 1200);
-		useRentPaymentsStore
-			.getState()
-			.createRentPayment("room-1", "2025-04", 1300);
+	describe("fetchRentPaymentsByRoomId", () => {
+		it("does not fetch when unauthenticated", async () => {
+			await useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1");
 
-		const { rentPayments } = useRentPaymentsStore.getState();
-		expect(rentPayments).toHaveLength(2);
-		expect(rentPayments[0].roomId).toBe("room-1");
-		expect(rentPayments[0].period).toBe("2025-03");
-		expect(rentPayments[0].amount).toBe(1200);
-		expect(rentPayments[0].status).toBe("pending");
-		expect(rentPayments[0].id).not.toBe(rentPayments[1].id);
+			expect(mockFetch).not.toHaveBeenCalled();
+			expect(useRentPaymentsStore.getState().isLoading).toBe(false);
+		});
+
+		it("fetches and sets payments when authenticated", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			const mockResponse = [
+				{
+					id: "p1",
+					roomId: "room-1",
+					period: "2026-01",
+					amount: 1500000,
+					status: "pending",
+				},
+				{
+					id: "p2",
+					roomId: "room-1",
+					period: "2025-12",
+					amount: 1500000,
+					status: "paid",
+				},
+			];
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => mockResponse,
+			});
+
+			await useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1");
+
+			const { rentPayments, isLoading } = useRentPaymentsStore.getState();
+			expect(rentPayments).toEqual([
+				{
+					id: "p1",
+					roomId: "room-1",
+					period: "2026-01",
+					amount: 1500000,
+					status: "pending",
+				},
+				{
+					id: "p2",
+					roomId: "room-1",
+					period: "2025-12",
+					amount: 1500000,
+					status: "paid",
+				},
+			]);
+			expect(isLoading).toBe(false);
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rent-payments?roomId=room-1",
+				expect.objectContaining({
+					method: "GET",
+					credentials: "include",
+				}),
+			);
+		});
+
+		it("handles fetch error gracefully", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			mockFetch.mockResolvedValueOnce({ ok: false });
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await expect(
+				useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1"),
+			).rejects.toThrow("Failed to fetch rent payments");
+
+			const { rentPayments, isLoading } = useRentPaymentsStore.getState();
+			expect(rentPayments).toEqual([]);
+			expect(isLoading).toBe(false);
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
+		});
+
+		it("fetches payments for different rooms independently", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			mockFetch
+				.mockResolvedValueOnce({
+					ok: true,
+					json: async () => [
+						{
+							id: "p1",
+							roomId: "room-1",
+							period: "2026-01",
+							amount: 1500,
+							status: "pending",
+						},
+					],
+				})
+				.mockResolvedValueOnce({
+					ok: true,
+					json: async () => [
+						{
+							id: "p2",
+							roomId: "room-2",
+							period: "2026-01",
+							amount: 2000,
+							status: "paid",
+						},
+					],
+				});
+
+			await Promise.all([
+				useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1"),
+				useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-2"),
+			]);
+
+			const { rentPayments } = useRentPaymentsStore.getState();
+			expect(rentPayments).toHaveLength(2);
+			expect(rentPayments.find((p) => p.roomId === "room-1")?.amount).toBe(
+				1500,
+			);
+			expect(rentPayments.find((p) => p.roomId === "room-2")?.amount).toBe(
+				2000,
+			);
+			expect(mockFetch).toHaveBeenCalledTimes(2);
+		});
 	});
 
-	it("updates target payment only", () => {
-		useRentPaymentsStore
-			.getState()
-			.createRentPayment("room-1", "2025-03", 1200);
-		useRentPaymentsStore
-			.getState()
-			.createRentPayment("room-1", "2025-04", 1300);
+	describe("createRentPayment", () => {
+		it("creates a payment with default status", () => {
+			useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200);
 
-		const { rentPayments } = useRentPaymentsStore.getState();
-		const firstPaymentId = rentPayments[0].id;
-
-		useRentPaymentsStore
-			.getState()
-			.updateRentPayment(firstPaymentId, "2025-05", 1500, "paid");
-
-		const updatedPayments = useRentPaymentsStore.getState().rentPayments;
-		expect(updatedPayments).toHaveLength(2);
-		expect(updatedPayments[0].period).toBe("2025-05");
-		expect(updatedPayments[0].amount).toBe(1500);
-		expect(updatedPayments[0].status).toBe("paid");
-		expect(updatedPayments[1].period).toBe("2025-04");
-		expect(updatedPayments[1].amount).toBe(1300);
+			const { rentPayments } = useRentPaymentsStore.getState();
+			expect(rentPayments).toHaveLength(1);
+			expect(rentPayments[0]).toEqual({
+				id: "test-uuid",
+				roomId: "room-1",
+				period: "2025-03",
+				amount: 1200,
+				status: "pending",
+			});
+		});
 	});
 
-	it("deletes target payment only", () => {
-		useRentPaymentsStore
-			.getState()
-			.createRentPayment("room-1", "2025-03", 1200);
-		useRentPaymentsStore
-			.getState()
-			.createRentPayment("room-1", "2025-04", 1300);
+	describe("updateRentPayment", () => {
+		it("updates target payment only", () => {
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "payment-1",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "pending",
+					},
+					{
+						id: "payment-2",
+						roomId: "room-1",
+						period: "2025-04",
+						amount: 1300,
+						status: "pending",
+					},
+				],
+			});
 
-		const { rentPayments } = useRentPaymentsStore.getState();
-		const firstPaymentId = rentPayments[0].id;
+			useRentPaymentsStore
+				.getState()
+				.updateRentPayment("payment-1", "2025-05", 1500, "paid");
 
-		useRentPaymentsStore.getState().deleteRentPayment(firstPaymentId);
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toHaveLength(2);
+			expect(updatedPayments.find((p) => p.id === "payment-1")).toEqual({
+				id: "payment-1",
+				roomId: "room-1",
+				period: "2025-05",
+				amount: 1500,
+				status: "paid",
+			});
+			expect(updatedPayments.find((p) => p.id === "payment-2")).toEqual({
+				id: "payment-2",
+				roomId: "room-1",
+				period: "2025-04",
+				amount: 1300,
+				status: "pending",
+			});
+		});
+	});
 
-		const updatedPayments = useRentPaymentsStore.getState().rentPayments;
-		expect(updatedPayments).toHaveLength(1);
-		expect(updatedPayments[0].period).toBe("2025-04");
-		expect(updatedPayments[0].amount).toBe(1300);
+	describe("deleteRentPayment", () => {
+		it("deletes target payment only", () => {
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "payment-1",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "pending",
+					},
+					{
+						id: "payment-2",
+						roomId: "room-1",
+						period: "2025-04",
+						amount: 1300,
+						status: "pending",
+					},
+				],
+			});
+
+			useRentPaymentsStore.getState().deleteRentPayment("payment-1");
+
+			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
+			expect(updatedPayments).toHaveLength(1);
+			expect(updatedPayments[0].id).toBe("payment-2");
+		});
 	});
 
 	describe("clearStore", () => {
 		it("resets all store data to initial state", () => {
-			// Add some payments
-			useRentPaymentsStore
-				.getState()
-				.createRentPayment("room-1", "2025-03", 1200);
-			useRentPaymentsStore
-				.getState()
-				.createRentPayment("room-1", "2025-04", 1300);
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "1",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "pending",
+					},
+				],
+				isLoading: true,
+				loadingRoomIds: ["room-1"],
+			});
 
-			expect(useRentPaymentsStore.getState().rentPayments).toHaveLength(2);
-
-			// Clear the store
 			useRentPaymentsStore.getState().clearStore();
 
-			// Verify all state is reset
 			expect(useRentPaymentsStore.getState().rentPayments).toEqual([]);
+			expect(useRentPaymentsStore.getState().isLoading).toBe(false);
+			expect(useRentPaymentsStore.getState().loadingRoomIds).toEqual([]);
 		});
 	});
 });
