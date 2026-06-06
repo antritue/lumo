@@ -293,7 +293,7 @@ describe("RentPaymentsStore", () => {
 	});
 
 	describe("deleteRentPayment", () => {
-		it("deletes target payment only", () => {
+		it("deletes payment locally when unauthenticated", async () => {
 			useRentPaymentsStore.setState({
 				rentPayments: [
 					{
@@ -313,11 +313,76 @@ describe("RentPaymentsStore", () => {
 				],
 			});
 
-			useRentPaymentsStore.getState().deleteRentPayment("payment-1");
+			await useRentPaymentsStore.getState().deleteRentPayment("payment-1");
 
+			expect(mockFetch).not.toHaveBeenCalled();
 			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
 			expect(updatedPayments).toHaveLength(1);
 			expect(updatedPayments[0].id).toBe("payment-2");
+		});
+
+		it("calls API and removes payment when authenticated", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "payment-1",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "pending",
+					},
+				],
+			});
+
+			mockFetch.mockResolvedValueOnce({ ok: true });
+
+			await useRentPaymentsStore.getState().deleteRentPayment("payment-1");
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rent-payments/payment-1",
+				expect.objectContaining({
+					method: "DELETE",
+					credentials: "include",
+				}),
+			);
+			expect(useRentPaymentsStore.getState().rentPayments).toHaveLength(0);
+		});
+
+		it("handles API error gracefully", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "payment-1",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "pending",
+					},
+				],
+			});
+
+			mockFetch.mockResolvedValueOnce({ ok: false });
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await expect(
+				useRentPaymentsStore.getState().deleteRentPayment("payment-1"),
+			).rejects.toThrow("Failed to delete rent payment");
+
+			expect(useRentPaymentsStore.getState().rentPayments).toHaveLength(1);
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
 		});
 	});
 

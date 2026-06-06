@@ -63,8 +63,8 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		window.location.href = "/dashboard/properties";
 	};
 
-	const handleConfirmDeletePayment = (id: string) => {
-		handleDeletePayment(id);
+	const handleConfirmDeletePayment = async (id: string) => {
+		await handleDeletePayment(id);
 		closeDeletePayment();
 	};
 

@@ -41,8 +41,8 @@ export function useRoomPayments(roomId: string) {
 		}
 	};
 
-	const handleDeletePayment = (id: string) => {
-		deleteRentPayment(id);
+	const handleDeletePayment = async (id: string) => {
+		await deleteRentPayment(id);
 	};
 
 	return {

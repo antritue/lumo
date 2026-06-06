@@ -25,7 +25,7 @@ interface RentPaymentsState {
 		amount: number,
 		status: PaymentStatus,
 	) => void;
-	deleteRentPayment: (id: string) => void;
+	deleteRentPayment: (id: string) => Promise<void>;
 	clearStore: () => void;
 }
 
@@ -125,12 +125,28 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 					),
 				})),
 
-			deleteRentPayment: (id) =>
+			deleteRentPayment: async (id) => {
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					const res = await fetch(`/api/rent-payments/${id}`, {
+						method: "DELETE",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						const error = new Error("Failed to delete rent payment");
+						console.error("Failed to delete rent payment:", error);
+						throw error;
+					}
+				}
+
 				set((state) => ({
 					rentPayments: state.rentPayments.filter(
 						(payment) => payment.id !== id,
 					),
-				})),
+				}));
+			},
 
 			clearStore: () =>
 				set({
