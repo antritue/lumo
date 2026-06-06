@@ -2,6 +2,7 @@ import type { User } from "@supabase/supabase-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { useRentPaymentsStore } from "./store";
+import type { PaymentRecord } from "./types";
 
 Object.defineProperty(global, "crypto", {
 	value: {
@@ -11,6 +12,24 @@ Object.defineProperty(global, "crypto", {
 
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
+
+const mockPayment = (
+	overrides: Partial<PaymentRecord> = {},
+): PaymentRecord => ({
+	id: "test-uuid",
+	roomId: "room-1",
+	period: "2026-01",
+	amount: 1500,
+	status: "pending",
+	...overrides,
+});
+
+const authenticate = () => {
+	useAuthStore.setState({ user: { id: "user-123" } as User });
+};
+
+const mockErrorConsole = () =>
+	vi.spyOn(console, "error").mockImplementation(() => {});
 
 describe("RentPaymentsStore", () => {
 	beforeEach(() => {
@@ -32,25 +51,16 @@ describe("RentPaymentsStore", () => {
 		});
 
 		it("fetches and sets payments when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			const mockResponse = [
-				{
-					id: "p1",
-					roomId: "room-1",
-					period: "2026-01",
-					amount: 1500000,
-					status: "pending",
-				},
-				{
+				mockPayment({ id: "p1", period: "2026-01", amount: 1500000 }),
+				mockPayment({
 					id: "p2",
-					roomId: "room-1",
 					period: "2025-12",
 					amount: 1500000,
 					status: "paid",
-				},
+				}),
 			];
 
 			mockFetch.mockResolvedValueOnce({
@@ -62,22 +72,7 @@ describe("RentPaymentsStore", () => {
 
 			const { rentPayments, isPaymentsLoading } =
 				useRentPaymentsStore.getState();
-			expect(rentPayments).toEqual([
-				{
-					id: "p1",
-					roomId: "room-1",
-					period: "2026-01",
-					amount: 1500000,
-					status: "pending",
-				},
-				{
-					id: "p2",
-					roomId: "room-1",
-					period: "2025-12",
-					amount: 1500000,
-					status: "paid",
-				},
-			]);
+			expect(rentPayments).toEqual(mockResponse);
 			expect(isPaymentsLoading).toBe(false);
 			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/rent-payments?roomId=room-1",
@@ -89,15 +84,11 @@ describe("RentPaymentsStore", () => {
 		});
 
 		it("handles fetch error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(
 				useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1"),
@@ -113,33 +104,22 @@ describe("RentPaymentsStore", () => {
 		});
 
 		it("fetches payments for different rooms independently", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch
 				.mockResolvedValueOnce({
 					ok: true,
-					json: async () => [
-						{
-							id: "p1",
-							roomId: "room-1",
-							period: "2026-01",
-							amount: 1500,
-							status: "pending",
-						},
-					],
+					json: async () => [mockPayment({ id: "p1", amount: 1500 })],
 				})
 				.mockResolvedValueOnce({
 					ok: true,
 					json: async () => [
-						{
+						mockPayment({
 							id: "p2",
 							roomId: "room-2",
-							period: "2026-01",
 							amount: 2000,
 							status: "paid",
-						},
+						}),
 					],
 				});
 
@@ -168,30 +148,25 @@ describe("RentPaymentsStore", () => {
 
 			const { rentPayments } = useRentPaymentsStore.getState();
 			expect(rentPayments).toHaveLength(1);
-			expect(rentPayments[0]).toEqual({
-				id: "test-uuid",
-				roomId: "room-1",
-				period: "2025-03",
-				amount: 1200,
-				status: "pending",
-			});
+			expect(rentPayments[0]).toEqual(
+				mockPayment({ period: "2025-03", amount: 1200 }),
+			);
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
 		it("calls API and updates state when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({
-					id: "server-id",
-					roomId: "room-1",
-					period: "2025-03",
-					amount: 1200,
-					status: "paid",
-				}),
+				json: async () =>
+					mockPayment({
+						id: "server-id",
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "paid",
+					}),
 			});
 
 			await useRentPaymentsStore
@@ -200,13 +175,15 @@ describe("RentPaymentsStore", () => {
 
 			const { rentPayments } = useRentPaymentsStore.getState();
 			expect(rentPayments).toHaveLength(1);
-			expect(rentPayments[0]).toEqual({
-				id: "server-id",
-				roomId: "room-1",
-				period: "2025-03",
-				amount: 1200,
-				status: "paid",
-			});
+			expect(rentPayments[0]).toEqual(
+				mockPayment({
+					id: "server-id",
+					roomId: "room-1",
+					period: "2025-03",
+					amount: 1200,
+					status: "paid",
+				}),
+			);
 
 			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/rent-payments",
@@ -224,15 +201,11 @@ describe("RentPaymentsStore", () => {
 		});
 
 		it("handles API error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(
 				useRentPaymentsStore
@@ -252,20 +225,8 @@ describe("RentPaymentsStore", () => {
 		it("updates payment locally when unauthenticated", async () => {
 			useRentPaymentsStore.setState({
 				rentPayments: [
-					{
-						id: "payment-1",
-						roomId: "room-1",
-						period: "2025-03",
-						amount: 1200,
-						status: "pending",
-					},
-					{
-						id: "payment-2",
-						roomId: "room-1",
-						period: "2025-04",
-						amount: 1300,
-						status: "pending",
-					},
+					mockPayment({ id: "payment-1", period: "2025-03", amount: 1200 }),
+					mockPayment({ id: "payment-2", period: "2025-04", amount: 1300 }),
 				],
 			});
 
@@ -276,46 +237,35 @@ describe("RentPaymentsStore", () => {
 			expect(mockFetch).not.toHaveBeenCalled();
 			const updatedPayments = useRentPaymentsStore.getState().rentPayments;
 			expect(updatedPayments).toHaveLength(2);
-			expect(updatedPayments.find((p) => p.id === "payment-1")).toEqual({
-				id: "payment-1",
-				roomId: "room-1",
-				period: "2025-05",
-				amount: 1500,
-				status: "paid",
-			});
-			expect(updatedPayments.find((p) => p.id === "payment-2")).toEqual({
-				id: "payment-2",
-				roomId: "room-1",
-				period: "2025-04",
-				amount: 1300,
-				status: "pending",
-			});
+			expect(updatedPayments.find((p) => p.id === "payment-1")).toEqual(
+				mockPayment({
+					id: "payment-1",
+					period: "2025-05",
+					amount: 1500,
+					status: "paid",
+				}),
+			);
+			expect(updatedPayments.find((p) => p.id === "payment-2")).toEqual(
+				mockPayment({ id: "payment-2", period: "2025-04", amount: 1300 }),
+			);
 		});
 
 		it("calls API and updates payment when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRentPaymentsStore.setState({
 				rentPayments: [
-					{
-						id: "payment-1",
-						roomId: "room-1",
-						period: "2025-03",
-						amount: 1200,
-						status: "pending",
-					},
+					mockPayment({ id: "payment-1", period: "2025-03", amount: 1200 }),
 				],
 			});
 
-			const serverResponse = {
+			const serverResponse = mockPayment({
 				id: "payment-1",
 				roomId: "room-1",
 				period: "2025-05",
 				amount: 1500,
 				status: "paid",
-			};
+			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
@@ -347,27 +297,17 @@ describe("RentPaymentsStore", () => {
 		});
 
 		it("handles API error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRentPaymentsStore.setState({
 				rentPayments: [
-					{
-						id: "payment-1",
-						roomId: "room-1",
-						period: "2025-03",
-						amount: 1200,
-						status: "pending",
-					},
+					mockPayment({ id: "payment-1", period: "2025-03", amount: 1200 }),
 				],
 			});
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(
 				useRentPaymentsStore
@@ -390,20 +330,8 @@ describe("RentPaymentsStore", () => {
 		it("deletes payment locally when unauthenticated", async () => {
 			useRentPaymentsStore.setState({
 				rentPayments: [
-					{
-						id: "payment-1",
-						roomId: "room-1",
-						period: "2025-03",
-						amount: 1200,
-						status: "pending",
-					},
-					{
-						id: "payment-2",
-						roomId: "room-1",
-						period: "2025-04",
-						amount: 1300,
-						status: "pending",
-					},
+					mockPayment({ id: "payment-1", period: "2025-03", amount: 1200 }),
+					mockPayment({ id: "payment-2", period: "2025-04", amount: 1300 }),
 				],
 			});
 
@@ -416,19 +344,11 @@ describe("RentPaymentsStore", () => {
 		});
 
 		it("calls API and removes payment when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRentPaymentsStore.setState({
 				rentPayments: [
-					{
-						id: "payment-1",
-						roomId: "room-1",
-						period: "2025-03",
-						amount: 1200,
-						status: "pending",
-					},
+					mockPayment({ id: "payment-1", period: "2025-03", amount: 1200 }),
 				],
 			});
 
@@ -447,27 +367,17 @@ describe("RentPaymentsStore", () => {
 		});
 
 		it("handles API error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRentPaymentsStore.setState({
 				rentPayments: [
-					{
-						id: "payment-1",
-						roomId: "room-1",
-						period: "2025-03",
-						amount: 1200,
-						status: "pending",
-					},
+					mockPayment({ id: "payment-1", period: "2025-03", amount: 1200 }),
 				],
 			});
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(
 				useRentPaymentsStore.getState().deleteRentPayment("payment-1"),
@@ -484,13 +394,7 @@ describe("RentPaymentsStore", () => {
 		it("resets all store data to initial state", () => {
 			useRentPaymentsStore.setState({
 				rentPayments: [
-					{
-						id: "1",
-						roomId: "room-1",
-						period: "2025-03",
-						amount: 1200,
-						status: "pending",
-					},
+					mockPayment({ id: "1", period: "2025-03", amount: 1200 }),
 				],
 				isPaymentsLoading: true,
 				loadingRoomIds: ["room-1"],
