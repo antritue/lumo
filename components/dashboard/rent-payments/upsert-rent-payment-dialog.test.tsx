@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
@@ -205,6 +205,55 @@ describe("UpsertRentPaymentDialog", () => {
 
 			expect(mockOnSave).toHaveBeenCalledWith("1", "2026-03", 1500, "pending");
 			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+		});
+
+		it("shows loading state while saving", async () => {
+			const onSave = vi.fn();
+			renderWithProviders(
+				<UpsertRentPaymentDialog
+					mode="add"
+					open={true}
+					onOpenChange={vi.fn()}
+					onSave={onSave}
+				/>,
+			);
+
+			const dialog = screen.getByRole("dialog");
+			const amountInput = within(dialog).getByLabelText(/amount/i);
+			const saveButton = within(dialog).getByRole("button", { name: /save/i });
+
+			await userEvent.setup().type(amountInput, "1200");
+			fireEvent.click(saveButton);
+
+			expect(onSave).toHaveBeenCalledWith(null, "2026-01", 1200, "pending");
+			expect(
+				screen.getByTestId("rent-payment-save-loader"),
+			).toBeInTheDocument();
+			expect(screen.queryByLabelText(/amount/i)).not.toBeInTheDocument();
+		});
+
+		it("shows error dialog on save failure and restores form", async () => {
+			const onSave = vi.fn().mockRejectedValue(new Error("API error"));
+			renderWithProviders(
+				<UpsertRentPaymentDialog
+					mode="add"
+					open={true}
+					onOpenChange={vi.fn()}
+					onSave={onSave}
+				/>,
+			);
+
+			const dialog = screen.getByRole("dialog");
+			const amountInput = within(dialog).getByLabelText(/amount/i);
+			const saveButton = within(dialog).getByRole("button", { name: /save/i });
+
+			await userEvent.setup().type(amountInput, "1200");
+			fireEvent.click(saveButton);
+
+			expect(
+				await screen.findByText(/problem adding this payment/i),
+			).toBeInTheDocument();
+			expect(screen.getByLabelText(/amount/i)).toBeInTheDocument();
 		});
 
 		it("closes dialog without saving on cancel", async () => {

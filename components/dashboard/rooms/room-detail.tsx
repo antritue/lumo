@@ -40,8 +40,12 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		closeDeleteRoom,
 	} = useRoomDialogs();
 
-	const { rentPayments, handleSavePayment, handleDeletePayment, isLoading } =
-		useRoomPayments(room.id);
+	const {
+		rentPayments,
+		handleSavePayment,
+		handleDeletePayment,
+		isPaymentsLoading,
+	} = useRoomPayments(room.id);
 
 	const handleSaveRoom = async (
 		id: string,
@@ -64,13 +68,13 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		closeDeletePayment();
 	};
 
-	const handleSaveAndClose = (
+	const handleSaveAndClose = async (
 		id: string | null,
 		period: string,
 		amount: number,
 		status: PaymentStatus,
 	) => {
-		handleSavePayment(id, period, amount, status);
+		await handleSavePayment(id, period, amount, status);
 		closePayment();
 	};
 
@@ -90,7 +94,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 					onAdd={openAddPayment}
 					onEdit={openEditPayment}
 					onDelete={openDeletePayment}
-					isLoading={isLoading}
+					isPaymentsLoading={isPaymentsLoading}
 				/>
 
 				{paymentDialogMode && (

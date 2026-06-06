@@ -16,7 +16,7 @@ describe("RentPaymentsStore", () => {
 	beforeEach(() => {
 		useRentPaymentsStore.setState({
 			rentPayments: [],
-			isLoading: false,
+			isPaymentsLoading: false,
 			loadingRoomIds: [],
 		});
 		useAuthStore.setState({ user: null });
@@ -28,7 +28,7 @@ describe("RentPaymentsStore", () => {
 			await useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1");
 
 			expect(mockFetch).not.toHaveBeenCalled();
-			expect(useRentPaymentsStore.getState().isLoading).toBe(false);
+			expect(useRentPaymentsStore.getState().isPaymentsLoading).toBe(false);
 		});
 
 		it("fetches and sets payments when authenticated", async () => {
@@ -60,7 +60,8 @@ describe("RentPaymentsStore", () => {
 
 			await useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1");
 
-			const { rentPayments, isLoading } = useRentPaymentsStore.getState();
+			const { rentPayments, isPaymentsLoading } =
+				useRentPaymentsStore.getState();
 			expect(rentPayments).toEqual([
 				{
 					id: "p1",
@@ -77,7 +78,7 @@ describe("RentPaymentsStore", () => {
 					status: "paid",
 				},
 			]);
-			expect(isLoading).toBe(false);
+			expect(isPaymentsLoading).toBe(false);
 			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/rent-payments?roomId=room-1",
 				expect.objectContaining({
@@ -102,9 +103,10 @@ describe("RentPaymentsStore", () => {
 				useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1"),
 			).rejects.toThrow("Failed to fetch rent payments");
 
-			const { rentPayments, isLoading } = useRentPaymentsStore.getState();
+			const { rentPayments, isPaymentsLoading } =
+				useRentPaymentsStore.getState();
 			expect(rentPayments).toEqual([]);
-			expect(isLoading).toBe(false);
+			expect(isPaymentsLoading).toBe(false);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -159,8 +161,8 @@ describe("RentPaymentsStore", () => {
 	});
 
 	describe("createRentPayment", () => {
-		it("creates a payment with default status", () => {
-			useRentPaymentsStore
+		it("creates a payment locally when unauthenticated", async () => {
+			await useRentPaymentsStore
 				.getState()
 				.createRentPayment("room-1", "2025-03", 1200);
 
@@ -173,6 +175,76 @@ describe("RentPaymentsStore", () => {
 				amount: 1200,
 				status: "pending",
 			});
+			expect(mockFetch).not.toHaveBeenCalled();
+		});
+
+		it("calls API and updates state when authenticated", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({
+					id: "server-id",
+					roomId: "room-1",
+					period: "2025-03",
+					amount: 1200,
+					status: "paid",
+				}),
+			});
+
+			await useRentPaymentsStore
+				.getState()
+				.createRentPayment("room-1", "2025-03", 1200, "paid");
+
+			const { rentPayments } = useRentPaymentsStore.getState();
+			expect(rentPayments).toHaveLength(1);
+			expect(rentPayments[0]).toEqual({
+				id: "server-id",
+				roomId: "room-1",
+				period: "2025-03",
+				amount: 1200,
+				status: "paid",
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rent-payments",
+				expect.objectContaining({
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						roomId: "room-1",
+						period: "2025-03",
+						amount: 1200,
+						status: "paid",
+					}),
+				}),
+			);
+		});
+
+		it("handles API error gracefully", async () => {
+			useAuthStore.setState({
+				user: { id: "user-123" } as User,
+			});
+
+			mockFetch.mockResolvedValueOnce({ ok: false });
+
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await expect(
+				useRentPaymentsStore
+					.getState()
+					.createRentPayment("room-1", "2025-03", 1200),
+			).rejects.toThrow("Failed to create rent payment");
+
+			const { rentPayments } = useRentPaymentsStore.getState();
+			expect(rentPayments).toHaveLength(0);
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
 		});
 	});
 
@@ -261,14 +333,14 @@ describe("RentPaymentsStore", () => {
 						status: "pending",
 					},
 				],
-				isLoading: true,
+				isPaymentsLoading: true,
 				loadingRoomIds: ["room-1"],
 			});
 
 			useRentPaymentsStore.getState().clearStore();
 
 			expect(useRentPaymentsStore.getState().rentPayments).toEqual([]);
-			expect(useRentPaymentsStore.getState().isLoading).toBe(false);
+			expect(useRentPaymentsStore.getState().isPaymentsLoading).toBe(false);
 			expect(useRentPaymentsStore.getState().loadingRoomIds).toEqual([]);
 		});
 	});

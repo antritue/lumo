@@ -8,7 +8,7 @@ interface RentPaymentsState {
 	rentPayments: PaymentRecord[];
 
 	// Loading state
-	isLoading: boolean; // true while any rent payment fetch is in-flight
+	isPaymentsLoading: boolean; // true while any rent payment fetch is in-flight
 	loadingRoomIds: string[]; // dedup: prevents duplicate fetches for the same room
 
 	// Actions
@@ -18,7 +18,7 @@ interface RentPaymentsState {
 		period: string,
 		amount: number,
 		status?: PaymentStatus,
-	) => void;
+	) => Promise<void>;
 	updateRentPayment: (
 		id: string,
 		period: string,
@@ -33,7 +33,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 	devtools(
 		(set, get) => ({
 			rentPayments: [],
-			isLoading: false,
+			isPaymentsLoading: false,
 			loadingRoomIds: [],
 
 			fetchRentPaymentsByRoomId: async (roomId: string) => {
@@ -45,7 +45,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 
 				try {
 					set((state) => ({
-						isLoading: true,
+						isPaymentsLoading: true,
 						loadingRoomIds: [...state.loadingRoomIds, roomId],
 					}));
 
@@ -65,32 +65,56 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 							...state.rentPayments.filter((p) => p.roomId !== roomId),
 							...data,
 						],
-						isLoading: false,
+						isPaymentsLoading: false,
 						loadingRoomIds: state.loadingRoomIds.filter((id) => id !== roomId),
 					}));
 				} catch (error) {
 					console.error("Failed to fetch rent payments:", error);
 					set((state) => ({
-						isLoading: false,
+						isPaymentsLoading: false,
 						loadingRoomIds: state.loadingRoomIds.filter((id) => id !== roomId),
 					}));
 					throw error;
 				}
 			},
 
-			createRentPayment: (roomId, period, amount, status = "pending") =>
-				set((state) => ({
-					rentPayments: [
-						...state.rentPayments,
-						{
-							id: crypto.randomUUID(),
-							roomId,
-							period,
-							amount,
-							status,
-						},
-					],
-				})),
+			createRentPayment: async (roomId, period, amount, status = "pending") => {
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					const res = await fetch("/api/rent-payments", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ roomId, period, amount, status }),
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						const error = new Error("Failed to create rent payment");
+						console.error("Failed to create rent payment:", error);
+						throw error;
+					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						rentPayments: [...state.rentPayments, data],
+					}));
+				} else {
+					set((state) => ({
+						rentPayments: [
+							...state.rentPayments,
+							{
+								id: crypto.randomUUID(),
+								roomId,
+								period,
+								amount,
+								status,
+							},
+						],
+					}));
+				}
+			},
 
 			updateRentPayment: (id, period, amount, status) =>
 				set((state) => ({
@@ -111,7 +135,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 			clearStore: () =>
 				set({
 					rentPayments: [],
-					isLoading: false,
+					isPaymentsLoading: false,
 					loadingRoomIds: [],
 				}),
 		}),
