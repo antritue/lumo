@@ -8,8 +8,8 @@ interface RentPaymentsState {
 	rentPayments: PaymentRecord[];
 
 	// Loading state
-	isLoading: boolean;
-	loadingRoomIds: string[];
+	isLoading: boolean; // true while any rent payment fetch is in-flight
+	loadingRoomIds: string[]; // dedup: prevents duplicate fetches for the same room
 
 	// Actions
 	fetchRentPaymentsByRoomId: (roomId: string) => Promise<void>;
