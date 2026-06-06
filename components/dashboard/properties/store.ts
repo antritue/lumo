@@ -5,8 +5,8 @@ import type { Property } from "./types";
 
 interface PropertiesState {
 	properties: Property[];
-	isLoading: boolean;
-	hasFetched: boolean;
+	isPropertiesLoading: boolean;
+	hasPropertiesFetched: boolean;
 
 	fetchProperties: () => Promise<void>;
 	createProperty: (name: string) => Promise<void>;
@@ -19,19 +19,19 @@ export const usePropertiesStore = create<PropertiesState>()(
 	devtools(
 		(set, get) => ({
 			properties: [],
-			isLoading: false,
-			hasFetched: false,
+			isPropertiesLoading: false,
+			hasPropertiesFetched: false,
 
 			fetchProperties: async () => {
-				const { hasFetched, isLoading } = get();
+				const { hasPropertiesFetched, isPropertiesLoading } = get();
 				const user = useAuthStore.getState().user;
 
-				if (!user || hasFetched || isLoading) {
+				if (!user || hasPropertiesFetched || isPropertiesLoading) {
 					return;
 				}
 
 				try {
-					set({ isLoading: true });
+					set({ isPropertiesLoading: true });
 					const res = await fetch("/api/properties", {
 						method: "GET",
 						credentials: "include",
@@ -42,10 +42,14 @@ export const usePropertiesStore = create<PropertiesState>()(
 					}
 
 					const data = await res.json();
-					set({ properties: data, isLoading: false, hasFetched: true });
+					set({
+						properties: data,
+						isPropertiesLoading: false,
+						hasPropertiesFetched: true,
+					});
 				} catch (error) {
 					console.error("Failed to fetch properties:", error);
-					set({ isLoading: false, hasFetched: true });
+					set({ isPropertiesLoading: false, hasPropertiesFetched: true });
 					throw error;
 				}
 			},
@@ -143,8 +147,8 @@ export const usePropertiesStore = create<PropertiesState>()(
 			clearStore: () =>
 				set({
 					properties: [],
-					isLoading: false,
-					hasFetched: false,
+					isPropertiesLoading: false,
+					hasPropertiesFetched: false,
 				}),
 		}),
 		{ name: "properties" },
