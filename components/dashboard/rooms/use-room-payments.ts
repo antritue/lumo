@@ -35,7 +35,7 @@ export function useRoomPayments(roomId: string) {
 		status: PaymentStatus,
 	) => {
 		if (id) {
-			updateRentPayment(id, period, amount, status);
+			await updateRentPayment(id, period, amount, status);
 		} else {
 			await createRentPayment(roomId, period, amount, status);
 		}

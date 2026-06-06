@@ -256,6 +256,36 @@ describe("UpsertRentPaymentDialog", () => {
 			expect(screen.getByLabelText(/amount/i)).toBeInTheDocument();
 		});
 
+		it("shows update error message in edit mode", async () => {
+			const onSave = vi.fn().mockRejectedValue(new Error("API error"));
+			const payment = {
+				id: "payment-1",
+				roomId: "room-1",
+				period: "2026-01",
+				amount: 1000,
+				status: "pending" as const,
+			};
+			renderWithProviders(
+				<UpsertRentPaymentDialog
+					mode="edit"
+					payment={payment}
+					open={true}
+					onOpenChange={vi.fn()}
+					onSave={onSave}
+				/>,
+			);
+
+			const dialog = screen.getByRole("dialog");
+			const saveButton = within(dialog).getByRole("button", { name: /save/i });
+
+			fireEvent.click(saveButton);
+
+			expect(
+				await screen.findByText(/problem updating this payment/i),
+			).toBeInTheDocument();
+			expect(screen.getByLabelText(/amount/i)).toBeInTheDocument();
+		});
+
 		it("closes dialog without saving on cancel", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(

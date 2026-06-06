@@ -111,7 +111,11 @@ export function UpsertRentPaymentDialog({
 			await onSave(id, period, parsedAmount, status);
 			onOpenChange(false);
 		} catch {
-			setErrorMessage(t("errors.create.description"));
+			setErrorMessage(
+				mode === "add"
+					? t("errors.create.description")
+					: t("errors.update.description"),
+			);
 			setErrorOpen(true);
 			setIsSubmitting(false);
 		}
@@ -244,7 +248,9 @@ export function UpsertRentPaymentDialog({
 				<ErrorDialog
 					open={errorOpen}
 					onOpenChange={setErrorOpen}
-					title={t("errors.create.title")}
+					title={
+						mode === "add" ? t("errors.create.title") : t("errors.update.title")
+					}
 					description={errorMessage}
 				/>
 			</DialogContent>
