@@ -14,13 +14,13 @@ import type { Room } from "./types";
 interface RoomListProps {
 	propertyId: string;
 	rooms: Room[];
-	isLoading?: boolean;
+	isRoomsLoading?: boolean;
 }
 
 export function RoomList({
 	propertyId,
 	rooms,
-	isLoading = false,
+	isRoomsLoading = false,
 }: RoomListProps) {
 	const t = useTranslations("app.rooms");
 	const createRoom = useRoomsStore((state) => state.createRoom);
@@ -64,7 +64,7 @@ export function RoomList({
 	};
 
 	// Loading state while fetching rooms
-	if (isLoading) {
+	if (isRoomsLoading) {
 		return (
 			<div className="flex items-center justify-center py-8">
 				<Loader2

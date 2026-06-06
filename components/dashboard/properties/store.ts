@@ -4,10 +4,14 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { Property } from "./types";
 
 interface PropertiesState {
+	// Domain data
 	properties: Property[];
-	isPropertiesLoading: boolean;
-	hasPropertiesFetched: boolean;
 
+	// Loading state
+	isPropertiesLoading: boolean; // true while any property fetch is in-flight
+	hasPropertiesFetched: boolean; // dedup: prevents duplicate fetches after initial load
+
+	// Actions
 	fetchProperties: () => Promise<void>;
 	createProperty: (name: string) => Promise<void>;
 	updateProperty: (id: string, name: string) => void;
