@@ -116,13 +116,19 @@
 			"title": "Lumo - Dashboard",
 			"description": "Track your properties, rooms, and rent status in one dashboard"
 		},
+		"development": {
+			"devBadge": "Coming Soon",
+			"title": "Work in Progress",
+			"inDevelopment": "This feature is coming soon."
+		},
 		"authBanner": {
 			"title": "You’re not signed in",
 			"message": "Sign in to save your data across devices",
 			"close": "Dismiss"
 		},
 		"sidebar": {
-			"properties": "Properties"
+			"properties": "Properties",
+			"tenants": "Tenants"
 		},
 		"properties": {
 			"emptyTitle": "No properties yet",
@@ -159,6 +165,7 @@
 				}
 			}
 		},
+		"tenants": {},
 		"rooms": {
 			"emptyTitle": "No rooms yet",
 			"emptySubtitle": "Add your first room to this property",
