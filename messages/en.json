@@ -116,6 +116,13 @@
 			"title": "Lumo - Dashboard",
 			"description": "Track your properties, rooms, and rent status in one dashboard"
 		},
+		"shared": {
+			"errorState": {
+				"title": "Failed to load data",
+				"description": "There was a problem loading the information. Please try again.",
+				"retry": "Try again"
+			}
+		},
 		"development": {
 			"devBadge": "Coming Soon",
 			"title": "Work in Progress",

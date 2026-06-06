@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { usePropertiesStore } from "@/components/dashboard/properties/store";
@@ -11,6 +12,7 @@ describe("PropertiesPage", () => {
 			properties: [],
 			isPropertiesLoading: false,
 			hasPropertiesFetched: false,
+			propertiesFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null, loading: true });
 		vi.clearAllMocks();
@@ -75,5 +77,43 @@ describe("PropertiesPage", () => {
 		).toBeInTheDocument();
 		expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
 		expect(screen.getByText("Ocean View")).toBeInTheDocument();
+	});
+
+	it("displays error state when propertiesFetchFailed is true", () => {
+		useAuthStore.setState({ user: null, loading: false });
+		usePropertiesStore.setState({
+			propertiesFetchFailed: true,
+			isPropertiesLoading: false,
+			hasPropertiesFetched: false,
+		});
+
+		renderWithProviders(<PropertiesPage />);
+
+		expect(
+			screen.getByRole("heading", { name: /failed to load data/i }),
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole("button", { name: /try again/i }),
+		).toBeInTheDocument();
+	});
+
+	it("calls fetchProperties when retry is clicked", async () => {
+		const user = userEvent.setup();
+		const fetchPropertiesSpy = vi.fn();
+
+		useAuthStore.setState({ user: null, loading: false });
+		usePropertiesStore.setState({
+			propertiesFetchFailed: true,
+			isPropertiesLoading: false,
+			hasPropertiesFetched: false,
+			fetchProperties: fetchPropertiesSpy,
+		});
+
+		renderWithProviders(<PropertiesPage />);
+
+		const retryButton = screen.getByRole("button", { name: /try again/i });
+		await user.click(retryButton);
+
+		expect(fetchPropertiesSpy).toHaveBeenCalledTimes(1);
 	});
 });

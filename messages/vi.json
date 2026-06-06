@@ -116,6 +116,13 @@
 			"title": "Lumo - Bảng điều khiển",
 			"description": "Theo dõi nhà cho thuê, phòng và trạng thái thanh toán trong một bảng điều khiển"
 		},
+		"shared": {
+			"errorState": {
+				"title": "Không thể tải dữ liệu",
+				"description": "Đã xảy ra lỗi khi tải thông tin. Vui lòng thử lại.",
+				"retry": "Thử lại"
+			}
+		},
 		"development": {
 			"devBadge": "Sắp ra mắt",
 			"title": "Đang phát triển",
