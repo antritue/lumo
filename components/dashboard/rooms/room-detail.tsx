@@ -1,10 +1,8 @@
 "use client";
 
-import {
-	DeleteRentPaymentDialog,
-	UpsertRentPaymentDialog,
-} from "@/components/dashboard/rent-payments";
+import { DeleteRentPaymentDialog } from "@/components/dashboard/rent-payments/delete-rent-payment-dialog";
 import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
+import { UpsertRentPaymentDialog } from "@/components/dashboard/rent-payments/upsert-rent-payment-dialog";
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import { EditRoomDialog } from "./edit-room-dialog";
 import { RoomDetailHeader } from "./room-detail-header";

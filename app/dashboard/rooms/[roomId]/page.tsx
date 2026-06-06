@@ -2,11 +2,9 @@
 
 import { use, useEffect } from "react";
 import { useAuthStore } from "@/components/dashboard/auth/store";
-import {
-	RoomDetail,
-	RoomNotFound,
-	useRoomsStore,
-} from "@/components/dashboard/rooms";
+import { RoomDetail } from "@/components/dashboard/rooms/room-detail";
+import { RoomNotFound } from "@/components/dashboard/rooms/room-not-found";
+import { useRoomsStore } from "@/components/dashboard/rooms/store";
 
 export default function RoomDetailPage({
 	params,

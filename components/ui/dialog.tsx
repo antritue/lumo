@@ -22,7 +22,6 @@ import { cn } from "@/lib/utils";
 const Dialog = Root;
 const DialogTrigger = Trigger;
 const DialogPortal = Portal;
-const DialogClose = Close;
 
 const DialogOverlay = forwardRef<
 	ComponentRef<typeof Overlay>,
@@ -117,13 +116,9 @@ DialogDescription.displayName = Description.displayName;
 
 export {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogDescription,
-	DialogFooter,
 	DialogHeader,
-	DialogOverlay,
-	DialogPortal,
 	DialogTitle,
 	DialogTrigger,
 };

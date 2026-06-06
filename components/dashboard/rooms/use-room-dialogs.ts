@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { PaymentRecord } from "@/components/dashboard/rent-payments";
+import type { PaymentRecord } from "@/components/dashboard/rent-payments/types";
 
 export function useRoomDialogs() {
 	const [paymentDialogMode, setPaymentDialogMode] = useState<
