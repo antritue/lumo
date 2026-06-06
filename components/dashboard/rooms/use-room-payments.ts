@@ -4,7 +4,9 @@ import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
 
 export function useRoomPayments(roomId: string) {
 	const allRentPayments = useRentPaymentsStore((state) => state.rentPayments);
-	const isLoading = useRentPaymentsStore((state) => state.isLoading);
+	const isPaymentsLoading = useRentPaymentsStore(
+		(state) => state.isPaymentsLoading,
+	);
 	const fetchRentPaymentsByRoomId = useRentPaymentsStore(
 		(state) => state.fetchRentPaymentsByRoomId,
 	);
@@ -26,7 +28,7 @@ export function useRoomPayments(roomId: string) {
 		.filter((payment) => payment.roomId === roomId)
 		.sort((a, b) => b.period.localeCompare(a.period));
 
-	const handleSavePayment = (
+	const handleSavePayment = async (
 		id: string | null,
 		period: string,
 		amount: number,
@@ -35,7 +37,7 @@ export function useRoomPayments(roomId: string) {
 		if (id) {
 			updateRentPayment(id, period, amount, status);
 		} else {
-			createRentPayment(roomId, period, amount, status);
+			await createRentPayment(roomId, period, amount, status);
 		}
 	};
 
@@ -47,6 +49,6 @@ export function useRoomPayments(roomId: string) {
 		rentPayments,
 		handleSavePayment,
 		handleDeletePayment,
-		isLoading,
+		isPaymentsLoading,
 	};
 }

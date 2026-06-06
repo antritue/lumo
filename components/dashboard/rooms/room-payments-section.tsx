@@ -11,7 +11,7 @@ interface RoomPaymentsSectionProps {
 	onAdd: () => void;
 	onEdit: (payment: PaymentRecord) => void;
 	onDelete: (payment: PaymentRecord) => void;
-	isLoading?: boolean;
+	isPaymentsLoading?: boolean;
 }
 
 export function RoomPaymentsSection({
@@ -19,7 +19,7 @@ export function RoomPaymentsSection({
 	onAdd,
 	onEdit,
 	onDelete,
-	isLoading,
+	isPaymentsLoading,
 }: RoomPaymentsSectionProps) {
 	const t = useTranslations("app.rentPayments");
 
@@ -33,14 +33,14 @@ export function RoomPaymentsSection({
 					onClick={onAdd}
 					variant="default"
 					size="sm"
-					disabled={isLoading}
+					disabled={isPaymentsLoading}
 				>
 					<Plus className="mr-2 h-4 w-4" />
 					{t("addButton")}
 				</Button>
 			</div>
 
-			{isLoading ? (
+			{isPaymentsLoading ? (
 				<div className="flex items-center justify-center py-12">
 					<Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
 				</div>

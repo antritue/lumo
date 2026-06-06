@@ -1,7 +1,9 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { type SubmitEvent, useEffect, useState } from "react";
+import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -24,7 +26,7 @@ interface UpsertRentPaymentDialogProps {
 		period: string,
 		amount: number,
 		status: PaymentStatus,
-	) => void;
+	) => Promise<void>;
 	defaultAmount?: number | null;
 	existingPayments?: PaymentRecord[];
 }
@@ -59,6 +61,10 @@ export function UpsertRentPaymentDialog({
 		mode === "edit" && payment ? payment.status : "pending",
 	);
 
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [errorOpen, setErrorOpen] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+
 	// Calculate months that already have a payment for this room
 	// In edit mode, we exclude the current payment's month so it stays enabled
 	const otherPayments =
@@ -72,6 +78,11 @@ export function UpsertRentPaymentDialog({
 
 	// Reset form when dialog opens with new payment or mode changes
 	useEffect(() => {
+		if (open) {
+			setIsSubmitting(false);
+			setErrorOpen(false);
+			setErrorMessage("");
+		}
 		if (mode === "edit" && payment) {
 			setPeriod(payment.period);
 			setAmount(payment.amount.toString());
@@ -81,19 +92,28 @@ export function UpsertRentPaymentDialog({
 			setAmount(defaultAmount ? defaultAmount.toString() : "");
 			setStatus("pending");
 		}
-	}, [mode, payment, defaultAmount, currentMonth]);
+	}, [mode, payment, defaultAmount, currentMonth, open]);
 
 	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
 		handleSave();
 	};
 
-	const handleSave = () => {
+	const handleSave = async () => {
 		const parsedAmount = Number.parseFloat(amount);
-		if (period && !Number.isNaN(parsedAmount) && parsedAmount > 0) {
-			const id = mode === "edit" && payment ? payment.id : null;
-			onSave(id, period, parsedAmount, status);
+		if (!period || Number.isNaN(parsedAmount) || parsedAmount <= 0) return;
+
+		const id = mode === "edit" && payment ? payment.id : null;
+
+		setIsSubmitting(true);
+
+		try {
+			await onSave(id, period, parsedAmount, status);
 			onOpenChange(false);
+		} catch {
+			setErrorMessage(t("errors.create.description"));
+			setErrorOpen(true);
+			setIsSubmitting(false);
 		}
 	};
 
@@ -107,106 +127,126 @@ export function UpsertRentPaymentDialog({
 					<DialogDescription className="sr-only">{title}</DialogDescription>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit} className="space-y-6">
-					<div className="space-y-4">
-						<div className="space-y-2">
-							<label htmlFor="period" className="text-sm font-medium">
-								{t("form.period")}
-							</label>
-							<MonthPicker
-								id="period"
-								value={period}
-								onChange={setPeriod}
-								disabledMonths={takenMonths}
-								helperText={
-									isPeriodInvalid ? t("form.errors.monthOccupied") : undefined
-								}
-								className="mt-2"
-							/>
-						</div>
-
-						<div className="space-y-2">
-							<label htmlFor="amount" className="text-sm font-medium">
-								{t("form.amount")}
-							</label>
-							<div className="relative">
-								<Input
-									id="amount"
-									type="number"
-									step="0.01"
-									min="0"
-									value={amount}
-									onChange={(e) => setAmount(e.target.value)}
-									className="text-base h-12 pr-16 mt-2"
-									required
+				{isSubmitting ? (
+					<div className="flex items-center justify-center py-8">
+						<Loader2
+							className="h-6 w-6 animate-spin text-muted-foreground"
+							data-testid="rent-payment-save-loader"
+						/>
+					</div>
+				) : (
+					<form onSubmit={handleSubmit} className="space-y-6">
+						<div className="space-y-4">
+							<div className="space-y-2">
+								<label htmlFor="period" className="text-sm font-medium">
+									{t("form.period")}
+								</label>
+								<MonthPicker
+									id="period"
+									value={period}
+									onChange={setPeriod}
+									disabledMonths={takenMonths}
+									helperText={
+										isPeriodInvalid ? t("form.errors.monthOccupied") : undefined
+									}
+									className="mt-2"
 								/>
-								<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
-									{currency}
-								</span>
 							</div>
+
+							<div className="space-y-2">
+								<label htmlFor="amount" className="text-sm font-medium">
+									{t("form.amount")}
+								</label>
+								<div className="relative">
+									<Input
+										id="amount"
+										type="number"
+										step="0.01"
+										min="0"
+										value={amount}
+										onChange={(e) => setAmount(e.target.value)}
+										className="text-base h-12 pr-16 mt-2"
+										required
+									/>
+									<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+										{currency}
+									</span>
+								</div>
+							</div>
+
+							<fieldset className="space-y-2">
+								<legend id="status-legend" className="text-sm font-medium">
+									{t("form.status")}
+								</legend>
+								<div
+									className="flex gap-4 mt-2"
+									role="radiogroup"
+									aria-labelledby="status-legend"
+								>
+									<label className="flex items-center gap-2 cursor-pointer">
+										<input
+											type="radio"
+											name="status"
+											value="pending"
+											checked={status === "pending"}
+											onChange={(e) =>
+												setStatus(e.target.value as PaymentStatus)
+											}
+											className="h-4 w-4"
+										/>
+										<span className="text-sm">{t("form.statusPending")}</span>
+									</label>
+									<label className="flex items-center gap-2 cursor-pointer">
+										<input
+											type="radio"
+											name="status"
+											value="paid"
+											checked={status === "paid"}
+											onChange={(e) =>
+												setStatus(e.target.value as PaymentStatus)
+											}
+											className="h-4 w-4"
+										/>
+										<span className="text-sm">{t("form.statusPaid")}</span>
+									</label>
+								</div>
+							</fieldset>
 						</div>
 
-						<fieldset className="space-y-2">
-							<legend id="status-legend" className="text-sm font-medium">
-								{t("form.status")}
-							</legend>
-							<div
-								className="flex gap-4 mt-2"
-								role="radiogroup"
-								aria-labelledby="status-legend"
+						<div className="flex gap-3">
+							<Button
+								type="button"
+								size="lg"
+								className="flex-1"
+								disabled={
+									!period ||
+									isPeriodInvalid ||
+									!amount ||
+									Number.parseFloat(amount) <= 0
+								}
+								onClick={handleSave}
 							>
-								<label className="flex items-center gap-2 cursor-pointer">
-									<input
-										type="radio"
-										name="status"
-										value="pending"
-										checked={status === "pending"}
-										onChange={(e) => setStatus(e.target.value as PaymentStatus)}
-										className="h-4 w-4"
-									/>
-									<span className="text-sm">{t("form.statusPending")}</span>
-								</label>
-								<label className="flex items-center gap-2 cursor-pointer">
-									<input
-										type="radio"
-										name="status"
-										value="paid"
-										checked={status === "paid"}
-										onChange={(e) => setStatus(e.target.value as PaymentStatus)}
-										className="h-4 w-4"
-									/>
-									<span className="text-sm">{t("form.statusPaid")}</span>
-								</label>
-							</div>
-						</fieldset>
-					</div>
+								{t("form.save")}
+							</Button>
+							<Button
+								type="button"
+								variant="outline"
+								size="lg"
+								className="flex-1"
+								onClick={() => onOpenChange(false)}
+							>
+								{t("form.cancel")}
+							</Button>
+						</div>
+					</form>
+				)}
 
-					<div className="flex gap-3">
-						<Button
-							type="button"
-							size="lg"
-							className="flex-1"
-							disabled={
-								!period ||
-								isPeriodInvalid ||
-								!amount ||
-								Number.parseFloat(amount) <= 0
-							}
-							onClick={handleSave}
-						>
-							{t("form.save")}
-						</Button>
-						<Button
-							type="button"
-							variant="outline"
-							size="lg"
-							className="flex-1"
-							onClick={() => onOpenChange(false)}
-						>
-							{t("form.cancel")}
-						</Button>
-					</div>
-				</form>
+				<ErrorDialog
+					open={errorOpen}
+					onOpenChange={setErrorOpen}
+					title={t("errors.create.title")}
+					description={errorMessage}
+				/>
 			</DialogContent>
 		</Dialog>
 	);
