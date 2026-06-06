@@ -83,7 +83,53 @@ describe("DeleteRentPaymentDialog", () => {
 			await user.click(deleteButton);
 
 			expect(mockOnConfirm).toHaveBeenCalledWith("payment-1");
-			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+		});
+
+		it("shows loading state while deleting", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(
+				<DeleteRentPaymentDialog
+					payment={mockPayment}
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onConfirm={mockOnConfirm}
+				/>,
+			);
+
+			const deleteButton = screen.getByRole("button", {
+				name: /delete record/i,
+			});
+			await user.click(deleteButton);
+
+			expect(screen.getByTestId("payment-delete-loader")).toBeInTheDocument();
+			expect(
+				screen.queryByText(/permanently delete this payment record/i),
+			).not.toBeInTheDocument();
+			expect(
+				screen.queryByRole("button", { name: /cancel/i }),
+			).not.toBeInTheDocument();
+		});
+
+		it("shows error dialog on delete failure", async () => {
+			const user = userEvent.setup();
+			const onConfirm = vi.fn().mockRejectedValue(new Error("API error"));
+			renderWithProviders(
+				<DeleteRentPaymentDialog
+					payment={mockPayment}
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onConfirm={onConfirm}
+				/>,
+			);
+
+			const deleteButton = screen.getByRole("button", {
+				name: /delete record/i,
+			});
+			await user.click(deleteButton);
+
+			expect(
+				await screen.findByText(/problem deleting this payment/i),
+			).toBeInTheDocument();
 		});
 
 		it("closes dialog without calling onConfirm when cancel is clicked", async () => {

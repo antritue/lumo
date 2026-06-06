@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { PaymentRecord } from "@/components/dashboard/rent-payments";
 import { RentPaymentsList } from "@/components/dashboard/rent-payments";
@@ -11,6 +11,7 @@ interface RoomPaymentsSectionProps {
 	onAdd: () => void;
 	onEdit: (payment: PaymentRecord) => void;
 	onDelete: (payment: PaymentRecord) => void;
+	isPaymentsLoading?: boolean;
 }
 
 export function RoomPaymentsSection({
@@ -18,6 +19,7 @@ export function RoomPaymentsSection({
 	onAdd,
 	onEdit,
 	onDelete,
+	isPaymentsLoading,
 }: RoomPaymentsSectionProps) {
 	const t = useTranslations("app.rentPayments");
 
@@ -27,17 +29,28 @@ export function RoomPaymentsSection({
 				<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
 					{t("listTitle")}
 				</h2>
-				<Button onClick={onAdd} variant="default" size="sm">
+				<Button
+					onClick={onAdd}
+					variant="default"
+					size="sm"
+					disabled={isPaymentsLoading}
+				>
 					<Plus className="mr-2 h-4 w-4" />
 					{t("addButton")}
 				</Button>
 			</div>
 
-			<RentPaymentsList
-				payments={payments}
-				onEdit={onEdit}
-				onDelete={onDelete}
-			/>
+			{isPaymentsLoading ? (
+				<div className="flex items-center justify-center py-12">
+					<Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+				</div>
+			) : (
+				<RentPaymentsList
+					payments={payments}
+					onEdit={onEdit}
+					onDelete={onDelete}
+				/>
+			)}
 		</div>
 	);
 }

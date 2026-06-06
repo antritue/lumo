@@ -47,9 +47,9 @@ describe("RoomList", () => {
 			).toBeInTheDocument();
 		});
 
-		it("displays loading spinner when isLoading is true", () => {
+		it("displays loading spinner when isRoomsLoading is true", () => {
 			renderWithProviders(
-				<RoomList propertyId="prop-1" rooms={[]} isLoading />,
+				<RoomList propertyId="prop-1" rooms={[]} isRoomsLoading />,
 			);
 
 			expect(screen.getByTestId("room-list-loader")).toBeInTheDocument();

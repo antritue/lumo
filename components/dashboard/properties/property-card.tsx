@@ -24,7 +24,7 @@ export function PropertyCard({
 	const [isExpanded, setIsExpanded] = useState(true);
 
 	const allRooms = useRoomsStore((state) => state.rooms);
-	const isLoadingRooms = useRoomsStore((state) => state.isLoading);
+	const isRoomsLoading = useRoomsStore((state) => state.isRoomsLoading);
 	const fetchRoomsByPropertyId = useRoomsStore(
 		(state) => state.fetchRoomsByPropertyId,
 	);
@@ -108,7 +108,7 @@ export function PropertyCard({
 					<RoomList
 						propertyId={property.id}
 						rooms={rooms}
-						isLoading={isLoadingRooms}
+						isRoomsLoading={isRoomsLoading}
 					/>
 				</CardContent>
 			)}

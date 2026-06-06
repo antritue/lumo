@@ -116,7 +116,7 @@ describe("AuthProvider", () => {
 		useAuthStore.getState().dismissAuthBanner();
 		usePropertiesStore.setState({
 			properties: [{ id: "1", userId: "123", name: "Property 1" }],
-			hasFetched: true,
+			hasPropertiesFetched: true,
 		});
 		useRoomsStore.setState({
 			rooms: [
@@ -147,7 +147,7 @@ describe("AuthProvider", () => {
 			expect(useAuthStore.getState().user).toBeNull();
 			expect(useAuthStore.getState().isAuthBannerDismissed).toBe(false);
 			expect(usePropertiesStore.getState().properties).toEqual([]);
-			expect(usePropertiesStore.getState().hasFetched).toBe(false);
+			expect(usePropertiesStore.getState().hasPropertiesFetched).toBe(false);
 			expect(useRoomsStore.getState().rooms).toEqual([]);
 			expect(useRentPaymentsStore.getState().rentPayments).toEqual([]);
 		});

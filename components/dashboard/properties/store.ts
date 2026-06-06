@@ -4,10 +4,14 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { Property } from "./types";
 
 interface PropertiesState {
+	// Domain data
 	properties: Property[];
-	isLoading: boolean;
-	hasFetched: boolean;
 
+	// Loading state
+	isPropertiesLoading: boolean; // true while any property fetch is in-flight
+	hasPropertiesFetched: boolean; // dedup: prevents duplicate fetches after initial load
+
+	// Actions
 	fetchProperties: () => Promise<void>;
 	createProperty: (name: string) => Promise<void>;
 	updateProperty: (id: string, name: string) => void;
@@ -19,19 +23,19 @@ export const usePropertiesStore = create<PropertiesState>()(
 	devtools(
 		(set, get) => ({
 			properties: [],
-			isLoading: false,
-			hasFetched: false,
+			isPropertiesLoading: false,
+			hasPropertiesFetched: false,
 
 			fetchProperties: async () => {
-				const { hasFetched, isLoading } = get();
+				const { hasPropertiesFetched, isPropertiesLoading } = get();
 				const user = useAuthStore.getState().user;
 
-				if (!user || hasFetched || isLoading) {
+				if (!user || hasPropertiesFetched || isPropertiesLoading) {
 					return;
 				}
 
 				try {
-					set({ isLoading: true });
+					set({ isPropertiesLoading: true });
 					const res = await fetch("/api/properties", {
 						method: "GET",
 						credentials: "include",
@@ -42,10 +46,14 @@ export const usePropertiesStore = create<PropertiesState>()(
 					}
 
 					const data = await res.json();
-					set({ properties: data, isLoading: false, hasFetched: true });
+					set({
+						properties: data,
+						isPropertiesLoading: false,
+						hasPropertiesFetched: true,
+					});
 				} catch (error) {
 					console.error("Failed to fetch properties:", error);
-					set({ isLoading: false, hasFetched: true });
+					set({ isPropertiesLoading: false, hasPropertiesFetched: true });
 					throw error;
 				}
 			},
@@ -143,8 +151,8 @@ export const usePropertiesStore = create<PropertiesState>()(
 			clearStore: () =>
 				set({
 					properties: [],
-					isLoading: false,
-					hasFetched: false,
+					isPropertiesLoading: false,
+					hasPropertiesFetched: false,
 				}),
 		}),
 		{ name: "properties" },
