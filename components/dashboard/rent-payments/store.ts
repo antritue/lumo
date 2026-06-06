@@ -1,12 +1,18 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { PaymentRecord, PaymentStatus } from "./types";
 
 interface RentPaymentsState {
 	// Domain data
 	rentPayments: PaymentRecord[];
 
+	// Loading state
+	isLoading: boolean;
+	loadingRoomIds: string[];
+
 	// Actions
+	fetchRentPaymentsByRoomId: (roomId: string) => Promise<void>;
 	createRentPayment: (
 		roomId: string,
 		period: string,
@@ -25,8 +31,52 @@ interface RentPaymentsState {
 
 export const useRentPaymentsStore = create<RentPaymentsState>()(
 	devtools(
-		(set, _get) => ({
+		(set, get) => ({
 			rentPayments: [],
+			isLoading: false,
+			loadingRoomIds: [],
+
+			fetchRentPaymentsByRoomId: async (roomId: string) => {
+				const user = useAuthStore.getState().user;
+				if (!user) return;
+
+				const { loadingRoomIds } = get();
+				if (loadingRoomIds.includes(roomId)) return;
+
+				try {
+					set((state) => ({
+						isLoading: true,
+						loadingRoomIds: [...state.loadingRoomIds, roomId],
+					}));
+
+					const res = await fetch(`/api/rent-payments?roomId=${roomId}`, {
+						method: "GET",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						throw new Error("Failed to fetch rent payments");
+					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						rentPayments: [
+							...state.rentPayments.filter((p) => p.roomId !== roomId),
+							...data,
+						],
+						isLoading: false,
+						loadingRoomIds: state.loadingRoomIds.filter((id) => id !== roomId),
+					}));
+				} catch (error) {
+					console.error("Failed to fetch rent payments:", error);
+					set((state) => ({
+						isLoading: false,
+						loadingRoomIds: state.loadingRoomIds.filter((id) => id !== roomId),
+					}));
+					throw error;
+				}
+			},
 
 			createRentPayment: (roomId, period, amount, status = "pending") =>
 				set((state) => ({
@@ -61,6 +111,8 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 			clearStore: () =>
 				set({
 					rentPayments: [],
+					isLoading: false,
+					loadingRoomIds: [],
 				}),
 		}),
 		{ name: "rent-payments" },
