@@ -10,6 +10,7 @@ interface PropertiesState {
 	// Loading state
 	isPropertiesLoading: boolean; // true while any property fetch is in-flight
 	hasPropertiesFetched: boolean; // dedup: prevents duplicate fetches after initial load
+	propertiesFetchFailed: boolean; // true if property fetching failed
 
 	// Actions
 	fetchProperties: () => Promise<void>;
@@ -25,6 +26,7 @@ export const usePropertiesStore = create<PropertiesState>()(
 			properties: [],
 			isPropertiesLoading: false,
 			hasPropertiesFetched: false,
+			propertiesFetchFailed: false,
 
 			fetchProperties: async () => {
 				const { hasPropertiesFetched, isPropertiesLoading } = get();
@@ -50,10 +52,15 @@ export const usePropertiesStore = create<PropertiesState>()(
 						properties: data,
 						isPropertiesLoading: false,
 						hasPropertiesFetched: true,
+						propertiesFetchFailed: false,
 					});
 				} catch (error) {
 					console.error("Failed to fetch properties:", error);
-					set({ isPropertiesLoading: false, hasPropertiesFetched: true });
+					set({
+						isPropertiesLoading: false,
+						hasPropertiesFetched: false,
+						propertiesFetchFailed: true,
+					});
 					throw error;
 				}
 			},
@@ -153,6 +160,7 @@ export const usePropertiesStore = create<PropertiesState>()(
 					properties: [],
 					isPropertiesLoading: false,
 					hasPropertiesFetched: false,
+					propertiesFetchFailed: false,
 				}),
 		}),
 		{ name: "properties" },

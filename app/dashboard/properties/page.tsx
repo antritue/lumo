@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/dashboard/properties/empty-state";
 import { PropertyList } from "@/components/dashboard/properties/property-list";
 import { PropertyListSkeleton } from "@/components/dashboard/properties/property-list-skeleton";
 import { usePropertiesStore } from "@/components/dashboard/properties/store";
+import { ErrorState } from "@/components/shared/error-state";
 
 export default function PropertiesPage() {
 	const properties = usePropertiesStore((state) => state.properties);
@@ -14,6 +15,9 @@ export default function PropertiesPage() {
 	);
 	const hasPropertiesFetched = usePropertiesStore(
 		(state) => state.hasPropertiesFetched,
+	);
+	const propertiesFetchFailed = usePropertiesStore(
+		(state) => state.propertiesFetchFailed,
 	);
 	const fetchProperties = usePropertiesStore((state) => state.fetchProperties);
 	const user = useAuthStore((state) => state.user);
@@ -24,6 +28,14 @@ export default function PropertiesPage() {
 			fetchProperties();
 		}
 	}, [user, fetchProperties]);
+
+	if (propertiesFetchFailed && !isPropertiesLoading) {
+		return (
+			<div className="max-w-4xl mx-auto py-8 px-4">
+				<ErrorState onRetry={fetchProperties} />
+			</div>
+		);
+	}
 
 	if ((!hasPropertiesFetched || isPropertiesLoading) && (user || authLoading)) {
 		return (

@@ -33,6 +33,7 @@ describe("PropertiesStore", () => {
 			properties: [],
 			isPropertiesLoading: false,
 			hasPropertiesFetched: false,
+			propertiesFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
@@ -84,9 +85,16 @@ describe("PropertiesStore", () => {
 				usePropertiesStore.getState().fetchProperties(),
 			).rejects.toThrow("Failed to fetch properties");
 
-			const { properties, isPropertiesLoading } = usePropertiesStore.getState();
+			const {
+				properties,
+				isPropertiesLoading,
+				hasPropertiesFetched,
+				propertiesFetchFailed,
+			} = usePropertiesStore.getState();
 			expect(properties).toEqual([]);
 			expect(isPropertiesLoading).toBe(false);
+			expect(hasPropertiesFetched).toBe(false);
+			expect(propertiesFetchFailed).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -319,6 +327,7 @@ describe("PropertiesStore", () => {
 				],
 				isPropertiesLoading: true,
 				hasPropertiesFetched: true,
+				propertiesFetchFailed: true,
 			});
 
 			usePropertiesStore.getState().clearStore();
@@ -326,6 +335,7 @@ describe("PropertiesStore", () => {
 			expect(usePropertiesStore.getState().properties).toEqual([]);
 			expect(usePropertiesStore.getState().isPropertiesLoading).toBe(false);
 			expect(usePropertiesStore.getState().hasPropertiesFetched).toBe(false);
+			expect(usePropertiesStore.getState().propertiesFetchFailed).toBe(false);
 		});
 	});
 });
