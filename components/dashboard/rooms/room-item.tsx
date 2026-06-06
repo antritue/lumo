@@ -3,8 +3,8 @@
 import { DoorOpen, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { useRentPaymentsStore } from "@/components/dashboard/rent-payments";
 import { PaymentStatusDot } from "@/components/dashboard/rent-payments/payment-status-dot";
+import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import type { Room } from "./types";

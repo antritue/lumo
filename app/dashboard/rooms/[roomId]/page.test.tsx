@@ -3,7 +3,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { use } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
-import { useRoomsStore } from "@/components/dashboard/rooms";
+import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { renderWithProviders } from "@/test/render";
 import RoomDetailPage from "./page";
 

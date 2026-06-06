@@ -2,8 +2,8 @@
 
 import { Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { PaymentRecord } from "@/components/dashboard/rent-payments";
-import { RentPaymentsList } from "@/components/dashboard/rent-payments";
+import { RentPaymentsList } from "@/components/dashboard/rent-payments/rent-payments-list";
+import type { PaymentRecord } from "@/components/dashboard/rent-payments/types";
 import { Button } from "@/components/ui/button";
 
 interface RoomPaymentsSectionProps {

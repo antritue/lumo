@@ -2,6 +2,7 @@ import type { User } from "@supabase/supabase-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { useRoomsStore } from "./store";
+import type { Room } from "./types";
 
 Object.defineProperty(global, "crypto", {
 	value: {
@@ -11,6 +12,22 @@ Object.defineProperty(global, "crypto", {
 
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
+
+const mockRoom = (overrides: Partial<Room> = {}): Room => ({
+	id: "test-uuid",
+	propertyId: "prop-1",
+	name: "Room",
+	monthlyRent: null,
+	notes: null,
+	...overrides,
+});
+
+const authenticate = () => {
+	useAuthStore.setState({ user: { id: "user-123" } as User });
+};
+
+const mockErrorConsole = () =>
+	vi.spyOn(console, "error").mockImplementation(() => {});
 
 describe("RoomsStore", () => {
 	beforeEach(() => {
@@ -32,25 +49,11 @@ describe("RoomsStore", () => {
 		});
 
 		it("fetches and sets rooms when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			const mockResponse = [
-				{
-					id: "r1",
-					propertyId: "prop-1",
-					name: "Room 1",
-					monthlyRent: 1000,
-					notes: null,
-				},
-				{
-					id: "r2",
-					propertyId: "prop-1",
-					name: "Room 2",
-					monthlyRent: null,
-					notes: "Corner unit",
-				},
+				mockRoom({ id: "r1", name: "Room 1", monthlyRent: 1000 }),
+				mockRoom({ id: "r2", name: "Room 2", notes: "Corner unit" }),
 			];
 
 			mockFetch.mockResolvedValueOnce({
@@ -61,22 +64,7 @@ describe("RoomsStore", () => {
 			await useRoomsStore.getState().fetchRoomsByPropertyId("prop-1");
 
 			const { rooms, isRoomsLoading } = useRoomsStore.getState();
-			expect(rooms).toEqual([
-				{
-					id: "r1",
-					propertyId: "prop-1",
-					name: "Room 1",
-					monthlyRent: 1000,
-					notes: null,
-				},
-				{
-					id: "r2",
-					propertyId: "prop-1",
-					name: "Room 2",
-					monthlyRent: null,
-					notes: "Corner unit",
-				},
-			]);
+			expect(rooms).toEqual(mockResponse);
 			expect(isRoomsLoading).toBe(false);
 			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/rooms?propertyId=prop-1",
@@ -88,39 +76,19 @@ describe("RoomsStore", () => {
 		});
 
 		it("replaces existing rooms for the same property", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRoomsStore.setState({
 				rooms: [
-					{
-						id: "old-1",
-						propertyId: "prop-1",
-						name: "Old Room",
-						monthlyRent: null,
-						notes: null,
-					},
-					{
-						id: "other-1",
-						propertyId: "prop-2",
-						name: "Other Room",
-						monthlyRent: null,
-						notes: null,
-					},
+					mockRoom({ id: "old-1", name: "Old Room" }),
+					mockRoom({ id: "other-1", propertyId: "prop-2", name: "Other Room" }),
 				],
 			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => [
-					{
-						id: "new-1",
-						propertyId: "prop-1",
-						name: "New Room",
-						monthlyRent: 500,
-						notes: null,
-					},
+					mockRoom({ id: "new-1", name: "New Room", monthlyRent: 500 }),
 				],
 			});
 
@@ -137,15 +105,11 @@ describe("RoomsStore", () => {
 		});
 
 		it("handles fetch error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(
 				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
@@ -160,33 +124,24 @@ describe("RoomsStore", () => {
 		});
 
 		it("fetches rooms for different properties independently", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch
 				.mockResolvedValueOnce({
 					ok: true,
 					json: async () => [
-						{
-							id: "r1",
-							propertyId: "prop-1",
-							name: "Room 1",
-							monthlyRent: 1000,
-							notes: null,
-						},
+						mockRoom({ id: "r1", name: "Room 1", monthlyRent: 1000 }),
 					],
 				})
 				.mockResolvedValueOnce({
 					ok: true,
 					json: async () => [
-						{
+						mockRoom({
 							id: "r2",
 							propertyId: "prop-2",
 							name: "Room A",
 							monthlyRent: 500,
-							notes: null,
-						},
+						}),
 					],
 				});
 
@@ -209,13 +164,7 @@ describe("RoomsStore", () => {
 
 			const { rooms } = useRoomsStore.getState();
 			expect(rooms).toHaveLength(1);
-			expect(rooms[0]).toEqual({
-				id: "test-uuid",
-				propertyId: "prop-1",
-				name: "Master Bedroom",
-				monthlyRent: null,
-				notes: null,
-			});
+			expect(rooms[0]).toEqual(mockRoom({ name: "Master Bedroom" }));
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
@@ -234,19 +183,18 @@ describe("RoomsStore", () => {
 		});
 
 		it("calls API and updates state when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
+			authenticate();
+
+			const serverRoom = mockRoom({
+				id: "server-id",
+				name: "Server Room",
+				monthlyRent: 2000,
+				notes: "Server notes",
 			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({
-					id: "server-id",
-					propertyId: "prop-1",
-					name: "Server Room",
-					monthlyRent: 2000,
-					notes: "Server notes",
-				}),
+				json: async () => serverRoom,
 			});
 
 			await useRoomsStore
@@ -255,13 +203,7 @@ describe("RoomsStore", () => {
 
 			const { rooms } = useRoomsStore.getState();
 			expect(rooms).toHaveLength(1);
-			expect(rooms[0]).toEqual({
-				id: "server-id",
-				propertyId: "prop-1",
-				name: "Server Room",
-				monthlyRent: 2000,
-				notes: "Server notes",
-			});
+			expect(rooms[0]).toEqual(serverRoom);
 
 			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/rooms",
@@ -278,15 +220,11 @@ describe("RoomsStore", () => {
 		});
 
 		it("handles API error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(
 				useRoomsStore.getState().createRoom("prop-1", "Error Room"),
@@ -304,20 +242,8 @@ describe("RoomsStore", () => {
 		it("updates room locally when unauthenticated", async () => {
 			useRoomsStore.setState({
 				rooms: [
-					{
-						id: "1",
-						propertyId: "prop-1",
-						name: "Room 1",
-						monthlyRent: null,
-						notes: null,
-					},
-					{
-						id: "2",
-						propertyId: "prop-1",
-						name: "Room 2",
-						monthlyRent: null,
-						notes: null,
-					},
+					mockRoom({ id: "1", name: "Room 1" }),
+					mockRoom({ id: "2", name: "Room 2" }),
 				],
 			});
 
@@ -330,38 +256,29 @@ describe("RoomsStore", () => {
 		});
 
 		it("calls API and updates state when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRoomsStore.setState({
 				rooms: [
-					{
+					mockRoom({
 						id: "1",
-						propertyId: "prop-1",
 						name: "Original",
 						monthlyRent: 1000,
 						notes: "Old notes",
-					},
-					{
-						id: "2",
-						propertyId: "prop-1",
-						name: "Room 2",
-						monthlyRent: null,
-						notes: null,
-					},
+					}),
+					mockRoom({ id: "2", name: "Room 2" }),
 				],
 			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({
-					id: "1",
-					propertyId: "prop-1",
-					name: "Updated",
-					monthlyRent: 2000,
-					notes: "New notes",
-				}),
+				json: async () =>
+					mockRoom({
+						id: "1",
+						name: "Updated",
+						monthlyRent: 2000,
+						notes: "New notes",
+					}),
 			});
 
 			await useRoomsStore
@@ -388,27 +305,22 @@ describe("RoomsStore", () => {
 		});
 
 		it("handles API error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRoomsStore.setState({
 				rooms: [
-					{
+					mockRoom({
 						id: "1",
-						propertyId: "prop-1",
 						name: "Original",
 						monthlyRent: 1000,
 						notes: "Old",
-					},
+					}),
 				],
 			});
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(
 				useRoomsStore.getState().updateRoom("1", "Updated", 2000, "New"),
@@ -426,20 +338,8 @@ describe("RoomsStore", () => {
 		it("deletes room locally when unauthenticated", async () => {
 			useRoomsStore.setState({
 				rooms: [
-					{
-						id: "1",
-						propertyId: "prop-1",
-						name: "Keep",
-						monthlyRent: null,
-						notes: null,
-					},
-					{
-						id: "2",
-						propertyId: "prop-1",
-						name: "Delete",
-						monthlyRent: null,
-						notes: null,
-					},
+					mockRoom({ id: "1", name: "Keep" }),
+					mockRoom({ id: "2", name: "Delete" }),
 				],
 			});
 
@@ -452,26 +352,12 @@ describe("RoomsStore", () => {
 		});
 
 		it("calls API and removes room when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRoomsStore.setState({
 				rooms: [
-					{
-						id: "1",
-						propertyId: "prop-1",
-						name: "Keep",
-						monthlyRent: null,
-						notes: null,
-					},
-					{
-						id: "2",
-						propertyId: "prop-1",
-						name: "Delete",
-						monthlyRent: null,
-						notes: null,
-					},
+					mockRoom({ id: "1", name: "Keep" }),
+					mockRoom({ id: "2", name: "Delete" }),
 				],
 			});
 
@@ -493,27 +379,15 @@ describe("RoomsStore", () => {
 		});
 
 		it("handles API error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			useRoomsStore.setState({
-				rooms: [
-					{
-						id: "1",
-						propertyId: "prop-1",
-						name: "Room 1",
-						monthlyRent: null,
-						notes: null,
-					},
-				],
+				rooms: [mockRoom({ id: "1", name: "Room 1" })],
 			});
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await expect(useRoomsStore.getState().deleteRoom("1")).rejects.toThrow(
 				"Failed to delete room",
@@ -536,27 +410,24 @@ describe("RoomsStore", () => {
 		});
 
 		it("fetches and sets room when authenticated", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
-			const mockRoom = {
+			const mockResponse = mockRoom({
 				id: "room-1",
-				propertyId: "prop-1",
 				name: "Master Bedroom",
 				monthlyRent: 1200,
 				notes: "Large room with balcony",
-			};
+			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockRoom,
+				json: async () => mockResponse,
 			});
 
 			await useRoomsStore.getState().fetchRoomById("room-1");
 
 			const { rooms, isRoomsLoading } = useRoomsStore.getState();
-			expect(rooms).toEqual([mockRoom]);
+			expect(rooms).toEqual([mockResponse]);
 			expect(isRoomsLoading).toBe(false);
 			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/rooms/room-1",
@@ -568,9 +439,7 @@ describe("RoomsStore", () => {
 		});
 
 		it("handles 404 response without adding to store", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch.mockResolvedValueOnce({ ok: false, status: 404 });
 
@@ -582,15 +451,11 @@ describe("RoomsStore", () => {
 		});
 
 		it("handles fetch error gracefully", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
+			authenticate();
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
-			const consoleSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {});
+			const consoleSpy = mockErrorConsole();
 
 			await useRoomsStore.getState().fetchRoomById("room-1");
 
@@ -603,21 +468,16 @@ describe("RoomsStore", () => {
 		});
 
 		it("prevents concurrent duplicate fetches for the same room", async () => {
-			useAuthStore.setState({
-				user: { id: "user-123" } as User,
-			});
-
-			const mockRoom = {
-				id: "room-1",
-				propertyId: "prop-1",
-				name: "Master Bedroom",
-				monthlyRent: 1200,
-				notes: null,
-			};
+			authenticate();
 
 			mockFetch.mockResolvedValue({
 				ok: true,
-				json: async () => mockRoom,
+				json: async () =>
+					mockRoom({
+						id: "room-1",
+						name: "Master Bedroom",
+						monthlyRent: 1200,
+					}),
 			});
 
 			await Promise.all([
@@ -632,15 +492,7 @@ describe("RoomsStore", () => {
 	describe("getRoomById", () => {
 		it("returns room when found", () => {
 			useRoomsStore.setState({
-				rooms: [
-					{
-						id: "1",
-						propertyId: "prop-1",
-						name: "Target Room",
-						monthlyRent: 1500,
-						notes: null,
-					},
-				],
+				rooms: [mockRoom({ id: "1", name: "Target Room", monthlyRent: 1500 })],
 			});
 
 			const result = useRoomsStore.getState().getRoomById("1");
@@ -659,15 +511,7 @@ describe("RoomsStore", () => {
 	describe("clearStore", () => {
 		it("resets all store data to initial state", () => {
 			useRoomsStore.setState({
-				rooms: [
-					{
-						id: "1",
-						propertyId: "prop-1",
-						name: "Room 1",
-						monthlyRent: 1500,
-						notes: null,
-					},
-				],
+				rooms: [mockRoom({ id: "1", name: "Room 1", monthlyRent: 1500 })],
 				isRoomsLoading: true,
 				loadingPropertyIds: ["prop-1"],
 			});

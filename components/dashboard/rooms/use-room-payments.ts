@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useRentPaymentsStore } from "@/components/dashboard/rent-payments";
+import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
 
 export function useRoomPayments(roomId: string) {

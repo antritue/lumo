@@ -20,6 +20,7 @@ We use a modern, type-safe stack designed for stability and developer experience
 -   **Validation**: [Zod](https://zod.dev) - Schema validation for API and forms.
 -   **Internationalization**: [next-intl](https://next-intl-docs.vercel.app) - App-wide localization.
 -   **Linting/Formatting**: [Biome](https://biomejs.dev) - Fast, all-in-one linter and formatter (replaces ESLint/Prettier).
+-   **Dead Code**: [Fallow](https://www.npmjs.com/package/fallow) - Fast, Rust-native dead code analysis tool.
 -   **Email**: [Resend](https://resend.com) - Transactional email for owner notifications.
 -   **Testing**: [Vitest](https://vitest.dev) - Unit and integration testing.
 
@@ -98,6 +99,7 @@ We use a multi-project setup to balance development speed with production data s
 -   `npm run lint`: Check code quality with Biome.
 -   `npm run lint:fix`: Auto-fix linting/formatting issues.
 -   `npm test`: Run tests with Vitest.
+-   `npx fallow dead-code`: Run dead code analysis.
 
 ---
 
@@ -142,11 +144,12 @@ We use **Zustand** for domain state (properties, rooms, rent data, and auth). St
 
 ## Validation, Linting & Formatting
 
-We strictly use **Biome** for both linting and formatting.
+We strictly use **Biome** for both linting and formatting, and **Fallow** for dead code analysis.
 
--   **Pre-push**: Husky is set up to run checks before you push.
--   **CI**: Fails if `biome check` finds errors.
+-   **Pre-push**: Husky is set up to run checks (linting, tests, and dead code analysis) before you push.
+-   **CI**: Fails if `biome check` finds errors or if `fallow` detects dead code.
 -   **Editor**: Install the Biome extension for your IDE to format on save.
+-   **Dead Code**: Run `npx fallow dead-code` locally to find unused files and exports.
 
 **Common Pitfalls**:
 -   Do **not** use `console.log` in production code.

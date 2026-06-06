@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
-import { usePropertiesStore } from "@/components/dashboard/properties";
+import { usePropertiesStore } from "@/components/dashboard/properties/store";
 import { renderWithProviders } from "@/test/render";
 import PropertiesPage from "./page";
 

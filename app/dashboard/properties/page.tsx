@@ -2,12 +2,10 @@
 
 import { useEffect } from "react";
 import { useAuthStore } from "@/components/dashboard/auth/store";
-import {
-	EmptyState,
-	PropertyList,
-	PropertyListSkeleton,
-	usePropertiesStore,
-} from "@/components/dashboard/properties";
+import { EmptyState } from "@/components/dashboard/properties/empty-state";
+import { PropertyList } from "@/components/dashboard/properties/property-list";
+import { PropertyListSkeleton } from "@/components/dashboard/properties/property-list-skeleton";
+import { usePropertiesStore } from "@/components/dashboard/properties/store";
 
 export default function PropertiesPage() {
 	const properties = usePropertiesStore((state) => state.properties);

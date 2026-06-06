@@ -70,11 +70,4 @@ const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 );
 CardFooter.displayName = "CardFooter";
 
-export {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-};
+export { Card, CardContent, CardDescription, CardHeader, CardTitle };

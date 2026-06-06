@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { useRentPaymentsStore } from "@/components/dashboard/rent-payments";
+import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import { renderWithProviders } from "@/test/render";
 import { RoomItem } from "./room-item";
 import type { Room } from "./types";
