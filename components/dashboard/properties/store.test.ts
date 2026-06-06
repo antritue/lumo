@@ -16,8 +16,8 @@ describe("PropertiesStore", () => {
 	beforeEach(() => {
 		usePropertiesStore.setState({
 			properties: [],
-			isLoading: false,
-			hasFetched: false,
+			isPropertiesLoading: false,
+			hasPropertiesFetched: false,
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
@@ -56,9 +56,9 @@ describe("PropertiesStore", () => {
 
 			await usePropertiesStore.getState().fetchProperties();
 
-			const { properties, isLoading } = usePropertiesStore.getState();
+			const { properties, isPropertiesLoading } = usePropertiesStore.getState();
 			expect(properties).toEqual(mockProperties);
-			expect(isLoading).toBe(false);
+			expect(isPropertiesLoading).toBe(false);
 			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/properties",
 				expect.objectContaining({
@@ -85,9 +85,9 @@ describe("PropertiesStore", () => {
 				usePropertiesStore.getState().fetchProperties(),
 			).rejects.toThrow("Failed to fetch properties");
 
-			const { properties, isLoading } = usePropertiesStore.getState();
+			const { properties, isPropertiesLoading } = usePropertiesStore.getState();
 			expect(properties).toEqual([]);
-			expect(isLoading).toBe(false);
+			expect(isPropertiesLoading).toBe(false);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -352,15 +352,15 @@ describe("PropertiesStore", () => {
 					{ id: "1", userId: "user-123", name: "Property 1" },
 					{ id: "2", userId: "user-123", name: "Property 2" },
 				],
-				isLoading: true,
-				hasFetched: true,
+				isPropertiesLoading: true,
+				hasPropertiesFetched: true,
 			});
 
 			usePropertiesStore.getState().clearStore();
 
 			expect(usePropertiesStore.getState().properties).toEqual([]);
-			expect(usePropertiesStore.getState().isLoading).toBe(false);
-			expect(usePropertiesStore.getState().hasFetched).toBe(false);
+			expect(usePropertiesStore.getState().isPropertiesLoading).toBe(false);
+			expect(usePropertiesStore.getState().hasPropertiesFetched).toBe(false);
 		});
 	});
 });

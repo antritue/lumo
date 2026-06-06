@@ -9,15 +9,25 @@ describe("PropertiesPage", () => {
 	beforeEach(() => {
 		usePropertiesStore.setState({
 			properties: [],
-			isLoading: false,
-			hasFetched: false,
+			isPropertiesLoading: false,
+			hasPropertiesFetched: false,
 		});
-		useAuthStore.setState({ user: null });
+		useAuthStore.setState({ user: null, loading: true });
 		vi.clearAllMocks();
 	});
 
+	it("displays empty state when user is not authenticated", () => {
+		useAuthStore.setState({ user: null, loading: false });
+
+		renderWithProviders(<PropertiesPage />);
+
+		expect(
+			screen.getByRole("heading", { name: /no properties yet/i }),
+		).toBeInTheDocument();
+	});
+
 	it("displays loading state while fetching", () => {
-		usePropertiesStore.setState({ isLoading: true });
+		usePropertiesStore.setState({ isPropertiesLoading: true });
 
 		const { container } = renderWithProviders(<PropertiesPage />);
 
@@ -32,7 +42,7 @@ describe("PropertiesPage", () => {
 	});
 
 	it("displays empty state when no properties exist", () => {
-		usePropertiesStore.setState({ hasFetched: true });
+		usePropertiesStore.setState({ hasPropertiesFetched: true });
 		renderWithProviders(<PropertiesPage />);
 
 		expect(
@@ -54,8 +64,8 @@ describe("PropertiesPage", () => {
 					userId: "user-1",
 				},
 			],
-			isLoading: false,
-			hasFetched: true,
+			isPropertiesLoading: false,
+			hasPropertiesFetched: true,
 		});
 
 		renderWithProviders(<PropertiesPage />);

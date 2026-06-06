@@ -11,10 +11,15 @@ import {
 
 export default function PropertiesPage() {
 	const properties = usePropertiesStore((state) => state.properties);
-	const isLoading = usePropertiesStore((state) => state.isLoading);
-	const hasFetched = usePropertiesStore((state) => state.hasFetched);
+	const isPropertiesLoading = usePropertiesStore(
+		(state) => state.isPropertiesLoading,
+	);
+	const hasPropertiesFetched = usePropertiesStore(
+		(state) => state.hasPropertiesFetched,
+	);
 	const fetchProperties = usePropertiesStore((state) => state.fetchProperties);
 	const user = useAuthStore((state) => state.user);
+	const authLoading = useAuthStore((state) => state.loading);
 
 	useEffect(() => {
 		if (user) {
@@ -22,7 +27,7 @@ export default function PropertiesPage() {
 		}
 	}, [user, fetchProperties]);
 
-	if (!hasFetched || isLoading) {
+	if ((!hasPropertiesFetched || isPropertiesLoading) && (user || authLoading)) {
 		return (
 			<div className="max-w-4xl mx-auto py-8 px-4">
 				<PropertyListSkeleton />
