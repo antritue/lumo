@@ -10,6 +10,7 @@ interface RentPaymentsState {
 	// Loading state
 	isPaymentsLoading: boolean; // true while any rent payment fetch is in-flight
 	loadingRoomIds: string[]; // dedup: prevents duplicate fetches for the same room
+	paymentsFetchFailed: boolean; // true when fetchRentPaymentsByRoomId fails
 
 	// Actions
 	fetchRentPaymentsByRoomId: (roomId: string) => Promise<void>;
@@ -35,6 +36,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 			rentPayments: [],
 			isPaymentsLoading: false,
 			loadingRoomIds: [],
+			paymentsFetchFailed: false,
 
 			fetchRentPaymentsByRoomId: async (roomId: string) => {
 				const user = useAuthStore.getState().user;
@@ -47,6 +49,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 					set((state) => ({
 						isPaymentsLoading: true,
 						loadingRoomIds: [...state.loadingRoomIds, roomId],
+						paymentsFetchFailed: false,
 					}));
 
 					const res = await fetch(`/api/rent-payments?roomId=${roomId}`, {
@@ -73,6 +76,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 					set((state) => ({
 						isPaymentsLoading: false,
 						loadingRoomIds: state.loadingRoomIds.filter((id) => id !== roomId),
+						paymentsFetchFailed: true,
 					}));
 					throw error;
 				}
@@ -179,6 +183,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 					rentPayments: [],
 					isPaymentsLoading: false,
 					loadingRoomIds: [],
+					paymentsFetchFailed: false,
 				}),
 		}),
 		{ name: "rent-payments" },

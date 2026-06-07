@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
 
@@ -6,6 +6,9 @@ export function useRoomPayments(roomId: string) {
 	const allRentPayments = useRentPaymentsStore((state) => state.rentPayments);
 	const isPaymentsLoading = useRentPaymentsStore(
 		(state) => state.isPaymentsLoading,
+	);
+	const paymentsFetchFailed = useRentPaymentsStore(
+		(state) => state.paymentsFetchFailed,
 	);
 	const fetchRentPaymentsByRoomId = useRentPaymentsStore(
 		(state) => state.fetchRentPaymentsByRoomId,
@@ -23,6 +26,10 @@ export function useRoomPayments(roomId: string) {
 	useEffect(() => {
 		fetchRentPaymentsByRoomId(roomId);
 	}, [roomId, fetchRentPaymentsByRoomId]);
+
+	const retryFetchPayments = useCallback(() => {
+		fetchRentPaymentsByRoomId(roomId);
+	}, [fetchRentPaymentsByRoomId, roomId]);
 
 	const rentPayments = allRentPayments
 		.filter((payment) => payment.roomId === roomId)
@@ -50,5 +57,7 @@ export function useRoomPayments(roomId: string) {
 		handleSavePayment,
 		handleDeletePayment,
 		isPaymentsLoading,
+		paymentsFetchFailed,
+		retryFetchPayments,
 	};
 }
