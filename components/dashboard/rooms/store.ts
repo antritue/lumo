@@ -9,6 +9,7 @@ interface RoomsState {
 	isRoomsLoading: boolean; // true while any room fetch is in-flight
 	loadingRoomId: string | null; // dedup: prevents duplicate single-room fetches
 	loadingPropertyIds: string[]; // dedup: prevents duplicate property-based fetches
+	failedPropertyIds: string[]; // property IDs whose room fetch failed
 
 	// Actions
 	fetchRoomsByPropertyId: (propertyId: string) => Promise<void>;
@@ -38,6 +39,7 @@ export const useRoomsStore = create<RoomsState>()(
 			isRoomsLoading: false,
 			loadingRoomId: null,
 			loadingPropertyIds: [],
+			failedPropertyIds: [],
 
 			fetchRoomById: async (roomId) => {
 				const user = useAuthStore.getState().user;
@@ -87,6 +89,9 @@ export const useRoomsStore = create<RoomsState>()(
 					set((state) => ({
 						isRoomsLoading: true,
 						loadingPropertyIds: [...state.loadingPropertyIds, propertyId],
+						failedPropertyIds: state.failedPropertyIds.filter(
+							(id) => id !== propertyId,
+						),
 					}));
 					const res = await fetch(`/api/rooms?propertyId=${propertyId}`, {
 						method: "GET",
@@ -121,6 +126,7 @@ export const useRoomsStore = create<RoomsState>()(
 						return {
 							isRoomsLoading: newLoadingIds.length > 0,
 							loadingPropertyIds: newLoadingIds,
+							failedPropertyIds: [...state.failedPropertyIds, propertyId],
 						};
 					});
 					throw error;
@@ -246,6 +252,7 @@ export const useRoomsStore = create<RoomsState>()(
 					isRoomsLoading: false,
 					loadingRoomId: null,
 					loadingPropertyIds: [],
+					failedPropertyIds: [],
 				}),
 
 			getRoomById: (id) => get().rooms.find((room) => room.id === id),

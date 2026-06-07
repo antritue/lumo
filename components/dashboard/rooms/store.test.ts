@@ -35,6 +35,7 @@ describe("RoomsStore", () => {
 			rooms: [],
 			isRoomsLoading: false,
 			loadingPropertyIds: [],
+			failedPropertyIds: [],
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
@@ -115,9 +116,11 @@ describe("RoomsStore", () => {
 				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
 			).rejects.toThrow("Failed to fetch rooms");
 
-			const { rooms, isRoomsLoading } = useRoomsStore.getState();
+			const { rooms, isRoomsLoading, failedPropertyIds } =
+				useRoomsStore.getState();
 			expect(rooms).toEqual([]);
 			expect(isRoomsLoading).toBe(false);
+			expect(failedPropertyIds).toEqual(["prop-1"]);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -514,13 +517,16 @@ describe("RoomsStore", () => {
 				rooms: [mockRoom({ id: "1", name: "Room 1", monthlyRent: 1500 })],
 				isRoomsLoading: true,
 				loadingPropertyIds: ["prop-1"],
+				failedPropertyIds: ["prop-1"],
 			});
 
 			useRoomsStore.getState().clearStore();
 
-			expect(useRoomsStore.getState().rooms).toEqual([]);
-			expect(useRoomsStore.getState().isRoomsLoading).toBe(false);
-			expect(useRoomsStore.getState().loadingPropertyIds).toEqual([]);
+			const state = useRoomsStore.getState();
+			expect(state.rooms).toEqual([]);
+			expect(state.isRoomsLoading).toBe(false);
+			expect(state.loadingPropertyIds).toEqual([]);
+			expect(state.failedPropertyIds).toEqual([]);
 		});
 	});
 });
