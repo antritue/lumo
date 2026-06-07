@@ -2,9 +2,10 @@
 
 import { ChevronDown, ChevronRight, Home, Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RoomList } from "@/components/dashboard/rooms/room-list";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
+import { ErrorState } from "@/components/shared/error-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Property } from "./types";
@@ -25,10 +26,15 @@ export function PropertyCard({
 
 	const allRooms = useRoomsStore((state) => state.rooms);
 	const isRoomsLoading = useRoomsStore((state) => state.isRoomsLoading);
+	const failedPropertyIds = useRoomsStore((state) => state.failedPropertyIds);
 	const fetchRoomsByPropertyId = useRoomsStore(
 		(state) => state.fetchRoomsByPropertyId,
 	);
 	const rooms = allRooms.filter((room) => room.propertyId === property.id);
+
+	const handleRetry = useCallback(() => {
+		fetchRoomsByPropertyId(property.id);
+	}, [fetchRoomsByPropertyId, property.id]);
 
 	useEffect(() => {
 		fetchRoomsByPropertyId(property.id);
@@ -105,11 +111,15 @@ export function PropertyCard({
 
 			{isExpanded && (
 				<CardContent className="pt-0">
-					<RoomList
-						propertyId={property.id}
-						rooms={rooms}
-						isRoomsLoading={isRoomsLoading}
-					/>
+					{failedPropertyIds.includes(property.id) ? (
+						<ErrorState onRetry={handleRetry} />
+					) : (
+						<RoomList
+							propertyId={property.id}
+							rooms={rooms}
+							isRoomsLoading={isRoomsLoading}
+						/>
+					)}
 				</CardContent>
 			)}
 		</Card>
