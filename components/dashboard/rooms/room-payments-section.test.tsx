@@ -63,6 +63,51 @@ describe("RoomPaymentsSection", () => {
 		});
 	});
 
+	it("displays error state when paymentsFetchFailed is true", () => {
+		const onAdd = vi.fn();
+		const onEdit = vi.fn();
+		const onDelete = vi.fn();
+
+		renderWithProviders(
+			<RoomPaymentsSection
+				payments={[]}
+				onAdd={onAdd}
+				onEdit={onEdit}
+				onDelete={onDelete}
+				paymentsFetchFailed
+			/>,
+		);
+
+		expect(
+			screen.getByRole("heading", { name: /failed to load data/i }),
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole("button", { name: /add/i }),
+		).not.toBeInTheDocument();
+	});
+
+	it("calls onRetryPayments when retry button clicked", async () => {
+		const user = userEvent.setup();
+		const onRetry = vi.fn();
+		const onAdd = vi.fn();
+		const onEdit = vi.fn();
+		const onDelete = vi.fn();
+
+		renderWithProviders(
+			<RoomPaymentsSection
+				payments={[]}
+				onAdd={onAdd}
+				onEdit={onEdit}
+				onDelete={onDelete}
+				paymentsFetchFailed
+				onRetryPayments={onRetry}
+			/>,
+		);
+
+		await user.click(screen.getByRole("button", { name: /try again/i }));
+		expect(onRetry).toHaveBeenCalledTimes(1);
+	});
+
 	describe("Interactions", () => {
 		it("calls onAdd when add button clicked", async () => {
 			const user = userEvent.setup();

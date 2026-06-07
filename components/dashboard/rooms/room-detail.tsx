@@ -43,6 +43,8 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		handleSavePayment,
 		handleDeletePayment,
 		isPaymentsLoading,
+		paymentsFetchFailed,
+		retryFetchPayments,
 	} = useRoomPayments(room.id);
 
 	const handleSaveRoom = async (
@@ -93,6 +95,8 @@ export function RoomDetail({ room }: RoomDetailProps) {
 					onEdit={openEditPayment}
 					onDelete={openDeletePayment}
 					isPaymentsLoading={isPaymentsLoading}
+					paymentsFetchFailed={paymentsFetchFailed}
+					onRetryPayments={retryFetchPayments}
 				/>
 
 				{paymentDialogMode && (
