@@ -6,7 +6,11 @@ import { DeletePropertyDialog } from "./delete-property-dialog";
 import type { Property } from "./types";
 
 describe("DeletePropertyDialog", () => {
-	const mockProperty: Property = { id: "1", name: "Sunset Villa" };
+	const mockProperty: Property = {
+		id: "1",
+		name: "Sunset Villa",
+		userId: "test-user-id",
+	};
 	const mockOnOpenChange = vi.fn();
 	const mockOnDelete = vi.fn();
 

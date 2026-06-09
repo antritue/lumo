@@ -8,7 +8,11 @@ import { usePropertiesStore } from "./store";
 import type { Property } from "./types";
 
 describe("PropertyCard", () => {
-	const mockProperty: Property = { id: "1", name: "Sunset Villa" };
+	const mockProperty: Property = {
+		id: "1",
+		name: "Sunset Villa",
+		userId: "test-user-id",
+	};
 
 	beforeEach(() => {
 		usePropertiesStore.setState({ properties: [] });
