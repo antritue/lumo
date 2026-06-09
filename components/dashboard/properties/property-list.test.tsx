@@ -8,7 +8,7 @@ import { usePropertiesStore } from "./store";
 describe("PropertyList", () => {
 	beforeEach(() => {
 		usePropertiesStore.setState({
-			properties: [{ id: "1", name: "Test Property" }],
+			properties: [{ id: "1", name: "Test Property", userId: "test-user-id" }],
 		});
 		vi.restoreAllMocks();
 	});
@@ -17,8 +17,8 @@ describe("PropertyList", () => {
 		it("displays properties with add button", () => {
 			usePropertiesStore.setState({
 				properties: [
-					{ id: "1", name: "Sunset Villa" },
-					{ id: "2", name: "Ocean View" },
+					{ id: "1", name: "Sunset Villa", userId: "test-user-id" },
+					{ id: "2", name: "Ocean View", userId: "test-user-id" },
 				],
 			});
 
@@ -72,7 +72,7 @@ describe("PropertyList", () => {
 		it("opens dialog, updates property, and closes", async () => {
 			const user = userEvent.setup();
 			usePropertiesStore.setState({
-				properties: [{ id: "1", name: "Sunset Villa" }],
+				properties: [{ id: "1", name: "Sunset Villa", userId: "test-user-id" }],
 			});
 
 			renderWithProviders(<PropertyList />);
@@ -111,7 +111,7 @@ describe("PropertyList", () => {
 		it("opens dialog, deletes property, and closes", async () => {
 			const user = userEvent.setup();
 			usePropertiesStore.setState({
-				properties: [{ id: "1", name: "Sunset Villa" }],
+				properties: [{ id: "1", name: "Sunset Villa", userId: "test-user-id" }],
 			});
 
 			renderWithProviders(<PropertyList />);

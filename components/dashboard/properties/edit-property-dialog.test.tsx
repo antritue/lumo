@@ -9,6 +9,7 @@ describe("EditPropertyDialog", () => {
 	const mockProperty: Property = {
 		id: "1",
 		name: "Sunset Villa",
+		userId: "test-user-id",
 	};
 	const mockOnOpenChange = vi.fn();
 	const mockOnSave = vi.fn();
