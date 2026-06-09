@@ -1,0 +1,967 @@
+{
+	"/Users/antritue/Projects/lumo/.husky/_/applypatch-msg": {
+		"mtime": 1780981088.1731474,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/commit-msg": {
+		"mtime": 1780981088.172527,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/h": {
+		"mtime": 1780981088.1646523,
+		"ast_hash": "15239a01c5554e56ff745570fb583a91",
+		"semantic_hash": "15239a01c5554e56ff745570fb583a91"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/husky.sh": {
+		"mtime": 1780981088.1844094,
+		"ast_hash": "13871d2ab13e8423790ecb2c01c78c18",
+		"semantic_hash": "13871d2ab13e8423790ecb2c01c78c18"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/post-applypatch": {
+		"mtime": 1780981088.17857,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/post-checkout": {
+		"mtime": 1780981088.1815953,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/post-commit": {
+		"mtime": 1780981088.1728613,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/post-merge": {
+		"mtime": 1780981088.1820436,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/post-rewrite": {
+		"mtime": 1780981088.181247,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/pre-applypatch": {
+		"mtime": 1780981088.1736612,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/pre-auto-gc": {
+		"mtime": 1780981088.182786,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/pre-commit": {
+		"mtime": 1780981088.1662145,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/pre-merge-commit": {
+		"mtime": 1780981088.1711476,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/pre-push": {
+		"mtime": 1780981088.1823776,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/pre-rebase": {
+		"mtime": 1780981088.18077,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/.husky/_/prepare-commit-msg": {
+		"mtime": 1780981088.1718364,
+		"ast_hash": "0b71c2e7d39daa010985d529f1320b37",
+		"semantic_hash": "0b71c2e7d39daa010985d529f1320b37"
+	},
+	"/Users/antritue/Projects/lumo/app/[locale]/layout.tsx": {
+		"mtime": 1780742650.763044,
+		"ast_hash": "7c652f6f4fc53af3447b111a4eb7697d",
+		"semantic_hash": "7c652f6f4fc53af3447b111a4eb7697d"
+	},
+	"/Users/antritue/Projects/lumo/app/[locale]/page.tsx": {
+		"mtime": 1780742650.7631702,
+		"ast_hash": "fe0521cc44131c461dd715621124af6a",
+		"semantic_hash": "fe0521cc44131c461dd715621124af6a"
+	},
+	"/Users/antritue/Projects/lumo/app/api/auth/callback/route.test.ts": {
+		"mtime": 1780742650.7641423,
+		"ast_hash": "c6e792e2dce7bc2676d3b69fa53f758c",
+		"semantic_hash": "c6e792e2dce7bc2676d3b69fa53f758c"
+	},
+	"/Users/antritue/Projects/lumo/app/api/auth/callback/route.ts": {
+		"mtime": 1780742650.7643862,
+		"ast_hash": "51f3b482bbaa4008f1c98692a694ada9",
+		"semantic_hash": "51f3b482bbaa4008f1c98692a694ada9"
+	},
+	"/Users/antritue/Projects/lumo/app/api/properties/[id]/route.test.ts": {
+		"mtime": 1780742650.7655723,
+		"ast_hash": "dac637803cf021fb2c8f7f6a437c361c",
+		"semantic_hash": "dac637803cf021fb2c8f7f6a437c361c"
+	},
+	"/Users/antritue/Projects/lumo/app/api/properties/[id]/route.ts": {
+		"mtime": 1780742650.7659898,
+		"ast_hash": "d9e6b1729f5302d3fcf7b4b82dc2ee9d",
+		"semantic_hash": "d9e6b1729f5302d3fcf7b4b82dc2ee9d"
+	},
+	"/Users/antritue/Projects/lumo/app/api/properties/route.test.ts": {
+		"mtime": 1780742650.7665763,
+		"ast_hash": "f29c270cae8a6ff640add25605666bb5",
+		"semantic_hash": "f29c270cae8a6ff640add25605666bb5"
+	},
+	"/Users/antritue/Projects/lumo/app/api/properties/route.ts": {
+		"mtime": 1780742650.7679923,
+		"ast_hash": "49462998794f931152dad3d54ba673ca",
+		"semantic_hash": "49462998794f931152dad3d54ba673ca"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rent-payments/[id]/route.test.ts": {
+		"mtime": 1780742650.7686133,
+		"ast_hash": "ac7c96294bc36c7844ee3ec2219058a1",
+		"semantic_hash": "ac7c96294bc36c7844ee3ec2219058a1"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rent-payments/[id]/route.ts": {
+		"mtime": 1780742650.768927,
+		"ast_hash": "4c3792a3474f33dffa8490e9ade8433a",
+		"semantic_hash": "4c3792a3474f33dffa8490e9ade8433a"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rent-payments/route.test.ts": {
+		"mtime": 1780742650.7692168,
+		"ast_hash": "889ff210775df71e8ec01c0e5228833c",
+		"semantic_hash": "889ff210775df71e8ec01c0e5228833c"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rent-payments/route.ts": {
+		"mtime": 1780742650.7693372,
+		"ast_hash": "748971beb5bd8a0c8daa00863bccff6b",
+		"semantic_hash": "748971beb5bd8a0c8daa00863bccff6b"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rooms/[id]/route.test.ts": {
+		"mtime": 1780742650.7694879,
+		"ast_hash": "a7a77568a880f32f2410deaf634ca8c5",
+		"semantic_hash": "a7a77568a880f32f2410deaf634ca8c5"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rooms/[id]/route.ts": {
+		"mtime": 1780742650.7696097,
+		"ast_hash": "0bfd19abe262d11b41e789ab05f6c496",
+		"semantic_hash": "0bfd19abe262d11b41e789ab05f6c496"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rooms/route.test.ts": {
+		"mtime": 1781017077.0500019,
+		"ast_hash": "0952202f80917c8359c7079f990ff576",
+		"semantic_hash": "0952202f80917c8359c7079f990ff576"
+	},
+	"/Users/antritue/Projects/lumo/app/api/rooms/route.ts": {
+		"mtime": 1781017077.0502868,
+		"ast_hash": "413dd99fd6f85d3b7931bbc975f0efad",
+		"semantic_hash": "413dd99fd6f85d3b7931bbc975f0efad"
+	},
+	"/Users/antritue/Projects/lumo/app/api/waitlist/route.test.ts": {
+		"mtime": 1780742650.7729633,
+		"ast_hash": "07d6f095574075b19db6bda68a9525f4",
+		"semantic_hash": "07d6f095574075b19db6bda68a9525f4"
+	},
+	"/Users/antritue/Projects/lumo/app/api/waitlist/route.ts": {
+		"mtime": 1780742650.7730687,
+		"ast_hash": "e0b5342eda10a66a4d4ae245fc9c1974",
+		"semantic_hash": "e0b5342eda10a66a4d4ae245fc9c1974"
+	},
+	"/Users/antritue/Projects/lumo/app/dashboard/layout.tsx": {
+		"mtime": 1780742650.7745903,
+		"ast_hash": "c2f666513ab06633f40dfaf2f35936b1",
+		"semantic_hash": "c2f666513ab06633f40dfaf2f35936b1"
+	},
+	"/Users/antritue/Projects/lumo/app/dashboard/page.tsx": {
+		"mtime": 1780742650.7748117,
+		"ast_hash": "34851afc68829683e71c8e1595c904c5",
+		"semantic_hash": "34851afc68829683e71c8e1595c904c5"
+	},
+	"/Users/antritue/Projects/lumo/app/dashboard/properties/page.test.tsx": {
+		"mtime": 1780769161.63583,
+		"ast_hash": "a776ea1fec5a73b88ae3f41afbbe86fc",
+		"semantic_hash": "a776ea1fec5a73b88ae3f41afbbe86fc"
+	},
+	"/Users/antritue/Projects/lumo/app/dashboard/properties/page.tsx": {
+		"mtime": 1780769161.636261,
+		"ast_hash": "800dcc89b649419b1d1eec8e21ea603c",
+		"semantic_hash": "800dcc89b649419b1d1eec8e21ea603c"
+	},
+	"/Users/antritue/Projects/lumo/app/dashboard/rooms/[roomId]/page.test.tsx": {
+		"mtime": 1780766518.777842,
+		"ast_hash": "c6f9f5f4b4b915d55e856d034d74d76d",
+		"semantic_hash": "c6f9f5f4b4b915d55e856d034d74d76d"
+	},
+	"/Users/antritue/Projects/lumo/app/dashboard/rooms/[roomId]/page.tsx": {
+		"mtime": 1780766518.7787046,
+		"ast_hash": "c559f8dcf18d1b62d43a9e9ef7833667",
+		"semantic_hash": "c559f8dcf18d1b62d43a9e9ef7833667"
+	},
+	"/Users/antritue/Projects/lumo/app/dashboard/tenants/page.tsx": {
+		"mtime": 1780743526.6892579,
+		"ast_hash": "5bc78bd05f7e0aeb2d254d37c56911bb",
+		"semantic_hash": "5bc78bd05f7e0aeb2d254d37c56911bb"
+	},
+	"/Users/antritue/Projects/lumo/app/layout.tsx": {
+		"mtime": 1780742650.7791228,
+		"ast_hash": "fad0b41285ec7a452d436c07d94cb19d",
+		"semantic_hash": "fad0b41285ec7a452d436c07d94cb19d"
+	},
+	"/Users/antritue/Projects/lumo/app/page.tsx": {
+		"mtime": 1780742650.7792332,
+		"ast_hash": "44293caf858b44b2880cceb0a92c14f7",
+		"semantic_hash": "44293caf858b44b2880cceb0a92c14f7"
+	},
+	"/Users/antritue/Projects/lumo/app/privacy/page.tsx": {
+		"mtime": 1780742650.779504,
+		"ast_hash": "2752617c19916c769eaf70e3e470ddd0",
+		"semantic_hash": "2752617c19916c769eaf70e3e470ddd0"
+	},
+	"/Users/antritue/Projects/lumo/app/robots.ts": {
+		"mtime": 1780742650.7796137,
+		"ast_hash": "3d08d81c310ecbd705a20b849f08cb91",
+		"semantic_hash": "3d08d81c310ecbd705a20b849f08cb91"
+	},
+	"/Users/antritue/Projects/lumo/app/sitemap.ts": {
+		"mtime": 1780742650.7797198,
+		"ast_hash": "9e859c9224accd61945c5513c6793e70",
+		"semantic_hash": "9e859c9224accd61945c5513c6793e70"
+	},
+	"/Users/antritue/Projects/lumo/app/terms/page.tsx": {
+		"mtime": 1780742650.780183,
+		"ast_hash": "f5a8731d80129b9cf6676d80eb37c5c4",
+		"semantic_hash": "f5a8731d80129b9cf6676d80eb37c5c4"
+	},
+	"/Users/antritue/Projects/lumo/biome.json": {
+		"mtime": 1780742650.7803004,
+		"ast_hash": "4d91278708d141cbf31b47d48f2acf76",
+		"semantic_hash": "4d91278708d141cbf31b47d48f2acf76"
+	},
+	"/Users/antritue/Projects/lumo/components.json": {
+		"mtime": 1780742650.780416,
+		"ast_hash": "7f4c87f10d7b7f71d53b508850754cce",
+		"semantic_hash": "7f4c87f10d7b7f71d53b508850754cce"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/auth-provider.test.tsx": {
+		"mtime": 1780742650.7805855,
+		"ast_hash": "7a3d50ca476f87109877f4a64a4c9389",
+		"semantic_hash": "7a3d50ca476f87109877f4a64a4c9389"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/auth-provider.tsx": {
+		"mtime": 1780742650.7812366,
+		"ast_hash": "7841275580e3ba6a059e544d82321cd4",
+		"semantic_hash": "7841275580e3ba6a059e544d82321cd4"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/auth-reminder-banner.test.tsx": {
+		"mtime": 1780742650.7814472,
+		"ast_hash": "4cebd9e2f0b22973fa994a3ac3cf418f",
+		"semantic_hash": "4cebd9e2f0b22973fa994a3ac3cf418f"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/auth-reminder-banner.tsx": {
+		"mtime": 1780742650.7815514,
+		"ast_hash": "507d2ef45b5050f72721a21f42cd1a8a",
+		"semantic_hash": "507d2ef45b5050f72721a21f42cd1a8a"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/index.ts": {
+		"mtime": 1780742650.7816634,
+		"ast_hash": "6e91e8590733bd32630290ddb4be1c89",
+		"semantic_hash": "6e91e8590733bd32630290ddb4be1c89"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/store.test.ts": {
+		"mtime": 1780742650.7818704,
+		"ast_hash": "fab5641a6a1ab8f409effd2f6cbd3626",
+		"semantic_hash": "fab5641a6a1ab8f409effd2f6cbd3626"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/store.ts": {
+		"mtime": 1780742650.7819817,
+		"ast_hash": "74b06b97381ead741f79cdedafc2ec21",
+		"semantic_hash": "74b06b97381ead741f79cdedafc2ec21"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/use-auth.test.ts": {
+		"mtime": 1780742650.7820804,
+		"ast_hash": "b1032efaef045ef94875f457b4e6b411",
+		"semantic_hash": "b1032efaef045ef94875f457b4e6b411"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/auth/use-auth.ts": {
+		"mtime": 1780742650.7821844,
+		"ast_hash": "df757b4ae381f83c31cead93b16d0cd6",
+		"semantic_hash": "df757b4ae381f83c31cead93b16d0cd6"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/islands/language-switcher.tsx": {
+		"mtime": 1780742650.782309,
+		"ast_hash": "a2f7128c6eef3fac1d262abc2052dbf5",
+		"semantic_hash": "a2f7128c6eef3fac1d262abc2052dbf5"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/app-shell.test.tsx": {
+		"mtime": 1780742650.7824242,
+		"ast_hash": "4bf31506177defc74dbd529bb592d8ec",
+		"semantic_hash": "4bf31506177defc74dbd529bb592d8ec"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/app-shell.tsx": {
+		"mtime": 1780742650.7825346,
+		"ast_hash": "56b461bf65d0b27262cb5d7648efe92d",
+		"semantic_hash": "56b461bf65d0b27262cb5d7648efe92d"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/header.test.tsx": {
+		"mtime": 1780742650.782633,
+		"ast_hash": "744ad4c16935a6f3f2c641324c02b7fb",
+		"semantic_hash": "744ad4c16935a6f3f2c641324c02b7fb"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/header.tsx": {
+		"mtime": 1780742650.7827377,
+		"ast_hash": "0db3a3edb86a340d6ea56b43c00846b6",
+		"semantic_hash": "0db3a3edb86a340d6ea56b43c00846b6"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/index.ts": {
+		"mtime": 1780742650.7828364,
+		"ast_hash": "5b11c5a90247b3b082d258d8dfdcbf8a",
+		"semantic_hash": "5b11c5a90247b3b082d258d8dfdcbf8a"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/mobile-nav.test.tsx": {
+		"mtime": 1780742650.7829475,
+		"ast_hash": "30b0406a76b286015c3a11bf969ffe0c",
+		"semantic_hash": "30b0406a76b286015c3a11bf969ffe0c"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/mobile-nav.tsx": {
+		"mtime": 1780742650.7830606,
+		"ast_hash": "1d864253b1fbd605dbb500e21a1bf920",
+		"semantic_hash": "1d864253b1fbd605dbb500e21a1bf920"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/nav-config.test.ts": {
+		"mtime": 1780742650.7831683,
+		"ast_hash": "ddcdb3a8411ed82d65902e638146364c",
+		"semantic_hash": "ddcdb3a8411ed82d65902e638146364c"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/nav-config.ts": {
+		"mtime": 1780743526.689619,
+		"ast_hash": "1bc2f179d08d19684df684ed00f68978",
+		"semantic_hash": "1bc2f179d08d19684df684ed00f68978"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/sidebar.test.tsx": {
+		"mtime": 1780742650.7836487,
+		"ast_hash": "0672f75bc2686c995ab4dd177308d9f9",
+		"semantic_hash": "0672f75bc2686c995ab4dd177308d9f9"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/sidebar.tsx": {
+		"mtime": 1780742650.7837822,
+		"ast_hash": "5149c5ab329f7fa156d7654b0dd31f2c",
+		"semantic_hash": "5149c5ab329f7fa156d7654b0dd31f2c"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/tablet-nav.test.tsx": {
+		"mtime": 1780742650.7843697,
+		"ast_hash": "9ae93c722fa631c20a9edb9ead56cfc6",
+		"semantic_hash": "9ae93c722fa631c20a9edb9ead56cfc6"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/layout/tablet-nav.tsx": {
+		"mtime": 1780742650.7844899,
+		"ast_hash": "1c891095b4251ad4e7faa3fe5f13dcbc",
+		"semantic_hash": "1c891095b4251ad4e7faa3fe5f13dcbc"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/create-property-form.test.tsx": {
+		"mtime": 1780742650.7846305,
+		"ast_hash": "315d088708a12e2850eaaccff409dcca",
+		"semantic_hash": "315d088708a12e2850eaaccff409dcca"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/create-property-form.tsx": {
+		"mtime": 1780742650.7857492,
+		"ast_hash": "28306a69468d4fe0403c87f0b507bff1",
+		"semantic_hash": "28306a69468d4fe0403c87f0b507bff1"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/delete-property-dialog.test.tsx": {
+		"mtime": 1780981237.4952948,
+		"ast_hash": "1d10ce91c136962f3013fab8d7cdbacb",
+		"semantic_hash": "1d10ce91c136962f3013fab8d7cdbacb"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/delete-property-dialog.tsx": {
+		"mtime": 1780742650.7860029,
+		"ast_hash": "e6abbb72f437a3ad10853cefb1c54836",
+		"semantic_hash": "e6abbb72f437a3ad10853cefb1c54836"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/edit-property-dialog.test.tsx": {
+		"mtime": 1780981237.4956856,
+		"ast_hash": "f59426d1ca7b322d1de1f6bcbb43dbaf",
+		"semantic_hash": "f59426d1ca7b322d1de1f6bcbb43dbaf"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/edit-property-dialog.tsx": {
+		"mtime": 1780742650.7865095,
+		"ast_hash": "178d58564daaa1d6652e59f671d6e99a",
+		"semantic_hash": "178d58564daaa1d6652e59f671d6e99a"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/empty-state.test.tsx": {
+		"mtime": 1780742650.786771,
+		"ast_hash": "75dd4dda4d8ee3dccae8ee7a1e8005e3",
+		"semantic_hash": "75dd4dda4d8ee3dccae8ee7a1e8005e3"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/empty-state.tsx": {
+		"mtime": 1780742650.7868896,
+		"ast_hash": "bcb8f02a8f0df2818311045aab85a353",
+		"semantic_hash": "bcb8f02a8f0df2818311045aab85a353"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/property-card-skeleton.tsx": {
+		"mtime": 1780742650.7876654,
+		"ast_hash": "84b5cb3b4d8a731518506582bbeea72a",
+		"semantic_hash": "84b5cb3b4d8a731518506582bbeea72a"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/property-card.test.tsx": {
+		"mtime": 1780981237.4960556,
+		"ast_hash": "f5ec4c5be1638a3f6a0c3f0f330f3b4c",
+		"semantic_hash": "f5ec4c5be1638a3f6a0c3f0f330f3b4c"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/property-card.tsx": {
+		"mtime": 1780816631.363422,
+		"ast_hash": "eb616b131a952618bc12d0388ad202bf",
+		"semantic_hash": "eb616b131a952618bc12d0388ad202bf"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/property-list-skeleton.tsx": {
+		"mtime": 1780742650.7880883,
+		"ast_hash": "9340530b5aa33257b8772a53ce6a79ae",
+		"semantic_hash": "9340530b5aa33257b8772a53ce6a79ae"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/property-list.test.tsx": {
+		"mtime": 1780981237.4966588,
+		"ast_hash": "f5e6553178ff154a78b2c24e4ea5c9d1",
+		"semantic_hash": "f5e6553178ff154a78b2c24e4ea5c9d1"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/property-list.tsx": {
+		"mtime": 1780742650.7888927,
+		"ast_hash": "03c659a79d8eec1df979c6397b573eb4",
+		"semantic_hash": "03c659a79d8eec1df979c6397b573eb4"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/store.test.ts": {
+		"mtime": 1780769161.6373847,
+		"ast_hash": "4fcd92142d83bd05a96691a741c28165",
+		"semantic_hash": "4fcd92142d83bd05a96691a741c28165"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/store.ts": {
+		"mtime": 1780769161.6379023,
+		"ast_hash": "47857ec28b94b4f3022f5e3b3739b592",
+		"semantic_hash": "47857ec28b94b4f3022f5e3b3739b592"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/properties/types.ts": {
+		"mtime": 1780742650.789522,
+		"ast_hash": "3bc882f98a6972a64477c98439c3b1ec",
+		"semantic_hash": "3bc882f98a6972a64477c98439c3b1ec"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/delete-rent-payment-dialog.test.tsx": {
+		"mtime": 1780742650.7907424,
+		"ast_hash": "2fd969546fd8293852ef6a1004b01502",
+		"semantic_hash": "2fd969546fd8293852ef6a1004b01502"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/delete-rent-payment-dialog.tsx": {
+		"mtime": 1780742650.7911308,
+		"ast_hash": "dcf7a9528a8e85a3733a4e3a803b0f1a",
+		"semantic_hash": "dcf7a9528a8e85a3733a4e3a803b0f1a"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/month-picker.test.tsx": {
+		"mtime": 1780742650.791491,
+		"ast_hash": "16663d986640b863468377a99635621a",
+		"semantic_hash": "16663d986640b863468377a99635621a"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/month-picker.tsx": {
+		"mtime": 1780742650.7917504,
+		"ast_hash": "e0155afa0f68536e6467ed63e718769f",
+		"semantic_hash": "e0155afa0f68536e6467ed63e718769f"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/payment-status-badge.test.tsx": {
+		"mtime": 1780742650.7918541,
+		"ast_hash": "47a166164807bbe84a749f3ceec38564",
+		"semantic_hash": "47a166164807bbe84a749f3ceec38564"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/payment-status-badge.tsx": {
+		"mtime": 1780742650.7919612,
+		"ast_hash": "227cff1cc4ad5fcca68c785ee5db0f95",
+		"semantic_hash": "227cff1cc4ad5fcca68c785ee5db0f95"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/rent-payments-list.test.tsx": {
+		"mtime": 1780742650.7924433,
+		"ast_hash": "2bd4d31a7780a245962a320d810e79b6",
+		"semantic_hash": "2bd4d31a7780a245962a320d810e79b6"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/rent-payments-list.tsx": {
+		"mtime": 1780742650.7925606,
+		"ast_hash": "5c353b155bd17475c6a277f492011b00",
+		"semantic_hash": "5c353b155bd17475c6a277f492011b00"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/store.test.ts": {
+		"mtime": 1780817141.1918995,
+		"ast_hash": "9c06ea78c044914764d4439409804e7e",
+		"semantic_hash": "9c06ea78c044914764d4439409804e7e"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/store.ts": {
+		"mtime": 1780817141.1926882,
+		"ast_hash": "76617d775463856e41dce0241db2e167",
+		"semantic_hash": "76617d775463856e41dce0241db2e167"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/types.ts": {
+		"mtime": 1780742650.793464,
+		"ast_hash": "b3300bfb7d22c0ebe429a921f8111eca",
+		"semantic_hash": "b3300bfb7d22c0ebe429a921f8111eca"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/upsert-rent-payment-dialog.test.tsx": {
+		"mtime": 1780742650.7935843,
+		"ast_hash": "21c6280bdc83a79c1c64a18b86def687",
+		"semantic_hash": "21c6280bdc83a79c1c64a18b86def687"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rent-payments/upsert-rent-payment-dialog.tsx": {
+		"mtime": 1780758792.8130786,
+		"ast_hash": "31b444a0786e178ebef075797c7534c4",
+		"semantic_hash": "31b444a0786e178ebef075797c7534c4"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/create-room-form.test.tsx": {
+		"mtime": 1780742650.7948945,
+		"ast_hash": "66f2f3b0c43c9837b0623008ef274797",
+		"semantic_hash": "66f2f3b0c43c9837b0623008ef274797"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/create-room-form.tsx": {
+		"mtime": 1780742650.7953014,
+		"ast_hash": "7396bdee50b103cc1f597d9b0465146f",
+		"semantic_hash": "7396bdee50b103cc1f597d9b0465146f"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/delete-room-dialog.test.tsx": {
+		"mtime": 1780742650.7959735,
+		"ast_hash": "2f9b4e17d387e05688fe892470b8868f",
+		"semantic_hash": "2f9b4e17d387e05688fe892470b8868f"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/delete-room-dialog.tsx": {
+		"mtime": 1780742650.7963262,
+		"ast_hash": "af92ad5aa3629b9984dba081d6cc3794",
+		"semantic_hash": "af92ad5aa3629b9984dba081d6cc3794"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/edit-room-dialog.test.tsx": {
+		"mtime": 1780742650.796512,
+		"ast_hash": "2dc81b3917aa537da0220cd7ee0f6f91",
+		"semantic_hash": "2dc81b3917aa537da0220cd7ee0f6f91"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/edit-room-dialog.tsx": {
+		"mtime": 1780742650.7974827,
+		"ast_hash": "150eb6aa1c6fe7a2fa314cd511865cd3",
+		"semantic_hash": "150eb6aa1c6fe7a2fa314cd511865cd3"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-detail-header.test.tsx": {
+		"mtime": 1780742650.7977347,
+		"ast_hash": "82148efffaa539cf908a1f04fd3672c7",
+		"semantic_hash": "82148efffaa539cf908a1f04fd3672c7"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-detail-header.tsx": {
+		"mtime": 1780742650.7985075,
+		"ast_hash": "7db535a2bfc4af2bb7f961f5c6a3b064",
+		"semantic_hash": "7db535a2bfc4af2bb7f961f5c6a3b064"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-detail.test.tsx": {
+		"mtime": 1780742650.7986465,
+		"ast_hash": "69f5cb6cfa27b52addf2b67850a8b373",
+		"semantic_hash": "69f5cb6cfa27b52addf2b67850a8b373"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-detail.tsx": {
+		"mtime": 1780817141.1930988,
+		"ast_hash": "20cccd42a248e001d9a961a1ed087638",
+		"semantic_hash": "20cccd42a248e001d9a961a1ed087638"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-info.test.tsx": {
+		"mtime": 1780742650.798872,
+		"ast_hash": "7d9654fa52b2fde7cbf7f2efb5663e60",
+		"semantic_hash": "7d9654fa52b2fde7cbf7f2efb5663e60"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-info.tsx": {
+		"mtime": 1780742650.7989864,
+		"ast_hash": "f8d5f613d331cff8d2671276cb2eb214",
+		"semantic_hash": "f8d5f613d331cff8d2671276cb2eb214"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-item.test.tsx": {
+		"mtime": 1781018537.729835,
+		"ast_hash": "739369e0e35ae850658449b9b3eb4cea",
+		"semantic_hash": "739369e0e35ae850658449b9b3eb4cea"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-item.tsx": {
+		"mtime": 1781018433.966312,
+		"ast_hash": "505a36f5a86f66af6472a954ef669fb3",
+		"semantic_hash": "505a36f5a86f66af6472a954ef669fb3"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-list.test.tsx": {
+		"mtime": 1780742650.799334,
+		"ast_hash": "6656179fff0647b8320fbf82930f11d3",
+		"semantic_hash": "6656179fff0647b8320fbf82930f11d3"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-list.tsx": {
+		"mtime": 1780742650.7994545,
+		"ast_hash": "3ee5a7827d4c874e391a4caf0dfd20ca",
+		"semantic_hash": "3ee5a7827d4c874e391a4caf0dfd20ca"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-not-found.test.tsx": {
+		"mtime": 1780742650.7995727,
+		"ast_hash": "c5da5d20553e8801093820e7139b4559",
+		"semantic_hash": "c5da5d20553e8801093820e7139b4559"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-not-found.tsx": {
+		"mtime": 1780742650.799683,
+		"ast_hash": "6ca91bfce97e1ca936d0dae76d4241d7",
+		"semantic_hash": "6ca91bfce97e1ca936d0dae76d4241d7"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-payments-section.test.tsx": {
+		"mtime": 1780817141.1935399,
+		"ast_hash": "17311c0de74adf3f63e32308bcbd638a",
+		"semantic_hash": "17311c0de74adf3f63e32308bcbd638a"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/room-payments-section.tsx": {
+		"mtime": 1780817141.1938727,
+		"ast_hash": "a99809720aa1458a0e8eca41289db7df",
+		"semantic_hash": "a99809720aa1458a0e8eca41289db7df"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/store.test.ts": {
+		"mtime": 1780816631.3645155,
+		"ast_hash": "6b2b67e3afb92f2705b0ee5b26cf73da",
+		"semantic_hash": "6b2b67e3afb92f2705b0ee5b26cf73da"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/store.ts": {
+		"mtime": 1780816631.3653798,
+		"ast_hash": "6de6b6dcc310b554aef5fea39dba0230",
+		"semantic_hash": "6de6b6dcc310b554aef5fea39dba0230"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/types.ts": {
+		"mtime": 1781017077.0507236,
+		"ast_hash": "82b48166f0266631dd3e549c8b36dd3b",
+		"semantic_hash": "82b48166f0266631dd3e549c8b36dd3b"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/use-room-dialogs.ts": {
+		"mtime": 1780766518.784541,
+		"ast_hash": "bfb047e206caac29c86ba4a6e420c27b",
+		"semantic_hash": "bfb047e206caac29c86ba4a6e420c27b"
+	},
+	"/Users/antritue/Projects/lumo/components/dashboard/rooms/use-room-payments.ts": {
+		"mtime": 1780817141.1941614,
+		"ast_hash": "629cbaafc1148f96ef4766251d7775a1",
+		"semantic_hash": "629cbaafc1148f96ef4766251d7775a1"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/cta-section.tsx": {
+		"mtime": 1780742650.803155,
+		"ast_hash": "e2dd57980a48e1be96b4821298a3f756",
+		"semantic_hash": "e2dd57980a48e1be96b4821298a3f756"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/features.tsx": {
+		"mtime": 1780742650.803304,
+		"ast_hash": "5374e0000d03f2cb8ab70dfdd2216cbb",
+		"semantic_hash": "5374e0000d03f2cb8ab70dfdd2216cbb"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/footer.tsx": {
+		"mtime": 1780742650.8034458,
+		"ast_hash": "5bd78aa3a976fc19ab44d4223b88895c",
+		"semantic_hash": "5bd78aa3a976fc19ab44d4223b88895c"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/header.tsx": {
+		"mtime": 1780742650.8038113,
+		"ast_hash": "951ecfe4faace2029c7baa6474af704d",
+		"semantic_hash": "951ecfe4faace2029c7baa6474af704d"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/hero.tsx": {
+		"mtime": 1780742650.8039746,
+		"ast_hash": "2d75e0f2cee6ff7337141c9a6fbb270d",
+		"semantic_hash": "2d75e0f2cee6ff7337141c9a6fbb270d"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/islands/language-switcher.tsx": {
+		"mtime": 1780742650.8042197,
+		"ast_hash": "b08c35588045442250624636176f6b1c",
+		"semantic_hash": "b08c35588045442250624636176f6b1c"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/islands/mobile-menu.tsx": {
+		"mtime": 1780742650.8043501,
+		"ast_hash": "91a8ad746236cde98c2f461770398b1b",
+		"semantic_hash": "91a8ad746236cde98c2f461770398b1b"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/islands/preview-carousel.tsx": {
+		"mtime": 1780742650.8044982,
+		"ast_hash": "685d7d3fdc901ae160eefe1eae25b6ad",
+		"semantic_hash": "685d7d3fdc901ae160eefe1eae25b6ad"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/pricing.tsx": {
+		"mtime": 1780742650.8048017,
+		"ast_hash": "9ba86a690c7762f24635c6fdc360a067",
+		"semantic_hash": "9ba86a690c7762f24635c6fdc360a067"
+	},
+	"/Users/antritue/Projects/lumo/components/marketing/problems.tsx": {
+		"mtime": 1780742650.8049283,
+		"ast_hash": "fb6b94943e602897314675da74e6c926",
+		"semantic_hash": "fb6b94943e602897314675da74e6c926"
+	},
+	"/Users/antritue/Projects/lumo/components/shared/development-banner.tsx": {
+		"mtime": 1780743526.689912,
+		"ast_hash": "1fd17f8287417a7e1198c417681dcdf8",
+		"semantic_hash": "1fd17f8287417a7e1198c417681dcdf8"
+	},
+	"/Users/antritue/Projects/lumo/components/shared/error-dialog.tsx": {
+		"mtime": 1780742650.8052094,
+		"ast_hash": "c2d1c2c6022496c22859972bd250b5a8",
+		"semantic_hash": "c2d1c2c6022496c22859972bd250b5a8"
+	},
+	"/Users/antritue/Projects/lumo/components/shared/error-state.test.tsx": {
+		"mtime": 1780769161.6382685,
+		"ast_hash": "3692a40dd08c4376f99f1f7883b73926",
+		"semantic_hash": "3692a40dd08c4376f99f1f7883b73926"
+	},
+	"/Users/antritue/Projects/lumo/components/shared/error-state.tsx": {
+		"mtime": 1780769161.6386278,
+		"ast_hash": "63dd8500458c860a069f3af8a904049f",
+		"semantic_hash": "63dd8500458c860a069f3af8a904049f"
+	},
+	"/Users/antritue/Projects/lumo/components/shared/join-waitlist-dialog.tsx": {
+		"mtime": 1780742650.8056986,
+		"ast_hash": "e9c77f868bec4a13269671d0390eaa23",
+		"semantic_hash": "e9c77f868bec4a13269671d0390eaa23"
+	},
+	"/Users/antritue/Projects/lumo/components/shared/lang-updater.tsx": {
+		"mtime": 1780742650.8058407,
+		"ast_hash": "3adb291b4e44e3d1c6961a8669807e21",
+		"semantic_hash": "3adb291b4e44e3d1c6961a8669807e21"
+	},
+	"/Users/antritue/Projects/lumo/components/shared/logo.tsx": {
+		"mtime": 1780742650.8059614,
+		"ast_hash": "f0f88cc6ffa9b78422e6edde7986a19c",
+		"semantic_hash": "f0f88cc6ffa9b78422e6edde7986a19c"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/button.tsx": {
+		"mtime": 1780766518.7851686,
+		"ast_hash": "f77223cb8445e71cf33400aae05e9c56",
+		"semantic_hash": "f77223cb8445e71cf33400aae05e9c56"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/card.tsx": {
+		"mtime": 1780766518.7854476,
+		"ast_hash": "9f405ea834681ce662f8bcecfaf1aeb4",
+		"semantic_hash": "9f405ea834681ce662f8bcecfaf1aeb4"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/dialog.tsx": {
+		"mtime": 1780766518.7857628,
+		"ast_hash": "cef32d6d7132a5a4d57462cd7f5ce3df",
+		"semantic_hash": "cef32d6d7132a5a4d57462cd7f5ce3df"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/input.tsx": {
+		"mtime": 1780742650.8065293,
+		"ast_hash": "77b64dd8117ef7cac247c9c2ad0b5684",
+		"semantic_hash": "77b64dd8117ef7cac247c9c2ad0b5684"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/popover.tsx": {
+		"mtime": 1780742650.8066645,
+		"ast_hash": "dbe770fab7746310d621683caaf701e1",
+		"semantic_hash": "dbe770fab7746310d621683caaf701e1"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/section.tsx": {
+		"mtime": 1780742650.806792,
+		"ast_hash": "5f37aa10ef62e4f89990631f7567ba7c",
+		"semantic_hash": "5f37aa10ef62e4f89990631f7567ba7c"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/sheet.tsx": {
+		"mtime": 1780766518.7860544,
+		"ast_hash": "e83e741d515146ace6da025ff89a7ef6",
+		"semantic_hash": "e83e741d515146ace6da025ff89a7ef6"
+	},
+	"/Users/antritue/Projects/lumo/components/ui/textarea.tsx": {
+		"mtime": 1780766518.7863836,
+		"ast_hash": "9a67aa8aff083180b82b8a7305d12a75",
+		"semantic_hash": "9a67aa8aff083180b82b8a7305d12a75"
+	},
+	"/Users/antritue/Projects/lumo/i18n.ts": {
+		"mtime": 1780742650.8095813,
+		"ast_hash": "e94fde4e243884f26cc2381d22265c3f",
+		"semantic_hash": "e94fde4e243884f26cc2381d22265c3f"
+	},
+	"/Users/antritue/Projects/lumo/lib/app-locale.ts": {
+		"mtime": 1780742650.809717,
+		"ast_hash": "0a7472d53a2867fe458636e6815731e3",
+		"semantic_hash": "0a7472d53a2867fe458636e6815731e3"
+	},
+	"/Users/antritue/Projects/lumo/lib/constants.ts": {
+		"mtime": 1780742650.8111079,
+		"ast_hash": "fc1ffb6c2bce9a4c70f2af8298831ba1",
+		"semantic_hash": "fc1ffb6c2bce9a4c70f2af8298831ba1"
+	},
+	"/Users/antritue/Projects/lumo/lib/navigation.ts": {
+		"mtime": 1780766518.787255,
+		"ast_hash": "ca3119df34ea669ac5bc1f5deca5cbda",
+		"semantic_hash": "ca3119df34ea669ac5bc1f5deca5cbda"
+	},
+	"/Users/antritue/Projects/lumo/lib/supabase-server.ts": {
+		"mtime": 1780742650.811848,
+		"ast_hash": "56798b441858c41f17909d14c6398524",
+		"semantic_hash": "56798b441858c41f17909d14c6398524"
+	},
+	"/Users/antritue/Projects/lumo/lib/supabase.ts": {
+		"mtime": 1780742650.812673,
+		"ast_hash": "da09e9a51bdea3d9964f09fd5c9ff28e",
+		"semantic_hash": "da09e9a51bdea3d9964f09fd5c9ff28e"
+	},
+	"/Users/antritue/Projects/lumo/lib/utils.ts": {
+		"mtime": 1780742650.8128004,
+		"ast_hash": "5fdd63ecac398a4fae96d350852aefe4",
+		"semantic_hash": "5fdd63ecac398a4fae96d350852aefe4"
+	},
+	"/Users/antritue/Projects/lumo/lib/validations/property.ts": {
+		"mtime": 1780742650.813152,
+		"ast_hash": "f1627f2b3766f2f2f2c9a241064133e3",
+		"semantic_hash": "f1627f2b3766f2f2f2c9a241064133e3"
+	},
+	"/Users/antritue/Projects/lumo/lib/validations/rent-payment.ts": {
+		"mtime": 1780742650.8135183,
+		"ast_hash": "f527e4a98ec390bd63ae300d339c13cd",
+		"semantic_hash": "f527e4a98ec390bd63ae300d339c13cd"
+	},
+	"/Users/antritue/Projects/lumo/lib/validations/room.ts": {
+		"mtime": 1780742650.8137536,
+		"ast_hash": "4be23cf7b5e564e2d5d120d1e692fdc3",
+		"semantic_hash": "4be23cf7b5e564e2d5d120d1e692fdc3"
+	},
+	"/Users/antritue/Projects/lumo/lib/validations/waitlist.ts": {
+		"mtime": 1780742650.814073,
+		"ast_hash": "4797266caa4cd3012a5b79ac56b8f5a6",
+		"semantic_hash": "4797266caa4cd3012a5b79ac56b8f5a6"
+	},
+	"/Users/antritue/Projects/lumo/messages/en.json": {
+		"mtime": 1780769161.6397374,
+		"ast_hash": "a11f33e37389412de1319c439fa672fe",
+		"semantic_hash": "a11f33e37389412de1319c439fa672fe"
+	},
+	"/Users/antritue/Projects/lumo/messages/vi.json": {
+		"mtime": 1780769161.6401224,
+		"ast_hash": "fe5065796b08b366286b6654b4d2403b",
+		"semantic_hash": "fe5065796b08b366286b6654b4d2403b"
+	},
+	"/Users/antritue/Projects/lumo/next.config.ts": {
+		"mtime": 1780742650.8156002,
+		"ast_hash": "f6780fdef497cb4a48c3f514dd46be58",
+		"semantic_hash": "f6780fdef497cb4a48c3f514dd46be58"
+	},
+	"/Users/antritue/Projects/lumo/package.json": {
+		"mtime": 1780981358.8375466,
+		"ast_hash": "ffa688ef9ffe35f33472231b7e74bf9f",
+		"semantic_hash": "ffa688ef9ffe35f33472231b7e74bf9f"
+	},
+	"/Users/antritue/Projects/lumo/postcss.config.mjs": {
+		"mtime": 1780742650.8176801,
+		"ast_hash": "358ba0479b6b3f4b3a2304f3caf81c2b",
+		"semantic_hash": "358ba0479b6b3f4b3a2304f3caf81c2b"
+	},
+	"/Users/antritue/Projects/lumo/proxy.ts": {
+		"mtime": 1780742650.8182867,
+		"ast_hash": "767b9bb2e9d4c4ed9f808205e3593b19",
+		"semantic_hash": "767b9bb2e9d4c4ed9f808205e3593b19"
+	},
+	"/Users/antritue/Projects/lumo/supabase/.temp/linked-project.json": {
+		"mtime": 1780548325.9817083,
+		"ast_hash": "da414a6c85de12dc1284940648c74a06",
+		"semantic_hash": "da414a6c85de12dc1284940648c74a06"
+	},
+	"/Users/antritue/Projects/lumo/supabase/migrations/20251229000000_init_waitlist.sql": {
+		"mtime": 1780742650.8219075,
+		"ast_hash": "4d36377c89e079a25948c8ff0705c845",
+		"semantic_hash": "4d36377c89e079a25948c8ff0705c845"
+	},
+	"/Users/antritue/Projects/lumo/supabase/migrations/20260208000000_create_properties.sql": {
+		"mtime": 1780742650.8221562,
+		"ast_hash": "8e98837bf882a7a8f508b2a724a6e5f8",
+		"semantic_hash": "8e98837bf882a7a8f508b2a724a6e5f8"
+	},
+	"/Users/antritue/Projects/lumo/supabase/migrations/20260217000000_create_rooms.sql": {
+		"mtime": 1780742650.8222802,
+		"ast_hash": "57118a3fef90de51fc6c280205f2c5b0",
+		"semantic_hash": "57118a3fef90de51fc6c280205f2c5b0"
+	},
+	"/Users/antritue/Projects/lumo/supabase/migrations/20260303000000_create_rent_payments.sql": {
+		"mtime": 1780742650.8224282,
+		"ast_hash": "bd0a6aedceff18933b705806acf01c7a",
+		"semantic_hash": "bd0a6aedceff18933b705806acf01c7a"
+	},
+	"/Users/antritue/Projects/lumo/test/render.tsx": {
+		"mtime": 1780742650.8225882,
+		"ast_hash": "8cd05160a5242f6a1a065471d135f408",
+		"semantic_hash": "8cd05160a5242f6a1a065471d135f408"
+	},
+	"/Users/antritue/Projects/lumo/test/setup.ts": {
+		"mtime": 1780742650.8232818,
+		"ast_hash": "3709e3aa95abf0544678f0f2d9b46702",
+		"semantic_hash": "3709e3aa95abf0544678f0f2d9b46702"
+	},
+	"/Users/antritue/Projects/lumo/tsconfig.json": {
+		"mtime": 1780742650.8233976,
+		"ast_hash": "13102f556eb02050d511789495d9cd77",
+		"semantic_hash": "13102f556eb02050d511789495d9cd77"
+	},
+	"/Users/antritue/Projects/lumo/vitest.config.ts": {
+		"mtime": 1780742650.823503,
+		"ast_hash": "2b7ab7fc2d60af81abe46742d2be3197",
+		"semantic_hash": "2b7ab7fc2d60af81abe46742d2be3197"
+	},
+	"/Users/antritue/Projects/lumo/.github/dependabot.yml": {
+		"mtime": 1780742650.7622228,
+		"ast_hash": "db577918d495da0352ab9d8496ca225c",
+		"semantic_hash": "db577918d495da0352ab9d8496ca225c"
+	},
+	"/Users/antritue/Projects/lumo/.github/workflows/ci.yml": {
+		"mtime": 1780981237.4944546,
+		"ast_hash": "05c758c90b3b31f20796e2d8ef837c41",
+		"semantic_hash": "05c758c90b3b31f20796e2d8ef837c41"
+	},
+	"/Users/antritue/Projects/lumo/.github/workflows/dependabot-auto-merge.yml": {
+		"mtime": 1780742650.7624962,
+		"ast_hash": "1599e81faa67f45be6801cf6d803fbbd",
+		"semantic_hash": "1599e81faa67f45be6801cf6d803fbbd"
+	},
+	"/Users/antritue/Projects/lumo/README.md": {
+		"mtime": 1780742650.7629201,
+		"ast_hash": "b12dbfc93af79c055b703fa0ee297fb8",
+		"semantic_hash": "b12dbfc93af79c055b703fa0ee297fb8"
+	},
+	"/Users/antritue/Projects/lumo/docs/auth.md": {
+		"mtime": 1780742650.8073695,
+		"ast_hash": "e6fcdc492d59889c224d50081648995a",
+		"semantic_hash": "e6fcdc492d59889c224d50081648995a"
+	},
+	"/Users/antritue/Projects/lumo/docs/database.md": {
+		"mtime": 1780742650.8075066,
+		"ast_hash": "35d5797005797c9aa7e3dc490495268b",
+		"semantic_hash": "35d5797005797c9aa7e3dc490495268b"
+	},
+	"/Users/antritue/Projects/lumo/docs/development.md": {
+		"mtime": 1780766518.7869399,
+		"ast_hash": "79f4b54978ea3dfc2f6248a8e8aa5b53",
+		"semantic_hash": "79f4b54978ea3dfc2f6248a8e8aa5b53"
+	},
+	"/Users/antritue/Projects/lumo/docs/openapi.yaml": {
+		"mtime": 1780742650.8087928,
+		"ast_hash": "0336f461c7271503bc8bb2ba39400955",
+		"semantic_hash": "0336f461c7271503bc8bb2ba39400955"
+	},
+	"/Users/antritue/Projects/lumo/docs/product.md": {
+		"mtime": 1780742650.8091323,
+		"ast_hash": "9c41156f2bd3703cc483b38cc11b6f37",
+		"semantic_hash": "9c41156f2bd3703cc483b38cc11b6f37"
+	},
+	"/Users/antritue/Projects/lumo/docs/supabase-sync.md": {
+		"mtime": 1780742650.8093207,
+		"ast_hash": "aa70ff82d2e61824b7bf5275b445c07b",
+		"semantic_hash": "aa70ff82d2e61824b7bf5275b445c07b"
+	},
+	"/Users/antritue/Projects/lumo/app/apple-icon.png": {
+		"mtime": 1780742650.7744548,
+		"ast_hash": "77132ddc6533f68f2e5d0e613fd137a5",
+		"semantic_hash": "77132ddc6533f68f2e5d0e613fd137a5"
+	},
+	"/Users/antritue/Projects/lumo/app/icon.svg": {
+		"mtime": 1780742650.778999,
+		"ast_hash": "1e3b620c10f4ee07e7a7545737d8b0dd",
+		"semantic_hash": "1e3b620c10f4ee07e7a7545737d8b0dd"
+	},
+	"/Users/antritue/Projects/lumo/public/icon.png": {
+		"mtime": 1780742650.8185122,
+		"ast_hash": "37ea4783f35a1210bcc2a687da814640",
+		"semantic_hash": "37ea4783f35a1210bcc2a687da814640"
+	},
+	"/Users/antritue/Projects/lumo/public/preview-properties.png": {
+		"mtime": 1780742650.8198464,
+		"ast_hash": "94599111c68af1a208f4b998b1f1cdc5",
+		"semantic_hash": "94599111c68af1a208f4b998b1f1cdc5"
+	},
+	"/Users/antritue/Projects/lumo/public/preview-room.png": {
+		"mtime": 1780742650.8204696,
+		"ast_hash": "76574d4bbf2e0d229637242d59479384",
+		"semantic_hash": "76574d4bbf2e0d229637242d59479384"
+	}
+}
