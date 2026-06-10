@@ -27,7 +27,7 @@ describe("PropertyList", () => {
 			expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
 			expect(screen.getByText("Ocean View")).toBeInTheDocument();
 			expect(
-				screen.getByRole("button", { name: /add another property/i }),
+				screen.getByRole("button", { name: /add a new property/i }),
 			).toBeInTheDocument();
 		});
 	});
@@ -38,7 +38,7 @@ describe("PropertyList", () => {
 			renderWithProviders(<PropertyList />);
 
 			await user.click(
-				screen.getByRole("button", { name: /add another property/i }),
+				screen.getByRole("button", { name: /add a new property/i }),
 			);
 
 			const input = screen.getByPlaceholderText(/property name or address/i);
@@ -58,7 +58,7 @@ describe("PropertyList", () => {
 			renderWithProviders(<PropertyList />);
 
 			await user.click(
-				screen.getByRole("button", { name: /add another property/i }),
+				screen.getByRole("button", { name: /add a new property/i }),
 			);
 			await user.click(screen.getByRole("button", { name: /cancel/i }));
 

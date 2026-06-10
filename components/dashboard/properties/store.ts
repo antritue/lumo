@@ -85,17 +85,17 @@ export const usePropertiesStore = create<PropertiesState>()(
 					const data = await res.json();
 
 					set((state) => ({
-						properties: [...state.properties, data],
+						properties: [data, ...state.properties],
 					}));
 				} else {
 					set((state) => ({
 						properties: [
-							...state.properties,
 							{
 								id: crypto.randomUUID(),
 								userId: "",
 								name,
 							},
+							...state.properties,
 						],
 					}));
 				}
