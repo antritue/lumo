@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type SubmitEvent, useState } from "react";
 import { ErrorDialog } from "@/components/shared/error-dialog";
@@ -23,6 +23,7 @@ export function CreatePropertyForm({
 
 	const [errorOpen, setErrorOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
@@ -31,14 +32,28 @@ export function CreatePropertyForm({
 
 		if (!trimmedName) return;
 
+		setIsSubmitting(true);
+
 		try {
 			await onSubmit(trimmedName);
 			setPropertyName("");
 		} catch {
 			setErrorMessage(t("errors.create.description"));
 			setErrorOpen(true);
+			setIsSubmitting(false);
 		}
 	};
+
+	if (isSubmitting) {
+		return (
+			<div className="flex items-center justify-center py-8">
+				<Loader2
+					className="h-6 w-6 animate-spin text-muted-foreground"
+					data-testid="property-create-loader"
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">

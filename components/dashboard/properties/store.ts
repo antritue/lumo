@@ -15,8 +15,8 @@ interface PropertiesState {
 	// Actions
 	fetchProperties: () => Promise<void>;
 	createProperty: (name: string) => Promise<void>;
-	updateProperty: (id: string, name: string) => void;
-	deleteProperty: (id: string) => void;
+	updateProperty: (id: string, name: string) => Promise<void>;
+	deleteProperty: (id: string) => Promise<void>;
 	clearStore: () => void;
 }
 
