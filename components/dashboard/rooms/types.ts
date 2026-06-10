@@ -4,4 +4,6 @@ export interface Room {
 	name: string;
 	monthlyRent: number | null;
 	notes: string | null;
+	createdAt?: string;
+	updatedAt?: string;
 }
