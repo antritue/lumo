@@ -65,7 +65,7 @@ describe("CreatePropertyForm", () => {
 			vi.restoreAllMocks();
 		});
 
-		it("submits with trimmed value and clears input", async () => {
+		it("submits with trimmed value and shows loader", async () => {
 			const user = userEvent.setup();
 			const onSubmit = vi.fn();
 
@@ -80,7 +80,30 @@ describe("CreatePropertyForm", () => {
 			await user.click(submitButton);
 
 			expect(onSubmit).toHaveBeenCalledWith("Sunset Villa");
-			expect(input).toHaveValue("");
+			expect(screen.getByTestId("property-create-loader")).toBeInTheDocument();
+			expect(
+				screen.queryByPlaceholderText(/property name or address/i),
+			).not.toBeInTheDocument();
+		});
+
+		it("shows error dialog on submission failure and restores form", async () => {
+			const user = userEvent.setup();
+			const onSubmit = vi.fn().mockRejectedValue(new Error("API error"));
+
+			renderWithProviders(<CreatePropertyForm onSubmit={onSubmit} />);
+
+			const input = screen.getByPlaceholderText(/property name or address/i);
+			const submitButton = screen.getByRole("button", {
+				name: /add property/i,
+			});
+
+			await user.type(input, "Sunset Villa");
+			await user.click(submitButton);
+
+			expect(screen.getByRole("dialog")).toBeInTheDocument();
+			expect(
+				screen.getByPlaceholderText(/property name or address/i),
+			).toBeInTheDocument();
 		});
 
 		it("calls onCancel when cancel button clicked", async () => {

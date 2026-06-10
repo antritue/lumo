@@ -69,8 +69,16 @@ describe("EmptyState", () => {
 		expect(submitButton).toBeEnabled();
 	});
 
-	it("clears input after successful submission", async () => {
+	it("shows loader during submission", async () => {
 		const user = userEvent.setup();
+
+		global.fetch = vi.fn(() =>
+			Promise.resolve({
+				ok: true,
+				json: () => Promise.resolve({ id: 1, name: "Test Property" }),
+			}),
+		) as unknown as typeof fetch;
+
 		renderWithProviders(<EmptyState />);
 
 		const input = screen.getByPlaceholderText(/property name or address/i);
@@ -79,6 +87,9 @@ describe("EmptyState", () => {
 		await user.type(input, "Test Property");
 		await user.click(submitButton);
 
-		expect(input).toHaveValue("");
+		expect(screen.getByTestId("property-create-loader")).toBeInTheDocument();
+		expect(
+			screen.queryByPlaceholderText(/property name or address/i),
+		).not.toBeInTheDocument();
 	});
 });

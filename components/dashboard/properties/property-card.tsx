@@ -25,8 +25,9 @@ export function PropertyCard({
 	const [isExpanded, setIsExpanded] = useState(true);
 
 	const allRooms = useRoomsStore((state) => state.rooms);
-	const isRoomsLoading = useRoomsStore((state) => state.isRoomsLoading);
+	const loadingPropertyIds = useRoomsStore((state) => state.loadingPropertyIds);
 	const failedPropertyIds = useRoomsStore((state) => state.failedPropertyIds);
+	const isRoomsLoading = loadingPropertyIds.includes(property.id);
 	const fetchRoomsByPropertyId = useRoomsStore(
 		(state) => state.fetchRoomsByPropertyId,
 	);
