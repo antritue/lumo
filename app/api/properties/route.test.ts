@@ -9,7 +9,6 @@ const mockInsert = vi.fn();
 const mockSelect = vi.fn();
 const mockSingle = vi.fn();
 const mockEq = vi.fn();
-const mockOrder = vi.fn();
 
 vi.mock("@/lib/supabase-server", () => ({
 	createSupabaseServerClient: vi.fn(() => ({
@@ -26,9 +25,8 @@ vi.mock("@/lib/supabase-server", () => ({
 describe("GET /api/properties", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		// Chain mocks for select -> eq -> order
+		// Chain mocks for select -> eq
 		mockSelect.mockReturnValue({ eq: mockEq });
-		mockEq.mockReturnValue({ order: mockOrder });
 	});
 
 	const mockAuthenticatedUser = () => {
@@ -49,7 +47,7 @@ describe("GET /api/properties", () => {
 			{ id: "prop-1", name: "House A", user_id: "test-user-id" },
 			{ id: "prop-2", name: "House B", user_id: "test-user-id" },
 		];
-		mockOrder.mockResolvedValue({
+		mockEq.mockResolvedValue({
 			data: mockProperties,
 			error: null,
 		});
@@ -64,7 +62,6 @@ describe("GET /api/properties", () => {
 		]);
 		expect(mockSelect).toHaveBeenCalledWith("*");
 		expect(mockEq).toHaveBeenCalledWith("user_id", "test-user-id");
-		expect(mockOrder).toHaveBeenCalledWith("created_at", { ascending: false });
 	});
 
 	it("should return 401 when user is not authenticated", async () => {
@@ -79,7 +76,7 @@ describe("GET /api/properties", () => {
 
 	it("should return 500 when database error occurs", async () => {
 		mockAuthenticatedUser();
-		mockOrder.mockResolvedValue({
+		mockEq.mockResolvedValue({
 			data: null,
 			error: { code: "some-error", message: "DB failure" },
 		});

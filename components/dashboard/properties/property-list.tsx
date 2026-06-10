@@ -38,6 +38,17 @@ export function PropertyList() {
 					</h1>
 				</div>
 
+				<div className="grid gap-4">
+					{properties.map((property) => (
+						<PropertyCard
+							key={property.id}
+							property={property}
+							onEdit={setEditingProperty}
+							onDelete={setDeletingProperty}
+						/>
+					))}
+				</div>
+
 				{isAdding ? (
 					<CreatePropertyForm
 						onSubmit={handleCreate}
@@ -54,17 +65,6 @@ export function PropertyList() {
 						{t("addAnother")}
 					</Button>
 				)}
-
-				<div className="grid gap-4">
-					{properties.map((property) => (
-						<PropertyCard
-							key={property.id}
-							property={property}
-							onEdit={setEditingProperty}
-							onDelete={setDeletingProperty}
-						/>
-					))}
-				</div>
 			</div>
 
 			<EditPropertyDialog
