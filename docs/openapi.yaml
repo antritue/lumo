@@ -65,11 +65,9 @@ components:
           type: string
           format: uuid
         monthlyRent:
-          type: number
-          nullable: true
+          type: ["number", "null"]
         notes:
-          type: string
-          nullable: true
+          type: ["string", "null"]
       required:
         - id
         - name
@@ -86,12 +84,10 @@ components:
           type: string
           format: uuid
         monthlyRent:
-          type: number
+          type: ["number", "null"]
           minimum: 0
-          nullable: true
         notes:
-          type: string
-          nullable: true
+          type: ["string", "null"]
       required:
         - name
         - propertyId
@@ -103,12 +99,10 @@ components:
           type: string
           minLength: 1
         monthlyRent:
-          type: number
+          type: ["number", "null"]
           minimum: 0
-          nullable: true
         notes:
-          type: string
-          nullable: true
+          type: ["string", "null"]
 
     WaitlistInput:
       type: object
@@ -182,6 +176,73 @@ components:
         status:
           type: string
           enum: [pending, paid]
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+      required:
+        - id
+        - userId
+        - name
+        - pricingType
+
+    ServiceInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+      required:
+        - name
+        - pricingType
+
+    ServiceUpdateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
 
     Message:
       type: object
@@ -732,5 +793,130 @@ paths:
                 message: You're already on the waitlist!
         "400":
           $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/services:
+    get:
+      summary: List services
+      description: Returns all services for the authenticated user
+      operationId: listServices
+      tags:
+        - Services
+      responses:
+        "200":
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      summary: Create service
+      description: Creates a new service in the catalog
+      operationId: createService
+      tags:
+        - Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceInput"
+            example:
+              name: WiFi
+              unitLabel: null
+              pricingType: flat
+              flatAmount: 15
+              unitPrice: null
+      responses:
+        "201":
+          description: Service created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/services/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Service UUID
+        schema:
+          type: string
+          format: uuid
+
+    patch:
+      summary: Update service
+      description: Updates an existing service. All fields are optional.
+      operationId: updateService
+      tags:
+        - Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceUpdateInput"
+            example:
+              name: WiFi
+              unitLabel: null
+              pricingType: flat
+              flatAmount: 20
+              unitPrice: null
+      responses:
+        "200":
+          description: Service updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Service not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      summary: Delete service
+      description: Deletes a service from the catalog
+      operationId: deleteService
+      tags:
+        - Services
+      responses:
+        "204":
+          description: Service deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Service not found
         "500":
           $ref: "#/components/responses/InternalServerError"
