@@ -135,7 +135,8 @@
 		},
 		"sidebar": {
 			"properties": "Properties",
-			"tenants": "Tenants"
+			"tenants": "Tenants",
+			"services": "Services"
 		},
 		"properties": {
 			"emptyTitle": "No properties yet",
@@ -169,6 +170,49 @@
 				"delete": {
 					"title": "Failed to delete property",
 					"description": "There was a problem deleting this property. Please try again."
+				}
+			}
+		},
+		"services": {
+			"emptyTitle": "No services yet",
+			"emptySubtitle": "Services are optional charges you can add to rooms. Create your first service to get started.",
+			"inputPlaceholder": "Service name",
+			"unitPlaceholder": "Unit (optional)",
+			"noUnit": "No unit",
+			"addButton": "Add service",
+			"listTitle": "Your services",
+			"addAnother": "Add a new service",
+			"cancel": "Cancel",
+			"edit": "Edit",
+			"delete": "Delete",
+			"editTitle": "Edit service",
+			"saveButton": "Save",
+			"deleteTitle": "Delete service?",
+			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
+			"deleteConfirm": "Delete service",
+			"flat": "Flat fee",
+			"variable": "Usage-based",
+			"flatAmountPlaceholder": "Monthly amount",
+			"unitPricePlaceholder": "Price per unit",
+			"unit": "unit",
+			"unitLabel": "Unit",
+			"pricingType": "Pricing",
+			"flatAmount": "Flat amount",
+			"unitPrice": "Unit price",
+			"notSet": "Not set",
+			"suggestions": "Quick add common services:",
+			"errors": {
+				"create": {
+					"title": "Failed to add service",
+					"description": "There was a problem adding this service. Please try again."
+				},
+				"update": {
+					"title": "Failed to update service",
+					"description": "There was a problem updating this service. Please try again."
+				},
+				"delete": {
+					"title": "Failed to delete service",
+					"description": "There was a problem deleting this service. Please try again."
 				}
 			}
 		},

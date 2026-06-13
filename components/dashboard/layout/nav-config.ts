@@ -1,4 +1,4 @@
-import { Home, Users } from "lucide-react";
+import { Blocks, Home, Users } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 export type NavItem = {
@@ -14,6 +14,12 @@ export const navItems: NavItem[] = [
 		icon: Home,
 		labelKey: "properties",
 		activeMatch: ["/dashboard/properties", "/dashboard/rooms"],
+	},
+	{
+		href: "/dashboard/services",
+		icon: Blocks,
+		labelKey: "services",
+		activeMatch: ["/dashboard/services"],
 	},
 	{
 		href: "/dashboard/tenants",
