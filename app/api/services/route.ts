@@ -21,8 +21,7 @@ export async function listServices() {
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.SERVICES)
 			.select("*")
-			.eq("user_id", user.id)
-			.order("name");
+			.eq("user_id", user.id);
 
 		if (error) {
 			throw error;
