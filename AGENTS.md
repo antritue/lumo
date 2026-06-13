@@ -1,3 +1,7 @@
+## lumo-component-patterns
+
+This project has a skill at `.opencode/skills/lumo-component-patterns/SKILL.md` that documents how to create new components following the project's established conventions (directory structure, Zustand stores, page state machine, dialogs, i18n, nav). Use it whenever building a new dashboard feature component.
+
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
