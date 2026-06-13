@@ -135,7 +135,8 @@
 		},
 		"sidebar": {
 			"properties": "Nhà cho thuê",
-			"tenants": "Người thuê"
+			"tenants": "Người thuê",
+			"services": "Dịch vụ"
 		},
 		"properties": {
 			"emptyTitle": "Chưa có nhà cho thuê",
@@ -169,6 +170,49 @@
 				"delete": {
 					"title": "Không thể xóa nhà cho thuê",
 					"description": "Đã xảy ra lỗi khi xóa nhà cho thuê. Vui lòng thử lại."
+				}
+			}
+		},
+		"services": {
+			"emptyTitle": "Chưa có dịch vụ",
+			"emptySubtitle": "Dịch vụ là các khoản phí tùy chọn bạn có thể thêm vào phòng. Tạo dịch vụ đầu tiên để bắt đầu.",
+			"inputPlaceholder": "Tên dịch vụ",
+			"unitPlaceholder": "Đơn vị (không bắt buộc)",
+			"noUnit": "Không có đơn vị",
+			"addButton": "Thêm dịch vụ",
+			"listTitle": "Dịch vụ của bạn",
+			"addAnother": "Thêm dịch vụ mới",
+			"cancel": "Hủy",
+			"edit": "Sửa",
+			"delete": "Xóa",
+			"editTitle": "Sửa dịch vụ",
+			"saveButton": "Lưu",
+			"deleteTitle": "Xóa dịch vụ?",
+			"deleteMessage": "Dịch vụ \"{name}\" sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.",
+			"deleteConfirm": "Xóa dịch vụ",
+			"flat": "Phí cố định",
+			"variable": "Theo số lượng",
+			"flatAmountPlaceholder": "Số tiền hàng tháng",
+			"unitPricePlaceholder": "Đơn giá",
+			"unit": "đơn vị",
+			"unitLabel": "Đơn vị",
+			"pricingType": "Loại phí",
+			"flatAmount": "Phí cố định",
+			"unitPrice": "Đơn giá",
+			"notSet": "Chưa thiết lập",
+			"suggestions": "Thêm nhanh dịch vụ thường dùng:",
+			"errors": {
+				"create": {
+					"title": "Không thể thêm dịch vụ",
+					"description": "Có lỗi xảy ra khi thêm dịch vụ. Vui lòng thử lại."
+				},
+				"update": {
+					"title": "Không thể cập nhật dịch vụ",
+					"description": "Có lỗi xảy ra khi cập nhật dịch vụ. Vui lòng thử lại."
+				},
+				"delete": {
+					"title": "Không thể xóa dịch vụ",
+					"description": "Có lỗi xảy ra khi xóa dịch vụ. Vui lòng thử lại."
 				}
 			}
 		},
