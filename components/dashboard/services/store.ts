@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { Service } from "./types";
 
 const SEEDED_SERVICES: Service[] = [
@@ -61,16 +62,34 @@ export const useServicesStore = create<ServicesState>()(
 
 			fetchServices: async () => {
 				const { hasServicesFetched, isServicesLoading } = get();
+				if (hasServicesFetched || isServicesLoading) return;
 
-				if (hasServicesFetched || isServicesLoading) {
+				const user = useAuthStore.getState().user;
+
+				if (!user) {
+					set({
+						services: SEEDED_SERVICES,
+						isServicesLoading: false,
+						hasServicesFetched: true,
+						servicesFetchFailed: false,
+					});
 					return;
 				}
 
 				try {
 					set({ isServicesLoading: true });
-					await new Promise((r) => setTimeout(r, 300));
+					const res = await fetch("/api/services", {
+						method: "GET",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						throw new Error("Failed to fetch services");
+					}
+
+					const data: Service[] = await res.json();
 					set({
-						services: SEEDED_SERVICES,
+						services: data,
 						isServicesLoading: false,
 						hasServicesFetched: true,
 						servicesFetchFailed: false,
@@ -93,20 +112,49 @@ export const useServicesStore = create<ServicesState>()(
 				flatAmount = null,
 				unitPrice = null,
 			) => {
-				set((state) => ({
-					services: [
-						...state.services,
-						{
-							id: crypto.randomUUID(),
-							userId: "",
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					const res = await fetch("/api/services", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
 							name,
-							unitLabel: unitLabel ?? null,
+							unitLabel,
 							pricingType,
 							flatAmount,
 							unitPrice,
-						},
-					],
-				}));
+						}),
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						const error = new Error("Failed to create service");
+						console.error("Failed to create service:", error);
+						throw error;
+					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						services: [...state.services, data],
+					}));
+				} else {
+					set((state) => ({
+						services: [
+							...state.services,
+							{
+								id: crypto.randomUUID(),
+								userId: "",
+								name,
+								unitLabel,
+								pricingType,
+								flatAmount,
+								unitPrice,
+							},
+						],
+					}));
+				}
 			},
 
 			updateService: async (
@@ -117,23 +165,69 @@ export const useServicesStore = create<ServicesState>()(
 				flatAmount = null,
 				unitPrice = null,
 			) => {
-				set((state) => ({
-					services: state.services.map((service) =>
-						service.id === id
-							? {
-									...service,
-									name,
-									unitLabel: unitLabel ?? null,
-									pricingType,
-									flatAmount,
-									unitPrice,
-								}
-							: service,
-					),
-				}));
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					const res = await fetch(`/api/services/${id}`, {
+						method: "PATCH",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							name,
+							unitLabel,
+							pricingType,
+							flatAmount,
+							unitPrice,
+						}),
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						const error = new Error("Failed to update service");
+						console.error("Failed to update service:", error);
+						throw error;
+					}
+
+					const data = await res.json();
+
+					set((state) => ({
+						services: state.services.map((service) =>
+							service.id === id ? data : service,
+						),
+					}));
+				} else {
+					set((state) => ({
+						services: state.services.map((service) =>
+							service.id === id
+								? {
+										...service,
+										name,
+										unitLabel,
+										pricingType,
+										flatAmount,
+										unitPrice,
+									}
+								: service,
+						),
+					}));
+				}
 			},
 
 			deleteService: async (id) => {
+				const user = useAuthStore.getState().user;
+
+				if (user) {
+					const res = await fetch(`/api/services/${id}`, {
+						method: "DELETE",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						const error = new Error("Failed to delete service");
+						console.error("Failed to delete service:", error);
+						throw error;
+					}
+				}
+
 				set((state) => ({
 					services: state.services.filter((service) => service.id !== id),
 				}));
