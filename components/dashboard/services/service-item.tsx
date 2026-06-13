@@ -110,7 +110,7 @@ export function ServiceItem({ service, onEdit, onDelete }: ServiceItemProps) {
 							<span className="font-semibold text-foreground">
 								{service.pricingType === "flat"
 									? service.flatAmount
-										? `$${service.flatAmount}/mo`
+										? `$${service.flatAmount}`
 										: t("notSet")
 									: service.unitPrice
 										? `$${service.unitPrice} / ${service.unitLabel ?? t("unit")}`

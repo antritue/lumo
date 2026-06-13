@@ -24,10 +24,8 @@ export default function ServicesPage() {
 	const authLoading = useAuthStore((state) => state.loading);
 
 	useEffect(() => {
-		if (user) {
-			fetchServices();
-		}
-	}, [user, fetchServices]);
+		if (!authLoading) fetchServices();
+	}, [authLoading, fetchServices]);
 
 	if (servicesFetchFailed && !isServicesLoading) {
 		return (
