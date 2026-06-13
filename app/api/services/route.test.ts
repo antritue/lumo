@@ -22,12 +22,12 @@ vi.mock("@/lib/supabase-server", () => ({
 	})),
 }));
 
-	describe("GET /api/services", () => {
-		beforeEach(() => {
-			vi.clearAllMocks();
-			// Chain mocks for select -> eq
-			mockSelect.mockReturnValue({ eq: mockEq });
-		});
+describe("GET /api/services", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		// Chain mocks for select -> eq
+		mockSelect.mockReturnValue({ eq: mockEq });
+	});
 
 	const mockAuthenticatedUser = () => {
 		mockGetUser.mockResolvedValue({

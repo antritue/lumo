@@ -1,6 +1,6 @@
 ---
-name: lumo-component-patterns
-description: Use when creating new dashboard components, pages, stores, or dialogs in the Lumo project. Covers directory structure, Zustand stores, page state machine, dialog patterns, and conventions used throughout the codebase.
+name: component-patterns
+description: Use when creating new dashboard components, pages, stores, or dialogs. Covers directory structure, Zustand stores, page state machine, dialog patterns, and conventions.
 ---
 
 # Lumo Component Patterns
@@ -71,8 +71,12 @@ export const useItemsStore = create<ItemsState>()(
     itemsFetchFailed: false,
 
     fetchItems: async () => {
+      const user = useAuthStore.getState().user;
+      if (!user) return;                         // no-op when signed out
+
       const { hasItemsFetched, isItemsLoading } = get();
       if (hasItemsFetched || isItemsLoading) return;
+
       try {
         set({ isItemsLoading: true });
         // ... API call
@@ -84,15 +88,37 @@ export const useItemsStore = create<ItemsState>()(
     },
 
     createItem: async (/* fields */) => {
-      // Auth guard + API call or local fallback
       const user = useAuthStore.getState().user;
       if (user) {
         const res = await fetch("/api/...", { method: "POST", ... });
         const data = await res.json();
         set((state) => ({ items: [...state.items, data] }));
       } else {
-        set((state) => ({ items: [...state.items, { id: crypto.randomUUID(), ... }] }));
+        set((state) => ({
+          items: [...state.items, { id: crypto.randomUUID(), /* fields */ }],
+        }));
       }
+    },
+
+    updateItem: async (id, /* fields */) => {
+      const user = useAuthStore.getState().user;
+      if (user) {
+        const res = await fetch(`/api/.../${id}`, { method: "PATCH", ... });
+        const data = await res.json();
+        set((state) => ({ items: state.items.map((i) => (i.id === id ? data : i)) }));
+      } else {
+        set((state) => ({
+          items: state.items.map((i) => (i.id === id ? { ...i, /* fields */ } : i)),
+        }));
+      }
+    },
+
+    deleteItem: async (id) => {
+      const user = useAuthStore.getState().user;
+      if (user) {
+        await fetch(`/api/.../${id}`, { method: "DELETE", ... });
+      }
+      set((state) => ({ items: state.items.filter((i) => i.id !== id) }));
     },
 
     clearStore: () => set({ items: [], isItemsLoading: false, hasItemsFetched: false, itemsFetchFailed: false }),
@@ -105,6 +131,7 @@ export const useItemsStore = create<ItemsState>()(
 - **Per-ID loading dedup**: For child resources (rooms under property, payments per room), use `loadingIds: string[]` instead of a single boolean. Check `loadingIds.includes(id)` before fetching.
 - **Failed ID tracking**: Track `failedIds: string[]` to show per-card error states.
 - **Selectors**: Always use individual selectors (`store((s) => s.items)`) to avoid re-renders.
+- **Seed defaults**: For resources that should appear populated on first visit, define a `SEEDED_ITEMS` constant. Seeding happens in two layers: (1) a Supabase DB trigger on `auth.users` insert populates the table for new signups, (2) `fetchItems` uses the constant as in-memory mock data for unauth users. For features that use this, the page effect gates on `authLoading` instead of `user` so the seed fires for both auth states.
 
 ## Page state machine (`page.tsx`)
 
@@ -126,11 +153,14 @@ export default function ItemsPage() {
   const user = useAuthStore((s) => s.user);
   const authLoading = useAuthStore((s) => s.loading);
 
-  // 2. Fetch on mount
+  // 2. Fetch on mount (standard: user-gated)
   useEffect(() => { if (user) fetchItems(); }, [user, fetchItems]);
+  // For seeded features (services): use authLoading gate so seed fires for unauth too
+  // useEffect(() => { if (!authLoading) fetchItems(); }, [authLoading, fetchItems]);
 
-  // 3. Four states
+  // 3. Four states (signed-out users skip API, see list immediately)
   if (fetchFailed && !isLoading) return <ErrorState onRetry={fetchItems} />;
+  if (!user && !authLoading) return <div>{items.length === 0 ? <EmptyState /> : <ItemList />}</div>;
   if ((!hasFetched || isLoading) && (user || authLoading)) return <ItemListSkeleton />;
   return <div>{items.length === 0 ? <EmptyState /> : <ItemList />}</div>;
 }
