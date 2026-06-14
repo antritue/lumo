@@ -4,12 +4,11 @@ import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CreatePropertyForm } from "./create-property-form";
 import { DeletePropertyDialog } from "./delete-property-dialog";
-import { EditPropertyDialog } from "./edit-property-dialog";
 import { PropertyCard } from "./property-card";
 import { usePropertiesStore } from "./store";
 import type { Property } from "./types";
+import { UpsertPropertyDialog } from "./upsert-property-dialog";
 
 export function PropertyList() {
 	const t = useTranslations("app.properties");
@@ -24,9 +23,12 @@ export function PropertyList() {
 		null,
 	);
 
-	const handleCreate = async (name: string) => {
-		await createProperty(name);
-		setIsAdding(false);
+	const handleSave = async (id: string | null, name: string) => {
+		if (id) {
+			await updateProperty(id, name);
+		} else {
+			await createProperty(name);
+		}
 	};
 
 	return (
@@ -49,29 +51,25 @@ export function PropertyList() {
 					))}
 				</div>
 
-				{isAdding ? (
-					<CreatePropertyForm
-						onSubmit={handleCreate}
-						onCancel={() => setIsAdding(false)}
-						showCancel
-					/>
-				) : (
-					<Button
-						onClick={() => setIsAdding(true)}
-						size="lg"
-						className="w-full"
-					>
-						<Plus className="mr-2" />
-						{t("addAnother")}
-					</Button>
-				)}
+				<Button onClick={() => setIsAdding(true)} size="lg" className="w-full">
+					<Plus className="mr-2" />
+					{t("addAnother")}
+				</Button>
 			</div>
 
-			<EditPropertyDialog
-				property={editingProperty}
+			<UpsertPropertyDialog
+				mode="add"
+				open={isAdding}
+				onOpenChange={setIsAdding}
+				onSave={handleSave}
+			/>
+
+			<UpsertPropertyDialog
+				mode="edit"
+				property={editingProperty ?? undefined}
 				open={!!editingProperty}
 				onOpenChange={(open) => !open && setEditingProperty(null)}
-				onSave={updateProperty}
+				onSave={handleSave}
 			/>
 
 			<DeletePropertyDialog

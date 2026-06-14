@@ -15,19 +15,21 @@ import {
 import { Input } from "@/components/ui/input";
 import type { Property } from "./types";
 
-interface EditPropertyDialogProps {
-	property: Property | null;
+interface UpsertPropertyDialogProps {
+	mode: "add" | "edit";
+	property?: Property;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	onSave: (id: string, name: string) => Promise<void>;
+	onSave: (id: string | null, name: string) => Promise<void>;
 }
 
-export function EditPropertyDialog({
+export function UpsertPropertyDialog({
+	mode,
 	property,
 	open,
 	onOpenChange,
 	onSave,
-}: EditPropertyDialogProps) {
+}: UpsertPropertyDialogProps) {
 	const t = useTranslations("app.properties");
 	const [propertyName, setPropertyName] = useState("");
 
@@ -35,49 +37,56 @@ export function EditPropertyDialog({
 	const [errorMessage, setErrorMessage] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	// Reset form when dialog opens with new property
 	useEffect(() => {
-		if (property) {
-			setPropertyName(property.name);
+		if (open) {
 			setIsSubmitting(false);
 			setErrorOpen(false);
 			setErrorMessage("");
 		}
-	}, [property]);
+		if (mode === "edit" && property) {
+			setPropertyName(property.name);
+		} else {
+			setPropertyName("");
+		}
+	}, [mode, property, open]);
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 		const trimmedName = propertyName.trim();
-
-		if (!trimmedName || !property) return;
+		if (!trimmedName) return;
 
 		setIsSubmitting(true);
 
 		try {
-			await onSave(property.id, trimmedName);
+			const id = mode === "edit" && property ? property.id : null;
+			await onSave(id, trimmedName);
 			onOpenChange(false);
 		} catch {
-			setErrorMessage(t("errors.update.description"));
+			setErrorMessage(
+				mode === "add"
+					? t("errors.create.description")
+					: t("errors.update.description"),
+			);
 			setErrorOpen(true);
 			setIsSubmitting(false);
 		}
 	};
 
+	const title = mode === "edit" ? t("editTitle") : t("addButton");
+
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{t("editTitle")}</DialogTitle>
-					<DialogDescription className="sr-only">
-						{t("editTitle")}
-					</DialogDescription>
+					<DialogTitle>{title}</DialogTitle>
+					<DialogDescription className="sr-only">{title}</DialogDescription>
 				</DialogHeader>
 
 				{isSubmitting ? (
 					<div className="flex items-center justify-center py-8">
 						<Loader2
 							className="h-6 w-6 animate-spin text-muted-foreground"
-							data-testid="property-edit-loader"
+							data-testid="property-upsert-loader"
 						/>
 					</div>
 				) : (
@@ -90,6 +99,7 @@ export function EditPropertyDialog({
 							className="text-base h-12"
 							autoFocus
 						/>
+
 						<div className="flex gap-3">
 							<Button
 								type="submit"
@@ -97,7 +107,7 @@ export function EditPropertyDialog({
 								className="flex-1"
 								disabled={!propertyName.trim()}
 							>
-								{t("saveButton")}
+								{mode === "edit" ? t("saveButton") : t("addButton")}
 							</Button>
 							<Button
 								type="button"
@@ -115,7 +125,9 @@ export function EditPropertyDialog({
 				<ErrorDialog
 					open={errorOpen}
 					onOpenChange={setErrorOpen}
-					title={t("errors.update.title")}
+					title={
+						mode === "add" ? t("errors.create.title") : t("errors.update.title")
+					}
 					description={errorMessage}
 				/>
 			</DialogContent>
