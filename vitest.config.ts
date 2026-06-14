@@ -5,8 +5,27 @@ export default defineConfig({
 		tsconfigPaths: true,
 	},
 	test: {
-		environment: "happy-dom",
 		globals: true,
 		setupFiles: ["./test/setup.ts"],
+		pool: "vmThreads",
+		projects: [
+			{
+				extends: true,
+				test: {
+					name: "dom",
+					environment: "happy-dom",
+					include: ["**/*.test.tsx", "**/use-auth.test.ts"],
+				},
+			},
+			{
+				extends: true,
+				test: {
+					name: "node",
+					environment: "node",
+					include: ["app/api/**/*.test.ts", "components/**/*.test.ts"],
+					exclude: ["**/use-auth.test.ts"],
+				},
+			},
+		],
 	},
 });
