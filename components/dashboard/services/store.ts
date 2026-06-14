@@ -24,7 +24,13 @@ const SEEDED_SERVICES: Service[] = [
 	},
 ];
 
-const HINT_SERVICES = ["WiFi", "Cleaning", "Parking"] as const;
+const HINT_SERVICES = [
+	"Electricity",
+	"Water",
+	"WiFi",
+	"Cleaning",
+	"Parking",
+] as const;
 
 interface ServicesState {
 	services: Service[];
