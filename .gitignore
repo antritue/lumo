@@ -37,8 +37,7 @@ yarn-error.log*
 .vercel
 
 # graphify
-graphify-out/cost.json
-graphify-out/cache/
+graphify-out
 
 # typescript
 *.tsbuildinfo
