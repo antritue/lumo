@@ -3,7 +3,7 @@ name: component-patterns
 description: Use when creating new dashboard components, pages, stores, or dialogs. Covers directory structure, Zustand stores, page state machine, dialog patterns, and conventions.
 ---
 
-# Lumo Component Patterns
+# Component Patterns
 
 Follow these patterns when creating new components in the dashboard. Every feature follows the same structure — study an existing one (properties, services, rent-payments) before building.
 

@@ -2,6 +2,10 @@
 
 `.opencode/skills/component-patterns/SKILL.md` — component/store/dialog/page conventions for dashboard features.
 
+## component-test-patterns
+
+`.opencode/skills/component-test-patterns/SKILL.md` — test organization, mock conventions, store auth-branching, and component interaction testing.
+
 ## api-patterns
 
 `.opencode/skills/api-endpoint-patterns/SKILL.md` — route handlers, validation, migrations, tests, OpenAPI.
