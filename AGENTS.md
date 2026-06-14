@@ -13,3 +13,10 @@
 ## graphify
 
 Knowledge graph at `graphify-out/`. Use `graphify query|path|explain` for codebase questions (faster than grep). Run `graphify update .` after code changes. Trigger with `/graphify`.
+
+## verification
+
+After every code change, run these checks:
+```
+npm run lint:fix && npm run typecheck && npm test && npx fallow dead-code
+```
