@@ -35,7 +35,14 @@ Navigate to [http://localhost:3000](http://localhost:3000).
 ## 🛠️ Tech Stack
 
 *   **Framework**: Next.js 16
+*   **Language**: TypeScript 5 (strict mode)
 *   **Database**: Supabase
 *   **Styling**: Tailwind CSS 4
 *   **UI Primitives**: shadcn/ui & Radix UI
+*   **State Management**: Zustand
+*   **Validation**: Zod
+*   **Internationalization**: next-intl
+*   **Email**: Resend
+*   **Testing**: Vitest
 *   **Linting**: Biome
+*   **Dead Code Analysis**: Fallow
