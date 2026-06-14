@@ -48,6 +48,10 @@ export function ServiceList() {
 		await createService(hintName, null, "flat", null, null);
 	};
 
+	const availableHints = HINT_SERVICES.filter(
+		(hint) => !services.some((s) => s.name === hint),
+	);
+
 	return (
 		<>
 			<div className="space-y-6">
@@ -69,27 +73,27 @@ export function ServiceList() {
 				</div>
 
 				{/* Hint suggestions */}
-				<div className="space-y-3">
-					<p className="text-sm text-muted-foreground">{t("suggestions")}</p>
-					<div className="flex flex-wrap gap-2">
-						{HINT_SERVICES.filter(
-							(hint) => !services.some((s) => s.name === hint),
-						).map((hint) => {
-							const HintIcon = getServiceIcon(hint);
-							return (
-								<Button
-									key={hint}
-									variant="outline"
-									size="sm"
-									onClick={() => handleHintAdd(hint)}
-								>
-									<HintIcon className="mr-1.5 h-3.5 w-3.5" />
-									{hint}
-								</Button>
-							);
-						})}
+				{availableHints.length > 0 && (
+					<div className="space-y-3">
+						<p className="text-sm text-muted-foreground">{t("suggestions")}</p>
+						<div className="flex flex-wrap gap-2">
+							{availableHints.map((hint) => {
+								const HintIcon = getServiceIcon(hint);
+								return (
+									<Button
+										key={hint}
+										variant="outline"
+										size="sm"
+										onClick={() => handleHintAdd(hint)}
+									>
+										<HintIcon className="mr-1.5 h-3.5 w-3.5" />
+										{hint}
+									</Button>
+								);
+							})}
+						</div>
 					</div>
-				</div>
+				)}
 
 				<Button onClick={() => setIsAdding(true)} size="lg" className="w-full">
 					<Plus className="mr-2" />

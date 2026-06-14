@@ -42,9 +42,21 @@ describe("ServiceList", () => {
 			renderWithProviders(<ServiceList />);
 
 			expect(screen.getByText(/quick add/i)).toBeInTheDocument();
+			expect(screen.getByText("Water")).toBeInTheDocument();
 			expect(screen.getByText("WiFi")).toBeInTheDocument();
 			expect(screen.getByText("Cleaning")).toBeInTheDocument();
 			expect(screen.getByText("Parking")).toBeInTheDocument();
+		});
+
+		it("does not show hint for a service already in the list", () => {
+			renderWithProviders(<ServiceList />);
+
+			const hintButtons = screen.getByText(/quick add/i)
+				.nextElementSibling as HTMLElement | null;
+			expect(hintButtons).not.toBeNull();
+			expect(
+				within(hintButtons as HTMLElement).queryByText("Electricity"),
+			).not.toBeInTheDocument();
 		});
 
 		it("hides hint suggestions already added", () => {
@@ -64,6 +76,22 @@ describe("ServiceList", () => {
 			expect(
 				within(hintButtons as HTMLElement).getByText("Cleaning"),
 			).toBeInTheDocument();
+		});
+
+		it("hides the entire hint section when all hints are added", () => {
+			useServicesStore.setState({
+				services: [
+					mockService({ name: "Electricity" }),
+					mockService({ name: "Water" }),
+					mockService({ name: "WiFi" }),
+					mockService({ name: "Cleaning" }),
+					mockService({ name: "Parking" }),
+				],
+			});
+
+			renderWithProviders(<ServiceList />);
+
+			expect(screen.queryByText(/quick add/i)).not.toBeInTheDocument();
 		});
 	});
 
