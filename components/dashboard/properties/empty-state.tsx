@@ -1,13 +1,20 @@
 "use client";
 
-import { Home } from "lucide-react";
+import { Home, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { CreatePropertyForm } from "./create-property-form";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { usePropertiesStore } from "./store";
+import { UpsertPropertyDialog } from "./upsert-property-dialog";
 
 export function EmptyState() {
 	const t = useTranslations("app.properties");
 	const createProperty = usePropertiesStore((state) => state.createProperty);
+	const [isAdding, setIsAdding] = useState(false);
+
+	const handleSave = async (_id: string | null, name: string) => {
+		await createProperty(name);
+	};
 
 	return (
 		<div className="flex flex-col items-center justify-center">
@@ -21,9 +28,17 @@ export function EmptyState() {
 				{t("emptySubtitle")}
 			</p>
 
-			<div className="w-full max-w-md">
-				<CreatePropertyForm onSubmit={createProperty} />
-			</div>
+			<Button onClick={() => setIsAdding(true)} size="lg">
+				<Plus className="mr-2" />
+				{t("addButton")}
+			</Button>
+
+			<UpsertPropertyDialog
+				mode="add"
+				open={isAdding}
+				onOpenChange={setIsAdding}
+				onSave={handleSave}
+			/>
 		</div>
 	);
 }
