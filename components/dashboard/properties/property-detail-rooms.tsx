@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { ErrorState } from "@/components/shared/error-state";
 import { DeleteRoomDialog } from "../rooms/delete-room-dialog";
 import { useRoomsStore } from "../rooms/store";
 import type { Room } from "../rooms/types";
@@ -97,11 +97,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 			)}
 
 			{roomsFetchFailed && !isRoomsLoading && (
-				<div className="flex items-center justify-center py-8">
-					<Button variant="outline" size="sm" onClick={handleRetry}>
-						Retry
-					</Button>
-				</div>
+				<ErrorState onRetry={handleRetry} />
 			)}
 
 			{!isRoomsLoading && !roomsFetchFailed && (
