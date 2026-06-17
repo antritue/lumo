@@ -4,12 +4,11 @@ import { DoorOpen, Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CreateRoomForm } from "./create-room-form";
 import { DeleteRoomDialog } from "./delete-room-dialog";
-import { EditRoomDialog } from "./edit-room-dialog";
 import { RoomItem } from "./room-item";
 import { useRoomsStore } from "./store";
 import type { Room } from "./types";
+import { UpsertRoomDialog } from "./upsert-room-dialog";
 
 interface RoomListProps {
 	propertyId: string;
@@ -31,31 +30,17 @@ export function RoomList({
 	const [editingRoom, setEditingRoom] = useState<Room | null>(null);
 	const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
 
-	const handleCreate = async (
-		name: string,
-		monthlyRent: number | null,
-		notes: string | null,
-	) => {
-		await createRoom(propertyId, name, monthlyRent, notes);
-		setIsAdding(false);
-	};
-
-	const handleEdit = (room: Room) => {
-		setEditingRoom(room);
-	};
-
 	const handleSave = async (
-		id: string,
+		id: string | null,
 		name: string,
 		monthlyRent: number | null,
 		notes: string | null,
 	) => {
-		await updateRoom(id, name, monthlyRent, notes);
-		setEditingRoom(null);
-	};
-
-	const handleDelete = (room: Room) => {
-		setDeletingRoom(room);
+		if (id) {
+			await updateRoom(id, name, monthlyRent, notes);
+		} else {
+			await createRoom(propertyId, name, monthlyRent, notes);
+		}
 	};
 
 	const handleConfirmDelete = async (id: string) => {
@@ -76,7 +61,7 @@ export function RoomList({
 	}
 
 	// Empty state: no rooms yet
-	if (rooms.length === 0 && !isAdding) {
+	if (rooms.length === 0) {
 		return (
 			<div className="flex flex-col items-center justify-center">
 				<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary mb-3">
@@ -89,18 +74,12 @@ export function RoomList({
 					<Plus className="mr-2 h-5 w-5" />
 					{t("addButton")}
 				</Button>
-			</div>
-		);
-	}
 
-	// Empty state with form visible
-	if (rooms.length === 0 && isAdding) {
-		return (
-			<div className="pt-2">
-				<CreateRoomForm
-					onSubmit={handleCreate}
-					onCancel={() => setIsAdding(false)}
-					showCancel
+				<UpsertRoomDialog
+					mode="add"
+					open={isAdding}
+					onOpenChange={setIsAdding}
+					onSave={handleSave}
 				/>
 			</div>
 		);
@@ -113,36 +92,34 @@ export function RoomList({
 					<RoomItem
 						key={room.id}
 						room={room}
-						onEdit={handleEdit}
-						onDelete={handleDelete}
+						onEdit={setEditingRoom}
+						onDelete={(room) => setDeletingRoom(room)}
 					/>
 				))}
 			</div>
 
-			{!isAdding ? (
-				<div className="flex justify-center">
-					<Button
-						onClick={() => setIsAdding(true)}
-						size="default"
-						variant="secondary"
-						className="border border-dashed border-border/50 hover:border-border hover:bg-muted/30"
-					>
-						<Plus className="mr-2 h-4 w-4" />
-						{rooms.length === 0 ? t("addButton") : t("addAnother")}
-					</Button>
-				</div>
-			) : (
-				<div className="pt-2">
-					<CreateRoomForm
-						onSubmit={handleCreate}
-						onCancel={() => setIsAdding(false)}
-						showCancel
-					/>
-				</div>
-			)}
+			<div className="flex justify-center">
+				<Button
+					onClick={() => setIsAdding(true)}
+					size="default"
+					variant="secondary"
+					className="border border-dashed border-border/50 hover:border-border hover:bg-muted/30"
+				>
+					<Plus className="mr-2 h-4 w-4" />
+					{t("addAnother")}
+				</Button>
+			</div>
 
-			<EditRoomDialog
-				room={editingRoom}
+			<UpsertRoomDialog
+				mode="add"
+				open={isAdding}
+				onOpenChange={setIsAdding}
+				onSave={handleSave}
+			/>
+
+			<UpsertRoomDialog
+				mode="edit"
+				room={editingRoom ?? undefined}
 				open={!!editingRoom}
 				onOpenChange={(open) => !open && setEditingRoom(null)}
 				onSave={handleSave}

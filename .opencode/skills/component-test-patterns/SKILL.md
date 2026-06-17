@@ -276,6 +276,8 @@ The save-button validation tests (disabled/enabled) belong in the dialog's own t
 
 ```typescript
 // Template: upsert dialog test
+import { fireEvent } from "@testing-library/react";
+
 describe("Upsert<Feature>Dialog", () => {
   const mockItem: Item = { id: "1", userId: "user-1", name: "Test", /* feature fields */ };
   const mockOnOpenChange = vi.fn();
@@ -298,10 +300,12 @@ describe("Upsert<Feature>Dialog", () => {
       renderWithProviders(<Upsert<Feature>Dialog mode="add" open={true} onOpenChange={mockOnOpenChange} onSave={mockOnSave} />);
       const dialog = screen.getByRole("dialog");
       const nameInput = within(dialog).getByPlaceholderText(/name/i);
-      const saveButton = within(dialog).getByRole("button", { name: /add <feature>/i });
+      const form = within(dialog).getByRole("button", { name: /add <feature>/i }).closest("form");
+      expect(form).not.toBeNull();
 
       await user.type(nameInput, "New Item");
-      await user.click(saveButton);
+      fireEvent.submit(form as HTMLFormElement);
+      await act(async () => {});
 
       expect(mockOnSave).toHaveBeenCalledWith(null, "New Item", /* defaults */);
       expect(mockOnOpenChange).toHaveBeenCalledWith(false);
@@ -310,11 +314,13 @@ describe("Upsert<Feature>Dialog", () => {
     it("shows error dialog on save failure", async () => {
       const onSave = vi.fn().mockRejectedValue(new Error("API error"));
       renderWithProviders(<Upsert<Feature>Dialog mode="add" open={true} onOpenChange={vi.fn()} onSave={onSave} />);
-      const nameInput = within(screen.getByRole("dialog")).getByPlaceholderText(/name/i);
-      const saveButton = within(screen.getByRole("dialog")).getByRole("button", { name: /add <feature>/i });
+      const dialog = screen.getByRole("dialog");
+      const nameInput = within(dialog).getByPlaceholderText(/name/i);
+      const form = within(dialog).getByRole("button", { name: /add <feature>/i }).closest("form");
+      expect(form).not.toBeNull();
 
       await userEvent.setup().type(nameInput, "Test");
-      fireEvent.click(saveButton);
+      fireEvent.submit(form as HTMLFormElement);
 
       expect(await screen.findByText(/problem adding this <feature>/i)).toBeInTheDocument();
       expect(screen.getByPlaceholderText(/name/i)).toBeInTheDocument();
@@ -498,46 +504,65 @@ it("creates first item and closes dialog on submit", async () => {
 
 ## Page testing
 
-The page component uses a 4-state machine. Test each state independently by setting store flags directly (no API calls needed).
+The page component uses if/else branches with a single return. Test each branch independently by setting store flags directly (no API calls needed). Organize describe blocks to match the if/else conditions.
 
-| State | Store setup |
-|-------|-------------|
-| Empty (signed out) | `user: null`, `items: []`, `hasItemsFetched: true` |
+| Branch | Store setup |
+|--------|-------------|
+| Fetch failed | `itemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
 | Loading | `isItemsLoading: true`, `hasItemsFetched: true` |
 | Empty (no items) | `hasItemsFetched: true`, `items: []` |
 | Item list | `items: [mockItem(), ...]`, `hasItemsFetched: true` |
-| Error | `itemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
 
-Set `hasItemsFetched: true` to prevent the mount effect from calling `fetchItems()` and overriding your test state:
+Set `hasItemsFetched: true` to prevent the mount effect from calling `fetchItems()` and overriding your test state.
+
+Every test also verifies the page title (`h1` with `listTitle` key) is visible — the title renders once for all states in the single return:
 
 ```typescript
-it("displays empty state when user is not authenticated", () => {
-  useAuthStore.setState({ user: null, loading: false });
-  use<Feature>Store.setState({ items: [], hasItemsFetched: true });
+describe("<Feature>Page", () => {
+  describe("when fetching items failed", () => {
+    it("shows error state with retry button", () => {
+      useItemsStore.setState({ itemsFetchFailed: true, isItemsLoading: false, hasItemsFetched: true });
+      renderWithProviders(<FeaturePage />);
 
-  renderWithProviders(<FeaturePage />);
+      expect(screen.getByRole("heading", { name: /list title/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /failed to load/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /try again/i })).toBeInTheDocument();
+    });
+  });
 
-  expect(screen.getByRole("heading", { name: /empty title/i })).toBeInTheDocument();
-});
+  describe("while items are still loading", () => {
+    it("shows loading skeleton", () => {
+      useItemsStore.setState({ isItemsLoading: true, hasItemsFetched: true });
+      const { container } = renderWithProviders(<FeaturePage />);
 
-it("displays loading state while fetching", () => {
-  use<Feature>Store.setState({ isItemsLoading: true, hasItemsFetched: true });
+      expect(screen.getByRole("heading", { name: /list title/i })).toBeInTheDocument();
+      expect(container.querySelectorAll(".animate-shimmer").length).toBeGreaterThan(0);
+    });
+  });
 
-  const { container } = renderWithProviders(<FeaturePage />);
-  const skeletonElements = container.querySelectorAll(".animate-shimmer");
-  expect(skeletonElements.length).toBeGreaterThan(0);
-});
+  describe("when there are no items", () => {
+    it("shows empty state", () => {
+      useItemsStore.setState({ items: [], hasItemsFetched: true });
+      renderWithProviders(<FeaturePage />);
 
-it("displays error state when fetchFailed is true", () => {
-  useAuthStore.setState({ user: null, loading: false });
-  use<Feature>Store.setState({ itemsFetchFailed: true, isItemsLoading: false, hasItemsFetched: true });
+      expect(screen.getByRole("heading", { name: /list title/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /empty title/i })).toBeInTheDocument();
+    });
+  });
 
-  renderWithProviders(<FeaturePage />);
+  describe("when items exist", () => {
+    it("shows item list", () => {
+      useItemsStore.setState({ items: [mockItem()], hasItemsFetched: true });
+      renderWithProviders(<FeaturePage />);
 
-  expect(screen.getByRole("heading", { name: /failed to load/i })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /try again/i })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /list title/i })).toBeInTheDocument();
+      expect(screen.getByText(/default item name/i)).toBeInTheDocument();
+    });
+  });
 });
 ```
+
+Note: The old pattern of separate `describe("FeaturePage", ...)` with individual `it("displays empty state when user is not authenticated", ...)` tests has been replaced by the if/else-organized structure above. Each describe block maps to one branch of the page's if/else chain.
 
 ## What to test vs what to skip
 

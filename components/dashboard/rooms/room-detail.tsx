@@ -4,12 +4,12 @@ import { DeleteRentPaymentDialog } from "@/components/dashboard/rent-payments/de
 import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
 import { UpsertRentPaymentDialog } from "@/components/dashboard/rent-payments/upsert-rent-payment-dialog";
 import { DeleteRoomDialog } from "./delete-room-dialog";
-import { EditRoomDialog } from "./edit-room-dialog";
 import { RoomDetailHeader } from "./room-detail-header";
 import { RoomInfo } from "./room-info";
 import { RoomPaymentsSection } from "./room-payments-section";
 import { useRoomsStore } from "./store";
 import type { Room } from "./types";
+import { UpsertRoomDialog } from "./upsert-room-dialog";
 import { useRoomDialogs } from "./use-room-dialogs";
 import { useRoomPayments } from "./use-room-payments";
 
@@ -48,12 +48,14 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	} = useRoomPayments(room.id);
 
 	const handleSaveRoom = async (
-		id: string,
+		id: string | null,
 		name: string,
 		monthlyRent: number | null,
 		notes: string | null,
 	) => {
-		await updateRoom(id, name, monthlyRent, notes);
+		if (id) {
+			await updateRoom(id, name, monthlyRent, notes);
+		}
 		closeEditRoom();
 	};
 
@@ -124,7 +126,8 @@ export function RoomDetail({ room }: RoomDetailProps) {
 					/>
 				)}
 
-				<EditRoomDialog
+				<UpsertRoomDialog
+					mode="edit"
 					room={room}
 					open={isEditDialogOpen}
 					onOpenChange={closeEditRoom}

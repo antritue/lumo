@@ -16,24 +16,26 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Room } from "./types";
 
-interface EditRoomDialogProps {
-	room: Room | null;
+interface UpsertRoomDialogProps {
+	mode: "add" | "edit";
+	room?: Room;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	onSave: (
-		id: string,
+		id: string | null,
 		name: string,
 		monthlyRent: number | null,
 		notes: string | null,
 	) => Promise<void>;
 }
 
-export function EditRoomDialog({
+export function UpsertRoomDialog({
+	mode,
 	room,
 	open,
 	onOpenChange,
 	onSave,
-}: EditRoomDialogProps) {
+}: UpsertRoomDialogProps) {
 	const t = useTranslations("app.rooms");
 	const locale = useLocale();
 	const currency = locale === "vi" ? "VND" : "USD";
@@ -46,61 +48,68 @@ export function EditRoomDialog({
 	const [errorMessage, setErrorMessage] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	// Reset form when dialog opens with new room
 	useEffect(() => {
-		if (room) {
-			setRoomName(room.name);
-			setMonthlyRent(room.monthlyRent ? String(room.monthlyRent) : "");
-			setNotes(room.notes || "");
+		if (open) {
 			setIsSubmitting(false);
 			setErrorOpen(false);
 			setErrorMessage("");
 		}
-	}, [room]);
+		if (mode === "edit" && room) {
+			setRoomName(room.name);
+			setMonthlyRent(room.monthlyRent ? String(room.monthlyRent) : "");
+			setNotes(room.notes || "");
+		} else {
+			setRoomName("");
+			setMonthlyRent("");
+			setNotes("");
+		}
+	}, [mode, room, open]);
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 		const trimmedName = roomName.trim();
-
-		if (!trimmedName || !room) return;
-
-		const rentValue = monthlyRent.trim()
-			? Number.parseFloat(monthlyRent)
-			: null;
-		const notesValue = notes.trim() || null;
+		if (!trimmedName) return;
 
 		setIsSubmitting(true);
 
 		try {
-			await onSave(room.id, trimmedName, rentValue, notesValue);
+			const id = mode === "edit" && room ? room.id : null;
+			const rentValue = monthlyRent.trim()
+				? Number.parseFloat(monthlyRent)
+				: null;
+			const notesValue = notes.trim() || null;
+			await onSave(id, trimmedName, rentValue, notesValue);
 			onOpenChange(false);
 		} catch {
-			setErrorMessage(t("errors.update.description"));
+			setErrorMessage(
+				mode === "add"
+					? t("errors.create.description")
+					: t("errors.update.description"),
+			);
 			setErrorOpen(true);
 			setIsSubmitting(false);
 		}
 	};
 
+	const title = mode === "edit" ? t("editTitle") : t("addButton");
+
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>{t("editTitle")}</DialogTitle>
-					<DialogDescription className="sr-only">
-						{t("editTitle")}
-					</DialogDescription>
+					<DialogTitle>{title}</DialogTitle>
+					<DialogDescription className="sr-only">{title}</DialogDescription>
 				</DialogHeader>
 
 				{isSubmitting ? (
 					<div className="flex items-center justify-center py-8">
 						<Loader2
 							className="h-6 w-6 animate-spin text-muted-foreground"
-							data-testid="room-edit-loader"
+							data-testid="room-upsert-loader"
 						/>
 					</div>
 				) : (
 					<form onSubmit={handleSubmit} className="space-y-6">
-						{/* Required Section */}
 						<div className="space-y-4">
 							<Input
 								type="text"
@@ -113,7 +122,6 @@ export function EditRoomDialog({
 							/>
 						</div>
 
-						{/* Optional Section */}
 						<div className="space-y-4">
 							<div className="flex items-center gap-2">
 								<div className="h-px flex-1 bg-border" />
@@ -154,7 +162,7 @@ export function EditRoomDialog({
 								className="flex-1"
 								disabled={!roomName.trim()}
 							>
-								{t("saveButton")}
+								{mode === "edit" ? t("saveButton") : t("addButton")}
 							</Button>
 							<Button
 								type="button"
@@ -172,7 +180,9 @@ export function EditRoomDialog({
 				<ErrorDialog
 					open={errorOpen}
 					onOpenChange={setErrorOpen}
-					title={t("errors.update.title")}
+					title={
+						mode === "add" ? t("errors.create.title") : t("errors.update.title")
+					}
 					description={errorMessage}
 				/>
 			</DialogContent>

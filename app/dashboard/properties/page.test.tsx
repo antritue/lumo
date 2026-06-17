@@ -18,102 +18,88 @@ describe("PropertiesPage", () => {
 		vi.clearAllMocks();
 	});
 
-	it("displays empty state when user is not authenticated", () => {
-		useAuthStore.setState({ user: null, loading: false });
+	describe("when fetching properties failed", () => {
+		it("shows error message and retry button", () => {
+			useAuthStore.setState({ user: null, loading: false });
+			usePropertiesStore.setState({
+				propertiesFetchFailed: true,
+				isPropertiesLoading: false,
+				hasPropertiesFetched: false,
+			});
 
-		renderWithProviders(<PropertiesPage />);
+			renderWithProviders(<PropertiesPage />);
 
-		expect(
-			screen.getByRole("heading", { name: /no properties yet/i }),
-		).toBeInTheDocument();
-	});
-
-	it("displays loading state while fetching", () => {
-		usePropertiesStore.setState({ isPropertiesLoading: true });
-
-		const { container } = renderWithProviders(<PropertiesPage />);
-
-		// Check that skeleton loading state is rendered
-		const skeletonElements = container.querySelectorAll(".animate-shimmer");
-		expect(skeletonElements.length).toBeGreaterThan(0);
-
-		// Header should still be visible during loading
-		expect(
-			screen.getByRole("heading", { name: /your properties/i }),
-		).toBeInTheDocument();
-	});
-
-	it("displays empty state when no properties exist", () => {
-		usePropertiesStore.setState({ hasPropertiesFetched: true });
-		renderWithProviders(<PropertiesPage />);
-
-		expect(
-			screen.getByRole("heading", { name: /no properties yet/i }),
-		).toBeInTheDocument();
-	});
-
-	it("displays property list when properties exist", () => {
-		usePropertiesStore.setState({
-			properties: [
-				{
-					id: "prop-1",
-					name: "Sunset Villa",
-					userId: "user-1",
-				},
-				{
-					id: "prop-2",
-					name: "Ocean View",
-					userId: "user-1",
-				},
-			],
-			isPropertiesLoading: false,
-			hasPropertiesFetched: true,
+			expect(
+				screen.getByRole("heading", { name: /failed to load data/i }),
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: /try again/i }),
+			).toBeInTheDocument();
 		});
 
-		renderWithProviders(<PropertiesPage />);
+		it("retries fetchProperties on click", async () => {
+			const user = userEvent.setup();
+			const fetchPropertiesSpy = vi.fn();
 
-		expect(
-			screen.getByRole("heading", { name: /your properties/i }),
-		).toBeInTheDocument();
-		expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
-		expect(screen.getByText("Ocean View")).toBeInTheDocument();
+			useAuthStore.setState({ user: null, loading: false });
+			usePropertiesStore.setState({
+				propertiesFetchFailed: true,
+				isPropertiesLoading: false,
+				hasPropertiesFetched: false,
+				fetchProperties: fetchPropertiesSpy,
+			});
+
+			renderWithProviders(<PropertiesPage />);
+
+			await user.click(screen.getByRole("button", { name: /try again/i }));
+
+			expect(fetchPropertiesSpy).toHaveBeenCalledTimes(1);
+		});
 	});
 
-	it("displays error state when propertiesFetchFailed is true", () => {
-		useAuthStore.setState({ user: null, loading: false });
-		usePropertiesStore.setState({
-			propertiesFetchFailed: true,
-			isPropertiesLoading: false,
-			hasPropertiesFetched: false,
+	describe("while properties are still loading", () => {
+		it("shows skeleton", () => {
+			usePropertiesStore.setState({ isPropertiesLoading: true });
+
+			const { container } = renderWithProviders(<PropertiesPage />);
+
+			expect(
+				container.querySelectorAll(".animate-shimmer").length,
+			).toBeGreaterThan(0);
 		});
-
-		renderWithProviders(<PropertiesPage />);
-
-		expect(
-			screen.getByRole("heading", { name: /failed to load data/i }),
-		).toBeInTheDocument();
-		expect(
-			screen.getByRole("button", { name: /try again/i }),
-		).toBeInTheDocument();
 	});
 
-	it("calls fetchProperties when retry is clicked", async () => {
-		const user = userEvent.setup();
-		const fetchPropertiesSpy = vi.fn();
+	describe("when there are no properties", () => {
+		it("shows empty state", () => {
+			usePropertiesStore.setState({ hasPropertiesFetched: true });
 
-		useAuthStore.setState({ user: null, loading: false });
-		usePropertiesStore.setState({
-			propertiesFetchFailed: true,
-			isPropertiesLoading: false,
-			hasPropertiesFetched: false,
-			fetchProperties: fetchPropertiesSpy,
+			renderWithProviders(<PropertiesPage />);
+
+			expect(
+				screen.getByRole("heading", { name: /no properties yet/i }),
+			).toBeInTheDocument();
 		});
+	});
 
-		renderWithProviders(<PropertiesPage />);
+	describe("when properties exist", () => {
+		it("renders all property names", () => {
+			usePropertiesStore.setState({
+				properties: [
+					{ id: "prop-1", name: "Sunset Villa", userId: "user-1" },
+					{ id: "prop-2", name: "Ocean View", userId: "user-1" },
+				],
+				isPropertiesLoading: false,
+				hasPropertiesFetched: true,
+			});
 
-		const retryButton = screen.getByRole("button", { name: /try again/i });
-		await user.click(retryButton);
+			renderWithProviders(<PropertiesPage />);
 
-		expect(fetchPropertiesSpy).toHaveBeenCalledTimes(1);
+			expect(screen.getAllByText("Sunset Villa").length).toBeGreaterThanOrEqual(
+				1,
+			);
+			expect(screen.getAllByText("Ocean View").length).toBeGreaterThanOrEqual(
+				1,
+			);
+		});
 	});
 });

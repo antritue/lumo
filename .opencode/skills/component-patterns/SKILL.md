@@ -135,15 +135,17 @@ export const useItemsStore = create<ItemsState>()(
 
 ## Page state machine (`page.tsx`)
 
-Every page follows the same 4-state pattern:
+Every page follows an if/else pattern with a single return, rendering a shared page title once for all states:
 
 ```typescript
 "use client";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { ErrorState } from "@/components/shared/error-state";
 
 export default function ItemsPage() {
+  const t = useTranslations("app.<feature>");
   // 1. Individual selectors from store
   const items = useItemsStore((s) => s.items);
   const isLoading = useItemsStore((s) => s.isItemsLoading);
@@ -155,16 +157,35 @@ export default function ItemsPage() {
 
   // 2. Fetch on mount (standard: user-gated)
   useEffect(() => { if (user) fetchItems(); }, [user, fetchItems]);
-  // For seeded features (services): use authLoading gate so seed fires for unauth too
+  // For seeded features: use authLoading gate so seed fires for unauth too
   // useEffect(() => { if (!authLoading) fetchItems(); }, [authLoading, fetchItems]);
 
-  // 3. Four states (signed-out users skip API, see list immediately)
-  if (fetchFailed && !isLoading) return <ErrorState onRetry={fetchItems} />;
-  if (!user && !authLoading) return <div>{items.length === 0 ? <EmptyState /> : <ItemList />}</div>;
-  if ((!hasFetched || isLoading) && (user || authLoading)) return <ItemListSkeleton />;
-  return <div>{items.length === 0 ? <EmptyState /> : <ItemList />}</div>;
+  // 3. If/else branches assign content, single return wraps shared page title
+  let content: React.JSX.Element;
+  if (fetchFailed && !isLoading) {
+    content = <ErrorState onRetry={fetchItems} />;
+  } else if ((!hasFetched || isLoading) && (user || authLoading)) {
+    content = <ItemListSkeleton />;
+  } else if (items.length === 0) {
+    content = <EmptyState />;
+  } else {
+    content = <ItemList />;
+  }
+
+  return (
+    <>
+      <div className="flex items-center pb-4 sm:pb-5 border-b border-border">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
+          {t("listTitle")}
+        </h1>
+      </div>
+      {content}
+    </>
+  );
 }
 ```
+
+The page title (`h1` in a bordered header) is rendered once outside the branches — every state shows the same header. The content area handles its own padding/layout as needed.
 
 ## List + Dialog pattern
 
@@ -199,6 +220,33 @@ export function ItemList() {
   );
 }
 ```
+
+### Detail panel (split-view pages)
+
+For features that show a detail panel alongside a list (e.g., properties sidebar + detail), use a thin shell that composes self-contained sub-sections:
+
+```typescript
+export function ItemDetail({ item, onEdit, onDelete }: ItemDetailProps) {
+  // Fetch child data in effect (rooms, services, etc.)
+  // Compute derived values (counts, totals)
+  // Compose sub-sections — each self-contained
+  return (
+    <div>
+      <ItemHeader item={item} count={count} onEdit={onEdit} onDelete={onDelete} />
+      <ItemChildSection itemId={item.id} />
+    </div>
+  );
+}
+```
+
+Each sub-section (e.g., rooms under a property) is **self-contained**:
+- Reads from its own store (not passed down)
+- Manages its own dialog state (upsert, delete)
+- Has its own fetch effect gated on the parent ID
+- Receives only the parent ID (`itemId: string`) as a prop
+- Imported and rendered by the parent shell with no shared state
+
+The parent shell is thin: it renders a header, computed summary, and sub-sections. It does not own child CRUD state — that lives in the sub-section.
 
 ### Upsert dialog
 
@@ -315,6 +363,8 @@ Add sidebar label under `app.sidebar`:
 
 ## Common mistakes
 
+- **Using multiple `return` statements** in page.tsx instead of if/else with `let content` → duplicates the page title wrapper in every branch
+- **Gating on `!user` for empty state** — the empty state is now triggered by `items.length === 0`, not by auth status; the page always shows the same title wrapper
 - **Using the full store object** as a selector instead of individual values → causes unnecessary re-renders
 - **Missing `e.stopPropagation()`** on edit/delete buttons inside clickable cards → triggers card's onClick
 - **Not resetting form state** on dialog open → stale data from previous edit
@@ -325,7 +375,7 @@ Add sidebar label under `app.sidebar`:
 
 1. [ ] Create `components/dashboard/<feature>/types.ts` with interfaces
 2. [ ] Create `components/dashboard/<feature>/store.ts` with Zustand + devtools
-3. [ ] Create `app/dashboard/<feature>/page.tsx` with 4-state pattern
+3. [ ] Create `app/dashboard/<feature>/page.tsx` with if/else pattern (shared title + content branches)
 4. [ ] Create `components/dashboard/<feature>/empty-state.tsx`
 5. [ ] Create `components/dashboard/<feature>/<feature>-list-skeleton.tsx` + `-card-skeleton.tsx`
 6. [ ] Create `components/dashboard/<feature>/<feature>-list.tsx`
