@@ -35,5 +35,9 @@ export default function RoomDetailPage({
 		);
 	}
 
-	return room ? <RoomDetail room={room} /> : <RoomNotFound />;
+	return (
+		<div className="max-w-4xl mx-auto py-8 px-4">
+			{room ? <RoomDetail room={room} /> : <RoomNotFound />}
+		</div>
+	);
 }
