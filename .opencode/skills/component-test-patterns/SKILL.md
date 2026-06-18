@@ -382,7 +382,8 @@ Don't test basic rendering (e.g. "displays item name") — the expand interactio
 | Test | What it covers |
 |------|----------------|
 | Toggles expand/collapse | Click → expanded, click again → collapsed (aria-expanded) |
-| Calls callbacks on action buttons | `onEdit` called with item, `onDelete` called with item |
+| Calls callbacks via inline action buttons | `onEdit`/`onDelete` called with item (services pattern) |
+| Calls callbacks via kebab menu | Click kebab → popover opens → click action → callback called with item (rooms/payments pattern) |
 
 ```typescript
 // Template: item expand test
@@ -395,12 +396,24 @@ it("shows expanded details when clicked", async () => {
   expect(screen.getByText(/detail label/i)).toBeInTheDocument();
 });
 
-// Template: item action test
-it("calls onEdit when edit button is clicked", async () => {
+// Template A: inline action buttons (services-style)
+it("calls onEdit when inline edit button is clicked", async () => {
   const onEdit = vi.fn();
   const user = userEvent.setup();
   renderWithProviders(<FeatureItem item={mockItem} onEdit={onEdit} />);
 
+  await user.click(screen.getByRole("button", { name: /edit/i }));
+
+  expect(onEdit).toHaveBeenCalledWith(mockItem);
+});
+
+// Template B: kebab menu (rooms/payments-style)
+it("calls onEdit when edit is clicked from kebab menu", async () => {
+  const onEdit = vi.fn();
+  const user = userEvent.setup();
+  renderWithProviders(<FeatureItem item={mockItem} onEdit={onEdit} />);
+
+  await user.click(screen.getByRole("button"));  // kebab button (first/only button)
   await user.click(screen.getByRole("button", { name: /edit/i }));
 
   expect(onEdit).toHaveBeenCalledWith(mockItem);
@@ -440,15 +453,32 @@ expect(within(hintButtons!).queryByText("HintItem")).not.toBeInTheDocument();
 
 | Test | What it covers |
 |------|----------------|
-| Opens dialog with item data | Input pre-filled, save button enabled |
+| Opens dialog with item data (inline buttons) | Click edit button → dialog opens with pre-filled data |
+| Opens dialog with item data (kebab menu) | Click kebab → click edit → dialog opens with pre-filled data |
 
 Prefer verifying the dialog state rather than the full submit flow (avoids Radix Dialog flakiness at the integration level):
 
 ```typescript
+// Template A: inline action buttons (services-style)
 it("opens dialog with item data for editing", async () => {
   const user = userEvent.setup();
   renderWithProviders(<FeatureList />);
 
+  await user.click(screen.getByRole("button", { name: /edit/i }));
+
+  const dialog = screen.getByRole("dialog");
+  expect(within(dialog).getByPlaceholderText(/name/i)).toHaveValue("Existing Item");
+  expect(within(dialog).getByRole("button", { name: /save/i })).toBeEnabled();
+});
+
+// Template B: kebab menu (rooms/payments-style)
+it("opens dialog with item data for editing via kebab", async () => {
+  const user = userEvent.setup();
+  renderWithProviders(<FeatureList />);
+
+  const itemCard = screen.getByText("Existing Item").closest("a, div");
+  const kebabButton = within(itemCard!).getByRole("button");
+  await user.click(kebabButton);
   await user.click(screen.getByRole("button", { name: /edit/i }));
 
   const dialog = screen.getByRole("dialog");
@@ -572,7 +602,7 @@ Note: The old pattern of separate `describe("FeaturePage", ...)` with individual
 | **List** | Integration: opens dialog, hint items shown/hidden, closing on cancel | Dialog-internal validation, submit mechanics (covered by dialog tests) |
 | **Empty state** | Integration: opens dialog, creates item on submit, closes on cancel | Dialog-internal validation, button disabled/enabled state |
 | **Page** | All 4 machine states: loading, empty, list, error | — |
-| **Item** | Expand/collapse, action button callbacks, variant renderings | Basic name rendering (covered by expand test) |
+| **Item** | Expand/collapse, inline action button callbacks, kebab menu callbacks, variant renderings | Basic name rendering (covered by expand test) |
 | **Store** | Auth branches (unauth + auth), error handling, dedup, variant inputs, reset | — |
 
 ## Common mistakes

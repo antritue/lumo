@@ -301,7 +301,21 @@ interface ItemCardProps {
 }
 ```
 
-- Action buttons call `onEdit`/`onDelete` callbacks with `e.stopPropagation()` to avoid triggering parent click handlers
+- Action buttons follow one of two patterns depending on the card's primary interaction:
+
+  **A) Inline action buttons** — for items where all interaction happens on the card itself (e.g. services, where the card is not a link):
+  - Use `<Button variant="ghost" size="icon">` with `Pencil`/`Trash2` icons
+  - Callbacks use `e.stopPropagation(); e.preventDefault()` to avoid parent click handlers
+  - Wrap in a `<div className="flex items-center gap-2 shrink-0">` container
+  - Conditionally render actions when their callback is provided
+
+  **B) Kebab menu** — for items that are links to detail pages (e.g. rooms, rent payments), where inline actions would clutter the row:
+  - `<Popover>` with `<PopoverTrigger>` + `<PopoverContent align="end" className="w-36 p-1.5">`
+  - Trigger: a `<button>` with `<MoreHorizontal className="h-4 w-4" />`, 7x7 rounded-md, hover:bg-muted
+  - Use `onClick={(e) => e.stopPropagation()}` on `<PopoverTrigger>` to avoid parent link handlers
+  - Content: flex-col gap-0.5 with action `<button>`s, each with icon + text label, `rounded-lg hover:bg-muted transition-colors cursor-pointer text-left`
+  - Delete buttons add `hover:text-destructive`
+  - Gate with `{(onEdit || onDelete) && <Popover>...</Popover>}`
 - Uses `Card`, `CardHeader`, `CardContent` from `@/components/ui/card` for consistent spacing
 - For collapsible content, use `ChevronDown`/`ChevronRight` with a `button` wrapper toggle
 - Skeleton version (`ItemCardSkeleton`) mirrors the card layout with `animate-shimmer` on muted divs
