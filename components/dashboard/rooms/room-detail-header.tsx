@@ -1,9 +1,8 @@
 "use client";
 
-import { ArrowLeft, DoorOpen, Pencil, Trash2 } from "lucide-react";
+import { ChevronRight, DoorOpen, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { useLocale, useTranslations } from "next-intl";
 import type { Room } from "./types";
 
 interface RoomDetailHeaderProps {
@@ -18,48 +17,57 @@ export function RoomDetailHeader({
 	onDelete,
 }: RoomDetailHeaderProps) {
 	const t = useTranslations("app");
+	const locale = useLocale();
+	const currency = locale === "vi" ? "VND" : "USD";
 
 	return (
-		<>
-			<Button variant="ghost" asChild className="mb-4 -ml-3">
-				<Link href="/dashboard/properties">
-					<ArrowLeft className="mr-2 h-4 w-4" />
-					{t("properties.backToProperties")}
-				</Link>
-			</Button>
+		<div className="space-y-6">
+			<Link
+				href="/dashboard/properties"
+				className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+			>
+				<ChevronRight className="h-4 w-4 rotate-180" />
+				{t("properties.backToProperties")}
+			</Link>
 
-			<div className="space-y-2">
-				<div className="flex items-center justify-between gap-3">
-					<div className="flex items-center gap-3 flex-1 min-w-0">
-						<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-							<DoorOpen className="h-6 w-6 text-muted-foreground" />
-						</div>
-						<h1 className="text-3xl sm:text-4xl font-semibold text-foreground">
-							{room.name}
-						</h1>
+			<div className="flex items-start justify-between gap-4">
+				<div className="flex items-center gap-4 min-w-0">
+					<div className="flex items-center justify-center rounded-xl bg-secondary p-3 shrink-0">
+						<DoorOpen className="h-6 w-6 text-muted-foreground" />
 					</div>
-					<div className="flex items-center gap-2">
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={onEdit}
-							aria-label={t("rooms.edit")}
-							className="h-9 w-9"
-						>
-							<Pencil className="h-4 w-4" />
-						</Button>
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={onDelete}
-							aria-label={t("rooms.delete")}
-							className="h-9 w-9 hover:text-destructive"
-						>
-							<Trash2 className="h-4 w-4" />
-						</Button>
+					<div className="min-w-0">
+						<h2 className="text-xl font-semibold truncate">{room.name}</h2>
+						{room.monthlyRent && (
+							<p className="text-sm text-muted-foreground mt-0.5">
+								{new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
+									style: "currency",
+									currency,
+									minimumFractionDigits: 0,
+								}).format(room.monthlyRent)}
+							</p>
+						)}
 					</div>
 				</div>
+
+				<div className="flex items-center gap-1 shrink-0">
+					<button
+						type="button"
+						onClick={onEdit}
+						className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-muted transition-colors cursor-pointer"
+						aria-label={t("rooms.edit")}
+					>
+						<Pencil className="h-4 w-4 text-muted-foreground" />
+					</button>
+					<button
+						type="button"
+						onClick={onDelete}
+						className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-muted transition-colors cursor-pointer"
+						aria-label={t("rooms.delete")}
+					>
+						<Trash2 className="h-4 w-4 text-destructive" />
+					</button>
+				</div>
 			</div>
-		</>
+		</div>
 	);
 }

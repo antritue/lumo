@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { RentPaymentsList } from "@/components/dashboard/rent-payments/rent-payments-list";
 import type { PaymentRecord } from "@/components/dashboard/rent-payments/types";
 import { ErrorState } from "@/components/shared/error-state";
-import { Button } from "@/components/ui/button";
 
 interface RoomPaymentsSectionProps {
 	payments: PaymentRecord[];
@@ -31,19 +30,20 @@ export function RoomPaymentsSection({
 	return (
 		<div className="space-y-4">
 			{!paymentsFetchFailed && (
-				<div className="flex items-center justify-between">
-					<h2 className="text-xl sm:text-2xl font-semibold text-foreground">
+				<div className="flex items-center gap-3">
+					<h3 className="text-sm font-medium text-foreground">
 						{t("listTitle")}
-					</h2>
-					<Button
+					</h3>
+					<div className="flex-1" />
+					<button
+						type="button"
 						onClick={onAdd}
-						variant="default"
-						size="sm"
 						disabled={isPaymentsLoading}
+						className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:pointer-events-none transition-colors cursor-pointer"
+						aria-label={t("addButton")}
 					>
-						<Plus className="mr-2 h-4 w-4" />
-						{t("addButton")}
-					</Button>
+						<Plus className="h-4 w-4" />
+					</button>
 				</div>
 			)}
 

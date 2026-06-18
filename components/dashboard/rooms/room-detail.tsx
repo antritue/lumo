@@ -81,66 +81,64 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto py-8 px-4">
-			<div className="space-y-6">
-				<RoomDetailHeader
-					room={room}
-					onEdit={openEditRoom}
-					onDelete={openDeleteRoom}
+		<div className="p-6 space-y-8">
+			<RoomDetailHeader
+				room={room}
+				onEdit={openEditRoom}
+				onDelete={openDeleteRoom}
+			/>
+
+			<RoomInfo room={room} />
+
+			<RoomPaymentsSection
+				payments={rentPayments}
+				onAdd={openAddPayment}
+				onEdit={openEditPayment}
+				onDelete={openDeletePayment}
+				isPaymentsLoading={isPaymentsLoading}
+				paymentsFetchFailed={paymentsFetchFailed}
+				onRetryPayments={retryFetchPayments}
+			/>
+
+			{paymentDialogMode && (
+				<UpsertRentPaymentDialog
+					mode={paymentDialogMode}
+					payment={selectedPayment ?? undefined}
+					open={true}
+					onOpenChange={(open) => {
+						if (!open) {
+							closePayment();
+						}
+					}}
+					onSave={handleSaveAndClose}
+					defaultAmount={room.monthlyRent}
+					existingPayments={rentPayments}
 				/>
+			)}
 
-				<RoomInfo room={room} />
-
-				<RoomPaymentsSection
-					payments={rentPayments}
-					onAdd={openAddPayment}
-					onEdit={openEditPayment}
-					onDelete={openDeletePayment}
-					isPaymentsLoading={isPaymentsLoading}
-					paymentsFetchFailed={paymentsFetchFailed}
-					onRetryPayments={retryFetchPayments}
+			{selectedPayment && (
+				<DeleteRentPaymentDialog
+					payment={selectedPayment}
+					open={isDeletePaymentDialogOpen}
+					onOpenChange={closeDeletePayment}
+					onConfirm={handleConfirmDeletePayment}
 				/>
+			)}
 
-				{paymentDialogMode && (
-					<UpsertRentPaymentDialog
-						mode={paymentDialogMode}
-						payment={selectedPayment ?? undefined}
-						open={true}
-						onOpenChange={(open) => {
-							if (!open) {
-								closePayment();
-							}
-						}}
-						onSave={handleSaveAndClose}
-						defaultAmount={room.monthlyRent}
-						existingPayments={rentPayments}
-					/>
-				)}
+			<UpsertRoomDialog
+				mode="edit"
+				room={room}
+				open={isEditDialogOpen}
+				onOpenChange={closeEditRoom}
+				onSave={handleSaveRoom}
+			/>
 
-				{selectedPayment && (
-					<DeleteRentPaymentDialog
-						payment={selectedPayment}
-						open={isDeletePaymentDialogOpen}
-						onOpenChange={closeDeletePayment}
-						onConfirm={handleConfirmDeletePayment}
-					/>
-				)}
-
-				<UpsertRoomDialog
-					mode="edit"
-					room={room}
-					open={isEditDialogOpen}
-					onOpenChange={closeEditRoom}
-					onSave={handleSaveRoom}
-				/>
-
-				<DeleteRoomDialog
-					room={room}
-					open={isDeleteDialogOpen}
-					onOpenChange={closeDeleteRoom}
-					onDelete={handleConfirmDeleteRoom}
-				/>
-			</div>
+			<DeleteRoomDialog
+				room={room}
+				open={isDeleteDialogOpen}
+				onOpenChange={closeDeleteRoom}
+				onDelete={handleConfirmDeleteRoom}
+			/>
 		</div>
 	);
 }

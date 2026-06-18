@@ -1,5 +1,4 @@
 import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { RoomInfo } from "./room-info";
@@ -14,58 +13,31 @@ describe("RoomInfo", () => {
 		notes: "Test notes",
 	};
 
-	it("renders nothing when room has no details", () => {
-		const roomWithoutDetails: Room = {
+	it("renders nothing when room has no notes", () => {
+		const roomWithoutNotes: Room = {
 			...mockRoom,
-			monthlyRent: null,
 			notes: null,
 		};
 		const { container } = renderWithProviders(
-			<RoomInfo room={roomWithoutDetails} />,
+			<RoomInfo room={roomWithoutNotes} />,
 		);
 
 		expect(container.firstChild).toBeNull();
 	});
 
-	it("starts collapsed by default", () => {
+	it("renders notes when present", () => {
 		renderWithProviders(<RoomInfo room={mockRoom} />);
 
-		expect(screen.getByRole("button", { expanded: false })).toBeInTheDocument();
-		expect(screen.queryByText("Test notes")).not.toBeInTheDocument();
-	});
-
-	it("expands to show all details and collapses again", async () => {
-		const user = userEvent.setup();
-		renderWithProviders(<RoomInfo room={mockRoom} />);
-
-		await user.click(screen.getByRole("button", { expanded: false }));
-
-		expect(screen.getByText(/1[,.]500[,.]000/)).toBeInTheDocument();
 		expect(screen.getByText("Test notes")).toBeInTheDocument();
-
-		await user.click(screen.getByRole("button", { expanded: true }));
-		expect(screen.queryByText("Test notes")).not.toBeInTheDocument();
+		expect(screen.queryByText(/1[,.]500[,.]000/)).not.toBeInTheDocument();
 	});
 
-	it("shows only rent when notes are null", async () => {
-		const user = userEvent.setup();
+	it("renders nothing when monthlyRent is set but notes are null", () => {
 		const roomWithRentOnly: Room = { ...mockRoom, notes: null };
-		renderWithProviders(<RoomInfo room={roomWithRentOnly} />);
+		const { container } = renderWithProviders(
+			<RoomInfo room={roomWithRentOnly} />,
+		);
 
-		await user.click(screen.getByRole("button", { expanded: false }));
-
-		expect(screen.getByText(/1[,.]500[,.]000/)).toBeInTheDocument();
-		expect(screen.queryByText(/notes/i)).not.toBeInTheDocument();
-	});
-
-	it("shows only notes when rent is null", async () => {
-		const user = userEvent.setup();
-		const roomWithNotesOnly: Room = { ...mockRoom, monthlyRent: null };
-		renderWithProviders(<RoomInfo room={roomWithNotesOnly} />);
-
-		await user.click(screen.getByRole("button", { expanded: false }));
-
-		expect(screen.getByText("Test notes")).toBeInTheDocument();
-		expect(screen.queryByText(/monthly rent/i)).not.toBeInTheDocument();
+		expect(container.firstChild).toBeNull();
 	});
 });
