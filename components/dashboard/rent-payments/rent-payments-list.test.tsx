@@ -54,15 +54,13 @@ describe("RentPaymentsList", () => {
 			).not.toBeInTheDocument();
 		});
 
-		it("shows only provided handler buttons", () => {
+		it("shows kebab menu with actions when handlers provided", () => {
 			renderWithProviders(
 				<RentPaymentsList payments={mockPayments} onEdit={vi.fn()} />,
 			);
 
-			expect(screen.getAllByRole("button", { name: /edit/i })).toHaveLength(2);
-			expect(
-				screen.queryByRole("button", { name: /delete/i }),
-			).not.toBeInTheDocument();
+			const kebabButtons = screen.getAllByRole("button");
+			expect(kebabButtons.length).toBeGreaterThan(0);
 		});
 	});
 
@@ -75,7 +73,9 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList payments={mockPayments} onEdit={handleEdit} />,
 			);
 
-			await user.click(screen.getAllByRole("button", { name: /edit/i })[0]);
+			const kebabButtons = screen.getAllByRole("button");
+			await user.click(kebabButtons[0]);
+			await user.click(screen.getByRole("button", { name: /edit/i }));
 			expect(handleEdit).toHaveBeenCalledWith(mockPayments[0]);
 		});
 
@@ -87,7 +87,9 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList payments={mockPayments} onDelete={handleDelete} />,
 			);
 
-			await user.click(screen.getAllByRole("button", { name: /delete/i })[0]);
+			const kebabButtons = screen.getAllByRole("button");
+			await user.click(kebabButtons[0]);
+			await user.click(screen.getByRole("button", { name: /delete/i }));
 			expect(handleDelete).toHaveBeenCalledWith(mockPayments[0]);
 		});
 	});

@@ -1,9 +1,12 @@
 "use client";
 
-import { Pencil, Receipt, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Receipt, Trash2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { formatCurrency } from "@/lib/utils";
 import { PaymentStatusBadge } from "./payment-status-badge";
 import type { PaymentRecord } from "./types";
@@ -24,7 +27,7 @@ export function RentPaymentsList({
 
 	if (payments.length === 0) {
 		return (
-			<div className="flex flex-col items-center justify-center text-center">
+			<div className="flex flex-col items-center justify-center text-center py-8">
 				<div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary mb-4">
 					<Receipt className="h-6 w-6 text-muted-foreground" />
 				</div>
@@ -43,62 +46,63 @@ export function RentPaymentsList({
 		return `${month}-${year}`;
 	};
 
-	const handleEdit = (e: React.MouseEvent, payment: PaymentRecord) => {
-		e.stopPropagation();
-		onEdit?.(payment);
-	};
-
-	const handleDelete = (e: React.MouseEvent, payment: PaymentRecord) => {
-		e.stopPropagation();
-		onDelete?.(payment);
-	};
-
 	return (
-		<div className="space-y-3">
+		<div className="space-y-2">
 			{payments.map((payment) => (
-				<Card key={payment.id} className="group">
-					<CardContent className="py-4 px-6">
-						<div className="flex items-center gap-3">
-							<div className="flex-1 min-w-0 space-y-1">
-								<p className="text-base font-medium text-foreground">
-									{formatPeriod(payment.period)}
-								</p>
-								<div className="flex items-center gap-2">
-									<p className="text-xl font-semibold text-foreground">
-										{formatCurrency(payment.amount, locale)}
-									</p>
-									<PaymentStatusBadge status={payment.status} />
-								</div>
-							</div>
-							{(onEdit || onDelete) && (
-								<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+				<div
+					key={payment.id}
+					className="flex items-center gap-3 px-3.5 py-3 rounded-xl border border-border hover:bg-muted/50 transition-colors"
+				>
+					<div className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
+						<Receipt className="h-4 w-4 text-muted-foreground" />
+					</div>
+					<div className="flex items-center gap-2 min-w-0">
+						<p className="text-sm font-medium text-foreground">
+							{formatPeriod(payment.period)}
+						</p>
+						<PaymentStatusBadge status={payment.status} />
+					</div>
+					<div className="flex-1" />
+					<p className="text-sm font-semibold text-foreground">
+						{formatCurrency(payment.amount, locale)}
+					</p>
+					{(onEdit || onDelete) && (
+						<Popover>
+							<PopoverTrigger asChild>
+								<button
+									type="button"
+									className="flex items-center justify-center h-7 w-7 rounded-md hover:bg-muted transition-colors cursor-pointer"
+								>
+									<MoreHorizontal className="h-4 w-4" />
+								</button>
+							</PopoverTrigger>
+							<PopoverContent align="end" className="w-36 p-1.5">
+								<div className="flex flex-col gap-0.5">
 									{onEdit && (
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={(e) => handleEdit(e, payment)}
-											aria-label={t("edit")}
-											className="h-8 w-8 hover:bg-muted"
+										<button
+											type="button"
+											onClick={() => onEdit(payment)}
+											className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-lg hover:bg-muted transition-colors cursor-pointer text-left"
 										>
 											<Pencil className="h-3.5 w-3.5" />
-										</Button>
+											{t("edit")}
+										</button>
 									)}
 									{onDelete && (
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={(e) => handleDelete(e, payment)}
-											aria-label={t("delete")}
-											className="h-8 w-8 hover:bg-muted hover:text-destructive"
+										<button
+											type="button"
+											onClick={() => onDelete(payment)}
+											className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-lg hover:bg-muted hover:text-destructive transition-colors cursor-pointer text-left"
 										>
 											<Trash2 className="h-3.5 w-3.5" />
-										</Button>
+											{t("delete")}
+										</button>
 									)}
 								</div>
-							)}
-						</div>
-					</CardContent>
-				</Card>
+							</PopoverContent>
+						</Popover>
+					)}
+				</div>
 			))}
 		</div>
 	);

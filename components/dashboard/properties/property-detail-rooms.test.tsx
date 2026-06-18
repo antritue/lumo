@@ -130,11 +130,10 @@ describe("PropertyDetailRooms", () => {
 			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
 
 			const roomLink = screen.getByText("Room 101").closest("a") as HTMLElement;
+			const kebabButton = within(roomLink).getByRole("button");
+			await user.click(kebabButton);
 
-			const editButton = within(roomLink).getByRole("button", {
-				name: /edit/i,
-			});
-			await user.click(editButton);
+			await user.click(screen.getByRole("button", { name: /edit/i }));
 
 			const dialog = screen.getByRole("dialog");
 			expect(within(dialog).getByDisplayValue("Room 101")).toBeInTheDocument();
@@ -149,11 +148,10 @@ describe("PropertyDetailRooms", () => {
 			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
 
 			const roomLink = screen.getByText("Room 101").closest("a") as HTMLElement;
+			const kebabButton = within(roomLink).getByRole("button");
+			await user.click(kebabButton);
 
-			const deleteButton = within(roomLink).getByRole("button", {
-				name: /delete/i,
-			});
-			await user.click(deleteButton);
+			await user.click(screen.getByRole("button", { name: /delete/i }));
 
 			expect(
 				screen.getByRole("heading", { name: /delete room/i }),
@@ -195,11 +193,10 @@ describe("PropertyDetailRooms", () => {
 			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
 
 			const roomLink = screen.getByText("Room 101").closest("a") as HTMLElement;
+			const kebabButton = within(roomLink).getByRole("button");
+			await user.click(kebabButton);
 
-			const deleteButton = within(roomLink).getByRole("button", {
-				name: /delete/i,
-			});
-			await user.click(deleteButton);
+			await user.click(screen.getByRole("button", { name: /delete/i }));
 
 			const dialog = screen.getByRole("dialog");
 			const confirmButton = within(dialog).getByRole("button", {
