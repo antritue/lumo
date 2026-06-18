@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Home, Plus, Search } from "lucide-react";
+import { Home, Plus, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -88,14 +88,6 @@ export function PropertySidebar({
 							<span className="flex-1 min-w-0 text-sm font-medium truncate">
 								{property.name}
 							</span>
-							<ChevronRight
-								className={cn(
-									"h-4 w-4 shrink-0 transition-colors",
-									selectedId === property.id
-										? "text-foreground"
-										: "text-muted-foreground",
-								)}
-							/>
 						</button>
 					))}
 				</div>

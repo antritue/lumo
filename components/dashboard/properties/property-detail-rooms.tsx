@@ -1,17 +1,23 @@
 "use client";
 
 import {
-	ChevronRight,
 	DoorOpen,
 	Loader2,
+	MoreHorizontal,
 	Pencil,
 	Plus,
 	Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { ErrorState } from "@/components/shared/error-state";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { formatCurrency } from "@/lib/utils";
 import { DeleteRoomDialog } from "../rooms/delete-room-dialog";
 import { useRoomsStore } from "../rooms/store";
 import type { Room } from "../rooms/types";
@@ -24,6 +30,7 @@ interface PropertyDetailRoomsProps {
 export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 	const rt = useTranslations("app.rooms");
 	const t = useTranslations("app.properties");
+	const locale = useLocale();
 	const rooms = useRoomsStore((state) => state.rooms);
 	const loadingPropertyIds = useRoomsStore((state) => state.loadingPropertyIds);
 	const failedPropertyIds = useRoomsStore((state) => state.failedPropertyIds);
@@ -108,7 +115,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 								<Link
 									key={room.id}
 									href={`/dashboard/rooms/${room.id}`}
-									className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-card border border-border hover:bg-muted/50 transition-colors group"
+									className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-card border border-border hover:bg-muted/50 transition-colors"
 								>
 									<div className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
 										<DoorOpen className="h-4 w-4 text-muted-foreground" />
@@ -116,33 +123,39 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 									<div className="flex-1 min-w-0">
 										<p className="text-sm font-medium truncate">{room.name}</p>
 									</div>
-									<div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-										<button
-											type="button"
-											onClick={(e) => {
-												e.preventDefault();
-												e.stopPropagation();
-												setUpsertRoom(room);
-											}}
+									{room.monthlyRent && (
+										<p className="text-sm font-semibold text-foreground">
+											{formatCurrency(room.monthlyRent, locale)}
+										</p>
+									)}
+									<Popover>
+										<PopoverTrigger
+											onClick={(e) => e.stopPropagation()}
 											className="flex items-center justify-center h-7 w-7 rounded-md hover:bg-muted transition-colors cursor-pointer"
-											aria-label={t("edit")}
 										>
-											<Pencil className="h-3.5 w-3.5 text-muted-foreground" />
-										</button>
-										<button
-											type="button"
-											onClick={(e) => {
-												e.preventDefault();
-												e.stopPropagation();
-												setDeletingRoom(room);
-											}}
-											className="flex items-center justify-center h-7 w-7 rounded-md hover:bg-muted transition-colors cursor-pointer"
-											aria-label={t("delete")}
-										>
-											<Trash2 className="h-3.5 w-3.5 text-destructive" />
-										</button>
-									</div>
-									<ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+											<MoreHorizontal className="h-4 w-4" />
+										</PopoverTrigger>
+										<PopoverContent align="end" className="w-36 p-1.5">
+											<div className="flex flex-col gap-0.5">
+												<button
+													type="button"
+													onClick={() => setUpsertRoom(room)}
+													className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-lg hover:bg-muted transition-colors cursor-pointer text-left"
+												>
+													<Pencil className="h-3.5 w-3.5" />
+													{t("edit")}
+												</button>
+												<button
+													type="button"
+													onClick={() => setDeletingRoom(room)}
+													className="flex items-center gap-2 px-2 py-1.5 text-sm rounded-lg hover:bg-muted hover:text-destructive transition-colors cursor-pointer text-left"
+												>
+													<Trash2 className="h-3.5 w-3.5" />
+													{t("delete")}
+												</button>
+											</div>
+										</PopoverContent>
+									</Popover>
 								</Link>
 							))}
 						</div>
