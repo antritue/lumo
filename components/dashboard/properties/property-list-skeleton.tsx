@@ -5,7 +5,7 @@ export function PropertyListSkeleton() {
 	const mobileItems = Array.from({ length: 4 }, (_, i) => `mobile-${i}`);
 
 	return (
-		<div className="flex h-[calc(100vh-8rem)] -mx-4 sm:-mx-6 -mb-4 sm:-mb-6">
+		<div className="flex h-[calc(100vh-14.5rem)]">
 			{/* Sidebar skeleton */}
 			<div className="flex-1 lg:flex-none lg:w-80 shrink-0 border-r border-border hidden lg:flex flex-col bg-background">
 				<div className="flex items-center gap-2 px-3 py-4">
