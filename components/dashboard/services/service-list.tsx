@@ -55,12 +55,6 @@ export function ServiceList() {
 	return (
 		<>
 			<div className="space-y-6">
-				<div className="flex items-center justify-between">
-					<h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
-						{t("listTitle")}
-					</h1>
-				</div>
-
 				<div className="grid gap-4">
 					{services.map((service) => (
 						<ServiceItem

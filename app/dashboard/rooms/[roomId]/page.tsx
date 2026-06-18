@@ -26,7 +26,7 @@ export default function RoomDetailPage({
 
 	if (isRoomsLoading || authLoading) {
 		return (
-			<div className="max-w-4xl mx-auto py-8 px-4">
+			<div className="max-w-4xl mx-auto py-4 px-4">
 				<div className="space-y-6">
 					<div className="h-8 w-48 bg-muted rounded animate-pulse" />
 					<div className="h-32 w-full bg-muted rounded animate-pulse" />
@@ -36,7 +36,7 @@ export default function RoomDetailPage({
 	}
 
 	return (
-		<div className="max-w-4xl mx-auto py-8 px-4">
+		<div className="max-w-4xl mx-auto py-4 px-4">
 			{room ? <RoomDetail room={room} /> : <RoomNotFound />}
 		</div>
 	);
