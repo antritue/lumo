@@ -81,7 +81,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	};
 
 	return (
-		<div className="p-6 space-y-8">
+		<div className="space-y-8">
 			<RoomDetailHeader
 				room={room}
 				onEdit={openEditRoom}

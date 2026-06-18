@@ -46,13 +46,13 @@ export default function PropertiesPage() {
 	}
 
 	return (
-		<>
+		<div className="max-w-4xl mx-auto py-8 px-4">
 			<div className="flex items-center pb-4 sm:pb-5 border-b border-border">
 				<h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
 					{t("listTitle")}
 				</h1>
 			</div>
 			{content}
-		</>
+		</div>
 	);
 }

@@ -52,7 +52,7 @@ export function PropertyDetail({
 	return (
 		<div
 			className={cn(
-				"flex flex-col h-full overflow-y-auto bg-card p-6 space-y-8",
+				"flex flex-col flex-1 min-h-0 bg-card p-6 space-y-8",
 				className,
 			)}
 		>

@@ -54,13 +54,9 @@ export function PropertyList() {
 
 	return (
 		<>
-			<div className="flex h-[calc(100vh-8rem)] -mx-4 sm:-mx-6 -mb-4 sm:-mb-6">
+			<div className="hidden lg:flex h-[calc(100vh-14.5rem)]">
 				{/* Sidebar */}
-				<div
-					className={`flex-1 lg:flex-none lg:w-80 shrink-0 border-r border-border bg-background flex-col ${
-						showMobileDetail ? "hidden" : "flex"
-					} lg:flex`}
-				>
+				<div className="w-80 shrink-0 border-r border-border bg-background flex flex-col h-full">
 					<PropertySidebar
 						properties={properties}
 						selectedId={selectedPropertyId}
@@ -70,11 +66,7 @@ export function PropertyList() {
 				</div>
 
 				{/* Detail */}
-				<div
-					className={`flex-1 min-w-0 bg-card flex-col ${
-						!selectedProperty || !showMobileDetail ? "hidden lg:flex" : "flex"
-					}`}
-				>
+				<div className="flex-1 min-w-0 flex flex-col h-full">
 					{selectedProperty ? (
 						<PropertyDetail
 							property={selectedProperty}
@@ -88,6 +80,25 @@ export function PropertyList() {
 						</div>
 					)}
 				</div>
+			</div>
+
+			{/* Mobile */}
+			<div className="lg:hidden">
+				{showMobileDetail && selectedProperty ? (
+					<PropertyDetail
+						property={selectedProperty}
+						onEdit={setEditingProperty}
+						onDelete={setDeletingProperty}
+						onBack={handleBack}
+					/>
+				) : (
+					<PropertySidebar
+						properties={properties}
+						selectedId={selectedPropertyId}
+						onSelect={handleSelect}
+						onAdd={() => setIsAdding(true)}
+					/>
+				)}
 			</div>
 
 			<UpsertPropertyDialog

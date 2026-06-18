@@ -80,7 +80,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 	};
 
 	return (
-		<div className="space-y-4">
+		<div className="flex flex-col flex-1 min-h-0 space-y-4">
 			<div className="flex items-center gap-3">
 				<h3 className="text-sm font-medium text-foreground">{rt("title")}</h3>
 				<div className="flex items-center justify-center rounded-full bg-primary h-5 px-2 text-xs font-medium text-primary-foreground">
@@ -108,7 +108,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 			)}
 
 			{!isRoomsLoading && !roomsFetchFailed && (
-				<>
+				<div className="flex-1 min-h-0 overflow-y-auto">
 					{propertyRooms.length > 0 && (
 						<div className="space-y-1">
 							{propertyRooms.map((room) => (
@@ -174,7 +174,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 							</p>
 						</div>
 					)}
-				</>
+				</div>
 			)}
 
 			<UpsertRoomDialog
