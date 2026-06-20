@@ -6,8 +6,11 @@ import { useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useRoomsStore } from "../rooms/store";
 import { PropertyDetailRooms } from "./property-detail-rooms";
+import { PropertyDetailServices } from "./property-detail-services";
 import { usePropertyServicesStore } from "./property-services-store";
-import type { Property } from "./types";
+import type { Property, PropertyService } from "./types";
+
+const EMPTY_SERVICES: PropertyService[] = [];
 
 interface PropertyDetailProps {
 	property: Property;
@@ -24,15 +27,14 @@ export function PropertyDetail({
 	onBack,
 	className,
 }: PropertyDetailProps) {
-	const t = useTranslations("app.properties");
-	const rt = useTranslations("app.rooms");
-	const pst = useTranslations("app.propertyServices");
+	const t = useTranslations("app");
 	const rooms = useRoomsStore((state) => state.rooms);
 	const fetchRoomsByPropertyId = useRoomsStore(
 		(state) => state.fetchRoomsByPropertyId,
 	);
 	const propertyServices = usePropertyServicesStore(
-		(state) => state.propertyServicesByPropertyId[property.id] ?? [],
+		(state) =>
+			state.propertyServicesByPropertyId[property.id] ?? EMPTY_SERVICES,
 	);
 	const fetchPropertyServices = usePropertyServicesStore(
 		(state) => state.fetchPropertyServices,
@@ -63,7 +65,7 @@ export function PropertyDetail({
 							type="button"
 							onClick={onBack}
 							className="lg:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-muted transition-colors shrink-0"
-							aria-label={t("backToProperties")}
+							aria-label={t("properties.backToProperties")}
 						>
 							<ChevronRight className="h-5 w-5 rotate-180" />
 						</button>
@@ -74,9 +76,9 @@ export function PropertyDetail({
 					<div className="min-w-0">
 						<h2 className="text-xl font-semibold truncate">{property.name}</h2>
 						<p className="text-sm text-muted-foreground mt-0.5">
-							{rt("count", { count: roomCount })}
+							{t("rooms.count", { count: roomCount })}
 							{" · "}
-							{pst("count", { count: serviceCount })}
+							{t("propertyServices.count", { count: serviceCount })}
 						</p>
 					</div>
 				</div>
@@ -86,7 +88,7 @@ export function PropertyDetail({
 						type="button"
 						onClick={() => onEdit(property)}
 						className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-muted transition-colors cursor-pointer"
-						aria-label={t("edit")}
+						aria-label={t("properties.edit")}
 					>
 						<Pencil className="h-4 w-4 text-muted-foreground" />
 					</button>
@@ -94,12 +96,14 @@ export function PropertyDetail({
 						type="button"
 						onClick={() => onDelete(property)}
 						className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-muted transition-colors cursor-pointer"
-						aria-label={t("delete")}
+						aria-label={t("properties.delete")}
 					>
 						<Trash2 className="h-4 w-4 text-destructive" />
 					</button>
 				</div>
 			</div>
+
+			<PropertyDetailServices propertyId={property.id} />
 
 			<PropertyDetailRooms propertyId={property.id} />
 		</div>

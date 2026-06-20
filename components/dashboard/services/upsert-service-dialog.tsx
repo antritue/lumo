@@ -20,6 +20,7 @@ interface UpsertServiceDialogProps {
 	service?: Service;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
+	isCustomService?: boolean;
 	onSave: (
 		id: string | null,
 		name: string,
@@ -35,6 +36,7 @@ export function UpsertServiceDialog({
 	service,
 	open,
 	onOpenChange,
+	isCustomService = false,
 	onSave,
 }: UpsertServiceDialogProps) {
 	const t = useTranslations("app.services");
@@ -107,6 +109,12 @@ export function UpsertServiceDialog({
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
+					{isCustomService && (
+						<p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5 text-center">
+							<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+							{t("customServiceNotice")}
+						</p>
+					)}
 					<DialogDescription className="sr-only">{title}</DialogDescription>
 				</DialogHeader>
 

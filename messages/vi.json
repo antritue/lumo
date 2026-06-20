@@ -214,6 +214,7 @@
 			"unitPrice": "Đơn giá",
 			"notSet": "Chưa thiết lập",
 			"suggestions": "Thêm nhanh dịch vụ thường dùng:",
+			"customServiceNotice": "Dịch vụ này đã được tùy chỉnh từ mặc định toàn cục",
 			"errors": {
 				"create": {
 					"title": "Không thể thêm dịch vụ",
