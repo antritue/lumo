@@ -10,7 +10,9 @@ export interface PropertyService {
 	id: string;
 	propertyId: string;
 	serviceId: string;
-	pricingType: "flat" | "variable" | null;
+	serviceName: string;
+	unitLabel: string | null;
+	pricingType: "flat" | "variable";
 	flatAmount: number | null;
 	unitPrice: number | null;
 }

@@ -214,6 +214,7 @@
 			"unitPrice": "Unit price",
 			"notSet": "Not set",
 			"suggestions": "Quick add common services:",
+			"customServiceNotice": "This service has been customized from the global default",
 			"errors": {
 				"create": {
 					"title": "Failed to add service",

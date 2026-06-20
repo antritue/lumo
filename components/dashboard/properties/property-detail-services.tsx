@@ -1,0 +1,225 @@
+"use client";
+
+import { Plus, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
+import { DeleteServiceDialog } from "@/components/dashboard/services/delete-service-dialog";
+import { useServicesStore } from "@/components/dashboard/services/store";
+import type { Service } from "@/components/dashboard/services/types";
+import { UpsertServiceDialog } from "@/components/dashboard/services/upsert-service-dialog";
+import { usePropertyServicesStore } from "./property-services-store";
+import type { PropertyService } from "./types";
+
+const EMPTY_SERVICES: PropertyService[] = [];
+
+interface PropertyDetailServicesProps {
+	propertyId: string;
+}
+
+export function PropertyDetailServices({
+	propertyId,
+}: PropertyDetailServicesProps) {
+	const t = useTranslations("app.propertyServices");
+
+	const services = useServicesStore((state) => state.services);
+	const fetchServices = useServicesStore((state) => state.fetchServices);
+
+	const propertyServices = usePropertyServicesStore(
+		(state) => state.propertyServicesByPropertyId[propertyId] ?? EMPTY_SERVICES,
+	);
+	const fetchPropertyServices = usePropertyServicesStore(
+		(state) => state.fetchPropertyServices,
+	);
+	const addPropertyService = usePropertyServicesStore(
+		(state) => state.addPropertyService,
+	);
+	const updatePropertyService = usePropertyServicesStore(
+		(state) => state.updatePropertyService,
+	);
+	const deletePropertyService = usePropertyServicesStore(
+		(state) => state.deletePropertyService,
+	);
+
+	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
+	const [editingService, setEditingService] = useState<Service | undefined>(
+		undefined,
+	);
+	const [isEditingCustom, setIsEditingCustom] = useState(false);
+	const [deletingService, setDeletingService] = useState<Service | null>(null);
+
+	useEffect(() => {
+		fetchServices();
+		fetchPropertyServices(propertyId);
+	}, [propertyId, fetchServices, fetchPropertyServices]);
+
+	const serviceNameMap = useMemo(() => {
+		const map = new Map<string, string>();
+		for (const service of services) {
+			map.set(service.id, service.name);
+		}
+		return map;
+	}, [services]);
+
+	const getServiceName = (propertyService: PropertyService): string =>
+		propertyService.serviceName ||
+		serviceNameMap.get(propertyService.serviceId) ||
+		"Unknown";
+
+	const serviceCount = propertyServices.length;
+
+	const isServiceCustom = (propertyService: PropertyService) => {
+		const global = services.find(
+			(service) => service.id === propertyService.serviceId,
+		);
+		if (!global) return true;
+		return (
+			propertyService.serviceName !== global.name ||
+			propertyService.unitLabel !== global.unitLabel ||
+			propertyService.pricingType !== global.pricingType ||
+			propertyService.flatAmount !== global.flatAmount ||
+			propertyService.unitPrice !== global.unitPrice
+		);
+	};
+
+	const resolveService = (propertyService: PropertyService): Service => {
+		const global = services.find(
+			(service) => service.id === propertyService.serviceId,
+		);
+		if (!global) {
+			return {
+				id: propertyService.serviceId,
+				userId: "",
+				name: getServiceName(propertyService),
+				unitLabel: propertyService.unitLabel ?? null,
+				pricingType: propertyService.pricingType ?? "flat",
+				flatAmount: propertyService.flatAmount,
+				unitPrice: propertyService.unitPrice,
+			};
+		}
+		return {
+			...global,
+			name: propertyService.serviceName || global.name,
+			unitLabel: propertyService.unitLabel ?? global.unitLabel,
+			pricingType: propertyService.pricingType,
+			flatAmount: propertyService.flatAmount,
+			unitPrice: propertyService.unitPrice,
+		};
+	};
+
+	const handleUpsertService = async (
+		id: string | null,
+		name: string,
+		unitLabel: string | null,
+		pricingType: "flat" | "variable",
+		flatAmount: number | null,
+		unitPrice: number | null,
+	) => {
+		if (id) {
+			await updatePropertyService(propertyId, id, {
+				serviceName: name,
+				unitLabel,
+				pricingType,
+				flatAmount,
+				unitPrice,
+			});
+		} else {
+			const newId = crypto.randomUUID();
+			await addPropertyService(propertyId, newId, {
+				serviceName: name,
+				unitLabel,
+				pricingType,
+				flatAmount,
+				unitPrice,
+			});
+		}
+		setDialogMode(null);
+	};
+
+	const handleDeleteService = async (serviceId: string) => {
+		await deletePropertyService(propertyId, serviceId);
+		setDeletingService(null);
+	};
+
+	return (
+		<div className="space-y-4">
+			<div className="flex items-center gap-3">
+				<h3 className="text-sm font-medium text-foreground">{t("title")}</h3>
+				<div className="flex items-center justify-center rounded-full bg-primary h-5 px-2 text-xs font-medium text-primary-foreground">
+					{serviceCount}
+				</div>
+				<div className="flex-1" />
+				<button
+					type="button"
+					onClick={() => setDialogMode("add")}
+					className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
+					aria-label={t("addService")}
+				>
+					<Plus className="h-4 w-4" />
+				</button>
+			</div>
+
+			{propertyServices.length > 0 && (
+				<div className="flex flex-wrap gap-2">
+					{propertyServices.map((propertyService) => (
+						<div
+							key={propertyService.id}
+							className="inline-flex items-stretch rounded-full bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
+						>
+							<button
+								type="button"
+								onClick={() => {
+									setEditingService(resolveService(propertyService));
+									setIsEditingCustom(isServiceCustom(propertyService));
+									setDialogMode("edit");
+								}}
+								className="flex items-center gap-1 pl-3 pr-1.5 py-1.5 cursor-pointer"
+							>
+								{getServiceName(propertyService)}
+								{isServiceCustom(propertyService) && (
+									<span
+										className="h-1.5 w-1.5 rounded-full bg-amber-500"
+										title="Customized"
+									/>
+								)}
+							</button>
+							<button
+								type="button"
+								onClick={() =>
+									setDeletingService({
+										id: propertyService.serviceId,
+										userId: "",
+										name: getServiceName(propertyService),
+										unitLabel: propertyService.unitLabel ?? null,
+										pricingType: propertyService.pricingType ?? "flat",
+										flatAmount: propertyService.flatAmount,
+										unitPrice: propertyService.unitPrice,
+									})
+								}
+								className="flex items-center justify-center pr-2 pl-0.5 py-1.5 hover:text-red-500 transition-colors cursor-pointer"
+								aria-label={`Remove ${getServiceName(propertyService)}`}
+							>
+								<X className="h-3 w-3" />
+							</button>
+						</div>
+					))}
+				</div>
+			)}
+
+			<UpsertServiceDialog
+				mode={dialogMode === "edit" ? "edit" : "add"}
+				service={dialogMode === "edit" ? editingService : undefined}
+				isCustomService={dialogMode === "edit" ? isEditingCustom : false}
+				open={dialogMode !== null}
+				onOpenChange={(open) => !open && setDialogMode(null)}
+				onSave={handleUpsertService}
+			/>
+
+			<DeleteServiceDialog
+				service={deletingService}
+				open={!!deletingService}
+				onOpenChange={(open) => !open && setDeletingService(null)}
+				onDelete={handleDeleteService}
+			/>
+		</div>
+	);
+}
