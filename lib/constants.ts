@@ -4,6 +4,7 @@ export const DATABASE_TABLES = {
 	ROOMS: "rooms",
 	RENT_PAYMENTS: "rent_payments",
 	SERVICES: "services",
+	PROPERTY_SERVICES: "property_services",
 };
 
 export const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
