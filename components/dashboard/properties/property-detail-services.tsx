@@ -196,7 +196,7 @@ export function PropertyDetailServices({
 									})
 								}
 								className="flex items-center justify-center pr-2 pl-0.5 py-1.5 hover:text-red-500 transition-colors cursor-pointer"
-								aria-label={`Remove ${getServiceName(propertyService)}`}
+								aria-label={`${t("remove")} ${getServiceName(propertyService)}`}
 							>
 								<X className="h-3 w-3" />
 							</button>
