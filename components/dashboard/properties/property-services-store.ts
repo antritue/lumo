@@ -103,10 +103,13 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 
 					const data: PropertyService[] = await res.json();
 
+					const sortByServiceName = (items: PropertyService[]) =>
+						items.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
+
 					let resolved: PropertyService[];
 
 					if (data.length > 0) {
-						resolved = data;
+						resolved = sortByServiceName(data);
 					} else {
 						await useServicesStore.getState().fetchServices();
 						const globalServices = useServicesStore.getState().services;
@@ -135,7 +138,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 							),
 						);
 
-						resolved = created;
+						resolved = sortByServiceName(created);
 					}
 
 					set((state) => {
@@ -192,7 +195,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 							[propertyId]: [
 								...(state.propertyServicesByPropertyId[propertyId] ?? []),
 								newService,
-							],
+							].sort((a, b) => a.serviceName.localeCompare(b.serviceName)),
 						},
 					}));
 					return;
@@ -220,7 +223,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 							[propertyId]: [
 								...(state.propertyServicesByPropertyId[propertyId] ?? []),
 								responseData,
-							],
+							].sort((a, b) => a.serviceName.localeCompare(b.serviceName)),
 						},
 					}));
 				} catch (error) {

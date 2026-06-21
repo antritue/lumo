@@ -226,6 +226,82 @@ components:
         - name
         - pricingType
 
+    PropertyService:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        propertyId:
+          type: string
+          format: uuid
+        serviceId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        serviceName:
+          type: string
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+      required:
+        - id
+        - propertyId
+        - serviceId
+        - userId
+        - pricingType
+
+    PropertyServiceInput:
+      type: object
+      properties:
+        serviceId:
+          type: string
+          format: uuid
+        serviceName:
+          type: string
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+      required:
+        - serviceId
+        - serviceName
+        - pricingType
+
+    PropertyServiceUpdateInput:
+      type: object
+      properties:
+        serviceName:
+          type: string
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: ["string", "null"]
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+
     ServiceUpdateInput:
       type: object
       properties:
@@ -918,5 +994,142 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 error: Service not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/properties/{propertyId}/services:
+    parameters:
+      - name: propertyId
+        in: path
+        required: true
+        description: Property UUID
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: List property services
+      description: Returns all services configured for a property
+      operationId: listPropertyServices
+      tags:
+        - Property Services
+      responses:
+        "200":
+          description: List of property services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PropertyService"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      summary: Add service to property
+      description: Adds a service to a property
+      operationId: createPropertyService
+      tags:
+        - Property Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyServiceInput"
+            example:
+              serviceId: 550e8400-e29b-41d4-a716-446655440000
+              serviceName: WiFi
+              pricingType: flat
+              flatAmount: 15
+      responses:
+        "201":
+          description: Property service created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyService"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/properties/{propertyId}/services/{serviceId}:
+    parameters:
+      - name: propertyId
+        in: path
+        required: true
+        description: Property UUID
+        schema:
+          type: string
+          format: uuid
+      - name: serviceId
+        in: path
+        required: true
+        description: Service UUID
+        schema:
+          type: string
+          format: uuid
+
+    patch:
+      summary: Update property service
+      description: Updates pricing overrides or service name for a property service. All fields are optional.
+      operationId: updatePropertyService
+      tags:
+        - Property Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PropertyServiceUpdateInput"
+            example:
+              pricingType: flat
+              flatAmount: 20
+      responses:
+        "200":
+          description: Property service updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyService"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Property service not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Property service not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      summary: Remove service from property
+      description: Removes a service configuration from a property
+      operationId: deletePropertyService
+      tags:
+        - Property Services
+      responses:
+        "204":
+          description: Property service deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Property service not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Property service not found
         "500":
           $ref: "#/components/responses/InternalServerError"
