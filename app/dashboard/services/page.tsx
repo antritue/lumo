@@ -1,5 +1,6 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useAuthStore } from "@/components/dashboard/auth/store";
@@ -45,10 +46,14 @@ export default function ServicesPage() {
 
 	return (
 		<div className="max-w-4xl mx-auto py-4 px-4">
-			<div className="flex items-center pb-4 sm:pb-5 border-b border-border">
+			<div className="pb-4 sm:pb-5 border-b border-border">
 				<h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
 					{t("listTitle")}
 				</h1>
+			</div>
+			<div className="flex items-center gap-1.5 mt-4 mb-6 text-sm text-muted-foreground">
+				<Info className="h-4 w-4 shrink-0" />
+				<span>{t("globalServiceNotice")}</span>
 			</div>
 			{content}
 		</div>
