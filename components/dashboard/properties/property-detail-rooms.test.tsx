@@ -129,8 +129,9 @@ describe("PropertyDetailRooms", () => {
 
 			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
 
-			const roomLink = screen.getByText("Room 101").closest("a") as HTMLElement;
-			const kebabButton = within(roomLink).getByRole("button");
+			const roomCard = screen.getByText("Room 101").closest("a")
+				?.parentElement as HTMLElement;
+			const kebabButton = within(roomCard).getByRole("button");
 			await user.click(kebabButton);
 
 			await user.click(screen.getByRole("button", { name: /edit/i }));
@@ -147,8 +148,9 @@ describe("PropertyDetailRooms", () => {
 
 			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
 
-			const roomLink = screen.getByText("Room 101").closest("a") as HTMLElement;
-			const kebabButton = within(roomLink).getByRole("button");
+			const roomCard = screen.getByText("Room 101").closest("a")
+				?.parentElement as HTMLElement;
+			const kebabButton = within(roomCard).getByRole("button");
 			await user.click(kebabButton);
 
 			await user.click(screen.getByRole("button", { name: /delete/i }));
@@ -192,8 +194,9 @@ describe("PropertyDetailRooms", () => {
 
 			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
 
-			const roomLink = screen.getByText("Room 101").closest("a") as HTMLElement;
-			const kebabButton = within(roomLink).getByRole("button");
+			const roomCard = screen.getByText("Room 101").closest("a")
+				?.parentElement as HTMLElement;
+			const kebabButton = within(roomCard).getByRole("button");
 			await user.click(kebabButton);
 
 			await user.click(screen.getByRole("button", { name: /delete/i }));

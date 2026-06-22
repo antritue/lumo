@@ -112,27 +112,30 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 					{propertyRooms.length > 0 && (
 						<div className="space-y-1">
 							{propertyRooms.map((room) => (
-								<Link
+								<div
 									key={room.id}
-									href={`/dashboard/rooms/${room.id}`}
-									className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-card border border-border hover:bg-muted/50 transition-colors"
+									className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-card border border-border"
 								>
-									<div className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
-										<DoorOpen className="h-4 w-4 text-muted-foreground" />
-									</div>
-									<div className="flex-1 min-w-0">
-										<p className="text-sm font-medium truncate">{room.name}</p>
-									</div>
-									{room.monthlyRent && (
-										<p className="text-sm font-semibold text-foreground">
-											{formatCurrency(room.monthlyRent, locale)}
-										</p>
-									)}
+									<Link
+										href={`/dashboard/rooms/${room.id}`}
+										className="flex items-center gap-3 flex-1 min-w-0 rounded-lg -mx-1.5 -my-1.5 px-1.5 py-1.5 hover:bg-muted/50 transition-colors"
+									>
+										<div className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
+											<DoorOpen className="h-4 w-4 text-muted-foreground" />
+										</div>
+										<div className="flex-1 min-w-0">
+											<p className="text-sm font-medium truncate">
+												{room.name}
+											</p>
+										</div>
+										{room.monthlyRent && (
+											<p className="text-sm font-semibold text-foreground">
+												{formatCurrency(room.monthlyRent, locale)}
+											</p>
+										)}
+									</Link>
 									<Popover>
-										<PopoverTrigger
-											onClick={(e) => e.stopPropagation()}
-											className="flex items-center justify-center h-7 w-7 rounded-md hover:bg-muted transition-colors cursor-pointer"
-										>
+										<PopoverTrigger className="flex items-center justify-center h-7 w-7 rounded-md hover:bg-muted transition-colors cursor-pointer">
 											<MoreHorizontal className="h-4 w-4" />
 										</PopoverTrigger>
 										<PopoverContent align="end" className="w-36 p-1.5">
@@ -156,7 +159,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 											</div>
 										</PopoverContent>
 									</Popover>
-								</Link>
+								</div>
 							))}
 						</div>
 					)}
