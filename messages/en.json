@@ -172,11 +172,19 @@
 				}
 			}
 		},
+		"roomServices": {
+			"title": "Services",
+			"empty": "No services configured for this room",
+			"addService": "Add service",
+			"remove": "Remove",
+			"customServiceNotice": "This service has been customized from the property default"
+		},
 		"propertyServices": {
 			"title": "Services",
 			"count": "{count, plural, =0 {0 services} =1 {1 service} other {# services}}",
 			"addService": "Add service",
-			"remove": "Remove"
+			"remove": "Remove",
+			"customServiceNotice": "This service has been customized from the global default"
 		},
 		"services": {
 			"emptyTitle": "No services yet",
@@ -207,7 +215,6 @@
 			"suggestions": "Quick add common services:",
 			"globalServiceNotice": "Changes to global services will apply to all properties",
 			"hintApplyNotice": "Only applies to new properties on creation",
-			"customServiceNotice": "This service has been customized from the global default",
 			"errors": {
 				"create": {
 					"title": "Failed to add service",

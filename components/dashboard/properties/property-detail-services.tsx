@@ -208,7 +208,11 @@ export function PropertyDetailServices({
 			<UpsertServiceDialog
 				mode={dialogMode === "edit" ? "edit" : "add"}
 				service={dialogMode === "edit" ? editingService : undefined}
-				isCustomService={dialogMode === "edit" ? isEditingCustom : false}
+				customServiceNotice={
+					dialogMode === "edit" && isEditingCustom
+						? t("customServiceNotice")
+						: undefined
+				}
 				open={dialogMode !== null}
 				onOpenChange={(open) => !open && setDialogMode(null)}
 				onSave={handleUpsertService}
