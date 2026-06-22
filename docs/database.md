@@ -12,8 +12,10 @@ erDiagram
     "auth.users" ||--o{ rooms : "owns"
     "auth.users" ||--o{ services : "owns"
     "auth.users" ||--o{ property_services : "owns"
+    "auth.users" ||--o{ room_services : "owns"
     properties ||--o{ rooms : "contains"
     properties ||--o{ property_services : "has"
+    rooms ||--o{ room_services : "has"
     "auth.users" {
         uuid id PK
         text email
@@ -43,6 +45,17 @@ erDiagram
     property_services {
         uuid id PK
         uuid property_id FK
+        uuid service_id
+        uuid user_id FK
+        text service_name
+        text pricing_type
+        text unit_label
+        numeric flat_amount
+        numeric unit_price
+    }
+    room_services {
+        uuid id PK
+        uuid room_id FK
         uuid service_id
         uuid user_id FK
         text service_name
@@ -111,6 +124,24 @@ Stores property-level service configurations. Each row defines a service assigne
 | | `unit_price` | `numeric` | Optional price per unit for variable services. |
 
 Unique constraint on `(property_id, service_id)`.
+
+### `room_services`
+
+Stores room-level service configurations. Each row defines a service assigned to a room with its own name, pricing type, and amount. Services are self-contained per room — there is no FK dependency on the global `services` table. On room creation, entries from `property_services` pre-populate `room_services`.
+
+| Key | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
+| `FK` | `room_id` | `uuid` | Foreign Key to `rooms(id)`. Cascades on delete. |
+| | `service_id` | `uuid` | UUID identifying the service type (no FK constraint). |
+| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
+| | `service_name` | `text` | The display name of the service (e.g. "Electricity"). |
+| | `pricing_type` | `text` | `'flat'` or `'variable'`. |
+| | `unit_label` | `text` | Optional unit label for variable pricing (e.g. "kWh", "m³"). |
+| | `flat_amount` | `numeric` | Optional flat monthly fee. |
+| | `unit_price` | `numeric` | Optional price per unit for variable services. |
+
+Unique constraint on `(room_id, service_id)`.
 
 ## Row Level Security (RLS)
 
