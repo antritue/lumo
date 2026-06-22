@@ -1,0 +1,239 @@
+"use client";
+
+import { Plus, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
+import type { PropertyService } from "@/components/dashboard/properties/types";
+import { DeleteServiceDialog } from "@/components/dashboard/services/delete-service-dialog";
+import type { Service } from "@/components/dashboard/services/types";
+import { UpsertServiceDialog } from "@/components/dashboard/services/upsert-service-dialog";
+import { useRoomServicesStore } from "./room-services-store";
+import type { RoomService } from "./types";
+
+const EMPTY_ROOM_SERVICES: RoomService[] = [];
+const EMPTY_PROPERTY_SERVICES: PropertyService[] = [];
+
+interface RoomServicesSectionProps {
+	roomId: string;
+	propertyId: string;
+}
+
+export function RoomServicesSection({
+	roomId,
+	propertyId,
+}: RoomServicesSectionProps) {
+	const t = useTranslations("app.roomServices");
+	const ts = useTranslations("app.services");
+
+	const roomServices = useRoomServicesStore(
+		(state) => state.roomServicesByRoomId[roomId] ?? EMPTY_ROOM_SERVICES,
+	);
+	const fetchRoomServices = useRoomServicesStore(
+		(state) => state.fetchRoomServices,
+	);
+	const addRoomService = useRoomServicesStore((state) => state.addRoomService);
+	const updateRoomService = useRoomServicesStore(
+		(state) => state.updateRoomService,
+	);
+	const deleteRoomService = useRoomServicesStore(
+		(state) => state.deleteRoomService,
+	);
+
+	const propertyServices = usePropertyServicesStore(
+		(state) =>
+			state.propertyServicesByPropertyId[propertyId] ?? EMPTY_PROPERTY_SERVICES,
+	);
+
+	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
+	const [editingService, setEditingService] = useState<Service | undefined>(
+		undefined,
+	);
+	const [isEditingCustom, setIsEditingCustom] = useState(false);
+	const [deletingService, setDeletingService] = useState<RoomService | null>(
+		null,
+	);
+
+	useEffect(() => {
+		fetchRoomServices(roomId, propertyId);
+	}, [roomId, propertyId, fetchRoomServices]);
+
+	const findPropertyService = (roomService: RoomService) =>
+		propertyServices.find((p) => p.serviceId === roomService.serviceId);
+
+	const isRoomServiceCustom = (roomService: RoomService) => {
+		const propertyService = findPropertyService(roomService);
+		if (!propertyService) return true;
+		return (
+			roomService.serviceName !== propertyService.serviceName ||
+			roomService.unitLabel !== propertyService.unitLabel ||
+			roomService.pricingType !== propertyService.pricingType ||
+			roomService.flatAmount !== propertyService.flatAmount ||
+			roomService.unitPrice !== propertyService.unitPrice
+		);
+	};
+
+	const resolveService = (roomService: RoomService): Service => {
+		const propertyService = findPropertyService(roomService);
+		return {
+			id: roomService.serviceId,
+			userId: "",
+			name: roomService.serviceName,
+			unitLabel: roomService.unitLabel ?? propertyService?.unitLabel ?? null,
+			pricingType: roomService.pricingType,
+			flatAmount: roomService.flatAmount ?? propertyService?.flatAmount ?? null,
+			unitPrice: roomService.unitPrice ?? propertyService?.unitPrice ?? null,
+		};
+	};
+
+	const handleEditService = (roomService: RoomService) => {
+		setEditingService(resolveService(roomService));
+		setIsEditingCustom(isRoomServiceCustom(roomService));
+		setDialogMode("edit");
+	};
+
+	const handleSave = async (
+		id: string | null,
+		name: string,
+		unitLabel: string | null,
+		pricingType: "flat" | "variable",
+		flatAmount: number | null,
+		unitPrice: number | null,
+	) => {
+		if (id) {
+			await updateRoomService(roomId, id, {
+				serviceName: name,
+				unitLabel,
+				pricingType,
+				flatAmount,
+				unitPrice,
+			});
+		} else {
+			const newId = crypto.randomUUID();
+			await addRoomService(roomId, newId, {
+				serviceName: name,
+				unitLabel,
+				pricingType,
+				flatAmount,
+				unitPrice,
+			});
+		}
+		setDialogMode(null);
+	};
+
+	const handleDeleteService = async (serviceId: string) => {
+		await deleteRoomService(roomId, serviceId);
+		setDeletingService(null);
+	};
+
+	const formatAmount = (roomService: RoomService): string => {
+		const propertyService = findPropertyService(roomService);
+		const flatAmount =
+			roomService.flatAmount ?? propertyService?.flatAmount ?? null;
+		const unitPrice =
+			roomService.unitPrice ?? propertyService?.unitPrice ?? null;
+		const unitLabel =
+			roomService.unitLabel ?? propertyService?.unitLabel ?? null;
+		if (roomService.pricingType === "flat" && flatAmount != null) {
+			return `$${flatAmount}/month`;
+		}
+		if (roomService.pricingType === "variable" && unitPrice != null) {
+			return `$${unitPrice}/${unitLabel ?? "unit"}`;
+		}
+		return "";
+	};
+
+	return (
+		<div className="space-y-4">
+			<div className="flex items-center gap-3">
+				<h3 className="text-sm font-medium text-foreground">{t("title")}</h3>
+				<div className="flex items-center justify-center rounded-full bg-primary h-5 px-2 text-xs font-medium text-primary-foreground">
+					{roomServices.length}
+				</div>
+				<div className="flex-1" />
+				<button
+					type="button"
+					onClick={() => setDialogMode("add")}
+					className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
+					aria-label={t("addService")}
+				>
+					<Plus className="h-4 w-4" />
+				</button>
+			</div>
+
+			{roomServices.length > 0 ? (
+				<div className="flex flex-wrap gap-2">
+					{roomServices.map((roomService) => (
+						<div
+							key={roomService.id}
+							className="inline-flex items-stretch rounded-2xl bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
+						>
+							<button
+								type="button"
+								onClick={() => handleEditService(roomService)}
+								className="flex flex-col py-1.5 pl-3 pr-1.5 min-w-0 cursor-pointer text-left"
+							>
+								<div className="flex items-center gap-1">
+									<span className="font-medium">{roomService.serviceName}</span>
+									{isRoomServiceCustom(roomService) && (
+										<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+									)}
+								</div>
+								<span className="text-xs text-muted-foreground">
+									{roomService.pricingType === "flat"
+										? `${ts("flat")} · ${formatAmount(roomService)}`
+										: `${ts("variable")} · ${formatAmount(roomService)}`}
+								</span>
+							</button>
+							<button
+								type="button"
+								onClick={(e) => {
+									e.stopPropagation();
+									setDeletingService(roomService);
+								}}
+								className="flex items-center justify-center pr-2 pl-0.5 hover:text-red-500 transition-colors cursor-pointer shrink-0"
+								aria-label={`${t("remove")} ${roomService.serviceName}`}
+							>
+								<X className="h-3 w-3" />
+							</button>
+						</div>
+					))}
+				</div>
+			) : (
+				<p className="text-sm text-muted-foreground">{t("empty")}</p>
+			)}
+
+			<UpsertServiceDialog
+				mode={dialogMode === "edit" ? "edit" : "add"}
+				service={dialogMode === "edit" ? editingService : undefined}
+				customServiceNotice={
+					dialogMode === "edit" && isEditingCustom
+						? t("customServiceNotice")
+						: undefined
+				}
+				open={dialogMode !== null}
+				onOpenChange={(open) => !open && setDialogMode(null)}
+				onSave={handleSave}
+			/>
+
+			<DeleteServiceDialog
+				service={
+					deletingService
+						? {
+								id: deletingService.serviceId,
+								userId: "",
+								name: deletingService.serviceName,
+								unitLabel: deletingService.unitLabel,
+								pricingType: deletingService.pricingType,
+								flatAmount: deletingService.flatAmount,
+								unitPrice: deletingService.unitPrice,
+							}
+						: null
+				}
+				open={!!deletingService}
+				onOpenChange={(open) => !open && setDeletingService(null)}
+				onDelete={handleDeleteService}
+			/>
+		</div>
+	);
+}

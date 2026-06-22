@@ -20,11 +20,14 @@ describe("RoomDetail", () => {
 	});
 
 	describe("Display", () => {
-		it("renders room header, info, and payments sections", () => {
+		it("renders all sections", () => {
 			renderWithProviders(<RoomDetail room={mockRoom} />);
 
 			expect(
 				screen.getByRole("heading", { name: /room 101/i }),
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole("heading", { name: /services/i }),
 			).toBeInTheDocument();
 			expect(
 				screen.getByRole("heading", { name: /payment records/i }),
