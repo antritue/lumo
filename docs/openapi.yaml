@@ -302,6 +302,82 @@ components:
           type: ["number", "null"]
           minimum: 0
 
+    RoomService:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        roomId:
+          type: string
+          format: uuid
+        serviceId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        serviceName:
+          type: string
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+      required:
+        - id
+        - roomId
+        - serviceId
+        - userId
+        - pricingType
+
+    RoomServiceInput:
+      type: object
+      properties:
+        serviceId:
+          type: string
+          format: uuid
+        serviceName:
+          type: string
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+      required:
+        - serviceId
+        - serviceName
+        - pricingType
+
+    RoomServiceUpdateInput:
+      type: object
+      properties:
+        serviceName:
+          type: string
+        unitLabel:
+          type: ["string", "null"]
+        pricingType:
+          type: ["string", "null"]
+          enum: [flat, variable]
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+
     ServiceUpdateInput:
       type: object
       properties:
@@ -1131,5 +1207,142 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 error: Property service not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/rooms/{roomId}/services:
+    parameters:
+      - name: roomId
+        in: path
+        required: true
+        description: Room UUID
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: List room services
+      description: Returns all services configured for a room
+      operationId: listRoomServices
+      tags:
+        - Room Services
+      responses:
+        "200":
+          description: List of room services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoomService"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      summary: Add service to room
+      description: Adds a service to a room
+      operationId: createRoomService
+      tags:
+        - Room Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomServiceInput"
+            example:
+              serviceId: 550e8400-e29b-41d4-a716-446655440000
+              serviceName: WiFi
+              pricingType: flat
+              flatAmount: 15
+      responses:
+        "201":
+          description: Room service created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomService"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/rooms/{roomId}/services/{serviceId}:
+    parameters:
+      - name: roomId
+        in: path
+        required: true
+        description: Room UUID
+        schema:
+          type: string
+          format: uuid
+      - name: serviceId
+        in: path
+        required: true
+        description: Service UUID
+        schema:
+          type: string
+          format: uuid
+
+    patch:
+      summary: Update room service
+      description: Updates pricing overrides or service name for a room service. All fields are optional.
+      operationId: updateRoomService
+      tags:
+        - Room Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomServiceUpdateInput"
+            example:
+              pricingType: flat
+              flatAmount: 20
+      responses:
+        "200":
+          description: Room service updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomService"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Room service not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Room service not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      summary: Remove service from room
+      description: Removes a service configuration from a room
+      operationId: deleteRoomService
+      tags:
+        - Room Services
+      responses:
+        "204":
+          description: Room service deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Room service not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Room service not found
         "500":
           $ref: "#/components/responses/InternalServerError"
