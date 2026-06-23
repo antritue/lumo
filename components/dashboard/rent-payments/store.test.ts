@@ -36,8 +36,8 @@ describe("RentPaymentsStore", () => {
 		useRentPaymentsStore.setState({
 			rentPayments: [],
 			isPaymentsLoading: false,
-			loadingRoomIds: [],
-			paymentsFetchFailed: false,
+			fetchingRoomId: null,
+			isPaymentsFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
@@ -95,11 +95,11 @@ describe("RentPaymentsStore", () => {
 				useRentPaymentsStore.getState().fetchRentPaymentsByRoomId("room-1"),
 			).rejects.toThrow("Failed to fetch rent payments");
 
-			const { rentPayments, isPaymentsLoading, paymentsFetchFailed } =
+			const { rentPayments, isPaymentsLoading, isPaymentsFetchFailed } =
 				useRentPaymentsStore.getState();
 			expect(rentPayments).toEqual([]);
 			expect(isPaymentsLoading).toBe(false);
-			expect(paymentsFetchFailed).toBe(true);
+			expect(isPaymentsFetchFailed).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -399,8 +399,8 @@ describe("RentPaymentsStore", () => {
 					mockPayment({ id: "1", period: "2025-03", amount: 1200 }),
 				],
 				isPaymentsLoading: true,
-				loadingRoomIds: ["room-1"],
-				paymentsFetchFailed: true,
+				fetchingRoomId: "room-1",
+				isPaymentsFetchFailed: true,
 			});
 
 			useRentPaymentsStore.getState().clearStore();
@@ -408,8 +408,8 @@ describe("RentPaymentsStore", () => {
 			const state = useRentPaymentsStore.getState();
 			expect(state.rentPayments).toEqual([]);
 			expect(state.isPaymentsLoading).toBe(false);
-			expect(state.loadingRoomIds).toEqual([]);
-			expect(state.paymentsFetchFailed).toBe(false);
+			expect(state.fetchingRoomId).toBeNull();
+			expect(state.isPaymentsFetchFailed).toBe(false);
 		});
 	});
 });

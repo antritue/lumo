@@ -63,7 +63,7 @@ describe("RoomPaymentsSection", () => {
 		});
 	});
 
-	it("displays error state when paymentsFetchFailed is true", () => {
+	it("displays error state when 	isPaymentsFetchFailed is true", () => {
 		const onAdd = vi.fn();
 		const onEdit = vi.fn();
 		const onDelete = vi.fn();
@@ -74,7 +74,7 @@ describe("RoomPaymentsSection", () => {
 				onAdd={onAdd}
 				onEdit={onEdit}
 				onDelete={onDelete}
-				paymentsFetchFailed
+				isPaymentsFetchFailed
 			/>,
 		);
 
@@ -99,7 +99,7 @@ describe("RoomPaymentsSection", () => {
 				onAdd={onAdd}
 				onEdit={onEdit}
 				onDelete={onDelete}
-				paymentsFetchFailed
+				isPaymentsFetchFailed
 				onRetryPayments={onRetry}
 			/>,
 		);
