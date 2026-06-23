@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
@@ -8,6 +8,7 @@ import type { PropertyService } from "@/components/dashboard/properties/types";
 import { DeleteServiceDialog } from "@/components/dashboard/services/delete-service-dialog";
 import type { Service } from "@/components/dashboard/services/types";
 import { UpsertServiceDialog } from "@/components/dashboard/services/upsert-service-dialog";
+import { ErrorState } from "@/components/shared/error-state";
 import { useRoomServicesStore } from "./room-services-store";
 import type { RoomService } from "./types";
 
@@ -39,6 +40,16 @@ export function RoomServicesSection({
 	const deleteRoomService = useRoomServicesStore(
 		(state) => state.deleteRoomService,
 	);
+
+	const roomServicesLoadingIds = useRoomServicesStore(
+		(state) => state.loadingRoomIds,
+	);
+	const roomServicesFailedIds = useRoomServicesStore(
+		(state) => state.failedRoomIds,
+	);
+
+	const isRoomServicesLoading = roomServicesLoadingIds.includes(roomId);
+	const roomServicesFetchFailed = roomServicesFailedIds.includes(roomId);
 
 	const propertyServices = usePropertyServicesStore(
 		(state) =>
@@ -126,6 +137,10 @@ export function RoomServicesSection({
 		setDeletingService(null);
 	};
 
+	const handleRetry = () => {
+		fetchRoomServices(roomId, propertyId);
+	};
+
 	const formatAmount = (roomService: RoomService): string => {
 		const propertyService = findPropertyService(roomService);
 		const flatAmount =
@@ -161,47 +176,65 @@ export function RoomServicesSection({
 				</button>
 			</div>
 
-			{roomServices.length > 0 ? (
-				<div className="flex flex-wrap gap-2">
-					{roomServices.map((roomService) => (
-						<div
-							key={roomService.id}
-							className="inline-flex items-stretch rounded-2xl bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
-						>
-							<button
-								type="button"
-								onClick={() => handleEditService(roomService)}
-								className="flex flex-col py-1.5 pl-3 pr-1.5 min-w-0 cursor-pointer text-left"
-							>
-								<div className="flex items-center gap-1">
-									<span className="font-medium">{roomService.serviceName}</span>
-									{isRoomServiceCustom(roomService) && (
-										<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
-									)}
-								</div>
-								<span className="text-xs text-muted-foreground">
-									{roomService.pricingType === "flat"
-										? `${ts("flat")} · ${formatAmount(roomService)}`
-										: `${ts("variable")} · ${formatAmount(roomService)}`}
-								</span>
-							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									setDeletingService(roomService);
-								}}
-								className="flex items-center justify-center pr-2 pl-0.5 hover:text-red-500 transition-colors cursor-pointer shrink-0"
-								aria-label={`${t("remove")} ${roomService.serviceName}`}
-							>
-								<X className="h-3 w-3" />
-							</button>
-						</div>
-					))}
+			{isRoomServicesLoading && (
+				<div className="flex items-center justify-center py-8">
+					<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
 				</div>
-			) : (
-				<p className="text-sm text-muted-foreground">{t("empty")}</p>
 			)}
+
+			{roomServicesFetchFailed && !isRoomServicesLoading && (
+				<ErrorState onRetry={handleRetry} />
+			)}
+
+			{!isRoomServicesLoading &&
+				!roomServicesFetchFailed &&
+				roomServices.length > 0 && (
+					<div className="flex flex-wrap gap-2">
+						{roomServices.map((roomService) => (
+							<div
+								key={roomService.id}
+								className="inline-flex items-stretch rounded-2xl bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
+							>
+								<button
+									type="button"
+									onClick={() => handleEditService(roomService)}
+									className="flex flex-col py-1.5 pl-3 pr-1.5 min-w-0 cursor-pointer text-left"
+								>
+									<div className="flex items-center gap-1">
+										<span className="font-medium">
+											{roomService.serviceName}
+										</span>
+										{isRoomServiceCustom(roomService) && (
+											<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+										)}
+									</div>
+									<span className="text-xs text-muted-foreground">
+										{roomService.pricingType === "flat"
+											? `${ts("flat")} · ${formatAmount(roomService)}`
+											: `${ts("variable")} · ${formatAmount(roomService)}`}
+									</span>
+								</button>
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										setDeletingService(roomService);
+									}}
+									className="flex items-center justify-center pr-2 pl-0.5 hover:text-red-500 transition-colors cursor-pointer shrink-0"
+									aria-label={`${t("remove")} ${roomService.serviceName}`}
+								>
+									<X className="h-3 w-3" />
+								</button>
+							</div>
+						))}
+					</div>
+				)}
+
+			{!isRoomServicesLoading &&
+				!roomServicesFetchFailed &&
+				roomServices.length === 0 && (
+					<p className="text-sm text-muted-foreground">{t("empty")}</p>
+				)}
 
 			<UpsertServiceDialog
 				mode={dialogMode === "edit" ? "edit" : "add"}

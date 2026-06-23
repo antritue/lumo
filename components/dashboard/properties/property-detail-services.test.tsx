@@ -64,6 +64,34 @@ describe("PropertyDetailServices", () => {
 	});
 
 	describe("Display", () => {
+		it("shows loading spinner when property services are loading", () => {
+			usePropertyServicesStore.setState({
+				loadingPropertyIds: ["prop-1"],
+			});
+
+			const { container } = renderWithProviders(
+				<PropertyDetailServices propertyId="prop-1" />,
+			);
+
+			expect(container.querySelector(".animate-spin")).toBeInTheDocument();
+		});
+
+		it("shows error state with retry button on fetch failure", () => {
+			usePropertyServicesStore.setState({
+				failedPropertyIds: ["prop-1"],
+				fetchPropertyServices: vi.fn(),
+			});
+
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			expect(
+				screen.getByRole("heading", { name: /failed to load data/i }),
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: /try again/i }),
+			).toBeInTheDocument();
+		});
+
 		it("renders service badges for property services", () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
@@ -126,6 +154,22 @@ describe("PropertyDetailServices", () => {
 	});
 
 	describe("Interactions", () => {
+		it("calls fetchPropertyServices on retry button click", async () => {
+			const fetchPropertyServices = vi.fn();
+			usePropertyServicesStore.setState({
+				failedPropertyIds: ["prop-1"],
+				fetchPropertyServices,
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			await user.click(screen.getByRole("button", { name: /try again/i }));
+
+			expect(fetchPropertyServices).toHaveBeenCalledWith("prop-1");
+		});
+
 		it("opens add dialog on plus button click", async () => {
 			const user = userEvent.setup();
 

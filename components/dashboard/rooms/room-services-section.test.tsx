@@ -67,6 +67,36 @@ describe("RoomServicesSection", () => {
 	});
 
 	describe("Display", () => {
+		it("shows loading spinner when room services are loading", () => {
+			useRoomServicesStore.setState({
+				loadingRoomIds: ["room-1"],
+			});
+
+			const { container } = renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(container.querySelector(".animate-spin")).toBeInTheDocument();
+		});
+
+		it("shows error state with retry button on fetch failure", () => {
+			useRoomServicesStore.setState({
+				failedRoomIds: ["room-1"],
+				fetchRoomServices: vi.fn(),
+			});
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(
+				screen.getByRole("heading", { name: /failed to load data/i }),
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: /try again/i }),
+			).toBeInTheDocument();
+		});
+
 		it("renders service name and pricing badge", () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
@@ -132,6 +162,24 @@ describe("RoomServicesSection", () => {
 	});
 
 	describe("Interactions", () => {
+		it("calls fetchRoomServices on retry button click", async () => {
+			const fetchRoomServices = vi.fn();
+			useRoomServicesStore.setState({
+				failedRoomIds: ["room-1"],
+				fetchRoomServices,
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByRole("button", { name: /try again/i }));
+
+			expect(fetchRoomServices).toHaveBeenCalledWith("room-1", "prop-1");
+		});
+
 		it("opens add dialog on plus button click", async () => {
 			const user = userEvent.setup();
 
