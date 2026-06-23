@@ -32,8 +32,12 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 	const t = useTranslations("app.properties");
 	const locale = useLocale();
 	const rooms = useRoomsStore((state) => state.rooms);
-	const loadingPropertyIds = useRoomsStore((state) => state.loadingPropertyIds);
-	const failedPropertyIds = useRoomsStore((state) => state.failedPropertyIds);
+	const propertyRoomsLoadingIds = useRoomsStore(
+		(state) => state.loadingPropertyIds,
+	);
+	const propertyRoomsFailedIds = useRoomsStore(
+		(state) => state.failedPropertyIds,
+	);
 	const fetchRoomsByPropertyId = useRoomsStore(
 		(state) => state.fetchRoomsByPropertyId,
 	);
@@ -45,8 +49,8 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 		() => rooms.filter((r) => r.propertyId === propertyId),
 		[rooms, propertyId],
 	);
-	const isRoomsLoading = loadingPropertyIds.includes(propertyId);
-	const roomsFetchFailed = failedPropertyIds.includes(propertyId);
+	const isRoomsLoading = propertyRoomsLoadingIds.includes(propertyId);
+	const roomsFetchFailed = propertyRoomsFailedIds.includes(propertyId);
 	const roomCount = propertyRooms.length;
 
 	const [upsertRoom, setUpsertRoom] = useState<"add" | Room | null>(null);
@@ -98,7 +102,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 			</div>
 
 			{isRoomsLoading && (
-				<div className="flex items-center justify-center py-8">
+				<div className="flex items-center justify-center">
 					<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
 				</div>
 			)}

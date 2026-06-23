@@ -1,12 +1,13 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { DeleteServiceDialog } from "@/components/dashboard/services/delete-service-dialog";
 import { useServicesStore } from "@/components/dashboard/services/store";
 import type { Service } from "@/components/dashboard/services/types";
 import { UpsertServiceDialog } from "@/components/dashboard/services/upsert-service-dialog";
+import { ErrorState } from "@/components/shared/error-state";
 import { usePropertyServicesStore } from "./property-services-store";
 import type { PropertyService } from "./types";
 
@@ -40,6 +41,19 @@ export function PropertyDetailServices({
 		(state) => state.deletePropertyService,
 	);
 
+	const propertyServicesLoadingIds = usePropertyServicesStore(
+		(state) => state.loadingPropertyIds,
+	);
+	const propertyServicesFailedIds = usePropertyServicesStore(
+		(state) => state.failedPropertyIds,
+	);
+
+	const isPropertyServicesLoading =
+		propertyServicesLoadingIds.includes(propertyId);
+	const propertyServicesFetchFailed =
+		propertyServicesFailedIds.includes(propertyId);
+	const serviceCount = propertyServices.length;
+
 	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
 	const [editingService, setEditingService] = useState<Service | undefined>(
 		undefined,
@@ -64,8 +78,6 @@ export function PropertyDetailServices({
 		propertyService.serviceName ||
 		serviceNameMap.get(propertyService.serviceId) ||
 		"Unknown";
-
-	const serviceCount = propertyServices.length;
 
 	const isServiceCustom = (propertyService: PropertyService) => {
 		const global = services.find(
@@ -140,6 +152,11 @@ export function PropertyDetailServices({
 		setDeletingService(null);
 	};
 
+	const handleRetry = () => {
+		fetchServices();
+		fetchPropertyServices(propertyId);
+	};
+
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center gap-3">
@@ -158,52 +175,64 @@ export function PropertyDetailServices({
 				</button>
 			</div>
 
-			{propertyServices.length > 0 && (
-				<div className="flex flex-wrap gap-2">
-					{propertyServices.map((propertyService) => (
-						<div
-							key={propertyService.id}
-							className="inline-flex items-stretch rounded-full bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
-						>
-							<button
-								type="button"
-								onClick={() => {
-									setEditingService(resolveService(propertyService));
-									setIsEditingCustom(isServiceCustom(propertyService));
-									setDialogMode("edit");
-								}}
-								className="flex items-center gap-1 pl-3 pr-1.5 py-1.5 cursor-pointer"
-							>
-								{getServiceName(propertyService)}
-								{isServiceCustom(propertyService) && (
-									<span
-										className="h-1.5 w-1.5 rounded-full bg-amber-500"
-										title="Customized"
-									/>
-								)}
-							</button>
-							<button
-								type="button"
-								onClick={() =>
-									setDeletingService({
-										id: propertyService.serviceId,
-										userId: "",
-										name: getServiceName(propertyService),
-										unitLabel: propertyService.unitLabel ?? null,
-										pricingType: propertyService.pricingType ?? "flat",
-										flatAmount: propertyService.flatAmount,
-										unitPrice: propertyService.unitPrice,
-									})
-								}
-								className="flex items-center justify-center pr-2 pl-0.5 py-1.5 hover:text-red-500 transition-colors cursor-pointer"
-								aria-label={`${t("remove")} ${getServiceName(propertyService)}`}
-							>
-								<X className="h-3 w-3" />
-							</button>
-						</div>
-					))}
+			{isPropertyServicesLoading && (
+				<div className="flex items-center justify-center">
+					<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
 				</div>
 			)}
+
+			{propertyServicesFetchFailed && !isPropertyServicesLoading && (
+				<ErrorState onRetry={handleRetry} />
+			)}
+
+			{!isPropertyServicesLoading &&
+				!propertyServicesFetchFailed &&
+				propertyServices.length > 0 && (
+					<div className="flex flex-wrap gap-2">
+						{propertyServices.map((propertyService) => (
+							<div
+								key={propertyService.id}
+								className="inline-flex items-stretch rounded-full bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
+							>
+								<button
+									type="button"
+									onClick={() => {
+										setEditingService(resolveService(propertyService));
+										setIsEditingCustom(isServiceCustom(propertyService));
+										setDialogMode("edit");
+									}}
+									className="flex items-center gap-1 pl-3 pr-1.5 py-1.5 cursor-pointer"
+								>
+									{getServiceName(propertyService)}
+									{isServiceCustom(propertyService) && (
+										<span
+											className="h-1.5 w-1.5 rounded-full bg-amber-500"
+											title="Customized"
+										/>
+									)}
+								</button>
+								<button
+									type="button"
+									onClick={() =>
+										setDeletingService({
+											id: propertyService.serviceId,
+											userId: "",
+											name: getServiceName(propertyService),
+											unitLabel: propertyService.unitLabel ?? null,
+											pricingType: propertyService.pricingType ?? "flat",
+											flatAmount: propertyService.flatAmount,
+											unitPrice: propertyService.unitPrice,
+										})
+									}
+									className="flex items-center justify-center pr-2 pl-0.5 py-1.5 hover:text-red-500 transition-colors cursor-pointer"
+									aria-label={`${t("remove")} ${getServiceName(propertyService)}`}
+								>
+									<X className="h-3 w-3" />
+								</button>
+							</div>
+						))}
+					</div>
+				)}
 
 			<UpsertServiceDialog
 				mode={dialogMode === "edit" ? "edit" : "add"}
