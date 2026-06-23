@@ -7,8 +7,8 @@ import type { RoomService } from "./types";
 interface RoomServicesState {
 	roomServicesByRoomId: Record<string, RoomService[]>;
 	isRoomServicesLoading: boolean;
-	loadingRoomIds: string[];
-	failedRoomIds: string[];
+	isRoomServicesFetchFailed: boolean;
+	fetchingRoomId: string | null;
 
 	fetchRoomServices: (roomId: string, propertyId: string) => Promise<void>;
 	addRoomService: (
@@ -42,8 +42,8 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 		(set, get) => ({
 			roomServicesByRoomId: {},
 			isRoomServicesLoading: false,
-			loadingRoomIds: [],
-			failedRoomIds: [],
+			fetchingRoomId: null,
+			isRoomServicesFetchFailed: false,
 
 			fetchRoomServices: async (roomId, propertyId) => {
 				const user = useAuthStore.getState().user;
@@ -77,15 +77,15 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 					return;
 				}
 
-				const { loadingRoomIds } = get();
-				if (loadingRoomIds.includes(roomId)) return;
+				const { fetchingRoomId } = get();
+				if (fetchingRoomId === roomId) return;
 
 				try {
-					set((state) => ({
+					set({
 						isRoomServicesLoading: true,
-						loadingRoomIds: [...state.loadingRoomIds, roomId],
-						failedRoomIds: state.failedRoomIds.filter((id) => id !== roomId),
-					}));
+						fetchingRoomId: roomId,
+						isRoomServicesFetchFailed: false,
+					});
 
 					const res = await fetch(`/api/rooms/${roomId}/services`, {
 						method: "GET",
@@ -138,30 +138,20 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 						resolved = sortByServiceName(created);
 					}
 
-					set((state) => {
-						const newLoadingIds = state.loadingRoomIds.filter(
-							(id) => id !== roomId,
-						);
-						return {
-							roomServicesByRoomId: {
-								...state.roomServicesByRoomId,
-								[roomId]: resolved,
-							},
-							isRoomServicesLoading: newLoadingIds.length > 0,
-							loadingRoomIds: newLoadingIds,
-						};
-					});
+					set((state) => ({
+						roomServicesByRoomId: {
+							...state.roomServicesByRoomId,
+							[roomId]: resolved,
+						},
+						isRoomServicesLoading: false,
+						fetchingRoomId: null,
+					}));
 				} catch (error) {
 					console.error("Failed to fetch room services:", error);
-					set((state) => {
-						const newLoadingIds = state.loadingRoomIds.filter(
-							(id) => id !== roomId,
-						);
-						return {
-							isRoomServicesLoading: newLoadingIds.length > 0,
-							loadingRoomIds: newLoadingIds,
-							failedRoomIds: [...state.failedRoomIds, roomId],
-						};
+					set({
+						isRoomServicesLoading: false,
+						fetchingRoomId: null,
+						isRoomServicesFetchFailed: true,
 					});
 				}
 			},
@@ -322,8 +312,8 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 				set({
 					roomServicesByRoomId: {},
 					isRoomServicesLoading: false,
-					loadingRoomIds: [],
-					failedRoomIds: [],
+					fetchingRoomId: null,
+					isRoomServicesFetchFailed: false,
 				}),
 		}),
 		{ name: "room-services" },

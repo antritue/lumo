@@ -50,8 +50,8 @@ describe("RoomServicesSection", () => {
 		useRoomServicesStore.setState({
 			roomServicesByRoomId: {},
 			isRoomServicesLoading: false,
-			loadingRoomIds: [],
-			failedRoomIds: [],
+			fetchingRoomId: null,
+			isRoomServicesFetchFailed: false,
 			fetchRoomServices: vi.fn(),
 			addRoomService: vi.fn(),
 			updateRoomService: vi.fn(),
@@ -69,7 +69,7 @@ describe("RoomServicesSection", () => {
 	describe("Display", () => {
 		it("shows loading spinner when room services are loading", () => {
 			useRoomServicesStore.setState({
-				loadingRoomIds: ["room-1"],
+				fetchingRoomId: "room-1",
 			});
 
 			const { container } = renderWithProviders(
@@ -81,7 +81,7 @@ describe("RoomServicesSection", () => {
 
 		it("shows error state with retry button on fetch failure", () => {
 			useRoomServicesStore.setState({
-				failedRoomIds: ["room-1"],
+				isRoomServicesFetchFailed: true,
 				fetchRoomServices: vi.fn(),
 			});
 
@@ -165,7 +165,7 @@ describe("RoomServicesSection", () => {
 		it("calls fetchRoomServices on retry button click", async () => {
 			const fetchRoomServices = vi.fn();
 			useRoomServicesStore.setState({
-				failedRoomIds: ["room-1"],
+				isRoomServicesFetchFailed: true,
 				fetchRoomServices,
 			});
 
