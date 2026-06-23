@@ -213,8 +213,7 @@
 			"unitPrice": "Đơn giá",
 			"notSet": "Chưa thiết lập",
 			"suggestions": "Thêm nhanh dịch vụ thường dùng:",
-			"globalServiceNotice": "Thay đổi dịch vụ toàn cục sẽ áp dụng cho tất cả bất động sản",
-			"hintApplyNotice": "Chỉ áp dụng cho bất động sản mới khi tạo",
+			"globalServiceNotice": "Thay đổi dịch vụ toàn cục áp dụng cho tất cả bất động sản. Dịch vụ mới chỉ áp dụng cho bất động sản được tạo sau",
 			"errors": {
 				"create": {
 					"title": "Không thể thêm dịch vụ",

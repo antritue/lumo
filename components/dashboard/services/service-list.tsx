@@ -86,9 +86,6 @@ export function ServiceList() {
 								);
 							})}
 						</div>
-						<p className="text-xs text-muted-foreground italic">
-							{t("hintApplyNotice")}
-						</p>
 					</div>
 				)}
 
