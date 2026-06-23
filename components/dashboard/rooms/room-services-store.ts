@@ -111,29 +111,29 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 								propertyId
 							] ?? [];
 
-						const created = await Promise.all(
-							propertyServices.map((ps) =>
-								fetch(`/api/rooms/${roomId}/services`, {
-									method: "POST",
-									headers: {
-										"Content-Type": "application/json",
-									},
-									body: JSON.stringify({
-										serviceId: ps.serviceId,
-										serviceName: ps.serviceName,
-										unitLabel: ps.unitLabel,
-										pricingType: ps.pricingType,
-										flatAmount: ps.flatAmount,
-										unitPrice: ps.unitPrice,
-									}),
-									credentials: "include",
-								}).then((response) => {
-									if (!response.ok)
-										throw new Error("Failed to seed room service");
-									return response.json();
-								}),
+						const res = await fetch(`/api/rooms/${roomId}/services`, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify(
+								propertyServices.map((ps) => ({
+									serviceId: ps.serviceId,
+									serviceName: ps.serviceName,
+									unitLabel: ps.unitLabel,
+									pricingType: ps.pricingType,
+									flatAmount: ps.flatAmount,
+									unitPrice: ps.unitPrice,
+								})),
 							),
-						);
+							credentials: "include",
+						});
+
+						if (!res.ok) {
+							throw new Error("Failed to seed room services");
+						}
+
+						const created: RoomService[] = await res.json();
 
 						resolved = sortByServiceName(created);
 					}
@@ -203,7 +203,7 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify({ serviceId, ...data }),
+						body: JSON.stringify([{ serviceId, ...data }]),
 						credentials: "include",
 					});
 
@@ -211,7 +211,7 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 						throw new Error("Failed to add room service");
 					}
 
-					const responseData: RoomService = await res.json();
+					const [responseData] = (await res.json()) as RoomService[];
 
 					set((state) => ({
 						roomServicesByRoomId: {

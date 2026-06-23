@@ -69,7 +69,7 @@ export async function createPropertyService(
 		const { id: propertyId } = await params;
 		const body = await request.json();
 
-		const validation = propertyServiceSchema.safeParse(body);
+		const validation = z.array(propertyServiceSchema).safeParse(body);
 		if (!validation.success) {
 			return NextResponse.json(
 				{ error: z.treeifyError(validation.error) },
@@ -77,37 +77,39 @@ export async function createPropertyService(
 			);
 		}
 
-		const {
-			serviceId,
-			serviceName,
-			unitLabel,
-			pricingType,
-			flatAmount,
-			unitPrice,
-		} = validation.data;
-
-		const insertData: Record<string, unknown> = {
-			property_id: propertyId,
-			service_id: serviceId,
-			service_name: serviceName,
-			user_id: user.id,
-			pricing_type: pricingType,
-		};
-		if (unitLabel !== undefined) insertData.unit_label = unitLabel;
-		if (flatAmount !== undefined) insertData.flat_amount = flatAmount;
-		if (unitPrice !== undefined) insertData.unit_price = unitPrice;
+		const insertDataArray = validation.data.map(
+			({
+				serviceId,
+				serviceName,
+				unitLabel,
+				pricingType,
+				flatAmount,
+				unitPrice,
+			}) => {
+				const row: Record<string, unknown> = {
+					property_id: propertyId,
+					service_id: serviceId,
+					service_name: serviceName,
+					user_id: user.id,
+					pricing_type: pricingType,
+				};
+				if (unitLabel !== undefined) row.unit_label = unitLabel;
+				if (flatAmount !== undefined) row.flat_amount = flatAmount;
+				if (unitPrice !== undefined) row.unit_price = unitPrice;
+				return row;
+			},
+		);
 
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.PROPERTY_SERVICES)
-			.insert(insertData)
-			.select()
-			.single();
+			.insert(insertDataArray)
+			.select();
 
 		if (error) {
 			throw error;
 		}
 
-		return NextResponse.json(mapPropertyService(data), { status: 201 });
+		return NextResponse.json(data.map(mapPropertyService), { status: 201 });
 	} catch (err) {
 		console.error("PropertyServices API Error:", err);
 		return NextResponse.json(
