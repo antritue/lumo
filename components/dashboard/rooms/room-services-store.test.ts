@@ -40,8 +40,8 @@ describe("RoomServicesStore", () => {
 		useRoomServicesStore.setState({
 			roomServicesByRoomId: {},
 			isRoomServicesLoading: false,
-			loadingRoomIds: [],
-			failedRoomIds: [],
+			fetchingRoomId: null,
+			isRoomServicesFetchFailed: false,
 		});
 		usePropertyServicesStore.setState({
 			propertyServicesByPropertyId: {
@@ -235,10 +235,10 @@ describe("RoomServicesStore", () => {
 				.getState()
 				.fetchRoomServices("room-1", "prop-1");
 
-			const { isRoomServicesLoading, failedRoomIds } =
+			const { isRoomServicesLoading, isRoomServicesFetchFailed } =
 				useRoomServicesStore.getState();
 			expect(isRoomServicesLoading).toBe(false);
-			expect(failedRoomIds).toContain("room-1");
+			expect(isRoomServicesFetchFailed).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -594,16 +594,18 @@ describe("RoomServicesStore", () => {
 					"room-1": [mockRoomService()],
 				},
 				isRoomServicesLoading: true,
-				loadingRoomIds: ["room-1"],
-				failedRoomIds: ["room-2"],
+				fetchingRoomId: "room-1",
+				isRoomServicesFetchFailed: true,
 			});
 
 			useRoomServicesStore.getState().clearStore();
 
 			expect(useRoomServicesStore.getState().roomServicesByRoomId).toEqual({});
 			expect(useRoomServicesStore.getState().isRoomServicesLoading).toBe(false);
-			expect(useRoomServicesStore.getState().loadingRoomIds).toEqual([]);
-			expect(useRoomServicesStore.getState().failedRoomIds).toEqual([]);
+			expect(useRoomServicesStore.getState().fetchingRoomId).toBeNull();
+			expect(useRoomServicesStore.getState().isRoomServicesFetchFailed).toBe(
+				false,
+			);
 		});
 	});
 });

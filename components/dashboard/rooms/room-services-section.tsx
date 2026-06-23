@@ -41,15 +41,12 @@ export function RoomServicesSection({
 		(state) => state.deleteRoomService,
 	);
 
-	const roomServicesLoadingIds = useRoomServicesStore(
-		(state) => state.loadingRoomIds,
+	const isRoomServicesLoading = useRoomServicesStore(
+		(state) => state.fetchingRoomId === roomId,
 	);
-	const roomServicesFailedIds = useRoomServicesStore(
-		(state) => state.failedRoomIds,
+	const isRoomServicesFetchFailed = useRoomServicesStore(
+		(state) => state.isRoomServicesFetchFailed,
 	);
-
-	const isRoomServicesLoading = roomServicesLoadingIds.includes(roomId);
-	const roomServicesFetchFailed = roomServicesFailedIds.includes(roomId);
 
 	const propertyServices = usePropertyServicesStore(
 		(state) =>
@@ -182,12 +179,12 @@ export function RoomServicesSection({
 				</div>
 			)}
 
-			{roomServicesFetchFailed && !isRoomServicesLoading && (
+			{isRoomServicesFetchFailed && !isRoomServicesLoading && (
 				<ErrorState onRetry={handleRetry} />
 			)}
 
 			{!isRoomServicesLoading &&
-				!roomServicesFetchFailed &&
+				!isRoomServicesFetchFailed &&
 				roomServices.length > 0 && (
 					<div className="flex flex-wrap gap-2">
 						{roomServices.map((roomService) => (
@@ -231,7 +228,7 @@ export function RoomServicesSection({
 				)}
 
 			{!isRoomServicesLoading &&
-				!roomServicesFetchFailed &&
+				!isRoomServicesFetchFailed &&
 				roomServices.length === 0 && (
 					<p className="text-sm text-muted-foreground">{t("empty")}</p>
 				)}
