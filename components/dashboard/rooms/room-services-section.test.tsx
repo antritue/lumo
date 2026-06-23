@@ -60,8 +60,8 @@ describe("RoomServicesSection", () => {
 		usePropertyServicesStore.setState({
 			propertyServicesByPropertyId: {},
 			isPropertyServicesLoading: false,
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			fetchingPropertyId: null,
+			isPropertyServicesFetchFailed: false,
 			fetchPropertyServices: vi.fn(),
 		});
 	});

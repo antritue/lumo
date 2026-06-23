@@ -7,8 +7,8 @@ import type { PropertyService } from "./types";
 interface PropertyServicesState {
 	propertyServicesByPropertyId: Record<string, PropertyService[]>;
 	isPropertyServicesLoading: boolean;
-	loadingPropertyIds: string[];
-	failedPropertyIds: string[];
+	isPropertyServicesFetchFailed: boolean;
+	fetchingPropertyId: string | null;
 
 	fetchPropertyServices: (propertyId: string) => Promise<void>;
 	addPropertyService: (
@@ -45,8 +45,8 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 		(set, get) => ({
 			propertyServicesByPropertyId: {},
 			isPropertyServicesLoading: false,
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			fetchingPropertyId: null,
+			isPropertyServicesFetchFailed: false,
 
 			fetchPropertyServices: async (propertyId) => {
 				const user = useAuthStore.getState().user;
@@ -80,17 +80,15 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 					return;
 				}
 
-				const { loadingPropertyIds } = get();
-				if (loadingPropertyIds.includes(propertyId)) return;
+				const { fetchingPropertyId } = get();
+				if (fetchingPropertyId === propertyId) return;
 
 				try {
-					set((state) => ({
+					set({
 						isPropertyServicesLoading: true,
-						loadingPropertyIds: [...state.loadingPropertyIds, propertyId],
-						failedPropertyIds: state.failedPropertyIds.filter(
-							(id) => id !== propertyId,
-						),
-					}));
+						fetchingPropertyId: propertyId,
+						isPropertyServicesFetchFailed: false,
+					});
 
 					const res = await fetch(`/api/properties/${propertyId}/services`, {
 						method: "GET",
@@ -141,30 +139,20 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 						resolved = sortByServiceName(created);
 					}
 
-					set((state) => {
-						const newLoadingIds = state.loadingPropertyIds.filter(
-							(id) => id !== propertyId,
-						);
-						return {
-							propertyServicesByPropertyId: {
-								...state.propertyServicesByPropertyId,
-								[propertyId]: resolved,
-							},
-							isPropertyServicesLoading: newLoadingIds.length > 0,
-							loadingPropertyIds: newLoadingIds,
-						};
-					});
+					set((state) => ({
+						propertyServicesByPropertyId: {
+							...state.propertyServicesByPropertyId,
+							[propertyId]: resolved,
+						},
+						isPropertyServicesLoading: false,
+						fetchingPropertyId: null,
+					}));
 				} catch (error) {
 					console.error("Failed to fetch property services:", error);
-					set((state) => {
-						const newLoadingIds = state.loadingPropertyIds.filter(
-							(id) => id !== propertyId,
-						);
-						return {
-							isPropertyServicesLoading: newLoadingIds.length > 0,
-							loadingPropertyIds: newLoadingIds,
-							failedPropertyIds: [...state.failedPropertyIds, propertyId],
-						};
+					set({
+						isPropertyServicesLoading: false,
+						fetchingPropertyId: null,
+						isPropertyServicesFetchFailed: true,
 					});
 					throw error;
 				}
@@ -330,8 +318,8 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 				set({
 					propertyServicesByPropertyId: {},
 					isPropertyServicesLoading: false,
-					loadingPropertyIds: [],
-					failedPropertyIds: [],
+					fetchingPropertyId: null,
+					isPropertyServicesFetchFailed: false,
 				}),
 		}),
 		{ name: "property-services" },

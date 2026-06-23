@@ -69,8 +69,8 @@ describe("RoomServicesStore", () => {
 				],
 			},
 			isPropertyServicesLoading: false,
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			fetchingPropertyId: null,
+			isPropertyServicesFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();

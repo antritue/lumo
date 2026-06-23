@@ -41,17 +41,12 @@ export function PropertyDetailServices({
 		(state) => state.deletePropertyService,
 	);
 
-	const propertyServicesLoadingIds = usePropertyServicesStore(
-		(state) => state.loadingPropertyIds,
+	const isPropertyServicesLoading = usePropertyServicesStore(
+		(state) => state.fetchingPropertyId === propertyId,
 	);
-	const propertyServicesFailedIds = usePropertyServicesStore(
-		(state) => state.failedPropertyIds,
+	const isPropertyServicesFetchFailed = usePropertyServicesStore(
+		(state) => state.isPropertyServicesFetchFailed,
 	);
-
-	const isPropertyServicesLoading =
-		propertyServicesLoadingIds.includes(propertyId);
-	const propertyServicesFetchFailed =
-		propertyServicesFailedIds.includes(propertyId);
 	const serviceCount = propertyServices.length;
 
 	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
@@ -181,12 +176,12 @@ export function PropertyDetailServices({
 				</div>
 			)}
 
-			{propertyServicesFetchFailed && !isPropertyServicesLoading && (
+			{isPropertyServicesFetchFailed && !isPropertyServicesLoading && (
 				<ErrorState onRetry={handleRetry} />
 			)}
 
 			{!isPropertyServicesLoading &&
-				!propertyServicesFetchFailed &&
+				!isPropertyServicesFetchFailed &&
 				propertyServices.length > 0 && (
 					<div className="flex flex-wrap gap-2">
 						{propertyServices.map((propertyService) => (
