@@ -40,8 +40,8 @@ describe("PropertyServicesStore", () => {
 		usePropertyServicesStore.setState({
 			propertyServicesByPropertyId: {},
 			isPropertyServicesLoading: false,
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			fetchingPropertyId: null,
+			isPropertyServicesFetchFailed: false,
 		});
 		useServicesStore.setState({
 			services: [],
@@ -238,10 +238,10 @@ describe("PropertyServicesStore", () => {
 				usePropertyServicesStore.getState().fetchPropertyServices("prop-1"),
 			).rejects.toThrow("Failed to fetch property services");
 
-			const { isPropertyServicesLoading, failedPropertyIds } =
+			const { isPropertyServicesLoading, isPropertyServicesFetchFailed } =
 				usePropertyServicesStore.getState();
 			expect(isPropertyServicesLoading).toBe(false);
-			expect(failedPropertyIds).toContain("prop-1");
+			expect(isPropertyServicesFetchFailed).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -623,8 +623,8 @@ describe("PropertyServicesStore", () => {
 					"prop-1": [mockPropertyService()],
 				},
 				isPropertyServicesLoading: true,
-				loadingPropertyIds: ["prop-1"],
-				failedPropertyIds: ["prop-2"],
+				fetchingPropertyId: "prop-1",
+				isPropertyServicesFetchFailed: true,
 			});
 
 			usePropertyServicesStore.getState().clearStore();
@@ -635,10 +635,10 @@ describe("PropertyServicesStore", () => {
 			expect(
 				usePropertyServicesStore.getState().isPropertyServicesLoading,
 			).toBe(false);
-			expect(usePropertyServicesStore.getState().loadingPropertyIds).toEqual(
-				[],
-			);
-			expect(usePropertyServicesStore.getState().failedPropertyIds).toEqual([]);
+			expect(usePropertyServicesStore.getState().fetchingPropertyId).toBeNull();
+			expect(
+				usePropertyServicesStore.getState().isPropertyServicesFetchFailed,
+			).toBe(false);
 		});
 	});
 });

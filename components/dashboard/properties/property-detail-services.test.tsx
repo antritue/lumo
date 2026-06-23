@@ -54,8 +54,8 @@ describe("PropertyDetailServices", () => {
 		usePropertyServicesStore.setState({
 			propertyServicesByPropertyId: {},
 			isPropertyServicesLoading: false,
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			fetchingPropertyId: null,
+			isPropertyServicesFetchFailed: false,
 			fetchPropertyServices: vi.fn(),
 			addPropertyService: vi.fn(),
 			updatePropertyService: vi.fn(),
@@ -66,7 +66,7 @@ describe("PropertyDetailServices", () => {
 	describe("Display", () => {
 		it("shows loading spinner when property services are loading", () => {
 			usePropertyServicesStore.setState({
-				loadingPropertyIds: ["prop-1"],
+				fetchingPropertyId: "prop-1",
 			});
 
 			const { container } = renderWithProviders(
@@ -78,7 +78,7 @@ describe("PropertyDetailServices", () => {
 
 		it("shows error state with retry button on fetch failure", () => {
 			usePropertyServicesStore.setState({
-				failedPropertyIds: ["prop-1"],
+				isPropertyServicesFetchFailed: true,
 				fetchPropertyServices: vi.fn(),
 			});
 
@@ -157,7 +157,7 @@ describe("PropertyDetailServices", () => {
 		it("calls fetchPropertyServices on retry button click", async () => {
 			const fetchPropertyServices = vi.fn();
 			usePropertyServicesStore.setState({
-				failedPropertyIds: ["prop-1"],
+				isPropertyServicesFetchFailed: true,
 				fetchPropertyServices,
 			});
 
