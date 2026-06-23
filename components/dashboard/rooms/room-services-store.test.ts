@@ -160,22 +160,26 @@ describe("RoomServicesStore", () => {
 				json: async () => [],
 			});
 
-			const createdService = (index: number) =>
+			const createdServices = [
 				mockRoomService({
 					roomId: "room-1",
-					serviceId: index === 0 ? "svc-elec" : "svc-water",
-					serviceName: index === 0 ? "Electricity" : "Water",
-					unitLabel: index === 0 ? "kWh" : "m³",
+					serviceId: "svc-elec",
+					serviceName: "Electricity",
+					unitLabel: "kWh",
 					pricingType: "variable",
-				});
+				}),
+				mockRoomService({
+					roomId: "room-1",
+					serviceId: "svc-water",
+					serviceName: "Water",
+					unitLabel: "m³",
+					pricingType: "variable",
+				}),
+			];
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => createdService(0),
-			});
-			mockFetch.mockResolvedValueOnce({
-				ok: true,
-				json: async () => createdService(1),
+				json: async () => createdServices,
 			});
 
 			await useRoomServicesStore
@@ -186,7 +190,7 @@ describe("RoomServicesStore", () => {
 			expect(roomServicesByRoomId["room-1"]).toHaveLength(2);
 			expect(roomServicesByRoomId["room-1"][0].serviceName).toBe("Electricity");
 			expect(roomServicesByRoomId["room-1"][1].serviceName).toBe("Water");
-			expect(mockFetch).toHaveBeenCalledTimes(3);
+			expect(mockFetch).toHaveBeenCalledTimes(2);
 
 			expect(mockFetch).toHaveBeenNthCalledWith(
 				1,
@@ -198,29 +202,24 @@ describe("RoomServicesStore", () => {
 				"/api/rooms/room-1/services",
 				expect.objectContaining({
 					method: "POST",
-					body: JSON.stringify({
-						serviceId: "svc-elec",
-						serviceName: "Electricity",
-						unitLabel: "kWh",
-						pricingType: "variable",
-						flatAmount: null,
-						unitPrice: null,
-					}),
-				}),
-			);
-			expect(mockFetch).toHaveBeenNthCalledWith(
-				3,
-				"/api/rooms/room-1/services",
-				expect.objectContaining({
-					method: "POST",
-					body: JSON.stringify({
-						serviceId: "svc-water",
-						serviceName: "Water",
-						unitLabel: "m³",
-						pricingType: "variable",
-						flatAmount: null,
-						unitPrice: null,
-					}),
+					body: JSON.stringify([
+						{
+							serviceId: "svc-elec",
+							serviceName: "Electricity",
+							unitLabel: "kWh",
+							pricingType: "variable",
+							flatAmount: null,
+							unitPrice: null,
+						},
+						{
+							serviceId: "svc-water",
+							serviceName: "Water",
+							unitLabel: "m³",
+							pricingType: "variable",
+							flatAmount: null,
+							unitPrice: null,
+						},
+					]),
 				}),
 			);
 		});
@@ -295,7 +294,7 @@ describe("RoomServicesStore", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => created,
+				json: async () => [created],
 			});
 
 			await useRoomServicesStore
@@ -316,14 +315,16 @@ describe("RoomServicesStore", () => {
 				"/api/rooms/room-1/services",
 				expect.objectContaining({
 					method: "POST",
-					body: JSON.stringify({
-						serviceId: "svc-new",
-						serviceName: "Test",
-						unitLabel: null,
-						pricingType: "flat",
-						flatAmount: null,
-						unitPrice: null,
-					}),
+					body: JSON.stringify([
+						{
+							serviceId: "svc-new",
+							serviceName: "Test",
+							unitLabel: null,
+							pricingType: "flat",
+							flatAmount: null,
+							unitPrice: null,
+						},
+					]),
 					credentials: "include",
 				}),
 			);

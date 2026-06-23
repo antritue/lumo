@@ -1114,19 +1114,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PropertyServiceInput"
+              type: array
+              items:
+                $ref: "#/components/schemas/PropertyServiceInput"
             example:
-              serviceId: 550e8400-e29b-41d4-a716-446655440000
-              serviceName: WiFi
-              pricingType: flat
-              flatAmount: 15
+              - serviceId: 550e8400-e29b-41d4-a716-446655440000
+                serviceName: WiFi
+                pricingType: flat
+                flatAmount: 15
       responses:
         "201":
-          description: Property service created
+          description: Property service(s) created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PropertyService"
+                type: array
+                items:
+                  $ref: "#/components/schemas/PropertyService"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1251,19 +1255,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RoomServiceInput"
+              type: array
+              items:
+                $ref: "#/components/schemas/RoomServiceInput"
             example:
-              serviceId: 550e8400-e29b-41d4-a716-446655440000
-              serviceName: WiFi
-              pricingType: flat
-              flatAmount: 15
+              - serviceId: 550e8400-e29b-41d4-a716-446655440000
+                serviceName: WiFi
+                pricingType: flat
+                flatAmount: 15
       responses:
         "201":
-          description: Room service created
+          description: Room service(s) created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RoomService"
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoomService"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":

@@ -114,29 +114,29 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 						await useServicesStore.getState().fetchServices();
 						const globalServices = useServicesStore.getState().services;
 
-						const created = await Promise.all(
-							globalServices.map((globalService) =>
-								fetch(`/api/properties/${propertyId}/services`, {
-									method: "POST",
-									headers: {
-										"Content-Type": "application/json",
-									},
-									body: JSON.stringify({
-										serviceId: globalService.id,
-										serviceName: globalService.name,
-										unitLabel: globalService.unitLabel,
-										pricingType: globalService.pricingType,
-										flatAmount: globalService.flatAmount,
-										unitPrice: globalService.unitPrice,
-									}),
-									credentials: "include",
-								}).then((response) => {
-									if (!response.ok)
-										throw new Error("Failed to seed property service");
-									return response.json();
-								}),
+						const res = await fetch(`/api/properties/${propertyId}/services`, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify(
+								globalServices.map((gs) => ({
+									serviceId: gs.id,
+									serviceName: gs.name,
+									unitLabel: gs.unitLabel,
+									pricingType: gs.pricingType,
+									flatAmount: gs.flatAmount,
+									unitPrice: gs.unitPrice,
+								})),
 							),
-						);
+							credentials: "include",
+						});
+
+						if (!res.ok) {
+							throw new Error("Failed to seed property services");
+						}
+
+						const created: PropertyService[] = await res.json();
 
 						resolved = sortByServiceName(created);
 					}
@@ -207,7 +207,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify({ serviceId, ...data }),
+						body: JSON.stringify([{ serviceId, ...data }]),
 						credentials: "include",
 					});
 
@@ -215,7 +215,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 						throw new Error("Failed to add property service");
 					}
 
-					const responseData: PropertyService = await res.json();
+					const [responseData] = (await res.json()) as PropertyService[];
 
 					set((state) => ({
 						propertyServicesByPropertyId: {

@@ -67,7 +67,7 @@ export async function createRoomService(
 		const { id: roomId } = await params;
 		const body = await request.json();
 
-		const validation = roomServiceSchema.safeParse(body);
+		const validation = z.array(roomServiceSchema).safeParse(body);
 		if (!validation.success) {
 			return NextResponse.json(
 				{ error: z.treeifyError(validation.error) },
@@ -75,37 +75,39 @@ export async function createRoomService(
 			);
 		}
 
-		const {
-			serviceId,
-			serviceName,
-			unitLabel,
-			pricingType,
-			flatAmount,
-			unitPrice,
-		} = validation.data;
-
-		const insertData: Record<string, unknown> = {
-			room_id: roomId,
-			service_id: serviceId,
-			service_name: serviceName,
-			user_id: user.id,
-			pricing_type: pricingType,
-		};
-		if (unitLabel !== undefined) insertData.unit_label = unitLabel;
-		if (flatAmount !== undefined) insertData.flat_amount = flatAmount;
-		if (unitPrice !== undefined) insertData.unit_price = unitPrice;
+		const insertDataArray = validation.data.map(
+			({
+				serviceId,
+				serviceName,
+				unitLabel,
+				pricingType,
+				flatAmount,
+				unitPrice,
+			}) => {
+				const row: Record<string, unknown> = {
+					room_id: roomId,
+					service_id: serviceId,
+					service_name: serviceName,
+					user_id: user.id,
+					pricing_type: pricingType,
+				};
+				if (unitLabel !== undefined) row.unit_label = unitLabel;
+				if (flatAmount !== undefined) row.flat_amount = flatAmount;
+				if (unitPrice !== undefined) row.unit_price = unitPrice;
+				return row;
+			},
+		);
 
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.ROOM_SERVICES)
-			.insert(insertData)
-			.select()
-			.single();
+			.insert(insertDataArray)
+			.select();
 
 		if (error) {
 			throw error;
 		}
 
-		return NextResponse.json(mapRoomService(data), { status: 201 });
+		return NextResponse.json(data.map(mapRoomService), { status: 201 });
 	} catch (err) {
 		console.error("RoomServices API Error:", err);
 		return NextResponse.json(
