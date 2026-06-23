@@ -12,7 +12,7 @@ interface RoomPaymentsSectionProps {
 	onEdit: (payment: PaymentRecord) => void;
 	onDelete: (payment: PaymentRecord) => void;
 	isPaymentsLoading?: boolean;
-	paymentsFetchFailed?: boolean;
+	isPaymentsFetchFailed?: boolean;
 	onRetryPayments?: () => void;
 }
 
@@ -22,14 +22,14 @@ export function RoomPaymentsSection({
 	onEdit,
 	onDelete,
 	isPaymentsLoading,
-	paymentsFetchFailed,
+	isPaymentsFetchFailed,
 	onRetryPayments,
 }: RoomPaymentsSectionProps) {
 	const t = useTranslations("app.rentPayments");
 
 	return (
 		<div className="space-y-4">
-			{!paymentsFetchFailed && (
+			{!isPaymentsFetchFailed && (
 				<div className="flex items-center gap-3">
 					<h3 className="text-sm font-medium text-foreground">
 						{t("listTitle")}
@@ -47,7 +47,7 @@ export function RoomPaymentsSection({
 				</div>
 			)}
 
-			{paymentsFetchFailed ? (
+			{isPaymentsFetchFailed ? (
 				<ErrorState onRetry={onRetryPayments} />
 			) : isPaymentsLoading ? (
 				<div className="flex items-center justify-center py-12">

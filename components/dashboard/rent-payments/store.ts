@@ -4,13 +4,11 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { PaymentRecord, PaymentStatus } from "./types";
 
 interface RentPaymentsState {
-	// Domain data
 	rentPayments: PaymentRecord[];
 
-	// Loading state
-	isPaymentsLoading: boolean; // true while any rent payment fetch is in-flight
-	loadingRoomIds: string[]; // dedup: prevents duplicate fetches for the same room
-	paymentsFetchFailed: boolean; // true when fetchRentPaymentsByRoomId fails
+	isPaymentsLoading: boolean;
+	isPaymentsFetchFailed: boolean;
+	fetchingRoomId: string | null; // dedup: prevents duplicate fetches for the same room
 
 	// Actions
 	fetchRentPaymentsByRoomId: (roomId: string) => Promise<void>;
@@ -35,22 +33,22 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 		(set, get) => ({
 			rentPayments: [],
 			isPaymentsLoading: false,
-			loadingRoomIds: [],
-			paymentsFetchFailed: false,
+			fetchingRoomId: null,
+			isPaymentsFetchFailed: false,
 
 			fetchRentPaymentsByRoomId: async (roomId: string) => {
 				const user = useAuthStore.getState().user;
 				if (!user) return;
 
-				const { loadingRoomIds } = get();
-				if (loadingRoomIds.includes(roomId)) return;
+				const { fetchingRoomId } = get();
+				if (fetchingRoomId === roomId) return;
 
 				try {
-					set((state) => ({
+					set({
 						isPaymentsLoading: true,
-						loadingRoomIds: [...state.loadingRoomIds, roomId],
-						paymentsFetchFailed: false,
-					}));
+						fetchingRoomId: roomId,
+						isPaymentsFetchFailed: false,
+					});
 
 					const res = await fetch(`/api/rent-payments?roomId=${roomId}`, {
 						method: "GET",
@@ -69,15 +67,15 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 							...data,
 						],
 						isPaymentsLoading: false,
-						loadingRoomIds: state.loadingRoomIds.filter((id) => id !== roomId),
+						fetchingRoomId: null,
 					}));
 				} catch (error) {
 					console.error("Failed to fetch rent payments:", error);
-					set((state) => ({
+					set({
 						isPaymentsLoading: false,
-						loadingRoomIds: state.loadingRoomIds.filter((id) => id !== roomId),
-						paymentsFetchFailed: true,
-					}));
+						fetchingRoomId: null,
+						isPaymentsFetchFailed: true,
+					});
 					throw error;
 				}
 			},
@@ -182,8 +180,8 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 				set({
 					rentPayments: [],
 					isPaymentsLoading: false,
-					loadingRoomIds: [],
-					paymentsFetchFailed: false,
+					fetchingRoomId: null,
+					isPaymentsFetchFailed: false,
 				}),
 		}),
 		{ name: "rent-payments" },

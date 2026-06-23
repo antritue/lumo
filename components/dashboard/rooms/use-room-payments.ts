@@ -7,8 +7,8 @@ export function useRoomPayments(roomId: string) {
 	const isPaymentsLoading = useRentPaymentsStore(
 		(state) => state.isPaymentsLoading,
 	);
-	const paymentsFetchFailed = useRentPaymentsStore(
-		(state) => state.paymentsFetchFailed,
+	const isPaymentsFetchFailed = useRentPaymentsStore(
+		(state) => state.isPaymentsFetchFailed,
 	);
 	const fetchRentPaymentsByRoomId = useRentPaymentsStore(
 		(state) => state.fetchRentPaymentsByRoomId,
@@ -57,7 +57,7 @@ export function useRoomPayments(roomId: string) {
 		handleSavePayment,
 		handleDeletePayment,
 		isPaymentsLoading,
-		paymentsFetchFailed,
+		isPaymentsFetchFailed,
 		retryFetchPayments,
 	};
 }

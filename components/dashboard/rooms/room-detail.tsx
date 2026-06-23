@@ -44,7 +44,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		handleSavePayment,
 		handleDeletePayment,
 		isPaymentsLoading,
-		paymentsFetchFailed,
+		isPaymentsFetchFailed,
 		retryFetchPayments,
 	} = useRoomPayments(room.id);
 
@@ -99,7 +99,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 				onEdit={openEditPayment}
 				onDelete={openDeletePayment}
 				isPaymentsLoading={isPaymentsLoading}
-				paymentsFetchFailed={paymentsFetchFailed}
+				isPaymentsFetchFailed={isPaymentsFetchFailed}
 				onRetryPayments={retryFetchPayments}
 			/>
 
