@@ -29,9 +29,6 @@ export function PropertyDetail({
 }: PropertyDetailProps) {
 	const t = useTranslations("app");
 	const rooms = useRoomsStore((state) => state.rooms);
-	const fetchRoomsByPropertyId = useRoomsStore(
-		(state) => state.fetchRoomsByPropertyId,
-	);
 	const propertyServices = usePropertyServicesStore(
 		(state) =>
 			state.propertyServicesByPropertyId[property.id] ?? EMPTY_SERVICES,
@@ -47,9 +44,8 @@ export function PropertyDetail({
 	const serviceCount = propertyServices.length;
 
 	useEffect(() => {
-		fetchRoomsByPropertyId(property.id);
 		fetchPropertyServices(property.id);
-	}, [property.id, fetchRoomsByPropertyId, fetchPropertyServices]);
+	}, [property.id, fetchPropertyServices]);
 
 	return (
 		<div

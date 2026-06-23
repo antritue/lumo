@@ -37,7 +37,7 @@ const createParams = (roomId: string) => ({
 
 describe("RoomDetailPage", () => {
 	beforeEach(() => {
-		useRoomsStore.setState({ rooms: [], loadingRoomId: null });
+		useRoomsStore.setState({ rooms: [], isRoomsLoading: false });
 		useAuthStore.setState({ user: null, loading: false });
 		vi.clearAllMocks();
 		mockFetch.mockResolvedValue({ ok: true, json: async () => [] });

@@ -21,8 +21,8 @@ describe("PropertyDetailRooms", () => {
 		vi.clearAllMocks();
 		useRoomsStore.setState({
 			rooms: [],
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			isRoomsLoading: false,
+			isRoomsFetchFailed: false,
 			fetchRoomsByPropertyId: vi.fn(),
 			createRoom: vi.fn(),
 			updateRoom: vi.fn(),
@@ -44,7 +44,7 @@ describe("PropertyDetailRooms", () => {
 
 		it("shows loading spinner when rooms are loading", () => {
 			useRoomsStore.setState({
-				loadingPropertyIds: ["prop-1"],
+				isRoomsLoading: true,
 			});
 
 			const { container } = renderWithProviders(
@@ -56,7 +56,7 @@ describe("PropertyDetailRooms", () => {
 
 		it("shows error state with retry button on fetch failure", () => {
 			useRoomsStore.setState({
-				failedPropertyIds: ["prop-1"],
+				isRoomsFetchFailed: true,
 				fetchRoomsByPropertyId: vi.fn(),
 			});
 

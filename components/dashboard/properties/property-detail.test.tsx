@@ -21,9 +21,8 @@ describe("PropertyDetail", () => {
 		vi.clearAllMocks();
 		useRoomsStore.setState({
 			rooms: [],
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
-			fetchRoomsByPropertyId: vi.fn(),
+			isRoomsLoading: false,
+			isRoomsFetchFailed: false,
 		});
 	});
 

@@ -32,12 +32,8 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 	const t = useTranslations("app.properties");
 	const locale = useLocale();
 	const rooms = useRoomsStore((state) => state.rooms);
-	const propertyRoomsLoadingIds = useRoomsStore(
-		(state) => state.loadingPropertyIds,
-	);
-	const propertyRoomsFailedIds = useRoomsStore(
-		(state) => state.failedPropertyIds,
-	);
+	const isRoomsLoading = useRoomsStore((state) => state.isRoomsLoading);
+	const isRoomsFetchFailed = useRoomsStore((state) => state.isRoomsFetchFailed);
 	const fetchRoomsByPropertyId = useRoomsStore(
 		(state) => state.fetchRoomsByPropertyId,
 	);
@@ -49,8 +45,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 		() => rooms.filter((r) => r.propertyId === propertyId),
 		[rooms, propertyId],
 	);
-	const isRoomsLoading = propertyRoomsLoadingIds.includes(propertyId);
-	const roomsFetchFailed = propertyRoomsFailedIds.includes(propertyId);
+
 	const roomCount = propertyRooms.length;
 
 	const [upsertRoom, setUpsertRoom] = useState<"add" | Room | null>(null);
@@ -107,11 +102,11 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 				</div>
 			)}
 
-			{roomsFetchFailed && !isRoomsLoading && (
+			{isRoomsFetchFailed && !isRoomsLoading && (
 				<ErrorState onRetry={handleRetry} />
 			)}
 
-			{!isRoomsLoading && !roomsFetchFailed && (
+			{!isRoomsLoading && !isRoomsFetchFailed && (
 				<div className="flex-1 min-h-0 overflow-y-auto">
 					{propertyRooms.length > 0 && (
 						<div className="space-y-1">
