@@ -43,7 +43,7 @@ export interface Item {
 
 ## Store (`store.ts`)
 
-Use Zustand with devtools. Follow the three-flag pattern for loading states.
+Use Zustand with devtools. Follow the three-flag pattern for loading states (`isItemsLoading`, `hasItemsFetched`, `itemsFetchFailed`) for standard stores. See variants below for per-ID dedup patterns.
 
 ```typescript
 import { create } from "zustand";
@@ -128,8 +128,8 @@ export const useItemsStore = create<ItemsState>()(
 
 ### Store variants
 
-- **Per-ID loading dedup**: For child resources (rooms under property, payments per room), use `loadingIds: string[]` instead of a single boolean. Check `loadingIds.includes(id)` before fetching.
-- **Failed ID tracking**: Track `failedIds: string[]` to show per-card error states.
+- **Per-ID loading dedup**: For child resources (rooms under property, payments per room), use a single `fetchingParentId: string | null` instead of `hasItemsFetched: boolean`. Check `fetchingParentId === parentId` before fetching. This handles StrictMode double-mount and auto-select transitions. Remove `hasItemsFetched` for these stores (parent-specific fetches replace the single-fetch dedup).
+- **Per-ID error tracking**: Use `isFetchFailed: boolean` instead of array — the panel UI shows one parent at a time, so per-ID error distinction is unnecessary.
 - **Selectors**: Always use individual selectors (`store((s) => s.items)`) to avoid re-renders.
 - **Seed defaults**: For resources that should appear populated on first visit, define a `SEEDED_ITEMS` constant. Seeding happens in two layers: (1) a Supabase DB trigger on `auth.users` insert populates the table for new signups, (2) `fetchItems` uses the constant as in-memory mock data for unauth users. For features that use this, the page effect gates on `authLoading` instead of `user` so the seed fires for both auth states.
 

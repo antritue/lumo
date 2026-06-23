@@ -5,11 +5,9 @@ import type { Room } from "./types";
 
 interface RoomsState {
 	rooms: Room[];
-	// Loading state
-	isRoomsLoading: boolean; // true while any room fetch is in-flight
-	loadingRoomId: string | null; // dedup: prevents duplicate single-room fetches
-	loadingPropertyIds: string[]; // dedup: prevents duplicate property-based fetches
-	failedPropertyIds: string[]; // property IDs whose room fetch failed
+	isRoomsLoading: boolean;
+	isRoomsFetchFailed: boolean;
+	fetchingPropertyId: string | null; // dedup: prevents duplicate room fetches for the same property (StrictMode, auto-select, etc.)
 
 	// Actions
 	fetchRoomsByPropertyId: (propertyId: string) => Promise<void>;
@@ -37,19 +35,15 @@ export const useRoomsStore = create<RoomsState>()(
 		(set, get) => ({
 			rooms: [],
 			isRoomsLoading: false,
-			loadingRoomId: null,
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			fetchingPropertyId: null,
+			isRoomsFetchFailed: false,
 
 			fetchRoomById: async (roomId) => {
 				const user = useAuthStore.getState().user;
 				if (!user) return;
 
-				const { loadingRoomId } = get();
-				if (loadingRoomId === roomId) return;
-
 				try {
-					set({ isRoomsLoading: true, loadingRoomId: roomId });
+					set({ isRoomsLoading: true });
 					const res = await fetch(`/api/rooms/${roomId}`, {
 						method: "GET",
 						credentials: "include",
@@ -57,7 +51,7 @@ export const useRoomsStore = create<RoomsState>()(
 
 					if (!res.ok) {
 						if (res.status === 404) {
-							set({ isRoomsLoading: false, loadingRoomId: null });
+							set({ isRoomsLoading: false });
 							return;
 						}
 						throw new Error("Failed to fetch room");
@@ -70,11 +64,10 @@ export const useRoomsStore = create<RoomsState>()(
 							? state.rooms.map((r) => (r.id === roomId ? data : r))
 							: [...state.rooms, data],
 						isRoomsLoading: false,
-						loadingRoomId: null,
 					}));
 				} catch (error) {
 					console.error("Failed to fetch room:", error);
-					set({ isRoomsLoading: false, loadingRoomId: null });
+					set({ isRoomsLoading: false });
 				}
 			},
 
@@ -82,17 +75,15 @@ export const useRoomsStore = create<RoomsState>()(
 				const user = useAuthStore.getState().user;
 				if (!user) return;
 
-				const { loadingPropertyIds } = get();
-				if (loadingPropertyIds.includes(propertyId)) return;
+				const { fetchingPropertyId } = get();
+				if (fetchingPropertyId === propertyId) return;
 
 				try {
-					set((state) => ({
+					set({
 						isRoomsLoading: true,
-						loadingPropertyIds: [...state.loadingPropertyIds, propertyId],
-						failedPropertyIds: state.failedPropertyIds.filter(
-							(id) => id !== propertyId,
-						),
-					}));
+						fetchingPropertyId: propertyId,
+						isRoomsFetchFailed: false,
+					});
 					const res = await fetch(`/api/rooms?propertyId=${propertyId}`, {
 						method: "GET",
 						credentials: "include",
@@ -104,30 +95,20 @@ export const useRoomsStore = create<RoomsState>()(
 
 					const data = await res.json();
 
-					set((state) => {
-						const newLoadingIds = state.loadingPropertyIds.filter(
-							(id) => id !== propertyId,
-						);
-						return {
-							rooms: [
-								...state.rooms.filter((r) => r.propertyId !== propertyId),
-								...data,
-							],
-							isRoomsLoading: newLoadingIds.length > 0,
-							loadingPropertyIds: newLoadingIds,
-						};
-					});
+					set((state) => ({
+						rooms: [
+							...state.rooms.filter((r) => r.propertyId !== propertyId),
+							...data,
+						],
+						isRoomsLoading: false,
+						fetchingPropertyId: null,
+					}));
 				} catch (error) {
 					console.error("Failed to fetch rooms:", error);
-					set((state) => {
-						const newLoadingIds = state.loadingPropertyIds.filter(
-							(id) => id !== propertyId,
-						);
-						return {
-							isRoomsLoading: newLoadingIds.length > 0,
-							loadingPropertyIds: newLoadingIds,
-							failedPropertyIds: [...state.failedPropertyIds, propertyId],
-						};
+					set({
+						isRoomsLoading: false,
+						fetchingPropertyId: null,
+						isRoomsFetchFailed: true,
 					});
 					throw error;
 				}
@@ -250,9 +231,8 @@ export const useRoomsStore = create<RoomsState>()(
 				set({
 					rooms: [],
 					isRoomsLoading: false,
-					loadingRoomId: null,
-					loadingPropertyIds: [],
-					failedPropertyIds: [],
+					fetchingPropertyId: null,
+					isRoomsFetchFailed: false,
 				}),
 
 			getRoomById: (id) => get().rooms.find((room) => room.id === id),

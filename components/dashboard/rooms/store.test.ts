@@ -34,8 +34,8 @@ describe("RoomsStore", () => {
 		useRoomsStore.setState({
 			rooms: [],
 			isRoomsLoading: false,
-			loadingPropertyIds: [],
-			failedPropertyIds: [],
+			fetchingPropertyId: null,
+			isRoomsFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
@@ -116,17 +116,35 @@ describe("RoomsStore", () => {
 				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
 			).rejects.toThrow("Failed to fetch rooms");
 
-			const { rooms, isRoomsLoading, failedPropertyIds } =
+			const { rooms, isRoomsLoading, isRoomsFetchFailed } =
 				useRoomsStore.getState();
 			expect(rooms).toEqual([]);
 			expect(isRoomsLoading).toBe(false);
-			expect(failedPropertyIds).toEqual(["prop-1"]);
+			expect(isRoomsFetchFailed).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
 		});
 
-		it("fetches rooms for different properties independently", async () => {
+		it("deduplicates concurrent fetches for the same property", async () => {
+			authenticate();
+
+			mockFetch.mockResolvedValue({
+				ok: true,
+				json: async () => [
+					mockRoom({ id: "r1", name: "Room 1", monthlyRent: 1000 }),
+				],
+			});
+
+			await Promise.all([
+				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
+				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
+			]);
+
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+		});
+
+		it("fetches rooms for different properties sequentially", async () => {
 			authenticate();
 
 			mockFetch
@@ -148,10 +166,8 @@ describe("RoomsStore", () => {
 					],
 				});
 
-			await Promise.all([
-				useRoomsStore.getState().fetchRoomsByPropertyId("prop-1"),
-				useRoomsStore.getState().fetchRoomsByPropertyId("prop-2"),
-			]);
+			await useRoomsStore.getState().fetchRoomsByPropertyId("prop-1");
+			await useRoomsStore.getState().fetchRoomsByPropertyId("prop-2");
 
 			const { rooms } = useRoomsStore.getState();
 			expect(rooms).toHaveLength(2);
@@ -469,27 +485,6 @@ describe("RoomsStore", () => {
 
 			consoleSpy.mockRestore();
 		});
-
-		it("prevents concurrent duplicate fetches for the same room", async () => {
-			authenticate();
-
-			mockFetch.mockResolvedValue({
-				ok: true,
-				json: async () =>
-					mockRoom({
-						id: "room-1",
-						name: "Master Bedroom",
-						monthlyRent: 1200,
-					}),
-			});
-
-			await Promise.all([
-				useRoomsStore.getState().fetchRoomById("room-1"),
-				useRoomsStore.getState().fetchRoomById("room-1"),
-			]);
-
-			expect(mockFetch).toHaveBeenCalledTimes(1);
-		});
 	});
 
 	describe("getRoomById", () => {
@@ -516,8 +511,8 @@ describe("RoomsStore", () => {
 			useRoomsStore.setState({
 				rooms: [mockRoom({ id: "1", name: "Room 1", monthlyRent: 1500 })],
 				isRoomsLoading: true,
-				loadingPropertyIds: ["prop-1"],
-				failedPropertyIds: ["prop-1"],
+				fetchingPropertyId: "prop-1",
+				isRoomsFetchFailed: true,
 			});
 
 			useRoomsStore.getState().clearStore();
@@ -525,8 +520,8 @@ describe("RoomsStore", () => {
 			const state = useRoomsStore.getState();
 			expect(state.rooms).toEqual([]);
 			expect(state.isRoomsLoading).toBe(false);
-			expect(state.loadingPropertyIds).toEqual([]);
-			expect(state.failedPropertyIds).toEqual([]);
+			expect(state.fetchingPropertyId).toBeNull();
+			expect(state.isRoomsFetchFailed).toBe(false);
 		});
 	});
 });

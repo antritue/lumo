@@ -155,6 +155,7 @@ Every store operation has two auth branches (unauth → local state, auth → AP
 | Fetches and sets items when authenticated | API response replaces state, correct fetch args |
 | Handles fetch error | `fetchFailed` flag set, `isLoading` reset, error logged |
 | Prevents duplicate fetches | `hasFetched` guard prevents second call |
+| Per-ID fetch dedup (variant) | `fetchingParentId` guard prevents re-fetch when already loading that parent |
 
 ### create
 
@@ -545,6 +546,13 @@ The page component uses if/else branches with a single return. Test each branch 
 
 Set `hasItemsFetched: true` to prevent the mount effect from calling `fetchItems()` and overriding your test state.
 
+For per-ID dedup stores (e.g., rooms under property), omit `hasItemsFetched` (it doesn't exist). Instead, mock the fetch action so the mount effect is a no-op:
+
+```typescript
+useRoomsStore.getState().fetchRoomsByPropertyId = vi.fn();
+useRoomsStore.setState({ rooms: [mockRoom()], isRoomsLoading: false });
+```
+
 Every test also verifies the page title (`h1` with `listTitle` key) is visible — the title renders once for all states in the single return:
 
 ```typescript
@@ -607,7 +615,7 @@ Note: The old pattern of separate `describe("FeaturePage", ...)` with individual
 
 ## Common mistakes
 
-- **Not setting `hasItemsFetched: true`** in page tests — the mount effect calls `fetchItems()` which overrides your test state
+- **Not setting `hasItemsFetched: true`** in page tests for standard stores — the mount effect calls `fetchItems()` which overrides your test state. For per-ID dedup stores, mock the fetch action instead.
 - **Forgetting `vi.clearAllMocks()` or `vi.restoreAllMocks()`** in `beforeEach` — leaked mock state causes cross-test pollution
 - **Not resetting the auth store** — if a previous test set `user: { id: "..." }`, the next unauth test will hit the API path
 - **Using `getByText` when multiple elements match** — use `getAllByText` with `.length` check or a more specific matcher
