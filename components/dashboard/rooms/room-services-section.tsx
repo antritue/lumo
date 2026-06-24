@@ -52,6 +52,12 @@ export function RoomServicesSection({
 		(state) =>
 			state.propertyServicesByPropertyId[propertyId] ?? EMPTY_PROPERTY_SERVICES,
 	);
+	const isPropertyServicesLoading = usePropertyServicesStore(
+		(state) => state.fetchingPropertyId === propertyId,
+	);
+	const fetchPropertyServices = usePropertyServicesStore(
+		(state) => state.fetchPropertyServices,
+	);
 
 	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
 	const [editingService, setEditingService] = useState<Service | undefined>(
@@ -66,10 +72,15 @@ export function RoomServicesSection({
 		fetchRoomServices(roomId, propertyId);
 	}, [roomId, propertyId, fetchRoomServices]);
 
+	useEffect(() => {
+		fetchPropertyServices(propertyId);
+	}, [propertyId, fetchPropertyServices]);
+
 	const findPropertyService = (roomService: RoomService) =>
 		propertyServices.find((p) => p.serviceId === roomService.serviceId);
 
 	const isRoomServiceCustom = (roomService: RoomService) => {
+		if (isPropertyServicesLoading) return false;
 		const propertyService = findPropertyService(roomService);
 		if (!propertyService) return true;
 		return (
