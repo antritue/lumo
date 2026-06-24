@@ -159,6 +159,24 @@ describe("RoomServicesSection", () => {
 
 			expect(container.querySelector(".bg-amber-500")).toBeInTheDocument();
 		});
+
+		it("hides amber dot when property services are loading", () => {
+			usePropertyServicesStore.setState({
+				fetchingPropertyId: "prop-1",
+				propertyServicesByPropertyId: {},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [mockRoomService({ flatAmount: 100 })],
+				},
+			});
+
+			const { container } = renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(container.querySelector(".bg-amber-500")).not.toBeInTheDocument();
+		});
 	});
 
 	describe("Interactions", () => {
