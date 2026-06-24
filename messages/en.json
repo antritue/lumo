@@ -189,8 +189,8 @@
 		"services": {
 			"emptyTitle": "No services yet",
 			"emptySubtitle": "Services are optional charges you can add to rooms. Create your first service to get started.",
-			"inputPlaceholder": "Service name",
-			"unitPlaceholder": "Unit (optional)",
+			"name": "Service name",
+			"optional": "optional",
 			"addButton": "Add service",
 			"listTitle": "Your services",
 			"addAnother": "Add a new service",

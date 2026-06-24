@@ -189,8 +189,8 @@
 		"services": {
 			"emptyTitle": "Chưa có dịch vụ",
 			"emptySubtitle": "Dịch vụ là các khoản phí tùy chọn bạn có thể thêm vào phòng. Tạo dịch vụ đầu tiên để bắt đầu.",
-			"inputPlaceholder": "Tên dịch vụ",
-			"unitPlaceholder": "Đơn vị (không bắt buộc)",
+			"name": "Tên dịch vụ",
+			"optional": "không bắt buộc",
 			"addButton": "Thêm dịch vụ",
 			"listTitle": "Dịch vụ của bạn",
 			"addAnother": "Thêm dịch vụ mới",
