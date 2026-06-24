@@ -8,6 +8,7 @@ interface RoomsState {
 	isRoomsLoading: boolean;
 	isRoomsFetchFailed: boolean;
 	fetchingPropertyId: string | null; // dedup: prevents duplicate room fetches for the same property (StrictMode, auto-select, etc.)
+	fetchingRoomId: string | null; // dedup: prevents duplicate room fetches for the same room (StrictMode)
 
 	// Actions
 	fetchRoomsByPropertyId: (propertyId: string) => Promise<void>;
@@ -36,14 +37,18 @@ export const useRoomsStore = create<RoomsState>()(
 			rooms: [],
 			isRoomsLoading: false,
 			fetchingPropertyId: null,
+			fetchingRoomId: null,
 			isRoomsFetchFailed: false,
 
 			fetchRoomById: async (roomId) => {
 				const user = useAuthStore.getState().user;
 				if (!user) return;
 
+				const { fetchingRoomId } = get();
+				if (fetchingRoomId === roomId) return;
+
 				try {
-					set({ isRoomsLoading: true });
+					set({ isRoomsLoading: true, fetchingRoomId: roomId });
 					const res = await fetch(`/api/rooms/${roomId}`, {
 						method: "GET",
 						credentials: "include",
@@ -51,7 +56,7 @@ export const useRoomsStore = create<RoomsState>()(
 
 					if (!res.ok) {
 						if (res.status === 404) {
-							set({ isRoomsLoading: false });
+							set({ isRoomsLoading: false, fetchingRoomId: null });
 							return;
 						}
 						throw new Error("Failed to fetch room");
@@ -64,10 +69,11 @@ export const useRoomsStore = create<RoomsState>()(
 							? state.rooms.map((r) => (r.id === roomId ? data : r))
 							: [...state.rooms, data],
 						isRoomsLoading: false,
+						fetchingRoomId: null,
 					}));
 				} catch (error) {
 					console.error("Failed to fetch room:", error);
-					set({ isRoomsLoading: false });
+					set({ isRoomsLoading: false, fetchingRoomId: null });
 				}
 			},
 
@@ -232,6 +238,7 @@ export const useRoomsStore = create<RoomsState>()(
 					rooms: [],
 					isRoomsLoading: false,
 					fetchingPropertyId: null,
+					fetchingRoomId: null,
 					isRoomsFetchFailed: false,
 				}),
 

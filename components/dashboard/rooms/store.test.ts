@@ -35,6 +35,7 @@ describe("RoomsStore", () => {
 			rooms: [],
 			isRoomsLoading: false,
 			fetchingPropertyId: null,
+			fetchingRoomId: null,
 			isRoomsFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null });
@@ -485,6 +486,48 @@ describe("RoomsStore", () => {
 
 			consoleSpy.mockRestore();
 		});
+
+		it("deduplicates concurrent fetches for the same room", async () => {
+			authenticate();
+
+			mockFetch.mockResolvedValue({
+				ok: true,
+				json: async () =>
+					mockRoom({ id: "room-1", name: "Room 1", monthlyRent: 1000 }),
+			});
+
+			await Promise.all([
+				useRoomsStore.getState().fetchRoomById("room-1"),
+				useRoomsStore.getState().fetchRoomById("room-1"),
+			]);
+
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+		});
+
+		it("fetches different rooms sequentially", async () => {
+			authenticate();
+
+			mockFetch
+				.mockResolvedValueOnce({
+					ok: true,
+					json: async () =>
+						mockRoom({ id: "room-1", name: "Room 1", monthlyRent: 1000 }),
+				})
+				.mockResolvedValueOnce({
+					ok: true,
+					json: async () =>
+						mockRoom({ id: "room-2", name: "Room 2", monthlyRent: 500 }),
+				});
+
+			await useRoomsStore.getState().fetchRoomById("room-1");
+			await useRoomsStore.getState().fetchRoomById("room-2");
+
+			const { rooms } = useRoomsStore.getState();
+			expect(rooms).toHaveLength(2);
+			expect(rooms.find((r) => r.id === "room-1")?.name).toBe("Room 1");
+			expect(rooms.find((r) => r.id === "room-2")?.name).toBe("Room 2");
+			expect(mockFetch).toHaveBeenCalledTimes(2);
+		});
 	});
 
 	describe("getRoomById", () => {
@@ -512,6 +555,7 @@ describe("RoomsStore", () => {
 				rooms: [mockRoom({ id: "1", name: "Room 1", monthlyRent: 1500 })],
 				isRoomsLoading: true,
 				fetchingPropertyId: "prop-1",
+				fetchingRoomId: "room-1",
 				isRoomsFetchFailed: true,
 			});
 
@@ -521,6 +565,7 @@ describe("RoomsStore", () => {
 			expect(state.rooms).toEqual([]);
 			expect(state.isRoomsLoading).toBe(false);
 			expect(state.fetchingPropertyId).toBeNull();
+			expect(state.fetchingRoomId).toBeNull();
 			expect(state.isRoomsFetchFailed).toBe(false);
 		});
 	});
