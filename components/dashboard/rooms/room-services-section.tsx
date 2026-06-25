@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, Plus, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
 import type { PropertyService } from "@/components/dashboard/properties/types";
@@ -26,6 +26,7 @@ export function RoomServicesSection({
 }: RoomServicesSectionProps) {
 	const t = useTranslations("app.roomServices");
 	const ts = useTranslations("app.services");
+	const locale = useLocale();
 
 	const roomServices = useRoomServicesStore(
 		(state) => state.roomServicesByRoomId[roomId] ?? EMPTY_ROOM_SERVICES,
@@ -157,11 +158,12 @@ export function RoomServicesSection({
 			roomService.unitPrice ?? propertyService?.unitPrice ?? null;
 		const unitLabel =
 			roomService.unitLabel ?? propertyService?.unitLabel ?? null;
+		const currency = locale === "vi" ? "VND" : "USD";
 		if (roomService.pricingType === "flat" && flatAmount != null) {
-			return `$${flatAmount}/month`;
+			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(flatAmount)}${ts("perMonth")}`;
 		}
 		if (roomService.pricingType === "variable" && unitPrice != null) {
-			return `$${unitPrice}/${unitLabel ?? "unit"}`;
+			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(unitPrice)}/${unitLabel ?? ts("unit")}`;
 		}
 		return "";
 	};
