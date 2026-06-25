@@ -40,9 +40,9 @@ describe("EmptyState", () => {
 		await user.click(screen.getByRole("button", { name: /add property/i }));
 
 		const dialog = screen.getByRole("dialog");
-		const input = within(dialog).getByPlaceholderText(
-			/property name or address/i,
-		);
+		const input = within(dialog).getByRole("textbox", {
+			name: /property name/i,
+		});
 		const saveButton = within(dialog).getByRole("button", {
 			name: /add property/i,
 		});

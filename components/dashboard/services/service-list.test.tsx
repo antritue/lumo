@@ -105,7 +105,9 @@ describe("ServiceList", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/service name/i);
+			const input = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
 			expect(input).toBeInTheDocument();
 
 			await user.type(input, "Parking");
@@ -114,7 +116,7 @@ describe("ServiceList", () => {
 			);
 
 			expect(
-				screen.queryByPlaceholderText(/service name/i),
+				screen.queryByRole("textbox", { name: /service name/i }),
 			).not.toBeInTheDocument();
 		});
 
@@ -155,9 +157,9 @@ describe("ServiceList", () => {
 			await user.click(screen.getByRole("button", { name: /edit/i }));
 
 			const dialog = screen.getByRole("dialog");
-			expect(within(dialog).getByPlaceholderText(/service name/i)).toHaveValue(
-				"Electricity",
-			);
+			expect(
+				within(dialog).getByRole("textbox", { name: /service name/i }),
+			).toHaveValue("Electricity");
 			expect(
 				within(dialog).getByRole("button", { name: /save/i }),
 			).toBeEnabled();

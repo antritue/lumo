@@ -141,6 +141,7 @@
 		"properties": {
 			"emptyTitle": "No properties yet",
 			"emptySubtitle": "Add your first property to get started",
+			"name": "Property name",
 			"inputPlaceholder": "Property name or address",
 			"addButton": "Add property",
 			"listTitle": "Your properties",
@@ -235,6 +236,8 @@
 			"count": "{count, plural, =0 {0 rooms} =1 {1 room} other {# rooms}}",
 			"emptyTitle": "No rooms yet",
 			"emptySubtitle": "Add your first room to this property",
+			"name": "Room name",
+			"optional": "optional",
 			"errors": {
 				"create": {
 					"title": "Failed to add room",
@@ -252,7 +255,6 @@
 			"inputPlaceholder": "Room name or number",
 			"rentPlaceholder": "Monthly rent",
 			"notesPlaceholder": "Notes (Service fee...)",
-			"optionalDetails": "Optional details",
 			"addButton": "Add room",
 			"addAnother": "Add another room",
 			"cancel": "Cancel",

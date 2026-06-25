@@ -34,7 +34,7 @@ describe("UpsertPropertyDialog", () => {
 				within(dialog).getByRole("heading", { name: /add property/i }),
 			).toBeInTheDocument();
 			expect(
-				within(dialog).getByPlaceholderText(/property name or address/i),
+				within(dialog).getByRole("textbox", { name: /property name/i }),
 			).toHaveValue("");
 			expect(
 				within(dialog).getByRole("button", { name: /add property/i }),
@@ -56,9 +56,9 @@ describe("UpsertPropertyDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(
-				/property name or address/i,
-			);
+			const input = within(dialog).getByRole("textbox", {
+				name: /property name/i,
+			});
 			const submitButton = within(dialog).getByRole("button", {
 				name: /add property/i,
 			});
@@ -85,9 +85,9 @@ describe("UpsertPropertyDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(
-				/property name or address/i,
-			);
+			const input = within(dialog).getByRole("textbox", {
+				name: /property name/i,
+			});
 
 			await user.type(input, "  New Villa  ");
 			await user.click(
@@ -111,9 +111,9 @@ describe("UpsertPropertyDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(
-				/property name or address/i,
-			);
+			const input = within(dialog).getByRole("textbox", {
+				name: /property name/i,
+			});
 
 			await user.type(input, "New Villa");
 			await user.click(
@@ -137,9 +137,9 @@ describe("UpsertPropertyDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(
-				/property name or address/i,
-			);
+			const input = within(dialog).getByRole("textbox", {
+				name: /property name/i,
+			});
 
 			await user.type(input, "New Villa");
 			await user.click(
@@ -190,7 +190,7 @@ describe("UpsertPropertyDialog", () => {
 				within(dialog).getByRole("heading", { name: /edit property/i }),
 			).toBeInTheDocument();
 			expect(
-				within(dialog).getByPlaceholderText(/property name or address/i),
+				within(dialog).getByRole("textbox", { name: /property name/i }),
 			).toHaveValue("Sunset Villa");
 			expect(
 				within(dialog).getByRole("button", { name: /save/i }),
@@ -210,9 +210,9 @@ describe("UpsertPropertyDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(
-				/property name or address/i,
-			);
+			const input = within(dialog).getByRole("textbox", {
+				name: /property name/i,
+			});
 			const saveButton = within(dialog).getByRole("button", { name: /save/i });
 
 			await user.clear(input);
@@ -239,9 +239,9 @@ describe("UpsertPropertyDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(
-				/property name or address/i,
-			);
+			const input = within(dialog).getByRole("textbox", {
+				name: /property name/i,
+			});
 
 			await user.clear(input);
 			await user.type(input, "  Updated Villa  ");
@@ -288,9 +288,9 @@ describe("UpsertPropertyDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(
-				/property name or address/i,
-			);
+			const input = within(dialog).getByRole("textbox", {
+				name: /property name/i,
+			});
 
 			await user.clear(input);
 			await user.type(input, "Updated Villa");

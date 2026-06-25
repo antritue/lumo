@@ -111,48 +111,62 @@ export function UpsertRoomDialog({
 				) : (
 					<form onSubmit={handleSubmit} className="space-y-6">
 						<div className="space-y-4">
-							<Input
-								type="text"
-								value={roomName}
-								onChange={(e) => setRoomName(e.target.value)}
-								placeholder={t("inputPlaceholder")}
-								className="text-base h-12"
-								autoFocus
-								required
-							/>
+							<div className="space-y-2">
+								<label htmlFor="roomName" className="text-sm font-medium">
+									{t("name")}
+								</label>
+								<Input
+									id="roomName"
+									type="text"
+									value={roomName}
+									onChange={(e) => setRoomName(e.target.value)}
+									placeholder={t("inputPlaceholder")}
+									className="text-base h-12 mt-2"
+									autoFocus
+									required
+								/>
+							</div>
 						</div>
 
 						<div className="space-y-4">
-							<div className="flex items-center gap-2">
-								<div className="h-px flex-1 bg-border" />
-								<span className="text-sm text-muted-foreground">
-									{t("optionalDetails")}
-								</span>
-								<div className="h-px flex-1 bg-border" />
+							<div className="space-y-2">
+								<label htmlFor="monthlyRent" className="text-sm font-medium">
+									{t("rentPlaceholder")}
+									<span className="text-muted-foreground font-normal ml-1">
+										({t("optional")})
+									</span>
+								</label>
+								<div className="relative">
+									<Input
+										id="monthlyRent"
+										type="number"
+										value={monthlyRent}
+										onChange={(e) => setMonthlyRent(e.target.value)}
+										className="text-base h-12 pr-16 mt-2"
+										min="0"
+										step="0.01"
+									/>
+									<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+										{currency}
+									</span>
+								</div>
 							</div>
 
-							<div className="relative">
-								<Input
-									type="number"
-									value={monthlyRent}
-									onChange={(e) => setMonthlyRent(e.target.value)}
-									placeholder={t("rentPlaceholder")}
-									className="text-base h-12 pr-16"
-									min="0"
-									step="0.01"
+							<div className="space-y-2">
+								<label htmlFor="notes" className="text-sm font-medium">
+									{t("details.notes")}
+									<span className="text-muted-foreground font-normal ml-1">
+										({t("optional")})
+									</span>
+								</label>
+								<Textarea
+									id="notes"
+									value={notes}
+									onChange={(e) => setNotes(e.target.value)}
+									className="text-base min-h-25 resize-none mt-2"
+									rows={4}
 								/>
-								<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
-									{currency}
-								</span>
 							</div>
-
-							<Textarea
-								value={notes}
-								onChange={(e) => setNotes(e.target.value)}
-								placeholder={t("notesPlaceholder")}
-								className="text-base min-h-25 resize-none"
-								rows={4}
-							/>
 						</div>
 
 						<div className="flex gap-3">

@@ -36,12 +36,14 @@ describe("UpsertRoomDialog", () => {
 				within(dialog).getByRole("heading", { name: /add room/i }),
 			).toBeInTheDocument();
 			expect(
-				within(dialog).getByPlaceholderText(/room name or number/i),
+				within(dialog).getByRole("textbox", { name: /room name/i }),
 			).toHaveValue("");
-			expect(within(dialog).getByPlaceholderText(/monthly rent/i)).toHaveValue(
-				null,
-			);
-			expect(within(dialog).getByPlaceholderText(/notes/i)).toHaveValue("");
+			expect(
+				within(dialog).getByRole("spinbutton", { name: /monthly rent/i }),
+			).toHaveValue(null);
+			expect(
+				within(dialog).getByRole("textbox", { name: /notes/i }),
+			).toHaveValue("");
 			expect(
 				within(dialog).getByRole("button", { name: /add room/i }),
 			).toBeInTheDocument();
@@ -62,7 +64,7 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
 			const submitButton = within(dialog).getByRole("button", {
 				name: /add room/i,
 			});
@@ -89,9 +91,13 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
-			const rentInput = within(dialog).getByPlaceholderText(/monthly rent/i);
-			const notesInput = within(dialog).getByPlaceholderText(/notes/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
+			const rentInput = within(dialog).getByRole("spinbutton", {
+				name: /monthly rent/i,
+			});
+			const notesInput = within(dialog).getByRole("textbox", {
+				name: /notes/i,
+			});
 			const form = dialog.querySelector("form") as HTMLFormElement;
 
 			await user.type(input, "  Room 102  ");
@@ -119,7 +125,7 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
 
 			await user.type(input, "Room 103");
 			await user.click(
@@ -143,7 +149,7 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
 
 			await user.type(input, "Room 104");
 			await user.click(
@@ -167,7 +173,7 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
 
 			await user.type(input, "Room 105");
 			await user.click(
@@ -218,14 +224,14 @@ describe("UpsertRoomDialog", () => {
 				within(dialog).getByRole("heading", { name: /edit room/i }),
 			).toBeInTheDocument();
 			expect(
-				within(dialog).getByPlaceholderText(/room name or number/i),
+				within(dialog).getByRole("textbox", { name: /room name/i }),
 			).toHaveValue("Room 101");
-			expect(within(dialog).getByPlaceholderText(/monthly rent/i)).toHaveValue(
-				500,
-			);
-			expect(within(dialog).getByPlaceholderText(/notes/i)).toHaveValue(
-				"Corner unit",
-			);
+			expect(
+				within(dialog).getByRole("spinbutton", { name: /monthly rent/i }),
+			).toHaveValue(500);
+			expect(
+				within(dialog).getByRole("textbox", { name: /notes/i }),
+			).toHaveValue("Corner unit");
 			expect(
 				within(dialog).getByRole("button", { name: /save/i }),
 			).toBeInTheDocument();
@@ -244,7 +250,7 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
 			const saveButton = within(dialog).getByRole("button", { name: /save/i });
 
 			await user.clear(input);
@@ -270,9 +276,13 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
-			const rentInput = within(dialog).getByPlaceholderText(/monthly rent/i);
-			const notesInput = within(dialog).getByPlaceholderText(/notes/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
+			const rentInput = within(dialog).getByRole("spinbutton", {
+				name: /monthly rent/i,
+			});
+			const notesInput = within(dialog).getByRole("textbox", {
+				name: /notes/i,
+			});
 			const form = dialog.querySelector("form") as HTMLFormElement;
 
 			fireEvent.change(input, { target: { value: "  Room 201  " } });
@@ -302,8 +312,10 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
-			const rentInput = within(dialog).getByPlaceholderText(/monthly rent/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
+			const rentInput = within(dialog).getByRole("spinbutton", {
+				name: /monthly rent/i,
+			});
 			const form = dialog.querySelector("form") as HTMLFormElement;
 
 			fireEvent.change(input, { target: { value: "Room 201" } });
@@ -355,7 +367,7 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/room name or number/i);
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
 			const form = dialog.querySelector("form") as HTMLFormElement;
 
 			await user.clear(input);
