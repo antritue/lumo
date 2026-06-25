@@ -170,6 +170,7 @@ We strictly use **Biome** for both linting and formatting, and **Fallow** for de
 -   **Prefixes**:
     -   `feat`: New feature
     -   `fix`: Bug fix
+    -   `style`: CSS-only changes (no logic change)
     -   `chore`: Maintenance (dependencies, configs)
     -   `docs`: Documentation changes
     -   `test`: Adding or updating tests

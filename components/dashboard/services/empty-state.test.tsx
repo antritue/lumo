@@ -91,7 +91,9 @@ describe("EmptyState", () => {
 		await user.click(screen.getByRole("button", { name: /add service/i }));
 
 		expect(screen.getByRole("dialog")).toBeInTheDocument();
-		expect(screen.getByPlaceholderText(/service name/i)).toBeInTheDocument();
+		expect(
+			screen.getByRole("textbox", { name: /service name/i }),
+		).toBeInTheDocument();
 	});
 
 	it("creates first service and closes dialog on submit", async () => {
@@ -100,7 +102,7 @@ describe("EmptyState", () => {
 
 		await user.click(screen.getByRole("button", { name: /add service/i }));
 
-		const input = screen.getByPlaceholderText(/service name/i);
+		const input = screen.getByRole("textbox", { name: /service name/i });
 		const saveButton = screen.getByRole("button", { name: /add service/i });
 
 		await user.type(input, "Electricity");

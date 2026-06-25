@@ -117,7 +117,7 @@ describe("PropertyDetailRooms", () => {
 
 			const dialog = screen.getByRole("dialog");
 			expect(
-				within(dialog).getByPlaceholderText(/room name/i),
+				within(dialog).getByRole("textbox", { name: /room name/i }),
 			).toBeInTheDocument();
 		});
 
@@ -170,7 +170,9 @@ describe("PropertyDetailRooms", () => {
 			await user.click(screen.getByRole("button", { name: /add room/i }));
 
 			const dialog = screen.getByRole("dialog");
-			const nameInput = within(dialog).getByPlaceholderText(/room name/i);
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /room name/i,
+			});
 			const form = within(dialog)
 				.getByRole("button", { name: /add room/i })
 				.closest("form");

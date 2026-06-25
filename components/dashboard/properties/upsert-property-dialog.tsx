@@ -91,14 +91,20 @@ export function UpsertPropertyDialog({
 					</div>
 				) : (
 					<form onSubmit={handleSubmit} className="space-y-4">
-						<Input
-							type="text"
-							value={propertyName}
-							onChange={(e) => setPropertyName(e.target.value)}
-							placeholder={t("inputPlaceholder")}
-							className="text-base h-12"
-							autoFocus
-						/>
+						<div className="space-y-2">
+							<label htmlFor="propertyName" className="text-sm font-medium">
+								{t("name")}
+							</label>
+							<Input
+								id="propertyName"
+								type="text"
+								value={propertyName}
+								onChange={(e) => setPropertyName(e.target.value)}
+								placeholder={t("inputPlaceholder")}
+								className="text-base h-12 mt-2"
+								autoFocus
+							/>
+						</div>
 
 						<div className="flex gap-3">
 							<Button

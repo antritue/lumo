@@ -65,9 +65,14 @@ describe("RoomList", () => {
 			renderWithProviders(<RoomList propertyId="prop-1" rooms={[]} />);
 
 			await user.click(screen.getByRole("button", { name: /add room/i }));
-			expect(screen.getByPlaceholderText(/room name/i)).toBeInTheDocument();
+			expect(
+				screen.getByRole("textbox", { name: /room name/i }),
+			).toBeInTheDocument();
 
-			await user.type(screen.getByPlaceholderText(/room name/i), "New Room");
+			await user.type(
+				screen.getByRole("textbox", { name: /room name/i }),
+				"New Room",
+			);
 			await user.click(screen.getByRole("button", { name: /add room/i }));
 
 			const { rooms } = useRoomsStore.getState();

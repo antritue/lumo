@@ -141,6 +141,7 @@
 		"properties": {
 			"emptyTitle": "Chưa có nhà cho thuê",
 			"emptySubtitle": "Thêm nhà cho thuê đầu tiên để bắt đầu",
+			"name": "Tên nhà cho thuê",
 			"inputPlaceholder": "Tên hoặc địa chỉ nhà cho thuê",
 			"addButton": "Thêm nhà cho thuê",
 			"listTitle": "Nhà cho thuê của bạn",
@@ -189,8 +190,8 @@
 		"services": {
 			"emptyTitle": "Chưa có dịch vụ",
 			"emptySubtitle": "Dịch vụ là các khoản phí tùy chọn bạn có thể thêm vào phòng. Tạo dịch vụ đầu tiên để bắt đầu.",
-			"inputPlaceholder": "Tên dịch vụ",
-			"unitPlaceholder": "Đơn vị (không bắt buộc)",
+			"name": "Tên dịch vụ",
+			"optional": "không bắt buộc",
 			"addButton": "Thêm dịch vụ",
 			"listTitle": "Dịch vụ của bạn",
 			"addAnother": "Thêm dịch vụ mới",
@@ -235,6 +236,8 @@
 			"count": "{count, plural, =0 {0 phòng} =1 {1 phòng} other {# phòng}}",
 			"emptyTitle": "Chưa có phòng",
 			"emptySubtitle": "Thêm phòng đầu tiên cho nhà cho thuê này",
+			"name": "Tên phòng",
+			"optional": "không bắt buộc",
 			"errors": {
 				"create": {
 					"title": "Không thể thêm phòng",
@@ -252,7 +255,6 @@
 			"inputPlaceholder": "Tên hoặc số phòng",
 			"rentPlaceholder": "Tiền thuê hàng tháng",
 			"notesPlaceholder": "Ghi chú (Phí dịch vụ...)",
-			"optionalDetails": "Thông tin tùy chọn",
 			"addButton": "Thêm phòng",
 			"addAnother": "Thêm phòng khác",
 			"cancel": "Hủy",

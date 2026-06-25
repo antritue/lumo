@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type SubmitEvent, useEffect, useState } from "react";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
@@ -40,6 +40,8 @@ export function UpsertServiceDialog({
 	onSave,
 }: UpsertServiceDialogProps) {
 	const t = useTranslations("app.services");
+	const locale = useLocale();
+	const currency = locale === "vi" ? "VND" : "USD";
 	const [serviceName, setServiceName] = useState("");
 	const [unitLabel, setUnitLabel] = useState("");
 	const [pricingType, setPricingType] = useState<"flat" | "variable">("flat");
@@ -126,63 +128,103 @@ export function UpsertServiceDialog({
 						/>
 					</div>
 				) : (
-					<form onSubmit={handleSubmit} className="space-y-4">
-						<Input
-							type="text"
-							value={serviceName}
-							onChange={(e) => setServiceName(e.target.value)}
-							placeholder={t("inputPlaceholder")}
-							className="text-base h-12"
-							autoFocus
-						/>
-						<Input
-							type="text"
-							value={unitLabel}
-							onChange={(e) => setUnitLabel(e.target.value)}
-							placeholder={t("unitPlaceholder")}
-							className="text-base h-12"
-						/>
+					<form onSubmit={handleSubmit} className="space-y-6">
+						<div className="space-y-4">
+							<div className="space-y-2">
+								<label htmlFor="serviceName" className="text-sm font-medium">
+									{t("name")}
+								</label>
+								<Input
+									id="serviceName"
+									type="text"
+									value={serviceName}
+									onChange={(e) => setServiceName(e.target.value)}
+									className="text-base h-12 mt-2"
+									autoFocus
+								/>
+							</div>
 
-						<div className="flex gap-2">
-							<Button
-								type="button"
-								variant={pricingType === "flat" ? "default" : "outline"}
-								size="sm"
-								onClick={() => {
-									setPricingType("flat");
-									setAmount("");
-								}}
-								className="flex-1"
-							>
-								{t("flat")}
-							</Button>
-							<Button
-								type="button"
-								variant={pricingType === "variable" ? "default" : "outline"}
-								size="sm"
-								onClick={() => {
-									setPricingType("variable");
-									setAmount("");
-								}}
-								className="flex-1"
-							>
-								{t("variable")}
-							</Button>
+							<div className="space-y-2">
+								<label htmlFor="unitLabel" className="text-sm font-medium">
+									{t("unitLabel")}
+									<span className="text-muted-foreground font-normal ml-1">
+										({t("optional")})
+									</span>
+								</label>
+								<Input
+									id="unitLabel"
+									type="text"
+									value={unitLabel}
+									onChange={(e) => setUnitLabel(e.target.value)}
+									className="text-base h-12 mt-2"
+								/>
+							</div>
+
+							<fieldset className="space-y-2">
+								<legend id="pricingType-legend" className="text-sm font-medium">
+									{t("pricingType")}
+								</legend>
+								<div
+									className="flex gap-4 mt-2"
+									role="radiogroup"
+									aria-labelledby="pricingType-legend"
+								>
+									<label className="flex items-center gap-2 cursor-pointer">
+										<input
+											type="radio"
+											name="pricingType"
+											value="flat"
+											checked={pricingType === "flat"}
+											onChange={() => {
+												setPricingType("flat");
+												setAmount("");
+											}}
+											className="h-4 w-4"
+										/>
+										<span className="text-sm">{t("flat")}</span>
+									</label>
+									<label className="flex items-center gap-2 cursor-pointer">
+										<input
+											type="radio"
+											name="pricingType"
+											value="variable"
+											checked={pricingType === "variable"}
+											onChange={() => {
+												setPricingType("variable");
+												setAmount("");
+											}}
+											className="h-4 w-4"
+										/>
+										<span className="text-sm">{t("variable")}</span>
+									</label>
+								</div>
+							</fieldset>
+
+							<div className="space-y-2">
+								<label htmlFor="amount" className="text-sm font-medium">
+									{pricingType === "flat" ? t("flatAmount") : t("unitPrice")}
+								</label>
+								<div className="relative">
+									<Input
+										id="amount"
+										type="number"
+										value={amount}
+										onChange={(e) => setAmount(e.target.value)}
+										placeholder={
+											pricingType === "flat"
+												? t("flatAmountPlaceholder")
+												: t("unitPricePlaceholder")
+										}
+										className="text-base h-12 pr-16 mt-2"
+										min="0"
+										step="0.01"
+									/>
+									<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+										{currency}
+									</span>
+								</div>
+							</div>
 						</div>
-
-						<Input
-							type="number"
-							value={amount}
-							onChange={(e) => setAmount(e.target.value)}
-							placeholder={
-								pricingType === "flat"
-									? t("flatAmountPlaceholder")
-									: t("unitPricePlaceholder")
-							}
-							className="text-base h-12"
-							min="0"
-							step="0.01"
-						/>
 
 						<div className="flex gap-3">
 							<Button

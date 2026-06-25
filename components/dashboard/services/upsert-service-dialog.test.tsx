@@ -37,10 +37,12 @@ describe("UpsertServiceDialog", () => {
 			expect(
 				within(dialog).getByRole("heading", { name: /add service/i }),
 			).toBeInTheDocument();
-			expect(within(dialog).getByPlaceholderText(/service name/i)).toHaveValue(
-				"",
-			);
-			expect(within(dialog).getByPlaceholderText(/unit/i)).toHaveValue("");
+			expect(
+				within(dialog).getByRole("textbox", { name: /service name/i }),
+			).toHaveValue("");
+			expect(
+				within(dialog).getByRole("textbox", { name: /unit/i }),
+			).toHaveValue("");
 		});
 
 		it("displays edit mode with service data", () => {
@@ -58,9 +60,9 @@ describe("UpsertServiceDialog", () => {
 			expect(
 				within(dialog).getByRole("heading", { name: /edit service/i }),
 			).toBeInTheDocument();
-			expect(within(dialog).getByPlaceholderText(/service name/i)).toHaveValue(
-				"WiFi",
-			);
+			expect(
+				within(dialog).getByRole("textbox", { name: /service name/i }),
+			).toHaveValue("WiFi");
 		});
 	});
 
@@ -94,7 +96,9 @@ describe("UpsertServiceDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const input = within(dialog).getByPlaceholderText(/service name/i);
+			const input = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
 			const saveButton = within(dialog).getByRole("button", {
 				name: /add service/i,
 			});
@@ -117,7 +121,9 @@ describe("UpsertServiceDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const nameInput = within(dialog).getByPlaceholderText(/service name/i);
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
 			const saveButton = within(dialog).getByRole("button", {
 				name: /add service/i,
 			});
@@ -148,13 +154,15 @@ describe("UpsertServiceDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const nameInput = within(dialog).getByPlaceholderText(/service name/i);
-			const variableButton = within(dialog).getByRole("button", {
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
+			const variableRadio = within(dialog).getByRole("radio", {
 				name: /usage/i,
 			});
 
 			await user.type(nameInput, "Electricity");
-			await user.click(variableButton);
+			await user.click(variableRadio);
 
 			const amountInput =
 				within(dialog).getByPlaceholderText(/price per unit/i);
@@ -219,7 +227,9 @@ describe("UpsertServiceDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const nameInput = within(dialog).getByPlaceholderText(/service name/i);
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
 			const saveButton = within(dialog).getByRole("button", {
 				name: /add service/i,
 			});
@@ -229,7 +239,7 @@ describe("UpsertServiceDialog", () => {
 
 			expect(screen.getByTestId("service-save-loader")).toBeInTheDocument();
 			expect(
-				screen.queryByPlaceholderText(/service name/i),
+				screen.queryByRole("textbox", { name: /service name/i }),
 			).not.toBeInTheDocument();
 		});
 
@@ -245,7 +255,9 @@ describe("UpsertServiceDialog", () => {
 			);
 
 			const dialog = screen.getByRole("dialog");
-			const nameInput = within(dialog).getByPlaceholderText(/service name/i);
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
 			const saveButton = within(dialog).getByRole("button", {
 				name: /add service/i,
 			});
@@ -256,7 +268,9 @@ describe("UpsertServiceDialog", () => {
 			expect(
 				await screen.findByText(/problem adding this service/i),
 			).toBeInTheDocument();
-			expect(screen.getByPlaceholderText(/service name/i)).toBeInTheDocument();
+			expect(
+				screen.getByRole("textbox", { name: /service name/i, hidden: true }),
+			).toBeInTheDocument();
 		});
 
 		it("shows update error message in edit mode", async () => {
@@ -281,7 +295,9 @@ describe("UpsertServiceDialog", () => {
 			expect(
 				await screen.findByText(/problem updating this service/i),
 			).toBeInTheDocument();
-			expect(screen.getByPlaceholderText(/service name/i)).toBeInTheDocument();
+			expect(
+				screen.getByRole("textbox", { name: /service name/i, hidden: true }),
+			).toBeInTheDocument();
 		});
 
 		it("closes dialog without saving on cancel", async () => {

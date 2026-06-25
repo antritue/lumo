@@ -178,7 +178,9 @@ describe("PropertyDetailServices", () => {
 			await user.click(screen.getByRole("button", { name: /add service/i }));
 
 			expect(screen.getByRole("dialog")).toBeInTheDocument();
-			expect(screen.getByPlaceholderText(/service name/i)).toBeInTheDocument();
+			expect(
+				screen.getByRole("textbox", { name: /service name/i }),
+			).toBeInTheDocument();
 		});
 
 		it("opens edit dialog on badge click with merged values", async () => {
@@ -197,8 +199,9 @@ describe("PropertyDetailServices", () => {
 			const dialog = screen.getByRole("dialog");
 			expect(dialog).toBeInTheDocument();
 
-			const amountInput =
-				within(dialog).getByPlaceholderText(/price per unit/i);
+			const amountInput = within(dialog).getByRole("spinbutton", {
+				name: /unit price/i,
+			});
 			expect(amountInput).toHaveValue(200);
 		});
 
@@ -236,7 +239,7 @@ describe("PropertyDetailServices", () => {
 
 			const dialog = screen.getByRole("dialog");
 			await user.type(
-				within(dialog).getByPlaceholderText(/service name/i),
+				within(dialog).getByRole("textbox", { name: /service name/i }),
 				"WiFi",
 			);
 			await user.click(
@@ -266,7 +269,9 @@ describe("PropertyDetailServices", () => {
 			await user.click(screen.getByText("Electricity"));
 
 			const dialog = screen.getByRole("dialog");
-			const nameInput = within(dialog).getByPlaceholderText(/service name/i);
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
 			await user.clear(nameInput);
 			await user.type(nameInput, "Updated Name");
 			await user.click(within(dialog).getByRole("button", { name: /save/i }));

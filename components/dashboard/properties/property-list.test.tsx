@@ -46,7 +46,7 @@ describe("PropertyList", () => {
 			);
 
 			expect(
-				screen.getByPlaceholderText(/property name or address/i),
+				screen.getByRole("textbox", { name: /property name/i }),
 			).toBeInTheDocument();
 		});
 
@@ -60,7 +60,7 @@ describe("PropertyList", () => {
 			await user.click(screen.getByRole("button", { name: /cancel/i }));
 
 			expect(
-				screen.queryByPlaceholderText(/property name or address/i),
+				screen.queryByRole("textbox", { name: /property name/i }),
 			).not.toBeInTheDocument();
 		});
 	});
@@ -78,7 +78,7 @@ describe("PropertyList", () => {
 
 			const dialog = screen.getByRole("dialog");
 			expect(
-				within(dialog).getByPlaceholderText(/property name or address/i),
+				within(dialog).getByRole("textbox", { name: /property name/i }),
 			).toHaveValue("Sunset Villa");
 			expect(
 				within(dialog).getByRole("button", { name: /save/i }),
