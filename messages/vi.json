@@ -205,6 +205,7 @@
 			"deleteConfirm": "Xóa dịch vụ",
 			"flat": "Phí cố định",
 			"variable": "Theo số lượng",
+			"perMonth": "/tháng",
 			"flatAmountPlaceholder": "Số tiền hàng tháng",
 			"unitPricePlaceholder": "Đơn giá",
 			"unit": "đơn vị",
