@@ -177,6 +177,66 @@ components:
           type: string
           enum: [pending, paid]
 
+    RentPaymentCharge:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        rentPaymentId:
+          type: string
+          format: uuid
+        serviceId:
+          type: string
+        serviceName:
+          type: string
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        unitLabel:
+          type: ["string", "null"]
+        unitPrice:
+          type: ["number", "null"]
+        flatAmount:
+          type: ["number", "null"]
+        usage:
+          type: ["number", "null"]
+        total:
+          type: number
+      required:
+        - id
+        - rentPaymentId
+        - serviceId
+        - serviceName
+        - pricingType
+        - total
+
+    RentPaymentChargeInput:
+      type: object
+      properties:
+        serviceId:
+          type: string
+        serviceName:
+          type: string
+        pricingType:
+          type: string
+          enum: [flat, variable]
+        unitLabel:
+          type: ["string", "null"]
+        unitPrice:
+          type: ["number", "null"]
+          minimum: 0
+        flatAmount:
+          type: ["number", "null"]
+          minimum: 0
+        usage:
+          type: ["number", "null"]
+          minimum: 0
+      required:
+        - serviceId
+        - serviceName
+        - pricingType
+
     Service:
       type: object
       properties:
@@ -883,6 +943,113 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 error: Payment record not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/rent-payments/{paymentId}/service-charges:
+    get:
+      summary: List service charges for a rent payment
+      operationId: listPaymentServiceCharges
+      tags:
+        - Rent Payments
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: List of charges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RentPaymentCharge"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    patch:
+      summary: Update service charges for a rent payment (upsert)
+      operationId: updatePaymentServiceCharges
+      tags:
+        - Rent Payments
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/RentPaymentChargeInput"
+      responses:
+        "200":
+          description: Charges saved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RentPaymentCharge"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/rooms/{roomId}/rent-payment-charges:
+    get:
+      summary: List rent payment charges grouped by payment for a room
+      operationId: listRoomRentPaymentCharges
+      tags:
+        - Rooms
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Charges grouped by payment ID
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/RentPaymentCharge"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "500":
           $ref: "#/components/responses/InternalServerError"
 

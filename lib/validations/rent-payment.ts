@@ -8,3 +8,15 @@ export const rentPaymentSchema = z.object({
 });
 
 export type RentPaymentInput = z.infer<typeof rentPaymentSchema>;
+
+export const rentPaymentChargesSchema = z.array(
+	z.object({
+		serviceId: z.string(),
+		serviceName: z.string(),
+		pricingType: z.enum(["flat", "variable"]),
+		unitLabel: z.string().optional().nullable(),
+		unitPrice: z.number().nonnegative().optional().nullable(),
+		flatAmount: z.number().nonnegative().optional().nullable(),
+		usage: z.number().nonnegative().optional().nullable(),
+	}),
+);
