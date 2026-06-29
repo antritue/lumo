@@ -78,7 +78,7 @@ describe("POST /api/rent-payments", () => {
 				room_id: "room-1",
 				user_id: "test-user-id",
 				period: "2026-03",
-				amount: 500,
+				rent_amount: 500,
 				status: "pending",
 			},
 			error: null,
@@ -87,7 +87,7 @@ describe("POST /api/rent-payments", () => {
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 		});
 		const res = await createRentPayment(req);
 		const data = await res.json();
@@ -98,7 +98,7 @@ describe("POST /api/rent-payments", () => {
 			roomId: "room-1",
 			userId: "test-user-id",
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 			status: "pending",
 		});
 	});
@@ -112,7 +112,7 @@ describe("POST /api/rent-payments", () => {
 				room_id: "room-1",
 				user_id: "test-user-id",
 				period: "2026-03",
-				amount: 500,
+				rent_amount: 500,
 				status: "paid",
 			},
 			error: null,
@@ -121,7 +121,7 @@ describe("POST /api/rent-payments", () => {
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 			status: "paid",
 		});
 		const res = await createRentPayment(req);
@@ -138,7 +138,7 @@ describe("POST /api/rent-payments", () => {
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 		});
 		const res = await createRentPayment(req);
 		const data = await res.json();
@@ -152,7 +152,7 @@ describe("POST /api/rent-payments", () => {
 
 		const req = createRequest({
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 		});
 		const res = await createRentPayment(req);
 		const _data = await res.json();
@@ -166,7 +166,7 @@ describe("POST /api/rent-payments", () => {
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "invalid",
-			amount: 500,
+			rentAmount: 500,
 		});
 		const res = await createRentPayment(req);
 		const _data = await res.json();
@@ -174,13 +174,13 @@ describe("POST /api/rent-payments", () => {
 		expect(res.status).toBe(400);
 	});
 
-	it("should return 400 when amount is not positive", async () => {
+	it("should return 400 when rentAmount is not positive", async () => {
 		mockAuthenticatedUser();
 
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "2026-03",
-			amount: -100,
+			rentAmount: -100,
 		});
 		const res = await createRentPayment(req);
 		const _data = await res.json();
@@ -195,7 +195,7 @@ describe("POST /api/rent-payments", () => {
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 		});
 		const res = await createRentPayment(req);
 		const data = await res.json();
@@ -215,7 +215,7 @@ describe("POST /api/rent-payments", () => {
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 		});
 		const res = await createRentPayment(req);
 		const data = await res.json();
@@ -235,7 +235,7 @@ describe("POST /api/rent-payments", () => {
 		const req = createRequest({
 			roomId: "550e8400-e29b-41d4-a716-446655440000",
 			period: "2026-03",
-			amount: 500,
+			rentAmount: 500,
 		});
 		const res = await createRentPayment(req);
 		const data = await res.json();
@@ -299,7 +299,7 @@ describe("GET /api/rent-payments", () => {
 				room_id: "room-1",
 				user_id: "test-user-id",
 				period: "2026-04",
-				amount: 600,
+				rent_amount: 600,
 				status: "paid",
 			},
 			{
@@ -307,7 +307,7 @@ describe("GET /api/rent-payments", () => {
 				room_id: "room-1",
 				user_id: "test-user-id",
 				period: "2026-03",
-				amount: 500,
+				rent_amount: 500,
 				status: "pending",
 			},
 		];
@@ -327,7 +327,7 @@ describe("GET /api/rent-payments", () => {
 				roomId: "room-1",
 				userId: "test-user-id",
 				period: "2026-04",
-				amount: 600,
+				rentAmount: 600,
 				status: "paid",
 			},
 			{
@@ -335,7 +335,7 @@ describe("GET /api/rent-payments", () => {
 				roomId: "room-1",
 				userId: "test-user-id",
 				period: "2026-03",
-				amount: 500,
+				rentAmount: 500,
 				status: "pending",
 			},
 		]);
