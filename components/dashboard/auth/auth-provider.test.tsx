@@ -135,7 +135,7 @@ describe("AuthProvider", () => {
 					id: "1",
 					roomId: "1",
 					period: "2025-03",
-					amount: 1500,
+					rentAmount: 1500,
 					status: "pending",
 				},
 			],

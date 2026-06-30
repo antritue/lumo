@@ -36,11 +36,11 @@ export async function updateRentPayment(
 			);
 		}
 
-		const { period, amount, status } = validation.data;
+		const { period, rentAmount, status } = validation.data;
 
 		const updateData: Record<string, unknown> = {};
 		if (period !== undefined) updateData.period = period;
-		if (amount !== undefined) updateData.amount = amount;
+		if (rentAmount !== undefined) updateData.rent_amount = rentAmount;
 		if (status !== undefined) updateData.status = status;
 
 		const { data, error } = await supabase

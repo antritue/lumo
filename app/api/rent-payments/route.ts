@@ -28,7 +28,7 @@ export async function createRentPayment(request: NextRequest) {
 			);
 		}
 
-		const { roomId, period, amount, status } = validation.data;
+		const { roomId, period, rentAmount, status } = validation.data;
 
 		const { data: room, error: roomError } = await supabase
 			.from(DATABASE_TABLES.ROOMS)
@@ -48,7 +48,7 @@ export async function createRentPayment(request: NextRequest) {
 					room_id: roomId,
 					user_id: user.id,
 					period,
-					amount,
+					rent_amount: rentAmount,
 					status,
 				},
 			])

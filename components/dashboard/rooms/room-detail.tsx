@@ -46,7 +46,10 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		isPaymentsLoading,
 		isPaymentsFetchFailed,
 		retryFetchPayments,
-	} = useRoomPayments(room.id);
+		serviceChargesByPeriod,
+		updateServiceCharges,
+		defaultCharges,
+	} = useRoomPayments(room.id, room.propertyId);
 
 	const handleSaveRoom = async (
 		id: string | null,
@@ -74,12 +77,18 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	const handleSaveAndClose = async (
 		id: string | null,
 		period: string,
-		amount: number,
+		rentAmount: number,
 		status: PaymentStatus,
-	) => {
-		await handleSavePayment(id, period, amount, status);
+	): Promise<string> => {
+		const paymentId = await handleSavePayment(id, period, rentAmount, status);
 		closePayment();
+		return paymentId;
 	};
+
+	const initialServiceCharges =
+		paymentDialogMode === "edit" && selectedPayment
+			? (serviceChargesByPeriod[selectedPayment.period] ?? defaultCharges)
+			: defaultCharges;
 
 	return (
 		<div className="space-y-8">
@@ -101,6 +110,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 				isPaymentsLoading={isPaymentsLoading}
 				isPaymentsFetchFailed={isPaymentsFetchFailed}
 				onRetryPayments={retryFetchPayments}
+				serviceChargesByPeriod={serviceChargesByPeriod}
 			/>
 
 			{paymentDialogMode && (
@@ -116,6 +126,8 @@ export function RoomDetail({ room }: RoomDetailProps) {
 					onSave={handleSaveAndClose}
 					defaultAmount={room.monthlyRent}
 					existingPayments={rentPayments}
+					initialServiceCharges={initialServiceCharges}
+					onSaveServiceCharges={updateServiceCharges}
 				/>
 			)}
 

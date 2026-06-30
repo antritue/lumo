@@ -61,7 +61,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 			room_id: "room-1",
 			user_id: "test-user-id",
 			period: "2026-04",
-			amount: 500,
+			rent_amount: 500,
 			status: "pending",
 		};
 		mockSingle.mockResolvedValue({
@@ -79,7 +79,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 			roomId: "room-1",
 			userId: "test-user-id",
 			period: "2026-04",
-			amount: 500,
+			rentAmount: 500,
 			status: "pending",
 		});
 		expect(mockUpdate).toHaveBeenCalledWith({ period: "2026-04" });
@@ -87,14 +87,14 @@ describe("PATCH /api/rent-payments/:id", () => {
 		expect(mockEq2).toHaveBeenCalledWith("user_id", "test-user-id");
 	});
 
-	it("should return 200 when authenticated user updates payment amount", async () => {
+	it("should return 200 when authenticated user updates payment rentAmount", async () => {
 		mockAuthenticatedUser();
 		const mockPayment = {
 			id: "payment-1",
 			room_id: "room-1",
 			user_id: "test-user-id",
 			period: "2026-03",
-			amount: 750,
+			rent_amount: 750,
 			status: "pending",
 		};
 		mockSingle.mockResolvedValue({
@@ -102,13 +102,13 @@ describe("PATCH /api/rent-payments/:id", () => {
 			error: null,
 		});
 
-		const req = createRequest("payment-1", { amount: 750 });
+		const req = createRequest("payment-1", { rentAmount: 750 });
 		const res = await updateRentPayment(req, createParams("payment-1"));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
-		expect(data.amount).toBe(750);
-		expect(mockUpdate).toHaveBeenCalledWith({ amount: 750 });
+		expect(data.rentAmount).toBe(750);
+		expect(mockUpdate).toHaveBeenCalledWith({ rent_amount: 750 });
 	});
 
 	it("should return 200 when authenticated user updates payment status", async () => {
@@ -118,7 +118,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 			room_id: "room-1",
 			user_id: "test-user-id",
 			period: "2026-03",
-			amount: 500,
+			rent_amount: 500,
 			status: "paid",
 		};
 		mockSingle.mockResolvedValue({
@@ -142,7 +142,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 			room_id: "room-1",
 			user_id: "test-user-id",
 			period: "2026-05",
-			amount: 800,
+			rent_amount: 800,
 			status: "paid",
 		};
 		mockSingle.mockResolvedValue({
@@ -152,7 +152,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 
 		const req = createRequest("payment-1", {
 			period: "2026-05",
-			amount: 800,
+			rentAmount: 800,
 			status: "paid",
 		});
 		const res = await updateRentPayment(req, createParams("payment-1"));
@@ -160,11 +160,11 @@ describe("PATCH /api/rent-payments/:id", () => {
 
 		expect(res.status).toBe(200);
 		expect(data.period).toBe("2026-05");
-		expect(data.amount).toBe(800);
+		expect(data.rentAmount).toBe(800);
 		expect(data.status).toBe("paid");
 		expect(mockUpdate).toHaveBeenCalledWith({
 			period: "2026-05",
-			amount: 800,
+			rent_amount: 800,
 			status: "paid",
 		});
 	});
@@ -172,7 +172,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 	it("should return 401 when user is not authenticated", async () => {
 		mockUnauthenticated();
 
-		const req = createRequest("payment-1", { amount: 750 });
+		const req = createRequest("payment-1", { period: "2026-04" });
 		const res = await updateRentPayment(req, createParams("payment-1"));
 		const data = await res.json();
 
@@ -191,10 +191,10 @@ describe("PATCH /api/rent-payments/:id", () => {
 		expect(data.error).toBeDefined();
 	});
 
-	it("should return 400 when amount is not positive", async () => {
+	it("should return 400 when rentAmount is not positive", async () => {
 		mockAuthenticatedUser();
 
-		const req = createRequest("payment-1", { amount: -100 });
+		const req = createRequest("payment-1", { rentAmount: -100 });
 		const res = await updateRentPayment(req, createParams("payment-1"));
 		const data = await res.json();
 
@@ -220,7 +220,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 			error: { code: "PGRST116", message: "No rows found" },
 		});
 
-		const req = createRequest("non-existent-id", { amount: 750 });
+		const req = createRequest("non-existent-id", { period: "2026-04" });
 		const res = await updateRentPayment(req, createParams("non-existent-id"));
 		const data = await res.json();
 
@@ -235,7 +235,7 @@ describe("PATCH /api/rent-payments/:id", () => {
 			error: { code: "some-error", message: "DB failure" },
 		});
 
-		const req = createRequest("payment-1", { amount: 750 });
+		const req = createRequest("payment-1", { period: "2026-04" });
 		const res = await updateRentPayment(req, createParams("payment-1"));
 		const data = await res.json();
 

@@ -10,7 +10,7 @@ describe("DeleteRentPaymentDialog", () => {
 		id: "payment-1",
 		roomId: "room-1",
 		period: "2026-01",
-		amount: 1000,
+		rentAmount: 1000,
 		status: "pending",
 	};
 	const mockOnOpenChange = vi.fn();
