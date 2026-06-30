@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Lint & Test
+    name: Type Check, Lint, Dead Code & Unit Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -29,9 +29,9 @@ jobs:
 
       - name: Run Biome
         run: npx @biomejs/biome ci .
-        
-      - name: Run Unit Tests
-        run: npm test
 
       - name: Run Dead Code Analysis
         run: npx fallow dead-code
+
+      - name: Run Unit Tests
+        run: npm test
