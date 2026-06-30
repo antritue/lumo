@@ -3,7 +3,10 @@
 import { Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { RentPaymentsList } from "@/components/dashboard/rent-payments/rent-payments-list";
-import type { PaymentRecord } from "@/components/dashboard/rent-payments/types";
+import type {
+	PaymentRecord,
+	ServiceCharge,
+} from "@/components/dashboard/rent-payments/types";
 import { ErrorState } from "@/components/shared/error-state";
 
 interface RoomPaymentsSectionProps {
@@ -14,6 +17,7 @@ interface RoomPaymentsSectionProps {
 	isPaymentsLoading?: boolean;
 	isPaymentsFetchFailed?: boolean;
 	onRetryPayments?: () => void;
+	serviceChargesByPeriod?: Record<string, ServiceCharge[]>;
 }
 
 export function RoomPaymentsSection({
@@ -24,6 +28,7 @@ export function RoomPaymentsSection({
 	isPaymentsLoading,
 	isPaymentsFetchFailed,
 	onRetryPayments,
+	serviceChargesByPeriod,
 }: RoomPaymentsSectionProps) {
 	const t = useTranslations("app.rentPayments");
 
@@ -58,6 +63,7 @@ export function RoomPaymentsSection({
 					payments={payments}
 					onEdit={onEdit}
 					onDelete={onDelete}
+					serviceChargesByPeriod={serviceChargesByPeriod}
 				/>
 			)}
 		</div>

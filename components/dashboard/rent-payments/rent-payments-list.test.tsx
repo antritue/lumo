@@ -3,21 +3,36 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { RentPaymentsList } from "./rent-payments-list";
-import type { PaymentRecord } from "./types";
+import type { PaymentRecord, ServiceCharge } from "./types";
 
 describe("RentPaymentsList", () => {
+	const mockCharges: Record<string, ServiceCharge[]> = {
+		"2026-01": [
+			{
+				serviceId: "svc-1",
+				serviceName: "Electricity",
+				pricingType: "variable",
+				unitLabel: "kWh",
+				unitPrice: 0.15,
+				flatAmount: null,
+				usage: 500,
+				total: 75,
+			},
+		],
+	};
+
 	const mockPayments: PaymentRecord[] = [
 		{
 			id: "1",
 			period: "2026-01",
-			amount: 5000000,
+			rentAmount: 5000000,
 			roomId: "room-1",
 			status: "pending",
 		},
 		{
 			id: "2",
 			period: "2025-12",
-			amount: 4500000,
+			rentAmount: 4500000,
 			roomId: "room-1",
 			status: "paid",
 		},
@@ -62,6 +77,25 @@ describe("RentPaymentsList", () => {
 			const kebabButtons = screen.getAllByRole("button");
 			expect(kebabButtons.length).toBeGreaterThan(0);
 		});
+
+		it("shows collapsed payment with combined total when charges exist", () => {
+			renderWithProviders(
+				<RentPaymentsList
+					payments={mockPayments}
+					serviceChargesByPeriod={mockCharges}
+				/>,
+			);
+
+			expect(screen.getByText("$5,000,075")).toBeInTheDocument();
+			expect(screen.getByText("inc. services")).toBeInTheDocument();
+		});
+
+		it("shows rent amount without inc. services when no charges", () => {
+			renderWithProviders(<RentPaymentsList payments={mockPayments} />);
+
+			expect(screen.getByText("$5,000,000")).toBeInTheDocument();
+			expect(screen.queryByText("inc. services")).not.toBeInTheDocument();
+		});
 	});
 
 	describe("Interactions", () => {
@@ -73,10 +107,42 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList payments={mockPayments} onEdit={handleEdit} />,
 			);
 
-			const kebabButtons = screen.getAllByRole("button");
-			await user.click(kebabButtons[0]);
+			const kebabTriggers = screen.getAllByRole("button", { name: "" });
+			await user.click(kebabTriggers[0]);
 			await user.click(screen.getByRole("button", { name: /edit/i }));
 			expect(handleEdit).toHaveBeenCalledWith(mockPayments[0]);
+		});
+
+		it("expands to show charge breakdown when clicked", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(
+				<RentPaymentsList
+					payments={mockPayments}
+					serviceChargesByPeriod={mockCharges}
+				/>,
+			);
+
+			await user.click(screen.getByRole("button", { name: /01-2026/i }));
+
+			expect(screen.getByText("Electricity")).toBeInTheDocument();
+			expect(screen.getByText("$75")).toBeInTheDocument();
+			expect(screen.getByText(/500 kWh.*\$0/)).toBeInTheDocument();
+		});
+
+		it("collapses expanded payment when clicked again", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(
+				<RentPaymentsList
+					payments={mockPayments}
+					serviceChargesByPeriod={mockCharges}
+				/>,
+			);
+
+			await user.click(screen.getByRole("button", { name: /01-2026/i }));
+			expect(screen.getByText("Electricity")).toBeInTheDocument();
+
+			await user.click(screen.getByRole("button", { name: /01-2026/i }));
+			expect(screen.queryByText("Electricity")).not.toBeInTheDocument();
 		});
 
 		it("calls onDelete with payment when delete button clicked", async () => {
@@ -87,8 +153,8 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList payments={mockPayments} onDelete={handleDelete} />,
 			);
 
-			const kebabButtons = screen.getAllByRole("button");
-			await user.click(kebabButtons[0]);
+			const kebabTriggers = screen.getAllByRole("button", { name: "" });
+			await user.click(kebabTriggers[0]);
 			await user.click(screen.getByRole("button", { name: /delete/i }));
 			expect(handleDelete).toHaveBeenCalledWith(mockPayments[0]);
 		});

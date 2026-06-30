@@ -11,14 +11,14 @@ describe("RoomPaymentsSection", () => {
 			id: "1",
 			roomId: "room-1",
 			period: "2026-01",
-			amount: 1500000,
+			rentAmount: 1500000,
 			status: "pending",
 		},
 		{
 			id: "2",
 			roomId: "room-1",
 			period: "2025-12",
-			amount: 1500000,
+			rentAmount: 1500000,
 			status: "paid",
 		},
 	];

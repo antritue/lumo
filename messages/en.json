@@ -298,6 +298,13 @@
 			"deleteTitle": "Delete payment record?",
 			"deleteDescription": "This will permanently delete this payment record. This cannot be undone.",
 			"deleteConfirm": "Delete record",
+			"includesServices": "inc. services",
+			"serviceCharges": "Service Charges",
+			"totalWithServices": "Total (Rent + Services)",
+			"rent": "Rent",
+			"usage": "Usage",
+			"flat": "Flat",
+			"unit": "unit",
 			"form": {
 				"period": "Payment period",
 				"amount": "Amount",

@@ -7,3 +7,14 @@ export interface PaymentRecord {
 	rentAmount: number;
 	status: PaymentStatus;
 }
+
+export interface ServiceCharge {
+	serviceId: string;
+	serviceName: string;
+	pricingType: "flat" | "variable";
+	unitLabel?: string | null;
+	unitPrice?: number | null;
+	flatAmount?: number | null;
+	usage?: number | null;
+	total: number;
+}

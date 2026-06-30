@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { GET } from "./route";
+import { listRoomRentPaymentCharges } from "./route";
 
 const ROOM_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const USER_ID = "bbbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbb";
@@ -104,7 +104,7 @@ describe("GET /api/rooms/:id/rent-payment-charges", () => {
 		const req = new NextRequest(
 			`http://localhost:3000/api/rooms/${ROOM_ID}/rent-payment-charges`,
 		);
-		const res = await GET(req, createParams(ROOM_ID));
+		const res = await listRoomRentPaymentCharges(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -173,7 +173,7 @@ describe("GET /api/rooms/:id/rent-payment-charges", () => {
 		const req = new NextRequest(
 			`http://localhost:3000/api/rooms/${ROOM_ID}/rent-payment-charges`,
 		);
-		const res = await GET(req, createParams(ROOM_ID));
+		const res = await listRoomRentPaymentCharges(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -186,7 +186,7 @@ describe("GET /api/rooms/:id/rent-payment-charges", () => {
 		const req = new NextRequest(
 			`http://localhost:3000/api/rooms/${ROOM_ID}/rent-payment-charges`,
 		);
-		const res = await GET(req, createParams(ROOM_ID));
+		const res = await listRoomRentPaymentCharges(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -203,7 +203,7 @@ describe("GET /api/rooms/:id/rent-payment-charges", () => {
 		const req = new NextRequest(
 			`http://localhost:3000/api/rooms/${ROOM_ID}/rent-payment-charges`,
 		);
-		const res = await GET(req, createParams(ROOM_ID));
+		const res = await listRoomRentPaymentCharges(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -224,7 +224,7 @@ describe("GET /api/rooms/:id/rent-payment-charges", () => {
 		const req = new NextRequest(
 			`http://localhost:3000/api/rooms/${ROOM_ID}/rent-payment-charges`,
 		);
-		const res = await GET(req, createParams(ROOM_ID));
+		const res = await listRoomRentPaymentCharges(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
