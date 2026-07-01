@@ -1,6 +1,6 @@
 "use client";
 
-import { Blocks, Plus } from "lucide-react";
+import { Blocks, Loader2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ export function EmptyState() {
 	const services = useServicesStore((state) => state.services);
 	const createService = useServicesStore((state) => state.createService);
 	const [isAdding, setIsAdding] = useState(false);
+	const [loadingHint, setLoadingHint] = useState<string | null>(null);
 
 	const handleSave = async (
 		_id: string | null,
@@ -26,7 +27,12 @@ export function EmptyState() {
 	};
 
 	const handleHintAdd = async (hintName: string) => {
-		await createService(hintName, null, "flat", null, null);
+		setLoadingHint(hintName);
+		try {
+			await createService(hintName, null, "flat", null, null);
+		} finally {
+			setLoadingHint(null);
+		}
 	};
 
 	const availableHints = HINT_SERVICES.filter(
@@ -59,9 +65,14 @@ export function EmptyState() {
 									key={hint}
 									variant="outline"
 									size="sm"
+									disabled={loadingHint === hint}
 									onClick={() => handleHintAdd(hint)}
 								>
-									<HintIcon className="mr-1.5 h-3.5 w-3.5" />
+									{loadingHint === hint ? (
+										<Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+									) : (
+										<HintIcon className="mr-1.5 h-3.5 w-3.5" />
+									)}
 									{hint}
 								</Button>
 							);

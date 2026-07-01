@@ -143,6 +143,38 @@ const mockErrorConsole = () =>
 consoleSpy.mockRestore();
 ```
 
+### Deferred promise for loading states
+
+When testing intermediate loading states in components (e.g., spinner on a button while an async operation is in flight), mock the async operation to return a deferred promise. This lets you observe the UI during the pending state, then resolve the promise for clean teardown:
+
+```typescript
+it("shows loading spinner and disables init button while creating", async () => {
+  let resolveCreate!: () => void;
+  const createPromise = new Promise<void>((resolve) => {
+    resolveCreate = resolve;
+  });
+  vi.spyOn(use<Feature>Store.getState(), "create<Feature>").mockReturnValue(createPromise);
+
+  const user = userEvent.setup();
+  renderWithProviders(<Component />);
+
+  const button = screen.getByRole("button", { name: /start action/i });
+  await user.click(button);
+
+  expect(button).toBeDisabled();
+  expect(button.querySelector("svg.animate-spin")).toBeInTheDocument();
+
+  resolveCreate();
+  await createPromise;
+});
+```
+
+For store-only tests (no component rendering), the simpler never-resolving promise pattern is sufficient since no component lifecycle needs cleanup:
+
+```typescript
+mockFetch.mockResolvedValueOnce(new Promise(() => {}));
+```
+
 ## Store testing
 
 Every store operation has two auth branches (unauth → local state, auth → API call) plus error handling. Test all three branches. The per-operation tables below use `<Feature>` as a placeholder; substitute your actual feature name.
@@ -448,6 +480,7 @@ expect(within(hintButtons!).queryByText("HintItem")).not.toBeInTheDocument();
 | Opens dialog on add click | Input placeholder visible |
 | Creates item via dialog | Store updated after submit, dialog hidden |
 | Adds hint item via hint button | `createItem` called with hint name |
+| Shows loading spinner on hint button | Button disabled + spinner visible while creating |
 | Closes dialog on cancel | Dialog removed from DOM |
 
 ### Editing
@@ -511,6 +544,7 @@ The empty state shows when the item list is empty. Test only the **integration**
 |------|----------------|
 | Opens dialog when add button clicked | Dialog visible, input rendered |
 | Creates item and closes dialog on submit | Store updated, dialog removed |
+| Shows loading spinner on hint button | Button disabled + spinner visible while creating |
 
 ```typescript
 // Template: empty state test
@@ -607,8 +641,8 @@ Note: The old pattern of separate `describe("FeaturePage", ...)` with individual
 | Level | Test | Skip |
 |-------|------|------|
 | **Dialog** | Display modes, validation (disabled/enabled), save with defaults, save with variants, error handling, cancel | — |
-| **List** | Integration: opens dialog, hint items shown/hidden, closing on cancel | Dialog-internal validation, submit mechanics (covered by dialog tests) |
-| **Empty state** | Integration: opens dialog, creates item on submit, closes on cancel | Dialog-internal validation, button disabled/enabled state |
+| **List** | Integration: opens dialog, hint items shown/hidden, hint button loading state, closing on cancel | Dialog-internal validation, submit mechanics (covered by dialog tests) |
+| **Empty state** | Integration: opens dialog, creates item on submit, hint button loading state, closes on cancel | Dialog-internal validation, button disabled/enabled state |
 | **Page** | All 4 machine states: loading, empty, list, error | — |
 | **Item** | Expand/collapse, inline action button callbacks, kebab menu callbacks, variant renderings | Basic name rendering (covered by expand test) |
 | **Store** | Auth branches (unauth + auth), error handling, dedup, variant inputs, reset | — |

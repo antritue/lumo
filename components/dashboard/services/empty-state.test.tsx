@@ -136,4 +136,26 @@ describe("EmptyState", () => {
 			screen.queryByRole("button", { name: /^wifi$/i }),
 		).not.toBeInTheDocument();
 	});
+
+	it("shows loading spinner and disables hint button while creating", async () => {
+		let resolveCreate!: () => void;
+		const createPromise = new Promise<void>((resolve) => {
+			resolveCreate = resolve;
+		});
+		vi.spyOn(useServicesStore.getState(), "createService").mockReturnValue(
+			createPromise,
+		);
+
+		const user = userEvent.setup();
+		renderWithProviders(<EmptyState />);
+
+		const hintButton = screen.getByRole("button", { name: /^wifi$/i });
+		await user.click(hintButton);
+
+		expect(hintButton).toBeDisabled();
+		expect(hintButton.querySelector("svg.animate-spin")).toBeInTheDocument();
+
+		resolveCreate();
+		await createPromise;
+	});
 });
