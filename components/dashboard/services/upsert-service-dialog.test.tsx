@@ -5,6 +5,27 @@ import { renderWithProviders } from "@/test/render";
 import type { Service } from "./types";
 import { UpsertServiceDialog } from "./upsert-service-dialog";
 
+const mockAvailableServices: Service[] = [
+	{
+		id: "svc-wifi",
+		userId: "",
+		name: "WiFi",
+		unitLabel: null,
+		pricingType: "flat",
+		flatAmount: 30,
+		unitPrice: null,
+	},
+	{
+		id: "svc-parking",
+		userId: "",
+		name: "Parking",
+		unitLabel: null,
+		pricingType: "flat",
+		flatAmount: 50,
+		unitPrice: null,
+	},
+];
+
 describe("UpsertServiceDialog", () => {
 	const mockService: Service = {
 		id: "svc-1",
@@ -43,6 +64,23 @@ describe("UpsertServiceDialog", () => {
 			expect(
 				within(dialog).getByRole("textbox", { name: /unit/i }),
 			).toHaveValue("");
+		});
+
+		it("renders available services as pill hints in add mode", () => {
+			renderWithProviders(
+				<UpsertServiceDialog
+					mode="add"
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onSave={mockOnSave}
+					availableServices={mockAvailableServices}
+				/>,
+			);
+
+			expect(screen.getByText("WiFi")).toBeInTheDocument();
+			expect(screen.getByText("Parking")).toBeInTheDocument();
+			expect(screen.getByText(/quick add/i)).toBeInTheDocument();
+			expect(screen.getByText(/or fill in details/i)).toBeInTheDocument();
 		});
 
 		it("displays edit mode with service data", () => {
@@ -138,6 +176,7 @@ describe("UpsertServiceDialog", () => {
 				"flat",
 				null,
 				null,
+				undefined,
 			);
 			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
 		});
@@ -181,6 +220,7 @@ describe("UpsertServiceDialog", () => {
 				"variable",
 				null,
 				0.15,
+				undefined,
 			);
 		});
 
@@ -211,8 +251,41 @@ describe("UpsertServiceDialog", () => {
 				"flat",
 				15,
 				null,
+				undefined,
 			);
 			expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+		});
+
+		it("pre-fills form when available service pill is clicked", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(
+				<UpsertServiceDialog
+					mode="add"
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onSave={mockOnSave}
+					availableServices={mockAvailableServices}
+				/>,
+			);
+
+			const dialog = screen.getByRole("dialog");
+
+			await user.click(within(dialog).getByRole("button", { name: /wifi/i }));
+
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /service name/i,
+			});
+			expect(nameInput).toHaveValue("WiFi");
+
+			const flatRadio = within(dialog).getByRole("radio", {
+				name: /flat fee/i,
+			});
+			expect(flatRadio).toBeChecked();
+
+			const amountInput = within(dialog).getByRole("spinbutton", {
+				name: /flat amount/i,
+			});
+			expect(amountInput).toHaveValue(30);
 		});
 
 		it("shows loading state while saving", async () => {
