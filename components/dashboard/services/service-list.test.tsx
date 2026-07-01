@@ -120,16 +120,40 @@ describe("ServiceList", () => {
 			).not.toBeInTheDocument();
 		});
 
-		it("adds hint service when hint button is clicked", async () => {
+		it("opens dialog with pre-filled data when hint button is clicked", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(<ServiceList />);
 
 			const hintButton = screen.getByRole("button", { name: "WiFi" });
 			await user.click(hintButton);
 
+			const dialog = screen.getByRole("dialog");
+			expect(
+				within(dialog).getByRole("textbox", { name: /service name/i }),
+			).toHaveValue("WiFi");
 			const { services } = useServicesStore.getState();
-			expect(services).toHaveLength(2);
-			expect(services[1].name).toBe("WiFi");
+			expect(services).toHaveLength(1);
+		});
+
+		it("removes hint button after submitting pre-filled dialog", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(<ServiceList />);
+
+			await user.click(screen.getByRole("button", { name: "WiFi" }));
+
+			await user.click(
+				within(screen.getByRole("dialog")).getByRole("button", {
+					name: /add service/i,
+				}),
+			);
+
+			const hintSection = screen.getByText(/quick add/i).nextElementSibling;
+			expect(hintSection).not.toBeNull();
+			expect(
+				within(hintSection as HTMLElement).queryByRole("button", {
+					name: "WiFi",
+				}),
+			).not.toBeInTheDocument();
 		});
 
 		it("hides dialog when cancel is clicked", async () => {
@@ -146,28 +170,6 @@ describe("ServiceList", () => {
 			);
 
 			expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-		});
-
-		it("shows loading spinner and disables hint button while creating", async () => {
-			let resolveCreate!: () => void;
-			const createPromise = new Promise<void>((resolve) => {
-				resolveCreate = resolve;
-			});
-			vi.spyOn(useServicesStore.getState(), "createService").mockReturnValue(
-				createPromise,
-			);
-
-			const user = userEvent.setup();
-			renderWithProviders(<ServiceList />);
-
-			const hintButton = screen.getByRole("button", { name: "WiFi" });
-			await user.click(hintButton);
-
-			expect(hintButton).toBeDisabled();
-			expect(hintButton.querySelector("svg.animate-spin")).toBeInTheDocument();
-
-			resolveCreate();
-			await createPromise;
 		});
 	});
 
