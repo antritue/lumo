@@ -1,12 +1,12 @@
 "use client";
 
-import { Loader2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DeleteServiceDialog } from "./delete-service-dialog";
 import { ServiceItem } from "./service-item";
-import { HINT_SERVICES, useServicesStore } from "./store";
+import { HINTS, useServicesStore } from "./store";
 import type { Service } from "./types";
 import { getServiceIcon } from "./types";
 import { UpsertServiceDialog } from "./upsert-service-dialog";
@@ -21,7 +21,7 @@ export function ServiceList() {
 	const [isAdding, setIsAdding] = useState(false);
 	const [editingService, setEditingService] = useState<Service | null>(null);
 	const [deletingService, setDeletingService] = useState<Service | null>(null);
-	const [loadingHint, setLoadingHint] = useState<string | null>(null);
+	const [prefillService, setPrefillService] = useState<Service | null>(null);
 
 	const handleSave = async (
 		id: string | null,
@@ -45,17 +45,21 @@ export function ServiceList() {
 		}
 	};
 
-	const handleHintAdd = async (hintName: string) => {
-		setLoadingHint(hintName);
-		try {
-			await createService(hintName, null, "flat", null, null);
-		} finally {
-			setLoadingHint(null);
-		}
+	const handleHintAdd = (hint: (typeof HINTS)[number]) => {
+		setPrefillService({
+			id: "",
+			userId: "",
+			name: hint.name,
+			unitLabel: hint.unitLabel,
+			pricingType: hint.pricingType,
+			flatAmount: null,
+			unitPrice: null,
+		});
+		setIsAdding(true);
 	};
 
-	const availableHints = HINT_SERVICES.filter(
-		(hint) => !services.some((s) => s.name === hint),
+	const availableHints = HINTS.filter(
+		(hint) => !services.some((s) => s.name === hint.name),
 	);
 
 	return (
@@ -78,21 +82,16 @@ export function ServiceList() {
 						<p className="text-sm text-muted-foreground">{t("suggestions")}</p>
 						<div className="flex flex-wrap gap-2">
 							{availableHints.map((hint) => {
-								const HintIcon = getServiceIcon(hint);
+								const HintIcon = getServiceIcon(hint.name);
 								return (
 									<Button
-										key={hint}
+										key={hint.name}
 										variant="outline"
 										size="sm"
-										disabled={loadingHint === hint}
 										onClick={() => handleHintAdd(hint)}
 									>
-										{loadingHint === hint ? (
-											<Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-										) : (
-											<HintIcon className="mr-1.5 h-3.5 w-3.5" />
-										)}
-										{hint}
+										<HintIcon className="mr-1.5 h-3.5 w-3.5" />
+										{hint.name}
 									</Button>
 								);
 							})}
@@ -108,8 +107,14 @@ export function ServiceList() {
 
 			<UpsertServiceDialog
 				mode="add"
+				service={prefillService ?? undefined}
 				open={isAdding}
-				onOpenChange={setIsAdding}
+				onOpenChange={(open) => {
+					if (!open) {
+						setIsAdding(false);
+						setPrefillService(null);
+					}
+				}}
 				onSave={handleSave}
 			/>
 

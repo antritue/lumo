@@ -67,7 +67,7 @@ export function UpsertServiceDialog({
 			setErrorMessage("");
 			setSelectedServiceRefId(null);
 		}
-		if (mode === "edit" && service) {
+		if (service) {
 			setServiceName(service.name);
 			setUnitLabel(service.unitLabel ?? "");
 			setPricingType(service.pricingType);
@@ -82,7 +82,7 @@ export function UpsertServiceDialog({
 			setPricingType("flat");
 			setAmount("");
 		}
-	}, [mode, service, open]);
+	}, [service, open]);
 
 	const handleSelectAvailable = (service: Service) => {
 		setServiceName(service.name);

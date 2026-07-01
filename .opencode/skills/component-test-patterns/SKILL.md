@@ -479,8 +479,7 @@ expect(within(hintButtons!).queryByText("HintItem")).not.toBeInTheDocument();
 |------|----------------|
 | Opens dialog on add click | Input placeholder visible |
 | Creates item via dialog | Store updated after submit, dialog hidden |
-| Adds hint item via hint button | `createItem` called with hint name |
-| Shows loading spinner on hint button | Button disabled + spinner visible while creating |
+| Opens dialog with pre-filled data on hint click | Dialog input shows hint name, store unchanged |
 | Closes dialog on cancel | Dialog removed from DOM |
 
 ### Editing
@@ -544,7 +543,7 @@ The empty state shows when the item list is empty. Test only the **integration**
 |------|----------------|
 | Opens dialog when add button clicked | Dialog visible, input rendered |
 | Creates item and closes dialog on submit | Store updated, dialog removed |
-| Shows loading spinner on hint button | Button disabled + spinner visible while creating |
+| Opens dialog with pre-filled data on hint click | Dialog input shows hint name, store unchanged |
 
 ```typescript
 // Template: empty state test
@@ -641,8 +640,8 @@ Note: The old pattern of separate `describe("FeaturePage", ...)` with individual
 | Level | Test | Skip |
 |-------|------|------|
 | **Dialog** | Display modes, validation (disabled/enabled), save with defaults, save with variants, error handling, cancel | — |
-| **List** | Integration: opens dialog, hint items shown/hidden, hint button loading state, closing on cancel | Dialog-internal validation, submit mechanics (covered by dialog tests) |
-| **Empty state** | Integration: opens dialog, creates item on submit, hint button loading state, closes on cancel | Dialog-internal validation, button disabled/enabled state |
+| **List** | Integration: opens dialog (plain + pre-filled via hint), hint items shown/hidden, closing on cancel | Dialog-internal validation, submit mechanics (covered by dialog tests) |
+| **Empty state** | Integration: opens dialog (plain + pre-filled via hint), creates item on submit, closes on cancel | Dialog-internal validation, button disabled/enabled state |
 | **Page** | All 4 machine states: loading, empty, list, error | — |
 | **Item** | Expand/collapse, inline action button callbacks, kebab menu callbacks, variant renderings | Basic name rendering (covered by expand test) |
 | **Store** | Auth branches (unauth + auth), error handling, dedup, variant inputs, reset | — |

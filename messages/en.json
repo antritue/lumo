@@ -219,7 +219,7 @@
 			"suggestions": "Quick add common services:",
 			"quickAdd": "Quick add:",
 			"orCustom": "or fill in details",
-			"globalServiceNotice": "Changes to global services apply to all properties. New services only apply to future properties",
+			"globalServiceNotice": "Services are shared across all properties. Each property can customize or remove individual services.",
 			"errors": {
 				"create": {
 					"title": "Failed to add service",

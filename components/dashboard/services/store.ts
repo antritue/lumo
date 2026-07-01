@@ -24,12 +24,12 @@ const SEEDED_SERVICES: Service[] = [
 	},
 ];
 
-const HINT_SERVICES = [
-	"Electricity",
-	"Water",
-	"WiFi",
-	"Cleaning",
-	"Parking",
+const HINTS = [
+	{ name: "Electricity", pricingType: "variable", unitLabel: "kWh" },
+	{ name: "Water", pricingType: "variable", unitLabel: "m³" },
+	{ name: "WiFi", pricingType: "flat", unitLabel: null },
+	{ name: "Cleaning", pricingType: "flat", unitLabel: null },
+	{ name: "Parking", pricingType: "variable", unitLabel: "vehicle" },
 ] as const;
 
 interface ServicesState {
@@ -251,4 +251,4 @@ export const useServicesStore = create<ServicesState>()(
 	),
 );
 
-export { HINT_SERVICES };
+export { HINTS };

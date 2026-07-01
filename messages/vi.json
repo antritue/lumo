@@ -219,7 +219,7 @@
 			"suggestions": "Thêm nhanh dịch vụ thường dùng:",
 			"quickAdd": "Thêm nhanh:",
 			"orCustom": "hoặc nhập chi tiết",
-			"globalServiceNotice": "Thay đổi dịch vụ toàn cục áp dụng cho tất cả bất động sản. Dịch vụ mới chỉ áp dụng cho bất động sản được tạo sau",
+			"globalServiceNotice": "Dịch vụ được chia sẻ giữa tất cả bất động sản. Mỗi bất động sản có thể tùy chỉnh hoặc xóa từng dịch vụ.",
 			"errors": {
 				"create": {
 					"title": "Không thể thêm dịch vụ",
