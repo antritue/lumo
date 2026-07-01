@@ -126,104 +126,23 @@ describe("PropertyServicesStore", () => {
 			);
 		});
 
-		it("creates default property services from global services when authenticated property has no services", async () => {
+		it("stores empty property services when authenticated property has no services", async () => {
 			authenticate();
-
-			useServicesStore.setState({
-				services: [
-					{
-						id: "svc-elec",
-						userId: "user-123",
-						name: "Electricity",
-						unitLabel: "kWh",
-						pricingType: "variable",
-						flatAmount: null,
-						unitPrice: null,
-					},
-					{
-						id: "svc-water",
-						userId: "user-123",
-						name: "Water",
-						unitLabel: "m³",
-						pricingType: "variable",
-						flatAmount: null,
-						unitPrice: null,
-					},
-				],
-				hasServicesFetched: true,
-				isServicesLoading: false,
-				servicesFetchFailed: false,
-			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => [],
 			});
 
-			const createdServices = [
-				mockPropertyService({
-					propertyId: "prop-1",
-					serviceId: "svc-elec",
-					serviceName: "Electricity",
-					unitLabel: "kWh",
-					pricingType: "variable",
-				}),
-				mockPropertyService({
-					propertyId: "prop-1",
-					serviceId: "svc-water",
-					serviceName: "Water",
-					unitLabel: "m³",
-					pricingType: "variable",
-				}),
-			];
-
-			mockFetch.mockResolvedValueOnce({
-				ok: true,
-				json: async () => createdServices,
-			});
-
 			await usePropertyServicesStore.getState().fetchPropertyServices("prop-1");
 
 			const { propertyServicesByPropertyId } =
 				usePropertyServicesStore.getState();
-			expect(propertyServicesByPropertyId["prop-1"]).toHaveLength(2);
-			expect(propertyServicesByPropertyId["prop-1"][0].serviceName).toBe(
-				"Electricity",
-			);
-			expect(propertyServicesByPropertyId["prop-1"][1].serviceName).toBe(
-				"Water",
-			);
-			expect(mockFetch).toHaveBeenCalledTimes(2);
-
-			expect(mockFetch).toHaveBeenNthCalledWith(
-				1,
+			expect(propertyServicesByPropertyId["prop-1"]).toHaveLength(0);
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/properties/prop-1/services",
 				expect.objectContaining({ method: "GET" }),
-			);
-			expect(mockFetch).toHaveBeenNthCalledWith(
-				2,
-				"/api/properties/prop-1/services",
-				expect.objectContaining({
-					method: "POST",
-					body: JSON.stringify([
-						{
-							serviceId: "svc-elec",
-							serviceName: "Electricity",
-							unitLabel: "kWh",
-							pricingType: "variable",
-							flatAmount: null,
-							unitPrice: null,
-						},
-						{
-							serviceId: "svc-water",
-							serviceName: "Water",
-							unitLabel: "m³",
-							pricingType: "variable",
-							flatAmount: null,
-							unitPrice: null,
-						},
-					]),
-				}),
 			);
 		});
 

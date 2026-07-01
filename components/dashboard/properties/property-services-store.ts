@@ -104,45 +104,10 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 					const sortByServiceName = (items: PropertyService[]) =>
 						items.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
 
-					let resolved: PropertyService[];
-
-					if (data.length > 0) {
-						resolved = sortByServiceName(data);
-					} else {
-						await useServicesStore.getState().fetchServices();
-						const globalServices = useServicesStore.getState().services;
-
-						const res = await fetch(`/api/properties/${propertyId}/services`, {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify(
-								globalServices.map((gs) => ({
-									serviceId: gs.id,
-									serviceName: gs.name,
-									unitLabel: gs.unitLabel,
-									pricingType: gs.pricingType,
-									flatAmount: gs.flatAmount,
-									unitPrice: gs.unitPrice,
-								})),
-							),
-							credentials: "include",
-						});
-
-						if (!res.ok) {
-							throw new Error("Failed to seed property services");
-						}
-
-						const created: PropertyService[] = await res.json();
-
-						resolved = sortByServiceName(created);
-					}
-
 					set((state) => ({
 						propertyServicesByPropertyId: {
 							...state.propertyServicesByPropertyId,
-							[propertyId]: resolved,
+							[propertyId]: sortByServiceName(data),
 						},
 						isPropertyServicesLoading: false,
 						fetchingPropertyId: null,
