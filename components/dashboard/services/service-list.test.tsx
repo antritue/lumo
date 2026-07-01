@@ -147,6 +147,28 @@ describe("ServiceList", () => {
 
 			expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 		});
+
+		it("shows loading spinner and disables hint button while creating", async () => {
+			let resolveCreate!: () => void;
+			const createPromise = new Promise<void>((resolve) => {
+				resolveCreate = resolve;
+			});
+			vi.spyOn(useServicesStore.getState(), "createService").mockReturnValue(
+				createPromise,
+			);
+
+			const user = userEvent.setup();
+			renderWithProviders(<ServiceList />);
+
+			const hintButton = screen.getByRole("button", { name: "WiFi" });
+			await user.click(hintButton);
+
+			expect(hintButton).toBeDisabled();
+			expect(hintButton.querySelector("svg.animate-spin")).toBeInTheDocument();
+
+			resolveCreate();
+			await createPromise;
+		});
 	});
 
 	describe("Editing Services", () => {
