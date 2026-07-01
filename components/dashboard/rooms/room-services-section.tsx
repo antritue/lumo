@@ -2,7 +2,7 @@
 
 import { Loader2, Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
 import type { PropertyService } from "@/components/dashboard/properties/types";
 import { DeleteServiceDialog } from "@/components/dashboard/services/delete-service-dialog";
@@ -58,6 +58,30 @@ export function RoomServicesSection({
 	);
 	const fetchPropertyServices = usePropertyServicesStore(
 		(state) => state.fetchPropertyServices,
+	);
+
+	const availableServices = useMemo(
+		() =>
+			propertyServices
+				.filter(
+					(propertyService) =>
+						!roomServices.some(
+							(roomService) =>
+								roomService.serviceId === propertyService.serviceId,
+						),
+				)
+				.map(
+					(propertyService): Service => ({
+						id: propertyService.serviceId,
+						userId: "",
+						name: propertyService.serviceName,
+						unitLabel: propertyService.unitLabel,
+						pricingType: propertyService.pricingType,
+						flatAmount: propertyService.flatAmount,
+						unitPrice: propertyService.unitPrice,
+					}),
+				),
+		[propertyServices, roomServices],
 	);
 
 	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
@@ -119,6 +143,7 @@ export function RoomServicesSection({
 		pricingType: "flat" | "variable",
 		flatAmount: number | null,
 		unitPrice: number | null,
+		serviceRefId?: string,
 	) => {
 		if (id) {
 			await updateRoomService(roomId, id, {
@@ -129,7 +154,7 @@ export function RoomServicesSection({
 				unitPrice,
 			});
 		} else {
-			const newId = crypto.randomUUID();
+			const newId = serviceRefId ?? crypto.randomUUID();
 			await addRoomService(roomId, newId, {
 				serviceName: name,
 				unitLabel,
@@ -252,6 +277,12 @@ export function RoomServicesSection({
 				customServiceNotice={
 					dialogMode === "edit" && isEditingCustom
 						? t("customServiceNotice")
+						: undefined
+				}
+				availableServices={dialogMode === "add" ? availableServices : undefined}
+				availableTitle={
+					dialogMode === "add" && availableServices.length > 0
+						? t("quickAddFromProperty")
 						: undefined
 				}
 				open={dialogMode !== null}

@@ -49,6 +49,17 @@ export function PropertyDetailServices({
 	);
 	const serviceCount = propertyServices.length;
 
+	const availableServices = useMemo(
+		() =>
+			services.filter(
+				(service) =>
+					!propertyServices.some(
+						(propertyService) => propertyService.serviceId === service.id,
+					),
+			),
+		[services, propertyServices],
+	);
+
 	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
 	const [editingService, setEditingService] = useState<Service | undefined>(
 		undefined,
@@ -120,6 +131,7 @@ export function PropertyDetailServices({
 		pricingType: "flat" | "variable",
 		flatAmount: number | null,
 		unitPrice: number | null,
+		serviceRefId?: string,
 	) => {
 		if (id) {
 			await updatePropertyService(propertyId, id, {
@@ -130,7 +142,7 @@ export function PropertyDetailServices({
 				unitPrice,
 			});
 		} else {
-			const newId = crypto.randomUUID();
+			const newId = serviceRefId ?? crypto.randomUUID();
 			await addPropertyService(propertyId, newId, {
 				serviceName: name,
 				unitLabel,
@@ -235,6 +247,12 @@ export function PropertyDetailServices({
 				customServiceNotice={
 					dialogMode === "edit" && isEditingCustom
 						? t("customServiceNotice")
+						: undefined
+				}
+				availableServices={dialogMode === "add" ? availableServices : undefined}
+				availableTitle={
+					dialogMode === "add" && availableServices.length > 0
+						? t("quickAddFromGlobal")
 						: undefined
 				}
 				open={dialogMode !== null}
