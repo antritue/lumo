@@ -183,6 +183,11 @@
 		},
 		"propertyServices": {
 			"title": "Services",
+			"infoButtonLabel": "About service hierarchy",
+			"titleTooltip": "Define globally, customize per property, assign to rooms.",
+			"customizedTooltip": "Customized from global default",
+			"globalTipBefore": "Tip: create common services in ",
+			"globalTipAfter": " first.",
 			"count": "{count, plural, =0 {0 services} =1 {1 service} other {# services}}",
 			"addService": "Add service",
 			"remove": "Remove",

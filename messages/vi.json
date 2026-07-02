@@ -183,6 +183,11 @@
 		},
 		"propertyServices": {
 			"title": "Dịch vụ",
+			"infoButtonLabel": "Về hệ thống dịch vụ",
+			"titleTooltip": "Định nghĩa toàn cục, tùy chỉnh theo bất động sản, gán cho phòng.",
+			"customizedTooltip": "Đã tùy chỉnh từ mặc định toàn cục",
+			"globalTipBefore": "Mẹo: tạo dịch vụ chung trong ",
+			"globalTipAfter": " trước.",
 			"count": "{count, plural, =0 {0 dịch vụ} =1 {1 dịch vụ} other {# dịch vụ}}",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
