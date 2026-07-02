@@ -1,13 +1,6 @@
 "use client";
 
-import {
-	DoorOpen,
-	Loader2,
-	MoreHorizontal,
-	Pencil,
-	Plus,
-	Trash2,
-} from "lucide-react";
+import { DoorOpen, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
@@ -17,6 +10,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
 import { DeleteRoomDialog } from "../rooms/delete-room-dialog";
 import { useRoomsStore } from "../rooms/store";
@@ -97,8 +91,14 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 			</div>
 
 			{isRoomsLoading && (
-				<div className="flex items-center justify-center">
-					<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+				<div className="space-y-2">
+					{["r-sk-0", "r-sk-1", "r-sk-2"].map((key) => (
+						<div key={key} className="flex items-center gap-3 px-3.5 py-3">
+							<Skeleton className="h-8 w-8 rounded-lg" />
+							<Skeleton className="flex-1 h-4" />
+							<Skeleton className="h-4 w-16" />
+						</div>
+					))}
 				</div>
 			)}
 
@@ -127,10 +127,12 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 												{room.name}
 											</p>
 										</div>
-										{room.monthlyRent && (
+										{room.monthlyRent ? (
 											<p className="text-sm font-semibold text-foreground">
 												{formatCurrency(room.monthlyRent, locale)}
 											</p>
+										) : (
+											<p className="text-sm text-muted-foreground">—</p>
 										)}
 									</Link>
 									<Popover>

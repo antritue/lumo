@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { RentPaymentsList } from "@/components/dashboard/rent-payments/rent-payments-list";
 import type {
@@ -8,6 +8,7 @@ import type {
 	ServiceCharge,
 } from "@/components/dashboard/rent-payments/types";
 import { ErrorState } from "@/components/shared/error-state";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface RoomPaymentsSectionProps {
 	payments: PaymentRecord[];
@@ -55,8 +56,20 @@ export function RoomPaymentsSection({
 			{isPaymentsFetchFailed ? (
 				<ErrorState onRetry={onRetryPayments} />
 			) : isPaymentsLoading ? (
-				<div className="flex items-center justify-center py-12">
-					<Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+				<div className="space-y-2">
+					{["rp-sk-0", "rp-sk-1"].map((key) => (
+						<div
+							key={key}
+							className="flex items-center gap-3 px-3.5 py-3 rounded-xl"
+						>
+							<Skeleton className="h-8 w-8 rounded-lg" />
+							<Skeleton className="h-4 w-24" />
+							<Skeleton className="h-5 w-16 rounded-full" />
+							<div className="flex-1" />
+							<Skeleton className="h-4 w-20" />
+							<Skeleton className="h-7 w-7 rounded-md" />
+						</div>
+					))}
 				</div>
 			) : (
 				<RentPaymentsList

@@ -15,6 +15,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useRoomServicesStore } from "./room-services-store";
 import type { RoomService } from "./types";
 
@@ -267,8 +268,10 @@ export function RoomServicesSection({
 			</div>
 
 			{isRoomServicesLoading && (
-				<div className="flex items-center justify-center py-8">
-					<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+				<div className="flex flex-wrap gap-2">
+					{["rs-sk-0", "rs-sk-1", "rs-sk-2"].map((key) => (
+						<Skeleton key={key} className="h-8 w-20 rounded-full" />
+					))}
 				</div>
 			)}
 
@@ -283,12 +286,12 @@ export function RoomServicesSection({
 						{roomServices.map((roomService) => (
 							<div
 								key={roomService.id}
-								className="inline-flex items-stretch rounded-2xl bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
+								className="inline-flex items-stretch rounded-2xl bg-secondary text-sm font-medium overflow-hidden"
 							>
 								<button
 									type="button"
 									onClick={() => handleEditService(roomService)}
-									className="flex flex-col py-1.5 pl-3 pr-1.5 min-w-0 cursor-pointer text-left"
+									className="flex flex-col py-1.5 pl-3 pr-1.5 min-w-0 cursor-pointer text-left hover:bg-muted transition-colors"
 								>
 									<div className="flex items-center gap-1">
 										<span className="font-medium">
@@ -304,13 +307,14 @@ export function RoomServicesSection({
 											: `${ts("variable")} · ${formatAmount(roomService)}`}
 									</span>
 								</button>
+								<div className="w-px self-stretch bg-border/50" />
 								<button
 									type="button"
 									onClick={(e) => {
 										e.stopPropagation();
 										setDeletingService(roomService);
 									}}
-									className="flex items-center justify-center pr-2 pl-0.5 hover:text-red-500 transition-colors cursor-pointer shrink-0"
+									className="flex items-center justify-center pr-2 pl-1.5 hover:bg-muted hover:text-red-500 transition-colors cursor-pointer shrink-0"
 									aria-label={`${t("remove")} ${roomService.serviceName}`}
 								>
 									<X className="h-3 w-3" />
@@ -330,7 +334,7 @@ export function RoomServicesSection({
 				!isRoomServicesFetchFailed &&
 				availableServices.length > 0 && (
 					<div className="flex items-center gap-2 flex-wrap">
-						<span className="text-xs text-muted-foreground shrink-0">
+						<span className="text-sm text-muted-foreground shrink-0">
 							{t("quickAddFromProperty")}
 						</span>
 						{availableServices.map((service) => (

@@ -51,7 +51,7 @@ describe("PropertyDetailRooms", () => {
 				<PropertyDetailRooms propertyId="prop-1" />,
 			);
 
-			expect(container.querySelector(".animate-spin")).toBeInTheDocument();
+			expect(container.querySelector(".animate-shimmer")).toBeInTheDocument();
 		});
 
 		it("shows error state with retry button on fetch failure", () => {

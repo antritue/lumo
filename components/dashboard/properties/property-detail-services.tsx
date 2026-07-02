@@ -14,6 +14,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { usePropertyServicesStore } from "./property-services-store";
 import type { PropertyService } from "./types";
 
@@ -238,8 +239,10 @@ export function PropertyDetailServices({
 			</div>
 
 			{isPropertyServicesLoading && (
-				<div className="flex items-center justify-center">
-					<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+				<div className="flex flex-wrap gap-2">
+					{["s-sk-0", "s-sk-1", "s-sk-2"].map((key) => (
+						<Skeleton key={key} className="h-8 w-20 rounded-full" />
+					))}
 				</div>
 			)}
 
@@ -254,7 +257,7 @@ export function PropertyDetailServices({
 						{propertyServices.map((propertyService) => (
 							<div
 								key={propertyService.id}
-								className="inline-flex items-stretch rounded-full bg-secondary text-sm font-medium overflow-hidden hover:bg-muted transition-colors"
+								className="inline-flex items-stretch rounded-full bg-secondary text-sm font-medium overflow-hidden"
 							>
 								<button
 									type="button"
@@ -263,13 +266,14 @@ export function PropertyDetailServices({
 										setIsEditingCustom(isServiceCustom(propertyService));
 										setDialogMode("edit");
 									}}
-									className="flex items-center gap-1 pl-3 pr-1.5 py-1.5 cursor-pointer"
+									className="flex items-center gap-1 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer"
 								>
 									{getServiceName(propertyService)}
 									{isServiceCustom(propertyService) && (
 										<span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
 									)}
 								</button>
+								<div className="w-px self-stretch bg-border/50" />
 								<button
 									type="button"
 									onClick={() =>
@@ -283,7 +287,7 @@ export function PropertyDetailServices({
 											unitPrice: propertyService.unitPrice,
 										})
 									}
-									className="flex items-center justify-center pr-2 pl-0.5 py-1.5 hover:text-red-500 transition-colors cursor-pointer"
+									className="flex items-center justify-center pr-2 pl-1.5 py-1.5 hover:bg-muted hover:text-red-500 transition-colors cursor-pointer"
 									aria-label={`${t("remove")} ${getServiceName(propertyService)}`}
 								>
 									<X className="h-3 w-3" />
@@ -297,7 +301,7 @@ export function PropertyDetailServices({
 				!isPropertyServicesFetchFailed &&
 				availableServices.length > 0 && (
 					<div className="flex items-center gap-2 flex-wrap">
-						<span className="text-xs text-muted-foreground shrink-0">
+						<span className="text-sm text-muted-foreground shrink-0">
 							{t("quickAddFromGlobal")}
 						</span>
 						{availableServices.map((service) => (
