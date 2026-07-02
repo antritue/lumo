@@ -1,6 +1,7 @@
 "use client";
 
-import { Loader2, Plus, X } from "lucide-react";
+import { Info, Loader2, Plus, X } from "lucide-react";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
@@ -9,6 +10,11 @@ import { DeleteServiceDialog } from "@/components/dashboard/services/delete-serv
 import type { Service } from "@/components/dashboard/services/types";
 import { UpsertServiceDialog } from "@/components/dashboard/services/upsert-service-dialog";
 import { ErrorState } from "@/components/shared/error-state";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { useRoomServicesStore } from "./room-services-store";
 import type { RoomService } from "./types";
 
@@ -217,6 +223,38 @@ export function RoomServicesSection({
 				<div className="flex items-center justify-center rounded-full bg-primary h-5 px-2 text-xs font-medium text-primary-foreground">
 					{roomServices.length}
 				</div>
+				<Popover>
+					<PopoverTrigger asChild>
+						<button
+							type="button"
+							className="flex items-center justify-center h-4 w-4 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+							aria-label={t("infoButtonLabel")}
+						>
+							<Info className="h-3.5 w-3.5" />
+						</button>
+					</PopoverTrigger>
+					<PopoverContent
+						side="top"
+						align="start"
+						className="max-w-64 text-xs leading-relaxed space-y-2"
+					>
+						<p>{t("titleTooltip")}</p>
+						<p className="flex items-center gap-1.5">
+							<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+							{t("customizedTooltip")}
+						</p>
+						<p>
+							{t("roomTipBefore")}
+							<Link
+								href="/dashboard/services"
+								className="underline underline-offset-2 hover:text-foreground transition-colors"
+							>
+								{t("title")}
+							</Link>
+							{t("roomTipAfter")}
+						</p>
+					</PopoverContent>
+				</Popover>
 				<div className="flex-1" />
 				<button
 					type="button"

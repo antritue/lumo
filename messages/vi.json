@@ -175,24 +175,29 @@
 		},
 		"roomServices": {
 			"title": "Dịch vụ",
-			"empty": "Chưa có dịch vụ nào được cấu hình cho phòng này",
+			"infoButtonLabel": "Về hệ thống dịch vụ",
+			"titleTooltip": "Dịch vụ hoạt động theo ba lớp: tạo mẫu ở cấp chung, chỉnh theo từng nhà, gán cho từng phòng.",
+			"customizedTooltip": "Đã chỉnh sửa khác với mặc định của nhà",
+			"roomTipBefore": "Mẹo: tạo các dịch vụ dùng chung trong ",
+			"roomTipAfter": " trước.",
+			"empty": "Phòng này chưa có dịch vụ nào",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
-			"customServiceNotice": "Dịch vụ này đã được tùy chỉnh từ mặc định của nhà cho thuê",
+			"customServiceNotice": "Dịch vụ này đã được chỉnh sửa khác với mặc định của nhà cho thuê",
 			"quickAddFromProperty": "Thêm nhanh từ nhà cho thuê:"
 		},
 		"propertyServices": {
 			"title": "Dịch vụ",
 			"infoButtonLabel": "Về hệ thống dịch vụ",
-			"titleTooltip": "Định nghĩa toàn cục, tùy chỉnh theo bất động sản, gán cho phòng.",
-			"customizedTooltip": "Đã tùy chỉnh từ mặc định toàn cục",
-			"globalTipBefore": "Mẹo: tạo dịch vụ chung trong ",
+			"titleTooltip": "Dịch vụ hoạt động theo ba lớp: tạo mẫu ở cấp chung, chỉnh theo từng nhà, gán cho từng phòng.",
+			"customizedTooltip": "Đã chỉnh sửa khác với mặc định chung",
+			"globalTipBefore": "Mẹo: tạo các dịch vụ dùng chung trong ",
 			"globalTipAfter": " trước.",
 			"count": "{count, plural, =0 {0 dịch vụ} =1 {1 dịch vụ} other {# dịch vụ}}",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
-			"customServiceNotice": "Dịch vụ này đã được tùy chỉnh từ mặc định toàn cục",
-			"quickAddFromGlobal": "Thêm nhanh từ toàn cục:"
+			"customServiceNotice": "Dịch vụ này đã được chỉnh sửa khác với mặc định chung",
+			"quickAddFromGlobal": "Thêm nhanh từ dịch vụ chung:"
 		},
 		"services": {
 			"emptyTitle": "Chưa có dịch vụ",

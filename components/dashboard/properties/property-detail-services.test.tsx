@@ -158,14 +158,12 @@ describe("PropertyDetailServices", () => {
 			).not.toBeInTheDocument();
 		});
 
-		it("shows info icon with hierarchy tooltip", () => {
-			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+		it("shows tooltip info icon", () => {
+			const { container } = renderWithProviders(
+				<PropertyDetailServices propertyId="prop-1" />,
+			);
 
-			expect(
-				screen.getByRole("button", {
-					name: /about service hierarchy/i,
-				}),
-			).toBeInTheDocument();
+			expect(container.querySelector("svg.lucide-info")).toBeInTheDocument();
 		});
 
 		it("shows custom dot for service not in global catalog", () => {
@@ -216,7 +214,7 @@ describe("PropertyDetailServices", () => {
 
 			expect(
 				screen.getByText(
-					"Define globally, customize per property, assign to rooms.",
+					"Services work in three layers: create templates globally, customize per property, assign to rooms.",
 				),
 			).toBeInTheDocument();
 			expect(screen.getByRole("link", { name: /services/i })).toHaveAttribute(

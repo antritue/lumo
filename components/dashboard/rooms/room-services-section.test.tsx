@@ -187,6 +187,14 @@ describe("RoomServicesSection", () => {
 			expect(container.querySelector(".bg-amber-500")).toBeInTheDocument();
 		});
 
+		it("shows tooltip info icon", () => {
+			const { container } = renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(container.querySelector("svg.lucide-info")).toBeInTheDocument();
+		});
+
 		it("hides amber dot when property services are loading", () => {
 			usePropertyServicesStore.setState({
 				fetchingPropertyId: "prop-1",
@@ -223,6 +231,30 @@ describe("RoomServicesSection", () => {
 			await user.click(screen.getByRole("button", { name: /try again/i }));
 
 			expect(fetchRoomServices).toHaveBeenCalledWith("room-1", "prop-1");
+		});
+
+		it("opens info popover with hierarchy explanation on icon click", async () => {
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(
+				screen.getByRole("button", {
+					name: /about service hierarchy/i,
+				}),
+			);
+
+			expect(
+				screen.getByText(
+					"Services work in three layers: create templates globally, customize per property, assign to rooms.",
+				),
+			).toBeInTheDocument();
+			expect(screen.getByRole("link", { name: /services/i })).toHaveAttribute(
+				"href",
+				"/dashboard/services",
+			);
 		});
 
 		it("opens add dialog on plus button click", async () => {

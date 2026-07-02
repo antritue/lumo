@@ -175,6 +175,11 @@
 		},
 		"roomServices": {
 			"title": "Services",
+			"infoButtonLabel": "About service hierarchy",
+			"titleTooltip": "Services work in three layers: create templates globally, customize per property, assign to rooms.",
+			"customizedTooltip": "Customized from property default",
+			"roomTipBefore": "Tip: create common services in ",
+			"roomTipAfter": " first.",
 			"empty": "No services configured for this room",
 			"addService": "Add service",
 			"remove": "Remove",
@@ -184,7 +189,7 @@
 		"propertyServices": {
 			"title": "Services",
 			"infoButtonLabel": "About service hierarchy",
-			"titleTooltip": "Define globally, customize per property, assign to rooms.",
+			"titleTooltip": "Services work in three layers: create templates globally, customize per property, assign to rooms.",
 			"customizedTooltip": "Customized from global default",
 			"globalTipBefore": "Tip: create common services in ",
 			"globalTipAfter": " first.",
