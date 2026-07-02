@@ -47,12 +47,12 @@ describe("RoomList", () => {
 			).toBeInTheDocument();
 		});
 
-		it("displays loading spinner when isRoomsLoading is true", () => {
-			renderWithProviders(
+		it("displays loading skeleton when isRoomsLoading is true", () => {
+			const { container } = renderWithProviders(
 				<RoomList propertyId="prop-1" rooms={[]} isRoomsLoading />,
 			);
 
-			expect(screen.getByTestId("room-list-loader")).toBeInTheDocument();
+			expect(container.querySelector(".animate-shimmer")).toBeInTheDocument();
 			expect(
 				screen.queryByRole("button", { name: /add room/i }),
 			).not.toBeInTheDocument();

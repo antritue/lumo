@@ -10,35 +10,35 @@
 	--destructive: 0 84% 60%;
 	--destructive-foreground: 0 0% 100%;
 
-	/* Secondary - Warm Gray */
-	--secondary: 30 10% 96%;
-	--secondary-foreground: 30 5% 25%;
+	/* Secondary - Sage-tinted light gray */
+	--secondary: 145 4% 96%;
+	--secondary-foreground: 145 5% 25%;
 
-	/* Accent - Gentle Coral */
+	/* Accent - Gentle Coral (complementary pop) */
 	--accent: 15 60% 75%;
 	--accent-foreground: 15 40% 25%;
 
 	/* Backgrounds */
-	--background: 30 20% 98%;
-	--foreground: 30 5% 15%;
+	--background: 145 3% 99%;
+	--foreground: 145 5% 12%;
 
 	/* Muted */
-	--muted: 30 10% 94%;
-	--muted-foreground: 30 5% 45%;
+	--muted: 145 4% 95%;
+	--muted-foreground: 145 3% 40%;
 
 	/* Card */
 	--card: 0 0% 100%;
-	--card-foreground: 30 5% 15%;
+	--card-foreground: 145 5% 12%;
 
 	/* Popover */
 	--popover: 0 0% 100%;
-	--popover-foreground: 30 5% 15%;
+	--popover-foreground: 145 5% 12%;
 
 	/* Border */
-	--border: 30 10% 90%;
+	--border: 145 5% 88%;
 
 	/* Input */
-	--input: 30 10% 90%;
+	--input: 145 5% 88%;
 
 	/* Ring */
 	--ring: 145 28% 50%;

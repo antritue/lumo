@@ -51,7 +51,7 @@ describe("RoomDetailPage", () => {
 			<RoomDetailPage {...createParams("room-1")} />,
 		);
 
-		const skeletonElements = container.querySelectorAll(".animate-pulse");
+		const skeletonElements = container.querySelectorAll(".animate-shimmer");
 		expect(skeletonElements.length).toBeGreaterThan(0);
 	});
 
@@ -67,7 +67,7 @@ describe("RoomDetailPage", () => {
 			<RoomDetailPage {...createParams("room-1")} />,
 		);
 
-		const skeletonElements = container.querySelectorAll(".animate-pulse");
+		const skeletonElements = container.querySelectorAll(".animate-shimmer");
 		expect(skeletonElements.length).toBeGreaterThan(0);
 	});
 

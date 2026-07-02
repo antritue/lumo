@@ -1,9 +1,10 @@
 "use client";
 
-import { DoorOpen, Loader2, Plus } from "lucide-react";
+import { DoorOpen, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import { RoomItem } from "./room-item";
 import { useRoomsStore } from "./store";
@@ -51,11 +52,20 @@ export function RoomList({
 	// Loading state while fetching rooms
 	if (isRoomsLoading) {
 		return (
-			<div className="flex items-center justify-center py-8">
-				<Loader2
-					className="h-6 w-6 animate-spin text-muted-foreground"
-					data-testid="room-list-loader"
-				/>
+			<div className="space-y-2">
+				{["rl-sk-0", "rl-sk-1", "rl-sk-2"].map((key) => (
+					<div key={key} className="flex items-center gap-3 p-3 rounded-lg">
+						<Skeleton className="h-8 w-8 rounded-full" />
+						<div className="flex-1 space-y-1.5">
+							<Skeleton className="h-4 w-3/5" />
+							<Skeleton className="h-3 w-1/4" />
+						</div>
+						<div className="flex gap-1">
+							<Skeleton className="h-8 w-8 rounded-md" />
+							<Skeleton className="h-8 w-8 rounded-md" />
+						</div>
+					</div>
+				))}
 			</div>
 		);
 	}
