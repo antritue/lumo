@@ -135,6 +135,29 @@ describe("PropertyDetailServices", () => {
 			expect(screen.getByTitle("Customized")).toBeInTheDocument();
 		});
 
+		it("shows inline shelf with available global services", () => {
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			expect(screen.getByText("Quick add from global:")).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: /electricity/i }),
+			).toBeInTheDocument();
+		});
+
+		it("hides inline shelf when all global services are already added", () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			expect(
+				screen.queryByText("Quick add from global:"),
+			).not.toBeInTheDocument();
+		});
+
 		it("shows custom dot for service not in global catalog", () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
@@ -181,6 +204,40 @@ describe("PropertyDetailServices", () => {
 			expect(
 				screen.getByRole("textbox", { name: /service name/i }),
 			).toBeInTheDocument();
+		});
+
+		it("calls addPropertyService when inline shelf button is clicked", async () => {
+			const addPropertyService = vi.fn().mockResolvedValue(undefined);
+			usePropertyServicesStore.setState({ addPropertyService });
+
+			const user = userEvent.setup();
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			await user.click(screen.getByRole("button", { name: /electricity/i }));
+
+			expect(addPropertyService).toHaveBeenCalledWith("prop-1", "svc-elec", {
+				serviceName: "Electricity",
+				unitLabel: "kWh",
+				pricingType: "variable",
+				flatAmount: null,
+				unitPrice: null,
+			});
+		});
+
+		it("shows loading spinner on inline shelf button during activation", async () => {
+			const neverResolve = new Promise(() => {});
+			usePropertyServicesStore.setState({
+				addPropertyService: vi.fn().mockReturnValue(neverResolve),
+			});
+
+			const user = userEvent.setup();
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			const button = screen.getByRole("button", { name: /electricity/i });
+			await user.click(button);
+
+			expect(button.querySelector(".animate-spin")).toBeInTheDocument();
+			expect(button).toBeDisabled();
 		});
 
 		it("opens edit dialog on badge click with merged values", async () => {

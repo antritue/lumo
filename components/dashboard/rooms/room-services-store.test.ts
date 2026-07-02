@@ -152,7 +152,7 @@ describe("RoomServicesStore", () => {
 			);
 		});
 
-		it("creates default room services from property services when authenticated room has no services", async () => {
+		it("stores empty room services when authenticated room has no services", async () => {
 			authenticate();
 
 			mockFetch.mockResolvedValueOnce({
@@ -160,67 +160,16 @@ describe("RoomServicesStore", () => {
 				json: async () => [],
 			});
 
-			const createdServices = [
-				mockRoomService({
-					roomId: "room-1",
-					serviceId: "svc-elec",
-					serviceName: "Electricity",
-					unitLabel: "kWh",
-					pricingType: "variable",
-				}),
-				mockRoomService({
-					roomId: "room-1",
-					serviceId: "svc-water",
-					serviceName: "Water",
-					unitLabel: "m³",
-					pricingType: "variable",
-				}),
-			];
-
-			mockFetch.mockResolvedValueOnce({
-				ok: true,
-				json: async () => createdServices,
-			});
-
 			await useRoomServicesStore
 				.getState()
 				.fetchRoomServices("room-1", "prop-1");
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toHaveLength(2);
-			expect(roomServicesByRoomId["room-1"][0].serviceName).toBe("Electricity");
-			expect(roomServicesByRoomId["room-1"][1].serviceName).toBe("Water");
-			expect(mockFetch).toHaveBeenCalledTimes(2);
-
-			expect(mockFetch).toHaveBeenNthCalledWith(
-				1,
+			expect(roomServicesByRoomId["room-1"]).toHaveLength(0);
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+			expect(mockFetch).toHaveBeenCalledWith(
 				"/api/rooms/room-1/services",
 				expect.objectContaining({ method: "GET" }),
-			);
-			expect(mockFetch).toHaveBeenNthCalledWith(
-				2,
-				"/api/rooms/room-1/services",
-				expect.objectContaining({
-					method: "POST",
-					body: JSON.stringify([
-						{
-							serviceId: "svc-elec",
-							serviceName: "Electricity",
-							unitLabel: "kWh",
-							pricingType: "variable",
-							flatAmount: null,
-							unitPrice: null,
-						},
-						{
-							serviceId: "svc-water",
-							serviceName: "Water",
-							unitLabel: "m³",
-							pricingType: "variable",
-							flatAmount: null,
-							unitPrice: null,
-						},
-					]),
-				}),
 			);
 		});
 

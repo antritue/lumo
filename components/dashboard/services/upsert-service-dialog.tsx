@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import type { Service } from "./types";
-import { getServiceIcon } from "./types";
 
 interface UpsertServiceDialogProps {
 	mode: "add" | "edit";
@@ -22,8 +21,6 @@ interface UpsertServiceDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	customServiceNotice?: string;
-	availableServices?: Service[];
-	availableTitle?: string;
 	onSave: (
 		id: string | null,
 		name: string,
@@ -31,7 +28,6 @@ interface UpsertServiceDialogProps {
 		pricingType: "flat" | "variable",
 		flatAmount: number | null,
 		unitPrice: number | null,
-		serviceRefId?: string,
 	) => Promise<void>;
 }
 
@@ -41,8 +37,6 @@ export function UpsertServiceDialog({
 	open,
 	onOpenChange,
 	customServiceNotice,
-	availableServices,
-	availableTitle,
 	onSave,
 }: UpsertServiceDialogProps) {
 	const t = useTranslations("app.services");
@@ -56,16 +50,12 @@ export function UpsertServiceDialog({
 	const [errorOpen, setErrorOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [selectedServiceRefId, setSelectedServiceRefId] = useState<
-		string | null
-	>(null);
 
 	useEffect(() => {
 		if (open) {
 			setIsSubmitting(false);
 			setErrorOpen(false);
 			setErrorMessage("");
-			setSelectedServiceRefId(null);
 		}
 		if (service) {
 			setServiceName(service.name);
@@ -84,18 +74,6 @@ export function UpsertServiceDialog({
 		}
 	}, [service, open]);
 
-	const handleSelectAvailable = (service: Service) => {
-		setServiceName(service.name);
-		setPricingType(service.pricingType);
-		setUnitLabel(service.unitLabel ?? "");
-		setSelectedServiceRefId(service.id);
-		setAmount(
-			service.pricingType === "flat"
-				? (service.flatAmount?.toString() ?? "")
-				: (service.unitPrice?.toString() ?? ""),
-		);
-	};
-
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 		const trimmedName = serviceName.trim();
@@ -113,7 +91,6 @@ export function UpsertServiceDialog({
 				pricingType,
 				pricingType === "flat" ? parsedAmount : null,
 				pricingType === "variable" ? parsedAmount : null,
-				selectedServiceRefId ?? undefined,
 			);
 			onOpenChange(false);
 		} catch {
@@ -152,42 +129,6 @@ export function UpsertServiceDialog({
 					</div>
 				) : (
 					<form onSubmit={handleSubmit} className="space-y-6">
-						{mode === "add" &&
-							availableServices &&
-							availableServices.length > 0 && (
-								<div className="space-y-3">
-									<p className="text-sm text-muted-foreground">
-										{availableTitle ?? t("quickAdd")}
-									</p>
-									<div className="flex flex-wrap gap-2">
-										{availableServices.map((service) => {
-											const Icon = getServiceIcon(service.name);
-											return (
-												<Button
-													key={service.id}
-													type="button"
-													variant="outline"
-													size="sm"
-													onClick={() => handleSelectAvailable(service)}
-												>
-													<Icon className="mr-1.5 h-3.5 w-3.5" />
-													{service.name}
-												</Button>
-											);
-										})}
-									</div>
-									<div className="relative">
-										<div className="absolute inset-0 flex items-center">
-											<span className="w-full border-t" />
-										</div>
-										<div className="relative flex justify-center text-xs uppercase">
-											<span className="bg-background px-2 text-muted-foreground">
-												{t("orCustom")}
-											</span>
-										</div>
-									</div>
-								</div>
-							)}
 						<div className="space-y-4">
 							<div className="space-y-2">
 								<label htmlFor="serviceName" className="text-sm font-medium">
@@ -200,22 +141,6 @@ export function UpsertServiceDialog({
 									onChange={(e) => setServiceName(e.target.value)}
 									className="text-base h-12 mt-2"
 									autoFocus
-								/>
-							</div>
-
-							<div className="space-y-2">
-								<label htmlFor="unitLabel" className="text-sm font-medium">
-									{t("unitLabel")}
-									<span className="text-muted-foreground font-normal ml-1">
-										({t("optional")})
-									</span>
-								</label>
-								<Input
-									id="unitLabel"
-									type="text"
-									value={unitLabel}
-									onChange={(e) => setUnitLabel(e.target.value)}
-									className="text-base h-12 mt-2"
 								/>
 							</div>
 
@@ -283,6 +208,24 @@ export function UpsertServiceDialog({
 									</span>
 								</div>
 							</div>
+
+							{pricingType === "variable" && (
+								<div className="space-y-2">
+									<label htmlFor="unitLabel" className="text-sm font-medium">
+										{t("unitLabel")}
+										<span className="text-muted-foreground font-normal ml-1">
+											({t("optional")})
+										</span>
+									</label>
+									<Input
+										id="unitLabel"
+										type="text"
+										value={unitLabel}
+										onChange={(e) => setUnitLabel(e.target.value)}
+										className="text-base h-12 mt-2"
+									/>
+								</div>
+							)}
 						</div>
 
 						<div className="flex gap-3">

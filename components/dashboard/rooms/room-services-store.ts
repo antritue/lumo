@@ -101,47 +101,10 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 					const sortByServiceName = (items: RoomService[]) =>
 						items.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
 
-					let resolved: RoomService[];
-
-					if (data.length > 0) {
-						resolved = sortByServiceName(data);
-					} else {
-						const propertyServices =
-							usePropertyServicesStore.getState().propertyServicesByPropertyId[
-								propertyId
-							] ?? [];
-
-						const res = await fetch(`/api/rooms/${roomId}/services`, {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify(
-								propertyServices.map((ps) => ({
-									serviceId: ps.serviceId,
-									serviceName: ps.serviceName,
-									unitLabel: ps.unitLabel,
-									pricingType: ps.pricingType,
-									flatAmount: ps.flatAmount,
-									unitPrice: ps.unitPrice,
-								})),
-							),
-							credentials: "include",
-						});
-
-						if (!res.ok) {
-							throw new Error("Failed to seed room services");
-						}
-
-						const created: RoomService[] = await res.json();
-
-						resolved = sortByServiceName(created);
-					}
-
 					set((state) => ({
 						roomServicesByRoomId: {
 							...state.roomServicesByRoomId,
-							[roomId]: resolved,
+							[roomId]: sortByServiceName(data),
 						},
 						isRoomServicesLoading: false,
 						fetchingRoomId: null,

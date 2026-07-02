@@ -127,6 +127,33 @@ describe("RoomServicesSection", () => {
 			expect(screen.getByText("1")).toBeInTheDocument();
 		});
 
+		it("shows inline shelf with available property services", () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(screen.getByText("Quick add from property:")).toBeInTheDocument();
+			expect(
+				screen.getByRole("button", { name: /electricity/i }),
+			).toBeInTheDocument();
+		});
+
+		it("hides inline shelf when no property services exist", () => {
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(
+				screen.queryByText("Quick add from property:"),
+			).not.toBeInTheDocument();
+		});
+
 		it("shows amber dot when room service differs from property service", () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
@@ -266,6 +293,54 @@ describe("RoomServicesSection", () => {
 			);
 
 			expect(screen.getByRole("dialog")).toBeInTheDocument();
+		});
+
+		it("calls addRoomService when inline shelf button is clicked", async () => {
+			const addRoomService = vi.fn().mockResolvedValue(undefined);
+			useRoomServicesStore.setState({ addRoomService });
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+
+			const user = userEvent.setup();
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByRole("button", { name: /electricity/i }));
+
+			expect(addRoomService).toHaveBeenCalledWith("room-1", "svc-elec", {
+				serviceName: "Electricity",
+				unitLabel: "kWh",
+				pricingType: "variable",
+				flatAmount: null,
+				unitPrice: null,
+			});
+		});
+
+		it("shows loading spinner on inline shelf button during activation", async () => {
+			const neverResolve = new Promise(() => {});
+			useRoomServicesStore.setState({
+				addRoomService: vi.fn().mockReturnValue(neverResolve),
+			});
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+
+			const user = userEvent.setup();
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			const button = screen.getByRole("button", { name: /electricity/i });
+			await user.click(button);
+
+			expect(button.querySelector(".animate-spin")).toBeInTheDocument();
+			expect(button).toBeDisabled();
 		});
 
 		it("calls addRoomService on save in add mode", async () => {

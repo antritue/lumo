@@ -92,6 +92,9 @@ export function RoomServicesSection({
 	const [deletingService, setDeletingService] = useState<RoomService | null>(
 		null,
 	);
+	const [activatingServiceId, setActivatingServiceId] = useState<string | null>(
+		null,
+	);
 
 	useEffect(() => {
 		fetchRoomServices(roomId, propertyId);
@@ -143,7 +146,6 @@ export function RoomServicesSection({
 		pricingType: "flat" | "variable",
 		flatAmount: number | null,
 		unitPrice: number | null,
-		serviceRefId?: string,
 	) => {
 		if (id) {
 			await updateRoomService(roomId, id, {
@@ -154,7 +156,7 @@ export function RoomServicesSection({
 				unitPrice,
 			});
 		} else {
-			const newId = serviceRefId ?? crypto.randomUUID();
+			const newId = crypto.randomUUID();
 			await addRoomService(roomId, newId, {
 				serviceName: name,
 				unitLabel,
@@ -173,6 +175,21 @@ export function RoomServicesSection({
 
 	const handleRetry = () => {
 		fetchRoomServices(roomId, propertyId);
+	};
+
+	const handleActivateProperty = async (service: Service) => {
+		setActivatingServiceId(service.id);
+		try {
+			await addRoomService(roomId, service.id, {
+				serviceName: service.name,
+				unitLabel: service.unitLabel,
+				pricingType: service.pricingType,
+				flatAmount: service.flatAmount,
+				unitPrice: service.unitPrice,
+			});
+		} finally {
+			setActivatingServiceId(null);
+		}
 	};
 
 	const formatAmount = (roomService: RoomService): string => {
@@ -271,18 +288,36 @@ export function RoomServicesSection({
 					<p className="text-sm text-muted-foreground">{t("empty")}</p>
 				)}
 
+			{!isRoomServicesLoading &&
+				!isRoomServicesFetchFailed &&
+				availableServices.length > 0 && (
+					<div className="flex items-center gap-2 flex-wrap">
+						<span className="text-xs text-muted-foreground shrink-0">
+							{t("quickAddFromProperty")}
+						</span>
+						{availableServices.map((service) => (
+							<button
+								key={service.id}
+								type="button"
+								disabled={activatingServiceId === service.id}
+								onClick={() => handleActivateProperty(service)}
+								className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+							>
+								{activatingServiceId === service.id ? (
+									<Loader2 className="h-3 w-3 animate-spin" />
+								) : null}
+								{service.name}
+							</button>
+						))}
+					</div>
+				)}
+
 			<UpsertServiceDialog
 				mode={dialogMode === "edit" ? "edit" : "add"}
 				service={dialogMode === "edit" ? editingService : undefined}
 				customServiceNotice={
 					dialogMode === "edit" && isEditingCustom
 						? t("customServiceNotice")
-						: undefined
-				}
-				availableServices={dialogMode === "add" ? availableServices : undefined}
-				availableTitle={
-					dialogMode === "add" && availableServices.length > 0
-						? t("quickAddFromProperty")
 						: undefined
 				}
 				open={dialogMode !== null}
