@@ -139,73 +139,73 @@
 			"services": "Dịch vụ"
 		},
 		"properties": {
-			"emptyTitle": "Chưa có nhà cho thuê",
-			"emptySubtitle": "Thêm nhà cho thuê đầu tiên để bắt đầu",
-			"name": "Tên nhà cho thuê",
-			"inputPlaceholder": "Tên hoặc địa chỉ nhà cho thuê",
-			"addButton": "Thêm nhà cho thuê",
-			"listTitle": "Nhà cho thuê của bạn",
+			"emptyTitle": "Chưa có nhà",
+			"emptySubtitle": "Thêm nhà đầu tiên để bắt đầu",
+			"name": "Tên nhà",
+			"inputPlaceholder": "Tên hoặc địa chỉ",
+			"addButton": "Thêm nhà",
+			"listTitle": "Nhà của bạn",
 			"cancel": "Hủy",
-			"edit": "Chỉnh sửa",
+			"edit": "Sửa",
 			"delete": "Xóa",
-			"editTitle": "Chỉnh sửa nhà cho thuê",
+			"editTitle": "Sửa nhà",
 			"saveButton": "Lưu",
-			"deleteTitle": "Xóa nhà cho thuê?",
-			"deleteMessage": "Thao tác này sẽ xóa vĩnh viễn \"{name}\". Không thể hoàn tác.",
-			"deleteConfirm": "Xóa nhà cho thuê",
-			"searchPlaceholder": "Tìm kiếm nhà cho thuê...",
+			"deleteTitle": "Xóa nhà?",
+			"deleteMessage": "Nhà \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"deleteConfirm": "Xóa nhà",
+			"searchPlaceholder": "Tìm nhà...",
 			"previous": "Trước",
 			"next": "Sau",
-			"selectPrompt": "Chọn một nhà cho thuê để xem chi tiết",
+			"selectPrompt": "Chọn nhà để xem chi tiết",
 			"backToProperties": "Quay lại danh sách",
 			"errors": {
 				"create": {
-					"title": "Không thể thêm nhà cho thuê",
-					"description": "Đã xảy ra lỗi khi thêm nhà cho thuê. Vui lòng thử lại."
+					"title": "Thêm nhà thất bại",
+					"description": "Có lỗi xảy ra khi thêm nhà. Vui lòng thử lại."
 				},
 				"update": {
-					"title": "Không thể cập nhật nhà cho thuê",
-					"description": "Đã xảy ra lỗi khi cập nhật nhà cho thuê. Vui lòng thử lại."
+					"title": "Cập nhật thất bại",
+					"description": "Có lỗi xảy ra khi cập nhật. Vui lòng thử lại."
 				},
 				"delete": {
-					"title": "Không thể xóa nhà cho thuê",
-					"description": "Đã xảy ra lỗi khi xóa nhà cho thuê. Vui lòng thử lại."
+					"title": "Xóa nhà thất bại",
+					"description": "Có lỗi xảy ra khi xóa nhà. Vui lòng thử lại."
 				}
 			}
 		},
 		"roomServices": {
 			"title": "Dịch vụ",
-			"infoButtonLabel": "Về hệ thống dịch vụ",
-			"titleTooltip": "Dịch vụ hoạt động theo ba lớp: tạo mẫu ở cấp chung, chỉnh theo từng nhà, gán cho từng phòng.",
-			"customizedTooltip": "Đã chỉnh sửa khác với mặc định của nhà",
-			"roomTipBefore": "Mẹo: tạo các dịch vụ dùng chung trong ",
+			"infoButtonLabel": "Tìm hiểu cách hoạt động",
+			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng.",
+			"customizedTooltip": "Đã chỉnh riêng cho nhà này",
+			"roomTipBefore": "Mẹo: tạo dịch vụ mẫu trong ",
 			"roomTipAfter": " trước.",
-			"empty": "Phòng này chưa có dịch vụ nào",
+			"empty": "Phòng này chưa có dịch vụ",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
-			"customServiceNotice": "Dịch vụ này đã được chỉnh sửa khác với mặc định của nhà cho thuê",
-			"quickAddFromProperty": "Thêm nhanh từ nhà cho thuê:"
+			"customServiceNotice": "Dịch vụ này đã được chỉnh riêng cho nhà này",
+			"quickAddFromProperty": "Thêm từ nhà:"
 		},
 		"propertyServices": {
 			"title": "Dịch vụ",
-			"infoButtonLabel": "Về hệ thống dịch vụ",
-			"titleTooltip": "Dịch vụ hoạt động theo ba lớp: tạo mẫu ở cấp chung, chỉnh theo từng nhà, gán cho từng phòng.",
-			"customizedTooltip": "Đã chỉnh sửa khác với mặc định chung",
-			"globalTipBefore": "Mẹo: tạo các dịch vụ dùng chung trong ",
+			"infoButtonLabel": "Tìm hiểu cách hoạt động",
+			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng.",
+			"customizedTooltip": "Đã chỉnh riêng",
+			"globalTipBefore": "Mẹo: tạo dịch vụ mẫu trong ",
 			"globalTipAfter": " trước.",
 			"count": "{count, plural, =0 {0 dịch vụ} =1 {1 dịch vụ} other {# dịch vụ}}",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
-			"customServiceNotice": "Dịch vụ này đã được chỉnh sửa khác với mặc định chung",
-			"quickAddFromGlobal": "Thêm nhanh từ dịch vụ chung:"
+			"customServiceNotice": "Dịch vụ này đã được chỉnh riêng",
+			"quickAddFromGlobal": "Thêm từ danh sách chung:"
 		},
 		"services": {
 			"emptyTitle": "Chưa có dịch vụ",
-			"emptySubtitle": "Dịch vụ là các khoản phí tùy chọn bạn có thể thêm vào phòng. Tạo dịch vụ đầu tiên để bắt đầu.",
+			"emptySubtitle": "Dịch vụ là khoản phí phụ có thể thêm vào phòng. Tạo dịch vụ đầu tiên.",
 			"name": "Tên dịch vụ",
 			"optional": "không bắt buộc",
 			"addButton": "Thêm dịch vụ",
-			"listTitle": "Dịch vụ của bạn",
+			"listTitle": "Dịch vụ",
 			"addAnother": "Thêm dịch vụ mới",
 			"cancel": "Hủy",
 			"edit": "Sửa",
@@ -213,7 +213,7 @@
 			"editTitle": "Sửa dịch vụ",
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa dịch vụ?",
-			"deleteMessage": "Dịch vụ \"{name}\" sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.",
+			"deleteMessage": "Dịch vụ \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
 			"deleteConfirm": "Xóa dịch vụ",
 			"flat": "Phí cố định",
 			"variable": "Theo số lượng",
@@ -226,21 +226,21 @@
 			"flatAmount": "Phí cố định",
 			"unitPrice": "Đơn giá",
 			"notSet": "Chưa thiết lập",
-			"suggestions": "Thêm nhanh dịch vụ thường dùng:",
+			"suggestions": "Một số dịch vụ thường dùng:",
 			"quickAdd": "Thêm nhanh:",
-			"orCustom": "hoặc nhập chi tiết",
-			"globalServiceNotice": "Dịch vụ được chia sẻ giữa tất cả bất động sản. Mỗi bất động sản có thể tùy chỉnh hoặc xóa từng dịch vụ.",
+			"orCustom": "hoặc tự nhập",
+			"globalServiceNotice": "Dịch vụ được dùng chung cho tất cả nhà. Mỗi nhà có thể chỉnh riêng hoặc xóa từng dịch vụ.",
 			"errors": {
 				"create": {
-					"title": "Không thể thêm dịch vụ",
+					"title": "Thêm dịch vụ thất bại",
 					"description": "Có lỗi xảy ra khi thêm dịch vụ. Vui lòng thử lại."
 				},
 				"update": {
-					"title": "Không thể cập nhật dịch vụ",
+					"title": "Cập nhật thất bại",
 					"description": "Có lỗi xảy ra khi cập nhật dịch vụ. Vui lòng thử lại."
 				},
 				"delete": {
-					"title": "Không thể xóa dịch vụ",
+					"title": "Xóa dịch vụ thất bại",
 					"description": "Có lỗi xảy ra khi xóa dịch vụ. Vui lòng thử lại."
 				}
 			}
@@ -250,21 +250,21 @@
 			"title": "Phòng",
 			"count": "{count, plural, =0 {0 phòng} =1 {1 phòng} other {# phòng}}",
 			"emptyTitle": "Chưa có phòng",
-			"emptySubtitle": "Thêm phòng đầu tiên cho nhà cho thuê này",
+			"emptySubtitle": "Thêm phòng đầu tiên cho nhà này",
 			"name": "Tên phòng",
 			"optional": "không bắt buộc",
 			"errors": {
 				"create": {
-					"title": "Không thể thêm phòng",
-					"description": "Đã xảy ra lỗi khi thêm phòng. Vui lòng thử lại."
+					"title": "Thêm phòng thất bại",
+					"description": "Có lỗi xảy ra khi thêm phòng. Vui lòng thử lại."
 				},
 				"update": {
-					"title": "Không thể cập nhật phòng",
-					"description": "Đã xảy ra lỗi khi cập nhật phòng. Vui lòng thử lại."
+					"title": "Cập nhật thất bại",
+					"description": "Có lỗi xảy ra khi cập nhật phòng. Vui lòng thử lại."
 				},
 				"delete": {
-					"title": "Không thể xóa phòng",
-					"description": "Đã xảy ra lỗi khi xóa phòng. Vui lòng thử lại."
+					"title": "Xóa phòng thất bại",
+					"description": "Có lỗi xảy ra khi xóa phòng. Vui lòng thử lại."
 				}
 			},
 			"inputPlaceholder": "Tên hoặc số phòng",
@@ -273,16 +273,16 @@
 			"addButton": "Thêm phòng",
 			"addAnother": "Thêm phòng khác",
 			"cancel": "Hủy",
-			"edit": "Chỉnh sửa",
+			"edit": "Sửa",
 			"delete": "Xóa",
-			"editTitle": "Chỉnh sửa phòng",
+			"editTitle": "Sửa phòng",
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa phòng?",
-			"deleteMessage": "Thao tác này sẽ xóa vĩnh viễn \"{name}\". Không thể hoàn tác.",
+			"deleteMessage": "Phòng \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
 			"deleteConfirm": "Xóa phòng",
-			"backToProperties": "Quay lại danh sách",
+			"backToProperties": "Quay lại",
 			"notFound": "Không tìm thấy phòng",
-			"notFoundMessage": "Phòng này không tồn tại hoặc đã bị xóa",
+			"notFoundMessage": "Phòng không tồn tại hoặc đã bị xóa",
 			"details": {
 				"notes": "Ghi chú"
 			}
@@ -290,28 +290,28 @@
 		"rentPayments": {
 			"errors": {
 				"create": {
-					"title": "Không thể thêm thanh toán",
-					"description": "Đã xảy ra lỗi khi thêm thanh toán. Vui lòng thử lại."
+					"title": "Thêm thanh toán thất bại",
+					"description": "Có lỗi xảy ra khi thêm thanh toán. Vui lòng thử lại."
 				},
 				"update": {
-					"title": "Không thể cập nhật thanh toán",
-					"description": "Đã xảy ra lỗi khi cập nhật thanh toán. Vui lòng thử lại."
+					"title": "Cập nhật thất bại",
+					"description": "Có lỗi xảy ra khi cập nhật thanh toán. Vui lòng thử lại."
 				},
 				"delete": {
-					"title": "Không thể xóa thanh toán",
-					"description": "Đã xảy ra lỗi khi xóa thanh toán. Vui lòng thử lại."
+					"title": "Xóa thanh toán thất bại",
+					"description": "Có lỗi xảy ra khi xóa thanh toán. Vui lòng thử lại."
 				}
 			},
-			"addButton": "Thêm ghi nhận thanh toán",
-			"listTitle": "Ghi nhận thanh toán",
-			"emptyMessage": "Chưa có ghi nhận thanh toán nào",
-			"emptySubtitle": "Thêm thanh toán đầu tiên để theo dõi lịch sử",
-			"edit": "Chỉnh sửa",
+			"addButton": "Thêm thanh toán",
+			"listTitle": "Lịch sử thanh toán",
+			"emptyMessage": "Chưa có thanh toán",
+			"emptySubtitle": "Thêm lần thanh toán đầu tiên để bắt đầu",
+			"edit": "Sửa",
 			"delete": "Xóa",
-			"editTitle": "Chỉnh sửa ghi nhận thanh toán",
-			"deleteTitle": "Xóa ghi nhận thanh toán?",
-			"deleteDescription": "Thao tác này sẽ xóa vĩnh viễn ghi nhận thanh toán. Không thể hoàn tác.",
-			"deleteConfirm": "Xóa ghi nhận",
+			"editTitle": "Sửa thanh toán",
+			"deleteTitle": "Xóa thanh toán?",
+			"deleteDescription": "Thanh toán này sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"deleteConfirm": "Xóa thanh toán",
 			"includesServices": "gồm dịch vụ",
 			"serviceCharges": "Phí dịch vụ",
 			"totalWithServices": "Tổng (Tiền thuê + Dịch vụ)",
@@ -320,10 +320,10 @@
 			"flat": "Cố định",
 			"unit": "đơn vị",
 			"form": {
-				"period": "Kỳ thanh toán",
+				"period": "Tháng thanh toán",
 				"amount": "Số tiền",
 				"status": "Trạng thái",
-				"statusPending": "Chờ thanh toán",
+				"statusPending": "Chưa thanh toán",
 				"statusPaid": "Đã thanh toán",
 				"cancel": "Hủy",
 				"save": "Lưu",
@@ -331,7 +331,7 @@
 				"clear": "Xóa",
 				"thisMonth": "Tháng này",
 				"errors": {
-					"monthOccupied": "Đã có ghi nhận thanh toán cho tháng này."
+					"monthOccupied": "Tháng này đã có thanh toán."
 				}
 			}
 		}
