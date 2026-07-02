@@ -1,6 +1,13 @@
 ---
 name: db-migration-update
-description: Use when fixing or modifying an existing supabase DB migration that has already been applied. Instead of creating a new migration file for a schema fix, this skill drops the table, repairs the migration, rewrites the migration file, and pushes.
+description: >
+  Use this skill when fixing or modifying a Supabase DB migration that has
+  already been applied. Instead of creating a new migration file, this skill
+  drops the affected table, marks the migration as reverted, rewrites the .sql
+  file with all fixes, and pushes. Applies when the user says a migration needs
+  a column change, constraint fix, or schema correction — even if they don't
+  say "repair" or "revert." Do NOT use for new migrations that haven't been
+  applied.
 ---
 
 # DB Migration Fix (Re-apply)
