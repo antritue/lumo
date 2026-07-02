@@ -132,7 +132,7 @@ describe("PropertyDetailServices", () => {
 
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
-			expect(screen.getByTitle("Customized")).toBeInTheDocument();
+			expect(document.querySelector(".bg-amber-500")).toBeInTheDocument();
 		});
 
 		it("shows inline shelf with available global services", () => {
@@ -158,6 +158,14 @@ describe("PropertyDetailServices", () => {
 			).not.toBeInTheDocument();
 		});
 
+		it("shows tooltip info icon", () => {
+			const { container } = renderWithProviders(
+				<PropertyDetailServices propertyId="prop-1" />,
+			);
+
+			expect(container.querySelector("svg.lucide-info")).toBeInTheDocument();
+		});
+
 		it("shows custom dot for service not in global catalog", () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
@@ -172,7 +180,7 @@ describe("PropertyDetailServices", () => {
 
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
-			expect(screen.getByTitle("Customized")).toBeInTheDocument();
+			expect(document.querySelector(".bg-amber-500")).toBeInTheDocument();
 		});
 	});
 
@@ -191,6 +199,28 @@ describe("PropertyDetailServices", () => {
 			await user.click(screen.getByRole("button", { name: /try again/i }));
 
 			expect(fetchPropertyServices).toHaveBeenCalledWith("prop-1");
+		});
+
+		it("opens info popover with hierarchy explanation on icon click", async () => {
+			const user = userEvent.setup();
+
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			await user.click(
+				screen.getByRole("button", {
+					name: /about service hierarchy/i,
+				}),
+			);
+
+			expect(
+				screen.getByText(
+					"Services work in three layers: create templates globally, customize per property, assign to rooms.",
+				),
+			).toBeInTheDocument();
+			expect(screen.getByRole("link", { name: /services/i })).toHaveAttribute(
+				"href",
+				"/dashboard/services",
+			);
 		});
 
 		it("opens add dialog on plus button click", async () => {
