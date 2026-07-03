@@ -61,14 +61,14 @@ export async function Pricing() {
 					<Card
 						key={tier.name}
 						className={cn(
-							"relative group hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col",
+							"relative group hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col border-border/60",
 							tier.isPopular &&
 								"border-primary/20 bg-linear-to-b from-primary/5 to-transparent",
 						)}
 					>
 						{tier.isComingSoon && (
 							<div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-								<span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium shadow-sm">
+								<span className="inline-flex items-center gap-1 px-3 py-1 rounded-sm bg-primary text-primary-foreground text-xs font-medium shadow-sm">
 									{t("comingSoon")}
 								</span>
 							</div>
@@ -88,14 +88,14 @@ export async function Pricing() {
 									<li key={feature} className="flex items-center gap-3">
 										<div
 											className={cn(
-												"w-6 h-6 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300",
-												tier.isPopular ? "bg-primary/20" : "bg-green-100",
+												"w-6 h-6 rounded-sm flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300",
+												tier.isPopular ? "bg-primary/20" : "bg-accent/20",
 											)}
 										>
 											<Check
 												className={cn(
 													"h-3.5 w-3.5",
-													tier.isPopular ? "text-primary" : "text-green-600",
+													tier.isPopular ? "text-primary" : "text-accent",
 												)}
 											/>
 										</div>
