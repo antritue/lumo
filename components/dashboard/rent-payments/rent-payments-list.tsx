@@ -23,6 +23,8 @@ interface RentPaymentsListProps {
 	payments: PaymentRecord[];
 	onEdit?: (payment: PaymentRecord) => void;
 	onDelete?: (payment: PaymentRecord) => void;
+	onToggleStatus: (payment: PaymentRecord) => void;
+	togglingPaymentId: string | null;
 	serviceChargesByPeriod?: Record<string, ServiceCharge[]>;
 }
 
@@ -30,6 +32,8 @@ export function RentPaymentsList({
 	payments,
 	onEdit,
 	onDelete,
+	onToggleStatus,
+	togglingPaymentId,
 	serviceChargesByPeriod = {},
 }: RentPaymentsListProps) {
 	const t = useTranslations("app.rentPayments");
@@ -95,7 +99,11 @@ export function RentPaymentsList({
 									<p className="text-sm font-medium text-foreground">
 										{formatPeriod(payment.period)}
 									</p>
-									<PaymentStatusBadge status={payment.status} />
+									<PaymentStatusBadge
+										status={payment.status}
+										onClick={() => onToggleStatus(payment)}
+										isLoading={togglingPaymentId === payment.id}
+									/>
 								</div>
 								<div className="flex-1" />
 								<div className="text-right">

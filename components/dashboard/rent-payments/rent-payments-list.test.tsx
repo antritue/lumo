@@ -38,9 +38,14 @@ describe("RentPaymentsList", () => {
 		},
 	];
 
+	const defaultProps = {
+		onToggleStatus: vi.fn(),
+		togglingPaymentId: null as string | null,
+	};
+
 	describe("Display", () => {
 		it("displays empty state", () => {
-			renderWithProviders(<RentPaymentsList payments={[]} />);
+			renderWithProviders(<RentPaymentsList payments={[]} {...defaultProps} />);
 
 			expect(screen.getByText(/no payment records yet/i)).toBeInTheDocument();
 			expect(
@@ -49,7 +54,9 @@ describe("RentPaymentsList", () => {
 		});
 
 		it("displays payment records with formatted period, amount and status", () => {
-			renderWithProviders(<RentPaymentsList payments={mockPayments} />);
+			renderWithProviders(
+				<RentPaymentsList payments={mockPayments} {...defaultProps} />,
+			);
 
 			expect(screen.getByText("01-2026")).toBeInTheDocument();
 			expect(screen.getByText("$5,000,000")).toBeInTheDocument();
@@ -59,7 +66,9 @@ describe("RentPaymentsList", () => {
 			expect(screen.getByText("Paid")).toBeInTheDocument();
 		});
 		it("shows no action buttons when no handlers provided", () => {
-			renderWithProviders(<RentPaymentsList payments={mockPayments} />);
+			renderWithProviders(
+				<RentPaymentsList payments={mockPayments} {...defaultProps} />,
+			);
 
 			expect(
 				screen.queryByRole("button", { name: /edit/i }),
@@ -71,7 +80,11 @@ describe("RentPaymentsList", () => {
 
 		it("shows kebab menu with actions when handlers provided", () => {
 			renderWithProviders(
-				<RentPaymentsList payments={mockPayments} onEdit={vi.fn()} />,
+				<RentPaymentsList
+					payments={mockPayments}
+					onEdit={vi.fn()}
+					{...defaultProps}
+				/>,
 			);
 
 			const kebabButtons = screen.getAllByRole("button");
@@ -83,6 +96,7 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList
 					payments={mockPayments}
 					serviceChargesByPeriod={mockCharges}
+					{...defaultProps}
 				/>,
 			);
 
@@ -91,7 +105,9 @@ describe("RentPaymentsList", () => {
 		});
 
 		it("shows rent amount without inc. services when no charges", () => {
-			renderWithProviders(<RentPaymentsList payments={mockPayments} />);
+			renderWithProviders(
+				<RentPaymentsList payments={mockPayments} {...defaultProps} />,
+			);
 
 			expect(screen.getByText("$5,000,000")).toBeInTheDocument();
 			expect(screen.queryByText("inc. services")).not.toBeInTheDocument();
@@ -99,12 +115,32 @@ describe("RentPaymentsList", () => {
 	});
 
 	describe("Interactions", () => {
+		it("calls onToggleStatus when status badge clicked", async () => {
+			const user = userEvent.setup();
+			const handleToggle = vi.fn();
+
+			renderWithProviders(
+				<RentPaymentsList
+					payments={mockPayments}
+					onToggleStatus={handleToggle}
+					togglingPaymentId={null}
+				/>,
+			);
+
+			await user.click(screen.getByText("Pending"));
+			expect(handleToggle).toHaveBeenCalledWith(mockPayments[0]);
+		});
+
 		it("calls onEdit with payment when edit button clicked", async () => {
 			const user = userEvent.setup();
 			const handleEdit = vi.fn();
 
 			renderWithProviders(
-				<RentPaymentsList payments={mockPayments} onEdit={handleEdit} />,
+				<RentPaymentsList
+					payments={mockPayments}
+					onEdit={handleEdit}
+					{...defaultProps}
+				/>,
 			);
 
 			const kebabTriggers = screen.getAllByRole("button", { name: "" });
@@ -119,6 +155,7 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList
 					payments={mockPayments}
 					serviceChargesByPeriod={mockCharges}
+					{...defaultProps}
 				/>,
 			);
 
@@ -135,6 +172,7 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList
 					payments={mockPayments}
 					serviceChargesByPeriod={mockCharges}
+					{...defaultProps}
 				/>,
 			);
 
@@ -150,7 +188,11 @@ describe("RentPaymentsList", () => {
 			const handleDelete = vi.fn();
 
 			renderWithProviders(
-				<RentPaymentsList payments={mockPayments} onDelete={handleDelete} />,
+				<RentPaymentsList
+					payments={mockPayments}
+					onDelete={handleDelete}
+					{...defaultProps}
+				/>,
 			);
 
 			const kebabTriggers = screen.getAllByRole("button", { name: "" });

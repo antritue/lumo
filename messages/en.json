@@ -319,8 +319,14 @@
 				"delete": {
 					"title": "Failed to delete payment",
 					"description": "There was a problem deleting this payment. Please try again."
+				},
+				"toggleStatus": {
+					"title": "Failed to update status",
+					"description": "There was a problem changing the payment status. Please try again."
 				}
 			},
+			"statusToggleInfoLabel": "Status toggle help",
+			"statusToggleTooltip": "Click a status badge to toggle between Pending and Paid without opening the edit dialog.",
 			"addButton": "Add payment record",
 			"listTitle": "Payment Records",
 			"emptyMessage": "No payment records yet",

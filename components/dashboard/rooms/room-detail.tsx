@@ -1,8 +1,14 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useCallback } from "react";
 import { DeleteRentPaymentDialog } from "@/components/dashboard/rent-payments/delete-rent-payment-dialog";
-import type { PaymentStatus } from "@/components/dashboard/rent-payments/types";
+import type {
+	PaymentRecord,
+	PaymentStatus,
+} from "@/components/dashboard/rent-payments/types";
 import { UpsertRentPaymentDialog } from "@/components/dashboard/rent-payments/upsert-rent-payment-dialog";
+import { ErrorDialog } from "@/components/shared/error-dialog";
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import { RoomDetailHeader } from "./room-detail-header";
 import { RoomInfo } from "./room-info";
@@ -39,10 +45,16 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		closeDeleteRoom,
 	} = useRoomDialogs();
 
+	const t = useTranslations("app.rentPayments");
+
 	const {
 		rentPayments,
 		handleSavePayment,
 		handleDeletePayment,
+		handleToggleStatus,
+		togglingPaymentId,
+		toggleStatusError,
+		dismissToggleStatusError,
 		isPaymentsLoading,
 		isPaymentsFetchFailed,
 		retryFetchPayments,
@@ -73,6 +85,13 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		await handleDeletePayment(id);
 		closeDeletePayment();
 	};
+
+	const handleTogglePaymentStatus = useCallback(
+		(payment: PaymentRecord) => {
+			handleToggleStatus(payment.id);
+		},
+		[handleToggleStatus],
+	);
 
 	const handleSaveAndClose = async (
 		id: string | null,
@@ -107,6 +126,8 @@ export function RoomDetail({ room }: RoomDetailProps) {
 				onAdd={openAddPayment}
 				onEdit={openEditPayment}
 				onDelete={openDeletePayment}
+				onToggleStatus={handleTogglePaymentStatus}
+				togglingPaymentId={togglingPaymentId}
 				isPaymentsLoading={isPaymentsLoading}
 				isPaymentsFetchFailed={isPaymentsFetchFailed}
 				onRetryPayments={retryFetchPayments}
@@ -153,6 +174,13 @@ export function RoomDetail({ room }: RoomDetailProps) {
 				open={isDeleteDialogOpen}
 				onOpenChange={closeDeleteRoom}
 				onDelete={handleConfirmDeleteRoom}
+			/>
+
+			<ErrorDialog
+				open={toggleStatusError}
+				onOpenChange={dismissToggleStatusError}
+				title={t("errors.toggleStatus.title")}
+				description={t("errors.toggleStatus.description")}
 			/>
 		</div>
 	);
