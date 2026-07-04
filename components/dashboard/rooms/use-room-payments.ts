@@ -55,6 +55,14 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 		(state) => state.fetchRoomServices,
 	);
 
+	const [togglingPaymentId, setTogglingPaymentId] = useState<string | null>(
+		null,
+	);
+	const [toggleStatusError, setToggleStatusError] = useState(false);
+	const dismissToggleStatusError = useCallback(
+		() => setToggleStatusError(false),
+		[],
+	);
 	const [serviceChargesByPeriod, setServiceChargesByPeriod] = useState<
 		Record<string, ServiceCharge[]>
 	>({});
@@ -143,6 +151,31 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 		await deleteRentPayment(id);
 	};
 
+	const handleToggleStatus = useCallback(
+		async (id: string) => {
+			setTogglingPaymentId(id);
+			setToggleStatusError(false);
+			try {
+				const allPayments = useRentPaymentsStore.getState().rentPayments;
+				const payment = allPayments.find((p) => p.id === id);
+				if (!payment) return;
+				const newStatus: PaymentStatus =
+					payment.status === "paid" ? "pending" : "paid";
+				await updateRentPayment(
+					id,
+					payment.period,
+					payment.rentAmount,
+					newStatus,
+				);
+			} catch {
+				setToggleStatusError(true);
+			} finally {
+				setTogglingPaymentId(null);
+			}
+		},
+		[updateRentPayment],
+	);
+
 	const updateServiceCharges = useCallback(
 		async (period: string, charges: ServiceCharge[], paymentId: string) => {
 			setServiceChargesByPeriod((prev) => ({
@@ -163,6 +196,10 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 		rentPayments,
 		handleSavePayment,
 		handleDeletePayment,
+		handleToggleStatus,
+		togglingPaymentId,
+		toggleStatusError,
+		dismissToggleStatusError,
 		isPaymentsLoading,
 		isPaymentsFetchFailed,
 		retryFetchPayments,

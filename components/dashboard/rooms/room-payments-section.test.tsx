@@ -23,19 +23,18 @@ describe("RoomPaymentsSection", () => {
 		},
 	];
 
+	const defaultProps = {
+		onAdd: vi.fn(),
+		onEdit: vi.fn(),
+		onDelete: vi.fn(),
+		onToggleStatus: vi.fn(),
+		togglingPaymentId: null as string | null,
+	};
+
 	describe("Display", () => {
 		it("displays section title and add button", () => {
-			const onAdd = vi.fn();
-			const onEdit = vi.fn();
-			const onDelete = vi.fn();
-
 			renderWithProviders(
-				<RoomPaymentsSection
-					payments={mockPayments}
-					onAdd={onAdd}
-					onEdit={onEdit}
-					onDelete={onDelete}
-				/>,
+				<RoomPaymentsSection payments={mockPayments} {...defaultProps} />,
 			);
 
 			expect(
@@ -45,17 +44,8 @@ describe("RoomPaymentsSection", () => {
 		});
 
 		it("displays payment records list", () => {
-			const onAdd = vi.fn();
-			const onEdit = vi.fn();
-			const onDelete = vi.fn();
-
 			renderWithProviders(
-				<RoomPaymentsSection
-					payments={mockPayments}
-					onAdd={onAdd}
-					onEdit={onEdit}
-					onDelete={onDelete}
-				/>,
+				<RoomPaymentsSection payments={mockPayments} {...defaultProps} />,
 			);
 
 			expect(screen.getByText("01-2026")).toBeInTheDocument();
@@ -63,17 +53,11 @@ describe("RoomPaymentsSection", () => {
 		});
 	});
 
-	it("displays error state when 	isPaymentsFetchFailed is true", () => {
-		const onAdd = vi.fn();
-		const onEdit = vi.fn();
-		const onDelete = vi.fn();
-
+	it("displays error state when isPaymentsFetchFailed is true", () => {
 		renderWithProviders(
 			<RoomPaymentsSection
 				payments={[]}
-				onAdd={onAdd}
-				onEdit={onEdit}
-				onDelete={onDelete}
+				{...defaultProps}
 				isPaymentsFetchFailed
 			/>,
 		);
@@ -89,16 +73,11 @@ describe("RoomPaymentsSection", () => {
 	it("calls onRetryPayments when retry button clicked", async () => {
 		const user = userEvent.setup();
 		const onRetry = vi.fn();
-		const onAdd = vi.fn();
-		const onEdit = vi.fn();
-		const onDelete = vi.fn();
 
 		renderWithProviders(
 			<RoomPaymentsSection
 				payments={[]}
-				onAdd={onAdd}
-				onEdit={onEdit}
-				onDelete={onDelete}
+				{...defaultProps}
 				isPaymentsFetchFailed
 				onRetryPayments={onRetry}
 			/>,
@@ -111,21 +90,13 @@ describe("RoomPaymentsSection", () => {
 	describe("Interactions", () => {
 		it("calls onAdd when add button clicked", async () => {
 			const user = userEvent.setup();
-			const onAdd = vi.fn();
-			const onEdit = vi.fn();
-			const onDelete = vi.fn();
 
 			renderWithProviders(
-				<RoomPaymentsSection
-					payments={mockPayments}
-					onAdd={onAdd}
-					onEdit={onEdit}
-					onDelete={onDelete}
-				/>,
+				<RoomPaymentsSection payments={mockPayments} {...defaultProps} />,
 			);
 
 			await user.click(screen.getByRole("button", { name: /add/i }));
-			expect(onAdd).toHaveBeenCalled();
+			expect(defaultProps.onAdd).toHaveBeenCalled();
 		});
 	});
 });

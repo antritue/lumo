@@ -301,8 +301,14 @@
 				"delete": {
 					"title": "Xóa thanh toán thất bại",
 					"description": "Có lỗi xảy ra khi xóa thanh toán. Vui lòng thử lại."
+				},
+				"toggleStatus": {
+					"title": "Cập nhật trạng thái thất bại",
+					"description": "Có lỗi xảy ra khi thay đổi trạng thái thanh toán. Vui lòng thử lại."
 				}
 			},
+			"statusToggleInfoLabel": "Hướng dẫn chuyển đổi trạng thái",
+			"statusToggleTooltip": "Nhấn vào trạng thái để chuyển đổi nhanh giữa Chưa thanh toán và Đã thanh toán.",
 			"addButton": "Thêm thanh toán",
 			"listTitle": "Lịch sử thanh toán",
 			"emptyMessage": "Chưa có thanh toán",

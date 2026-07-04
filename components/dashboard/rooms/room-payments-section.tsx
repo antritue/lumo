@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Info, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { RentPaymentsList } from "@/components/dashboard/rent-payments/rent-payments-list";
 import type {
@@ -8,6 +8,11 @@ import type {
 	ServiceCharge,
 } from "@/components/dashboard/rent-payments/types";
 import { ErrorState } from "@/components/shared/error-state";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface RoomPaymentsSectionProps {
@@ -15,6 +20,8 @@ interface RoomPaymentsSectionProps {
 	onAdd: () => void;
 	onEdit: (payment: PaymentRecord) => void;
 	onDelete: (payment: PaymentRecord) => void;
+	onToggleStatus: (payment: PaymentRecord) => void;
+	togglingPaymentId: string | null;
 	isPaymentsLoading?: boolean;
 	isPaymentsFetchFailed?: boolean;
 	onRetryPayments?: () => void;
@@ -26,6 +33,8 @@ export function RoomPaymentsSection({
 	onAdd,
 	onEdit,
 	onDelete,
+	onToggleStatus,
+	togglingPaymentId,
 	isPaymentsLoading,
 	isPaymentsFetchFailed,
 	onRetryPayments,
@@ -40,6 +49,24 @@ export function RoomPaymentsSection({
 					<h3 className="text-sm font-medium text-foreground">
 						{t("listTitle")}
 					</h3>
+					<Popover>
+						<PopoverTrigger asChild>
+							<button
+								type="button"
+								className="flex items-center justify-center h-4 w-4 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+								aria-label={t("statusToggleInfoLabel")}
+							>
+								<Info className="h-3.5 w-3.5" />
+							</button>
+						</PopoverTrigger>
+						<PopoverContent
+							side="top"
+							align="start"
+							className="max-w-64 text-xs leading-relaxed space-y-2"
+						>
+							<p>{t("statusToggleTooltip")}</p>
+						</PopoverContent>
+					</Popover>
 					<div className="flex-1" />
 					<button
 						type="button"
@@ -76,6 +103,8 @@ export function RoomPaymentsSection({
 					payments={payments}
 					onEdit={onEdit}
 					onDelete={onDelete}
+					onToggleStatus={onToggleStatus}
+					togglingPaymentId={togglingPaymentId}
 					serviceChargesByPeriod={serviceChargesByPeriod}
 				/>
 			)}
