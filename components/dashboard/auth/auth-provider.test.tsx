@@ -1,12 +1,10 @@
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { usePropertiesStore } from "@/components/dashboard/properties/store";
-import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
-import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { supabase } from "@/lib/supabase";
 import { renderWithProviders } from "@/test/render";
 import { AuthProvider } from "./auth-provider";
+import { clearAllDomainStores } from "./clear-domain-stores";
 import { useAuthStore } from "./store";
 
 vi.mock("@/lib/supabase", () => ({
@@ -18,6 +16,10 @@ vi.mock("@/lib/supabase", () => ({
 			})),
 		},
 	},
+}));
+
+vi.mock("./clear-domain-stores", () => ({
+	clearAllDomainStores: vi.fn(),
 }));
 
 describe("AuthProvider", () => {
@@ -78,7 +80,7 @@ describe("AuthProvider", () => {
 		});
 	});
 
-	it("clears all stores when user signs out", async () => {
+	it("calls clearAllDomainStores on SIGNED_OUT", async () => {
 		let authCallback:
 			| ((event: AuthChangeEvent, session: Session | null) => void)
 			| undefined;
@@ -96,9 +98,8 @@ describe("AuthProvider", () => {
 			};
 		});
 
-		const mockUser = { id: "123", email: "test@example.com" } as User;
 		vi.mocked(supabase.auth.getSession).mockResolvedValue({
-			data: { session: { user: mockUser } as Session },
+			data: { session: null },
 			error: null,
 		});
 
@@ -108,48 +109,8 @@ describe("AuthProvider", () => {
 			</AuthProvider>,
 		);
 
-		await waitFor(() => {
-			expect(useAuthStore.getState().user).toEqual(mockUser);
-		});
-
-		// Populate all stores
-		useAuthStore.getState().dismissAuthBanner();
-		usePropertiesStore.setState({
-			properties: [{ id: "1", userId: "123", name: "Property 1" }],
-			hasPropertiesFetched: true,
-		});
-		useRoomsStore.setState({
-			rooms: [
-				{
-					id: "1",
-					propertyId: "1",
-					name: "Room 1",
-					monthlyRent: 1500,
-					notes: null,
-				},
-			],
-		});
-		useRentPaymentsStore.setState({
-			rentPayments: [
-				{
-					id: "1",
-					roomId: "1",
-					period: "2025-03",
-					rentAmount: 1500,
-					status: "pending",
-				},
-			],
-		});
-
 		authCallback?.("SIGNED_OUT", null);
 
-		await waitFor(() => {
-			expect(useAuthStore.getState().user).toBeNull();
-			expect(useAuthStore.getState().isAuthBannerDismissed).toBe(false);
-			expect(usePropertiesStore.getState().properties).toEqual([]);
-			expect(usePropertiesStore.getState().hasPropertiesFetched).toBe(false);
-			expect(useRoomsStore.getState().rooms).toEqual([]);
-			expect(useRentPaymentsStore.getState().rentPayments).toEqual([]);
-		});
+		expect(clearAllDomainStores).toHaveBeenCalledTimes(1);
 	});
 });

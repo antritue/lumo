@@ -88,6 +88,17 @@ The `AuthProvider` (`components/dashboard/auth/auth-provider.tsx`) acts as the "
 
 ---
 
+### Account Deletion
+
+Users can delete their account from the Settings page (`/dashboard/settings`). The flow:
+
+1. **Client**: User opens the settings page, clicks "Delete Account", types "DELETE" to confirm.
+2. **Store**: `useSettingsStore.deleteAccount()` sends `DELETE /api/settings/delete-account`.
+3. **API Route**: Uses the **server client** (anon key) to delete all user data from every table in FK-safe order. Then uses the **admin client** (`lib/supabase-admin.ts`, service_role key) to call `auth.admin.deleteUser()` — the only way to remove a user from `auth.users`.
+4. **Post-deletion**: Client calls `supabase.auth.signOut()` and redirects to `/`.
+
+The `SUPABASE_SERVICE_ROLE_KEY` env var is required for the admin client. It's a server-side-only key from the Supabase Dashboard → Project Settings → API.
+
 ## Structure
 All auth logic is colocated in `components/dashboard/auth/`:
 - `store.ts`: Zustand state (user, loading).

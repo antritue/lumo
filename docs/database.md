@@ -13,9 +13,13 @@ erDiagram
     "auth.users" ||--o{ services : "owns"
     "auth.users" ||--o{ property_services : "owns"
     "auth.users" ||--o{ room_services : "owns"
+    "auth.users" ||--o{ rent_payments : "owns"
+    "auth.users" ||--o{ rent_payment_charges : "owns"
     properties ||--o{ rooms : "contains"
     properties ||--o{ property_services : "has"
     rooms ||--o{ room_services : "has"
+    rooms ||--o{ rent_payments : "has"
+    rent_payments ||--o{ rent_payment_charges : "has"
     "auth.users" {
         uuid id PK
         text email
@@ -63,6 +67,27 @@ erDiagram
         text unit_label
         numeric flat_amount
         numeric unit_price
+    }
+    rent_payments {
+        uuid id PK
+        uuid room_id FK
+        uuid user_id FK
+        text period
+        numeric rent_amount
+        text status
+    }
+    rent_payment_charges {
+        uuid id PK
+        uuid rent_payment_id FK
+        uuid service_id
+        uuid user_id FK
+        text service_name
+        text pricing_type
+        text unit_label
+        numeric unit_price
+        numeric flat_amount
+        numeric usage
+        numeric total
     }
 ```
 
@@ -142,6 +167,50 @@ Stores room-level service configurations. Each row defines a service assigned to
 | | `unit_price` | `numeric` | Optional price per unit for variable services. |
 
 Unique constraint on `(room_id, service_id)`.
+
+### `rent_payments`
+
+Stores rent payment records for rooms.
+
+| Key | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
+| `FK` | `room_id` | `uuid` | Foreign Key to `rooms(id)`. Cascades on delete. |
+| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
+| | `period` | `text` | Payment period in `YYYY-MM` format. |
+| | `rent_amount` | `numeric` | The rent amount for this period. |
+| | `status` | `text` | `'pending'` or `'paid'`. |
+
+Unique constraint on `(room_id, period)`.
+
+### `rent_payment_charges`
+
+Stores service charge line items associated with a rent payment.
+
+| Key | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
+| `FK` | `rent_payment_id` | `uuid` | Foreign Key to `rent_payments(id)`. Cascades on delete. |
+| | `service_id` | `uuid` | UUID identifying the service type. |
+| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
+| | `service_name` | `text` | The display name of the service. |
+| | `pricing_type` | `text` | `'flat'` or `'variable'`. |
+| | `unit_label` | `text` | Optional unit label for variable pricing (e.g. "kWh"). |
+| | `unit_price` | `numeric` | Optional price per unit. |
+| | `flat_amount` | `numeric` | Optional flat fee. |
+| | `usage` | `numeric` | Optional usage amount for variable pricing. |
+| | `total` | `numeric` | Computed total for this charge line. |
+
+### Account Deletion
+
+When a user deletes their account, data is cleaned up in FK-safe order:
+
+```
+rent_payment_charges → rent_payments → room_services
+→ rooms → property_services → properties → services
+```
+
+Then the `auth.users` record is removed via the Supabase admin client (`service_role` key). There is no `ON DELETE CASCADE` on `user_id` foreign keys — the application handles deletion explicitly.
 
 ## Row Level Security (RLS)
 

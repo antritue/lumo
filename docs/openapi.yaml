@@ -1163,6 +1163,21 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /api/settings/delete-account:
+    delete:
+      summary: Delete account
+      description: Permanently deletes the authenticated user's account and all associated data (properties, rooms, services, rent payments, etc.). Requires SUPABASE_SERVICE_ROLE_KEY on the server.
+      operationId: deleteAccount
+      tags:
+        - Settings
+      responses:
+        "204":
+          description: Account and all data deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /api/feedback:
     post:
       summary: Submit feedback
