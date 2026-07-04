@@ -355,8 +355,11 @@
 		},
 		"feedback": {
 			"listTitle": "Phản hồi",
+			"subtitle": "Chúng tôi luôn lắng nghe phản hồi của bạn và sẽ phản hồi bằng tiếng Việt hoặc tiếng Anh theo mong muốn của bạn.",
 			"nameLabel": "Tên",
+			"namePlaceholder": "Để chúng tôi biết cách xưng hô với bạn",
 			"emailLabel": "Email",
+			"emailPlaceholder": "Để chúng tôi có thể trả lời bạn",
 			"typeLabel": "Loại",
 			"typeBug": "Báo lỗi",
 			"typeFeature": "Đề xuất tính năng",
