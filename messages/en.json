@@ -158,8 +158,11 @@
 		},
 		"feedback": {
 			"listTitle": "Feedback",
+			"subtitle": "We'd love to hear your thoughts. We'll reply in either English or Vietnamese, whichever you prefer.",
 			"nameLabel": "Name",
+			"namePlaceholder": "So we know what to call you",
 			"emailLabel": "Email",
+			"emailPlaceholder": "So we can reply to your feedback",
 			"typeLabel": "Type",
 			"typeBug": "Bug report",
 			"typeFeature": "Feature request",

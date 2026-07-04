@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, MessageSquare } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/components/dashboard/auth/store";
@@ -72,12 +72,15 @@ export default function FeedbackPage() {
 	};
 
 	return (
-		<div className="mx-auto max-w-2xl py-4 px-4">
-			<div className="flex items-center gap-3 pb-4 sm:pb-5 border-b border-border">
-				<MessageSquare className="h-5 w-5 text-muted-foreground" />
+		<div className="max-w-4xl mx-auto py-4 px-4">
+			<div className="pb-4 sm:pb-5 border-b border-border">
 				<h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
 					{t("listTitle")}
 				</h1>
+			</div>
+			<div className="flex items-center gap-1.5 mt-4 mb-6 text-sm text-muted-foreground">
+				<Info className="h-4 w-4 shrink-0" />
+				<span>{t("subtitle")}</span>
 			</div>
 
 			<form onSubmit={handleSubmit} className="mt-6 space-y-5">
@@ -92,6 +95,7 @@ export default function FeedbackPage() {
 						id="feedback-name"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						placeholder={t("namePlaceholder")}
 						disabled={submitting}
 						required
 					/>
@@ -109,6 +113,7 @@ export default function FeedbackPage() {
 						type="email"
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
+						placeholder={t("emailPlaceholder")}
 						disabled={submitting}
 						required
 					/>
@@ -168,9 +173,6 @@ export default function FeedbackPage() {
 			<Dialog open={submitted} onOpenChange={setSubmitted}>
 				<DialogContent className="sm:max-w-md">
 					<DialogHeader>
-						<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-							<MessageSquare className="h-6 w-6 text-primary" />
-						</div>
 						<DialogTitle className="text-center">
 							{t("thankYouTitle")}
 						</DialogTitle>
