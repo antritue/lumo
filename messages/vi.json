@@ -137,7 +137,24 @@
 			"properties": "Nhà cho thuê",
 			"tenants": "Người thuê",
 			"services": "Dịch vụ",
-			"feedback": "Phản hồi"
+			"feedback": "Phản hồi",
+			"settings": "Cài đặt"
+		},
+		"settings": {
+			"title": "Cài đặt",
+			"deleteAccountTitle": "Xóa tài khoản",
+			"deleteAccountDescription": "Xóa vĩnh viễn tài khoản và tất cả dữ liệu liên quan. Hành động này không thể hoàn tác.",
+			"deleteAccountButton": "Xóa tài khoản",
+			"deleteAccountMessage": "Thao tác này sẽ xóa vĩnh viễn tài khoản của bạn và tất cả dữ liệu liên quan, bao gồm nhà cho thuê, phòng, dịch vụ, người thuê và lịch sử thanh toán. Hành động này không thể hoàn tác.",
+			"deleteAccountConfirmLabel": "Nhập DELETE để xác nhận",
+			"deleteAccountConfirm": "Xóa tài khoản",
+			"cancel": "Hủy",
+			"errors": {
+				"delete": {
+					"title": "Lỗi",
+					"description": "Không thể xóa tài khoản. Vui lòng thử lại."
+				}
+			}
 		},
 		"properties": {
 			"emptyTitle": "Chưa có nhà",
@@ -301,14 +318,8 @@
 				"delete": {
 					"title": "Xóa thanh toán thất bại",
 					"description": "Có lỗi xảy ra khi xóa thanh toán. Vui lòng thử lại."
-				},
-				"toggleStatus": {
-					"title": "Cập nhật trạng thái thất bại",
-					"description": "Có lỗi xảy ra khi thay đổi trạng thái thanh toán. Vui lòng thử lại."
 				}
 			},
-			"statusToggleInfoLabel": "Hướng dẫn chuyển đổi trạng thái",
-			"statusToggleTooltip": "Nhấn vào trạng thái để chuyển đổi nhanh giữa Chưa thanh toán và Đã thanh toán.",
 			"addButton": "Thêm thanh toán",
 			"listTitle": "Lịch sử thanh toán",
 			"emptyMessage": "Chưa có thanh toán",

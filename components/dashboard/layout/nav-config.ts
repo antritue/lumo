@@ -1,4 +1,4 @@
-import { Blocks, Home, MessageSquare, Users } from "lucide-react";
+import { Blocks, Home, MessageSquare, Settings, Users } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 export type NavItem = {
@@ -32,6 +32,12 @@ export const navItems: NavItem[] = [
 		icon: MessageSquare,
 		labelKey: "feedback",
 		activeMatch: ["/dashboard/feedback"],
+	},
+	{
+		href: "/dashboard/settings",
+		icon: Settings,
+		labelKey: "settings",
+		activeMatch: ["/dashboard/settings"],
 	},
 ];
 

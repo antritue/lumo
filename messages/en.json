@@ -137,7 +137,24 @@
 			"properties": "Properties",
 			"tenants": "Tenants",
 			"services": "Services",
-			"feedback": "Feedback"
+			"feedback": "Feedback",
+			"settings": "Settings"
+		},
+		"settings": {
+			"title": "Settings",
+			"deleteAccountTitle": "Delete Account",
+			"deleteAccountDescription": "Permanently delete your account and all associated data. This action cannot be undone.",
+			"deleteAccountButton": "Delete Account",
+			"deleteAccountMessage": "This will permanently delete your account and all associated data, including properties, rooms, services, tenants, and payment records. This action cannot be undone.",
+			"deleteAccountConfirmLabel": "Type DELETE to confirm",
+			"deleteAccountConfirm": "Delete Account",
+			"cancel": "Cancel",
+			"errors": {
+				"delete": {
+					"title": "Error",
+					"description": "Failed to delete account. Please try again."
+				}
+			}
 		},
 		"feedback": {
 			"listTitle": "Feedback",
@@ -319,14 +336,8 @@
 				"delete": {
 					"title": "Failed to delete payment",
 					"description": "There was a problem deleting this payment. Please try again."
-				},
-				"toggleStatus": {
-					"title": "Failed to update status",
-					"description": "There was a problem changing the payment status. Please try again."
 				}
 			},
-			"statusToggleInfoLabel": "Status toggle help",
-			"statusToggleTooltip": "Click a status badge to toggle between Pending and Paid without opening the edit dialog.",
 			"addButton": "Add payment record",
 			"listTitle": "Payment Records",
 			"emptyMessage": "No payment records yet",
