@@ -136,7 +136,26 @@
 		"sidebar": {
 			"properties": "Properties",
 			"tenants": "Tenants",
-			"services": "Services"
+			"services": "Services",
+			"feedback": "Feedback"
+		},
+		"feedback": {
+			"listTitle": "Feedback",
+			"nameLabel": "Name",
+			"emailLabel": "Email",
+			"typeLabel": "Type",
+			"typeBug": "Bug report",
+			"typeFeature": "Feature request",
+			"typeOther": "Other",
+			"messageLabel": "Message",
+			"messagePlaceholder": "Describe your feedback...",
+			"submit": "Send feedback",
+			"submitting": "Sending...",
+			"thankYouTitle": "Thank you!",
+			"thankYouMessage": "Thanks for taking the time to share your feedback. We appreciate it!",
+			"sendAnother": "Send another feedback",
+			"errorTitle": "Failed to send feedback",
+			"errorDescription": "Something went wrong. Please try again."
 		},
 		"properties": {
 			"emptyTitle": "No properties yet",

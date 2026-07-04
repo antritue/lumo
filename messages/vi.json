@@ -136,7 +136,8 @@
 		"sidebar": {
 			"properties": "Nhà cho thuê",
 			"tenants": "Người thuê",
-			"services": "Dịch vụ"
+			"services": "Dịch vụ",
+			"feedback": "Phản hồi"
 		},
 		"properties": {
 			"emptyTitle": "Chưa có nhà",
@@ -334,6 +335,24 @@
 					"monthOccupied": "Tháng này đã có thanh toán."
 				}
 			}
+		},
+		"feedback": {
+			"listTitle": "Phản hồi",
+			"nameLabel": "Tên",
+			"emailLabel": "Email",
+			"typeLabel": "Loại",
+			"typeBug": "Báo lỗi",
+			"typeFeature": "Đề xuất tính năng",
+			"typeOther": "Khác",
+			"messageLabel": "Nội dung",
+			"messagePlaceholder": "Mô tả ý kiến của bạn...",
+			"submit": "Gửi phản hồi",
+			"submitting": "Đang gửi...",
+			"thankYouTitle": "Cảm ơn bạn!",
+			"thankYouMessage": "Cảm ơn bạn đã dành thời gian chia sẻ ý kiến. Chúng tôi rất trân trọng điều đó!",
+			"sendAnother": "Gửi phản hồi khác",
+			"errorTitle": "Gửi phản hồi thất bại",
+			"errorDescription": "Đã xảy ra lỗi. Vui lòng thử lại."
 		}
 	}
 }

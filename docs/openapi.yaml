@@ -456,6 +456,54 @@ components:
           type: ["number", "null"]
           minimum: 0
 
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum: [bug, feature, other]
+        message:
+          type: string
+      required:
+        - id
+        - userId
+        - name
+        - email
+        - type
+        - message
+
+    FeedbackInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum: [bug, feature, other]
+        message:
+          type: string
+          minLength: 1
+      required:
+        - name
+        - email
+        - type
+        - message
+
     Message:
       type: object
       properties:
@@ -1110,6 +1158,39 @@ paths:
                 $ref: "#/components/schemas/Message"
               example:
                 message: You're already on the waitlist!
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/feedback:
+    post:
+      summary: Submit feedback
+      description: Submits user feedback (bug report, feature request, or other) via email
+      operationId: submitFeedback
+      tags:
+        - Feedback
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackInput"
+            example:
+              name: John Doe
+              email: john@example.com
+              type: bug
+              message: The dashboard is not loading
+      responses:
+        "201":
+          description: Feedback sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+              example:
+                message: Feedback sent!
         "400":
           $ref: "#/components/responses/BadRequest"
         "500":
