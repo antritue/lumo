@@ -47,7 +47,7 @@
 		"husky": "9.1.7",
 		"supabase": "2.109.1",
 		"tailwindcss": "4",
-		"typescript": "6",
+		"typescript": "7",
 		"fallow": "3.6.0",
 		"vitest": "4.1.10"
 	}
