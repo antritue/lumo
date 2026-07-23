@@ -7,3 +7,4 @@ updates:
       time: "01:00"
       timezone: "UTC"
     open-pull-requests-limit: 10
+    rebase-strategy: "auto"
