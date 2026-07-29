@@ -29,7 +29,7 @@
 		"next-intl": "4.13.4",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
-		"resend": "6.18.0",
+		"resend": "6.18.1",
 		"tailwind-merge": "3.6.0",
 		"zod": "4.4.3",
 		"zustand": "5.0.14"
