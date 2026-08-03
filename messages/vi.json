@@ -97,14 +97,6 @@
 		"forOwners": "dành cho chủ nhà trọ độc lập.",
 		"copyright": "© {year} Lumo. Bảo lưu mọi quyền."
 	},
-	"waitlist": {
-		"title": "Tham gia danh sách chờ",
-		"description": "Hãy là người đầu tiên trải nghiệm khi Lumo ra mắt.",
-		"emailPlaceholder": "diachi@email.com",
-		"submit": "Đăng ký ngay",
-		"success": "Bạn đã đăng ký thành công!",
-		"error": "Có lỗi xảy ra. Vui lòng thử lại sau."
-	},
 	"languageSwitcher": {
 		"label": "Ngôn ngữ"
 	},

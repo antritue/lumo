@@ -104,15 +104,6 @@ components:
         notes:
           type: ["string", "null"]
 
-    WaitlistInput:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-      required:
-        - email
-
     RentPayment:
       type: object
       properties:
@@ -1124,44 +1115,6 @@ paths:
               schema:
                 type: string
               description: Redirect URL (/dashboard)
-
-  /api/waitlist:
-    post:
-      summary: Join waitlist
-      description: Adds an email to the waitlist. Returns success even if email already exists.
-      operationId: joinWaitlist
-      tags:
-        - Waitlist
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/WaitlistInput"
-            example:
-              email: user@example.com
-      responses:
-        "201":
-          description: Successfully joined the waitlist
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Message"
-              example:
-                message: Successfully joined the waitlist!
-        "200":
-          description: Email already on waitlist
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Message"
-              example:
-                message: You're already on the waitlist!
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
 
   /api/settings/delete-account:
     delete:

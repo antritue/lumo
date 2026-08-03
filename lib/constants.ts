@@ -1,5 +1,4 @@
 export const DATABASE_TABLES = {
-	WAITLIST: "waitlist",
 	PROPERTIES: "properties",
 	ROOMS: "rooms",
 	RENT_PAYMENTS: "rent_payments",

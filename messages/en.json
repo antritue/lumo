@@ -97,14 +97,6 @@
 		"forOwners": "for independent property owners.",
 		"copyright": "© {year} Lumo. All rights reserved."
 	},
-	"waitlist": {
-		"title": "Join the Waitlist",
-		"description": "Be the first to know when Lumo launches.",
-		"emailPlaceholder": "your@email.com",
-		"submit": "Join Waitlist",
-		"success": "You're on the list!",
-		"error": "Something went wrong. Please try again."
-	},
 	"languageSwitcher": {
 		"label": "Language"
 	},

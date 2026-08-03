@@ -99,7 +99,6 @@ If a feature adds complexity without removing confusion, it does not belong in L
 ### Marketing & Public Pages
 
 - **Landing Page** — Hero, problems, features, pricing, CTA, footer sections.
-- **Waitlist** — Email capture with duplicate detection and email notification via Resend.
 - **Privacy Policy, Terms of Service** — Static legal pages.
 
 ### Cross-Cutting
@@ -118,7 +117,7 @@ If a feature adds complexity without removing confusion, it does not belong in L
 ### Current Implementation
 
 The marketing page shows two tiers:
-- **Free** — All features, free during early access. "Get Early Access" button joins waitlist.
+- **Free** — All features, free during early access.
 - **Pro** — Listed as "Coming Soon" with no pricing or feature details yet.
 
 The one-time-payment / room-count-gating model described below is the current working hypothesis but has **not been implemented** — the implemented pricing page intentionally leaves details TBD.
@@ -206,9 +205,9 @@ All pricing and thresholds are working hypotheses until validated by real usage.
 - **Test co-location** — Every component, store, page, and API route has a co-located test file.
 - **Dedup patterns** — Fetch deduplication guards prevent duplicate requests (critical with React StrictMode).
 
-### DB Schema (8 tables)
+### DB Schema (7 tables)
 
-`waitlist`, `properties`, `rooms`, `rent_payments`, `rent_payment_charges`, `services`, `property_services`, `room_services`
+`properties`, `rooms`, `rent_payments`, `rent_payment_charges`, `services`, `property_services`, `room_services`
 
 All tables have RLS enforcing `auth.uid() = user_id`. Electricity/Water auto-seeded for new users via Postgres trigger.
 
