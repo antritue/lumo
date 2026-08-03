@@ -1,8 +1,8 @@
 import { ArrowRight, Sun } from "lucide-react";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
-import { Link } from "@/lib/navigation";
 
 export async function CtaSection() {
 	const t = await getTranslations("cta");

@@ -1,9 +1,9 @@
 import { ArrowRight, Sun } from "lucide-react";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { PreviewCarousel } from "@/components/marketing/islands/preview-carousel";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
-import { Link } from "@/lib/navigation";
 
 export async function Hero() {
 	const t = await getTranslations("hero");
