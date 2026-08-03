@@ -8,7 +8,6 @@ import {
 	Portal,
 	Root,
 	Title,
-	Trigger,
 } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import {
@@ -20,7 +19,6 @@ import {
 import { cn } from "@/lib/utils";
 
 const Dialog = Root;
-const DialogTrigger = Trigger;
 const DialogPortal = Portal;
 
 const DialogOverlay = forwardRef<
@@ -114,11 +112,4 @@ const DialogDescription = forwardRef<
 ));
 DialogDescription.displayName = Description.displayName;
 
-export {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-};
+export { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle };

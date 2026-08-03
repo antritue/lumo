@@ -1,4 +1,4 @@
-import { CreditCard, Heart, Home } from "lucide-react";
+import { CalendarDays, Receipt, ScanEye } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
@@ -11,7 +11,7 @@ interface FeatureItem {
 export async function Features() {
 	const t = await getTranslations("features");
 
-	const icons = [Home, CreditCard, Heart];
+	const icons = [ScanEye, CalendarDays, Receipt];
 	const items = t.raw("items") as FeatureItem[];
 
 	return (

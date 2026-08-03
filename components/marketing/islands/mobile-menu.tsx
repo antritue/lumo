@@ -30,7 +30,7 @@ export function MobileMenu() {
 								window.location.hash = "problems";
 							}}
 						>
-							{t("problems")}
+							{t("challenges")}
 						</button>
 						<button
 							type="button"

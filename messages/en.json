@@ -1,11 +1,11 @@
 {
 	"metadata": {
-		"title": "Lumo - Simple Rent Tracking",
-		"description": "Lumo gives independent landlords clear answers about rent payments. Track rooms and rent status without spreadsheets or stress.",
-		"keywords": "rent tracking, landlord app, property management, independent landlord, rent reminder"
+		"title": "Lumo - Rent tracking for independent landlords",
+		"description": "Track rent payments across your rooms. See which rooms have paid and which are pending — no spreadsheets required.",
+		"keywords": "rent tracking, landlord app, independent landlord, rent payment tracker, property management"
 	},
 	"header": {
-		"problems": "Challenges",
+		"challenges": "Challenges",
 		"features": "Features",
 		"pricing": "Pricing",
 		"signIn": "Sign In",
@@ -19,61 +19,59 @@
 		}
 	},
 	"hero": {
-		"badge": "Clear rent payment tracking",
+		"badge": "For independent landlords",
 		"headline": "Rent tracking, made simple",
-		"subtext": "Lumo gives you clear answers about rent payments. No spreadsheets, no stress.\nTrack rooms and payment status in one calm place.",
+		"subtext": "Know which rooms are paid and which are still pending. No spreadsheets required.",
 		"cta": "Get Early Access",
 		"launchApp": "Launch App",
-		"previewProperties": "Properties management view showing rooms and rent status",
-		"previewRoom": "Room detail view showing payment records",
+		"previewProperties": "Properties view showing rooms and rent payment status",
+		"previewRoom": "Room detail view with payment history and service charges",
 		"carouselLabel": "Preview slides"
 	},
 	"features": {
 		"title": "Everything you need, nothing you don't",
-		"subtitle": "Tools designed for tracking your rent",
+		"subtitle": "Purpose-built for tracking rent across your rooms",
 		"items": [
 			{
-				"title": "Track rooms & rent status",
-				"description": "See all your rooms and their payment status at a glance"
+				"title": "Rooms and payment status",
+				"description": "See each room and its payment status at a glance"
 			},
 			{
-				"title": "See payment status clearly",
-				"description": "Know instantly who has paid and who hasn't. No digging through files"
+				"title": "Month-by-month tracking",
+				"description": "Know the full payment history for every room"
 			},
 			{
-				"title": "Built for you, not companies",
-				"description": "Designed for independent property owners who track rent personally"
+				"title": "Service charge management",
+				"description": "Service charges calculated and added to the rent total"
 			}
 		]
 	},
 	"pricing": {
 		"title": "Simple, honest pricing",
-		"subtitle": "Pricing will be announced soon",
+		"subtitle": "Free during early access. Pricing announced when ready.",
 		"comingSoon": "Coming Soon",
 		"tiers": {
 			"free": {
 				"name": "Free",
 				"description": "Free during early access",
 				"price": "$0",
-				"features": [],
-				"buttonText": "Get Early Access"
+				"features": []
 			},
 			"pro": {
 				"name": "Pro",
 				"description": "Details to be announced",
 				"price": "TBA",
-				"features": [],
-				"buttonText": "Coming Later"
+				"features": []
 			}
 		}
 	},
 	"problems": {
 		"title": "We understand your challenges",
-		"subtitle": "Tracking rent shouldn't be confusing",
+		"subtitle": "If you're still using paper or spreadsheets, you know the pain",
 		"items": [
 			{
-				"title": "Forgetting rent dates",
-				"description": "Missing payments because there's no easy way to track who paid and when"
+				"title": "Mental load across rooms",
+				"description": "The more rooms you have, the harder it gets to track who has paid"
 			},
 			{
 				"title": "Messy spreadsheets",
@@ -85,28 +83,19 @@
 			}
 		],
 		"solution": {
-			"title": "There's a clearer way",
-			"description": "Lumo is purpose-built for independent property owners. It's calm, simple, and helps you know where things stand without the complexity"
+			"title": "Clarity, without the complexity",
+			"description": "Lumo replaces guesswork with a single screen that tells you exactly where things stand. Track rooms, months, and payments without the stress."
 		}
 	},
 	"cta": {
 		"title": "Track rent with clarity",
 		"subtitle": "No spreadsheets, no stress",
-		"button": "Get Early Access",
 		"launchApp": "Launch App"
 	},
 	"footer": {
 		"madeWith": "Made with",
 		"forOwners": "for independent property owners.",
 		"copyright": "© {year} Lumo. All rights reserved."
-	},
-	"waitlist": {
-		"title": "Join the Waitlist",
-		"description": "Be the first to know when Lumo launches.",
-		"emailPlaceholder": "your@email.com",
-		"submit": "Join Waitlist",
-		"success": "You're on the list!",
-		"error": "Something went wrong. Please try again."
 	},
 	"languageSwitcher": {
 		"label": "Language"

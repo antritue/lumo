@@ -1,11 +1,11 @@
 {
 	"metadata": {
-		"title": "Lumo - Quản lý tiền thuê đơn giản",
-		"description": "Lumo giúp chủ cho thuê nắm rõ tình trạng thanh toán. Theo dõi phòng và tiền thuê mà không cần bảng tính phức tạp.",
-		"keywords": "quản lý tiền thuê, phần mềm quản lý nhà trọ, ứng dụng quản lý nhà cho thuê, theo dõi tiền phòng, nhắc nợ tiền thuê"
+		"title": "Lumo - Quản lý tiền thuê cho chủ nhà trọ",
+		"description": "Theo dõi tiền thuê trên các phòng của bạn. Xem phòng nào đã đóng và phòng nào còn thiếu — không cần bảng tính.",
+		"keywords": "quản lý tiền thuê, ứng dụng quản lý nhà trọ, theo dõi tiền phòng, chủ nhà trọ, quản lý cho thuê"
 	},
 	"header": {
-		"problems": "Khó khăn",
+		"challenges": "Khó khăn",
 		"features": "Tính năng",
 		"pricing": "Bảng giá",
 		"signIn": "Đăng nhập",
@@ -19,61 +19,59 @@
 		}
 	},
 	"hero": {
-		"badge": "Theo dõi tiền thuê rõ ràng",
-		"headline": "Theo dõi tiền thuê, thật đơn giản",
-		"subtext": "Lumo giúp bạn nắm rõ tình trạng thanh toán. Không bảng tính, không áp lực.\nTheo dõi phòng và trạng thái thanh toán tại một nơi duy nhất.",
+		"badge": "Dành cho chủ nhà trọ",
+		"headline": "Theo dõi tiền thuê thật đơn giản",
+		"subtext": "Biết phòng nào đã đóng tiền và phòng nào còn thiếu. Không cần bảng tính.",
 		"cta": "Đăng ký sớm",
 		"launchApp": "Mở ứng dụng",
-		"previewProperties": "Giao diện quản lý nhà cho thuê hiển thị phòng và trạng thái thanh toán",
-		"previewRoom": "Giao diện chi tiết phòng hiển thị lịch sử thanh toán",
+		"previewProperties": "Giao diện danh sách nhà cho thuê hiển thị phòng và trạng thái thanh toán",
+		"previewRoom": "Giao diện chi tiết phòng với lịch sử thanh toán và phí dịch vụ",
 		"carouselLabel": "Xem trước các trang"
 	},
 	"features": {
 		"title": "Đầy đủ tính năng, gọn nhẹ tối ưu",
-		"subtitle": "Công cụ thiết kế cho việc theo dõi tiền thuê",
+		"subtitle": "Được thiết kế riêng cho việc theo dõi tiền thuê trên các phòng",
 		"items": [
 			{
-				"title": "Theo dõi phòng & trạng thái thuê",
-				"description": "Xem toàn bộ phòng và tình trạng thanh toán trong một màn hình"
+				"title": "Phòng và trạng thái thanh toán",
+				"description": "Xem trạng thái thanh toán của từng phòng trong nháy mắt"
 			},
 			{
-				"title": "Chi tiết trạng thái thanh toán",
-				"description": "Biết ngay ai đã đóng tiền, ai chưa. Không còn phải lục tìm sổ sách"
+				"title": "Theo dõi theo từng tháng",
+				"description": "Nắm rõ lịch sử thanh toán của mọi phòng"
 			},
 			{
-				"title": "Dành cho cá nhân, không phải công ty",
-				"description": "Thiết kế cho chủ nhà trọ độc lập theo dõi tiền thuê cá nhân"
+				"title": "Quản lý phí dịch vụ",
+				"description": "Phí dịch vụ được tính và cộng vào tổng tiền thuê"
 			}
 		]
 	},
 	"pricing": {
 		"title": "Bảng giá đơn giản, minh bạch",
-		"subtitle": "Bảng giá sẽ sớm được công bố",
+		"subtitle": "Miễn phí trong giai đoạn truy cập sớm. Bảng giá sẽ công bố sau.",
 		"comingSoon": "Sắp ra mắt",
 		"tiers": {
 			"free": {
 				"name": "Miễn phí",
 				"description": "Miễn phí trong thời gian truy cập sớm",
 				"price": "0đ",
-				"features": [],
-				"buttonText": "Truy cập sớm"
+				"features": []
 			},
 			"pro": {
 				"name": "Pro",
 				"description": "Chi tiết sẽ được công bố",
 				"price": "TBA",
-				"features": [],
-				"buttonText": "Sắp ra mắt"
+				"features": []
 			}
 		}
 	},
 	"problems": {
 		"title": "Chúng tôi thấu hiểu những khó khăn của bạn",
-		"subtitle": "Theo dõi tiền thuê không nên phức tạp",
+		"subtitle": "Nếu bạn vẫn dùng sổ sách hay bảng tính, bạn biết sự vất vả đó",
 		"items": [
 			{
-				"title": "Quên ngày đóng tiền",
-				"description": "Để lỡ kỳ thanh toán vì không có cách nào theo dõi ai đã đóng, ai chưa"
+				"title": "Áp lực khi có nhiều phòng",
+				"description": "Càng nhiều phòng, càng khó theo dõi ai đã đóng tiền"
 			},
 			{
 				"title": "Bảng tính lộn xộn",
@@ -85,28 +83,19 @@
 			}
 		],
 		"solution": {
-			"title": "Có một cách rõ ràng hơn",
-			"description": "Lumo được thiết kế riêng cho các chủ nhà trọ độc lập. Tinh gọn, dễ dùng và giúp bạn nắm rõ tình hình mà không cần đau đầu"
+			"title": "Rõ ràng, không rắc rối",
+			"description": "Lumo thay thế phỏng đoán bằng một màn hình duy nhất cho bạn biết chính xác mọi thứ đang ở đâu. Theo dõi phòng, tháng, và thanh toán thật dễ dàng."
 		}
 	},
 	"cta": {
 		"title": "Theo dõi tiền thuê rõ ràng",
 		"subtitle": "Không bảng tính, không áp lực",
-		"button": "Đăng ký sớm",
 		"launchApp": "Mở ứng dụng"
 	},
 	"footer": {
 		"madeWith": "Được tạo với",
 		"forOwners": "dành cho chủ nhà trọ độc lập.",
 		"copyright": "© {year} Lumo. Bảo lưu mọi quyền."
-	},
-	"waitlist": {
-		"title": "Tham gia danh sách chờ",
-		"description": "Hãy là người đầu tiên trải nghiệm khi Lumo ra mắt.",
-		"emailPlaceholder": "diachi@email.com",
-		"submit": "Đăng ký ngay",
-		"success": "Bạn đã đăng ký thành công!",
-		"error": "Có lỗi xảy ra. Vui lòng thử lại sau."
 	},
 	"languageSwitcher": {
 		"label": "Ngôn ngữ"

@@ -23,7 +23,7 @@ export async function Header() {
 							href="/#problems"
 							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-22 text-center"
 						>
-							{t("problems")}
+							{t("challenges")}
 						</Link>
 						<Link
 							href="/#features"

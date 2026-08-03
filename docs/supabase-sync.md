@@ -3,7 +3,7 @@
 To keep your **Test** and **Production** databases in sync without manual UI work, follow this workflow using the Supabase CLI.
 
 ## 1. Local Schema Definition
-Your database schema is defined in [supabase/migrations/20251229000000_init_waitlist.sql](file:///d:/Propjects/lumo/supabase/migrations/20251229000000_init_waitlist.sql). Any changes to your tables should be added as new `.sql` files in that folder.
+Your database schema is defined in [supabase/migrations/](file:///d:/Propjects/lumo/supabase/migrations/). Any changes to your tables should be added as new `.sql` files in that folder.
 
 ## 2. Syncing to an Environment
 

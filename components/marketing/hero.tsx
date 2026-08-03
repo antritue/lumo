@@ -1,9 +1,9 @@
-import { Sun } from "lucide-react";
+import { ArrowRight, Sun } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { PreviewCarousel } from "@/components/marketing/islands/preview-carousel";
-import { JoinWaitlistDialog } from "@/components/shared/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
+import { Link } from "@/lib/navigation";
 
 export async function Hero() {
 	const t = await getTranslations("hero");
@@ -38,19 +38,12 @@ export async function Hero() {
 
 				{/* CTAs */}
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
-					{/* <Link href="/dashboard" target="_blank">
+					<Link href="/dashboard" target="_blank">
 						<Button size="lg" className="h-12 px-8 text-base w-55">
 							{t("launchApp")}
 							<ArrowRight className="ml-2 h-5 w-5" />
 						</Button>
-					</Link> */}
-					<JoinWaitlistDialog
-						trigger={
-							<Button size="lg" className="h-12 px-8 text-base w-55">
-								{t("cta")}
-							</Button>
-						}
-					/>
+					</Link>
 				</div>
 
 				{/* Preview UI */}

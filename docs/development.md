@@ -34,7 +34,7 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 ├── app/                  # Application Routes
 │   ├── [locale]/         # Main application routes (wrapped in i18n)
 │   ├── dashboard/        # Dashboard specific routes
-│   └── api/              # API endpoints (e.g., waitlist)
+│   └── api/              # API endpoints
 ├── components/           # React Components
 │   ├── ui/               # Reusable primitives (Buttons, Inputs, etc.)
 │   ├── shared/           # Global shared components (Logo, ErrorDialog, DevelopmentBanner)

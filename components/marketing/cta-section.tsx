@@ -1,8 +1,8 @@
-import { Sun } from "lucide-react";
+import { ArrowRight, Sun } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { JoinWaitlistDialog } from "@/components/shared/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
+import { Link } from "@/lib/navigation";
 
 export async function CtaSection() {
 	const t = await getTranslations("cta");
@@ -28,19 +28,12 @@ export async function CtaSection() {
 					</p>
 
 					<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-						{/* <Link href="/dashboard" target="_blank">
+						<Link href="/dashboard" target="_blank">
 							<Button size="lg" className="h-12 px-8">
 								{t("launchApp")}
 								<ArrowRight className="ml-2 h-4 w-4" />
 							</Button>
-						</Link> */}
-						<JoinWaitlistDialog
-							trigger={
-								<Button size="lg" className="h-12 px-8">
-									{t("button")}
-								</Button>
-							}
-						/>
+						</Link>
 					</div>
 				</div>
 			</div>
