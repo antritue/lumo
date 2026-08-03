@@ -5,7 +5,7 @@
 		"keywords": "quản lý tiền thuê, ứng dụng quản lý nhà trọ, theo dõi tiền phòng, chủ nhà trọ, quản lý cho thuê"
 	},
 	"header": {
-		"problems": "Vấn đề",
+		"challenges": "Khó khăn",
 		"features": "Tính năng",
 		"pricing": "Bảng giá",
 		"signIn": "Đăng nhập",
@@ -20,8 +20,8 @@
 	},
 	"hero": {
 		"badge": "Dành cho chủ nhà trọ",
-		"headline": "Phòng nào đã đóng tiền tháng này?",
-		"subtext": "Lumo theo dõi tiền thuê trên các phòng của bạn. Thiết lập nhà cho thuê, thêm phòng, và kiểm tra trạng thái thanh toán mà không cần bảng tính hay sao kê ngân hàng.",
+		"headline": "Theo dõi tiền thuê thật đơn giản",
+		"subtext": "Biết phòng nào đã đóng tiền và phòng nào còn thiếu. Không cần bảng tính.",
 		"cta": "Đăng ký sớm",
 		"launchApp": "Mở ứng dụng",
 		"previewProperties": "Giao diện danh sách nhà cho thuê hiển thị phòng và trạng thái thanh toán",
@@ -34,15 +34,15 @@
 		"items": [
 			{
 				"title": "Phòng và trạng thái thanh toán",
-				"description": "Xem tất cả phòng và tình trạng thanh toán trong một màn hình duy nhất"
+				"description": "Xem trạng thái thanh toán của từng phòng trong nháy mắt"
 			},
 			{
 				"title": "Theo dõi theo từng tháng",
-				"description": "Ghi nhận thanh toán theo phòng và theo kỳ. Hệ thống ngăn trùng tháng, giúp dữ liệu luôn sạch"
+				"description": "Nắm rõ lịch sử thanh toán của mọi phòng"
 			},
 			{
 				"title": "Quản lý phí dịch vụ",
-				"description": "Đính kèm các khoản phí như điện, nước, WiFi hoặc vệ sinh vào bất kỳ khoản thanh toán nào với giá cố định hoặc theo mức sử dụng"
+				"description": "Phí dịch vụ được tính và cộng vào tổng tiền thuê"
 			}
 		]
 	},
@@ -55,33 +55,31 @@
 				"name": "Miễn phí",
 				"description": "Miễn phí trong thời gian truy cập sớm",
 				"price": "0đ",
-				"features": [],
-				"buttonText": "Truy cập sớm"
+				"features": []
 			},
 			"pro": {
 				"name": "Pro",
 				"description": "Chi tiết sẽ được công bố",
 				"price": "TBA",
-				"features": [],
-				"buttonText": "Sắp ra mắt"
+				"features": []
 			}
 		}
 	},
 	"problems": {
-		"title": "Việc theo dõi tiền thuê không nên khó như vậy",
+		"title": "Chúng tôi thấu hiểu những khó khăn của bạn",
 		"subtitle": "Nếu bạn vẫn dùng sổ sách hay bảng tính, bạn biết sự vất vả đó",
 		"items": [
 			{
-				"title": "Phân vân về thanh toán",
-				"description": "Tự hỏi khoản tiền đó đã vào chưa hay mình lỡ quên, rồi phải lục lại sao kê ngân hàng mới dám chắc"
-			},
-			{
-				"title": "Excel đến lúc cãi nhau",
-				"description": "File Excel với công thức sai, quên cập nhật, và chẳng dễ dàng gì để xem bức tranh tổng thể"
-			},
-			{
 				"title": "Áp lực khi có nhiều phòng",
-				"description": "Càng nhiều phòng càng khó nhớ ai đã đóng, ai còn nợ, ai hay quên"
+				"description": "Càng nhiều phòng, càng khó theo dõi ai đã đóng tiền"
+			},
+			{
+				"title": "Bảng tính lộn xộn",
+				"description": "Các tệp Excel ngày càng phức tạp, công thức dễ bị lỗi ngoài ý muốn"
+			},
+			{
+				"title": "Ghi chép rải rác",
+				"description": "Sổ tay và giấy ghi chú khắp nơi, rất dễ bị thất lạc hoặc bỏ quên"
 			}
 		],
 		"solution": {
@@ -90,9 +88,8 @@
 		}
 	},
 	"cta": {
-		"title": "Theo dõi tiền thuê không cần bảng tính",
-		"subtitle": "Miễn phí trong giai đoạn truy cập sớm. Không cần tài khoản để dùng thử.",
-		"button": "Đăng ký sớm",
+		"title": "Theo dõi tiền thuê rõ ràng",
+		"subtitle": "Không bảng tính, không áp lực",
 		"launchApp": "Mở ứng dụng"
 	},
 	"footer": {

@@ -1,45 +1,53 @@
-import { Sun } from "lucide-react";
+import { ArrowRight, Sun } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { PreviewCarousel } from "@/components/marketing/islands/preview-carousel";
-import { JoinWaitlistDialog } from "@/components/shared/join-waitlist-dialog";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
+import { Link } from "@/lib/navigation";
 
 export async function Hero() {
 	const t = await getTranslations("hero");
 
 	return (
-		<Section
-			variant="transparent"
-			className="relative overflow-hidden pt-16 sm:pt-24"
-		>
-			<div className="text-center w-full sm:w-160 lg:w-3xl mx-auto">
-				<div className="mx-auto mb-10 w-12 h-0.5 bg-accent" />
+		<Section variant="transparent" className="relative overflow-hidden">
+			{/* Decorative Background Elements */}
+			<div className="absolute inset-0 -z-10 overflow-hidden">
+				<div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl opacity-60" />
+				<div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-60" />
+			</div>
 
-				<div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent/10 text-accent-foreground text-sm font-medium rounded-sm mb-8 animate-in fade-in zoom-in duration-500">
-					<Sun className="h-4 w-4 shrink-0" />
-					<span>{t("badge")}</span>
+			{/* Content Container: Fixed width on sm+ to prevent layout shift */}
+			<div className="text-center w-full sm:w-160 lg:w-3xl mx-auto">
+				{/* Badge */}
+				<div className="inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 px-4 py-2 mb-8 w-80 animate-in fade-in zoom-in duration-500">
+					<Sun className="h-4 w-4 text-primary shrink-0" />
+					<span className="text-sm font-medium text-primary line-clamp-1">
+						{t("badge")}
+					</span>
 				</div>
 
+				{/* Headline */}
 				<h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-6 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-100">
 					{t("headline")}
 				</h1>
 
-				<p className="text-lg sm:text-xl text-muted-foreground max-w-160 mx-auto mb-10 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
+				{/* Subtext */}
+				<p className="whitespace-pre-line text-lg sm:text-xl text-muted-foreground max-w-full mx-auto mb-10 text-balance animate-in slide-in-from-bottom-4 fade-in duration-700 delay-200">
 					{t("subtext")}
 				</p>
 
+				{/* CTAs */}
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in slide-in-from-bottom-4 fade-in duration-700 delay-300">
-					<JoinWaitlistDialog
-						trigger={
-							<Button size="lg" className="h-12 px-8 text-base w-55">
-								{t("cta")}
-							</Button>
-						}
-					/>
+					<Link href="/dashboard" target="_blank">
+						<Button size="lg" className="h-12 px-8 text-base w-55">
+							{t("launchApp")}
+							<ArrowRight className="ml-2 h-5 w-5" />
+						</Button>
+					</Link>
 				</div>
 
-				<div className="mt-16 mx-auto w-full rounded-sm bg-white border border-border shadow-soft p-2 sm:p-4 animate-in fade-in zoom-in duration-1000 delay-500">
+				{/* Preview UI */}
+				<div className="mt-16 mx-auto w-full rounded-2xl bg-white border border-border shadow-soft-lg p-2 sm:p-4 animate-in fade-in zoom-in duration-1000 delay-500">
 					<PreviewCarousel />
 				</div>
 			</div>

@@ -21,19 +21,19 @@ export async function Header() {
 					<div className="hidden md:flex md:items-center md:gap-8">
 						<Link
 							href="/#problems"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-22 text-center"
 						>
-							{t("problems")}
+							{t("challenges")}
 						</Link>
 						<Link
 							href="/#features"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-22 text-center"
 						>
 							{t("features")}
 						</Link>
 						<Link
 							href="/#pricing"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground min-w-22 text-center"
 						>
 							{t("pricing")}
 						</Link>

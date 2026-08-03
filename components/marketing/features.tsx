@@ -1,4 +1,4 @@
-import { Calendar, Eye, Receipt } from "lucide-react";
+import { CalendarDays, Receipt, ScanEye } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
@@ -11,7 +11,7 @@ interface FeatureItem {
 export async function Features() {
 	const t = await getTranslations("features");
 
-	const icons = [Eye, Calendar, Receipt];
+	const icons = [ScanEye, CalendarDays, Receipt];
 	const items = t.raw("items") as FeatureItem[];
 
 	return (
@@ -31,10 +31,10 @@ export async function Features() {
 					return (
 						<Card
 							key={item.title}
-							className="group border-border/60 hover:border-border hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300"
+							className="group hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300"
 						>
 							<CardContent className="p-8 text-center">
-								<div className="w-12 h-12 rounded-sm bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform duration-300 mx-auto">
+								<div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform duration-300 mx-auto">
 									<Icon className="h-6 w-6" />
 								</div>
 								<h3 className="text-xl font-semibold text-foreground mb-3">

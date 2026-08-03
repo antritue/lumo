@@ -5,7 +5,7 @@
 		"keywords": "rent tracking, landlord app, independent landlord, rent payment tracker, property management"
 	},
 	"header": {
-		"problems": "The problem",
+		"challenges": "Challenges",
 		"features": "Features",
 		"pricing": "Pricing",
 		"signIn": "Sign In",
@@ -20,8 +20,8 @@
 	},
 	"hero": {
 		"badge": "For independent landlords",
-		"headline": "Which rooms have paid this month?",
-		"subtext": "Lumo tracks rent payments across your rooms. Set up your properties, add rooms, and check payment status without spreadsheets or bank statement searches.",
+		"headline": "Rent tracking, made simple",
+		"subtext": "Know which rooms are paid and which are still pending. No spreadsheets required.",
 		"cta": "Get Early Access",
 		"launchApp": "Launch App",
 		"previewProperties": "Properties view showing rooms and rent payment status",
@@ -34,15 +34,15 @@
 		"items": [
 			{
 				"title": "Rooms and payment status",
-				"description": "See every room and whether rent is paid or pending this month, all in one view"
+				"description": "See each room and its payment status at a glance"
 			},
 			{
 				"title": "Month-by-month tracking",
-				"description": "Record payments per room per period. Duplicate months are prevented, so your records stay clean"
+				"description": "Know the full payment history for every room"
 			},
 			{
 				"title": "Service charge management",
-				"description": "Attach optional charges like utilities, WiFi, or cleaning fees to any payment with flat or usage-based pricing"
+				"description": "Service charges calculated and added to the rent total"
 			}
 		]
 	},
@@ -55,33 +55,31 @@
 				"name": "Free",
 				"description": "Free during early access",
 				"price": "$0",
-				"features": [],
-				"buttonText": "Get Early Access"
+				"features": []
 			},
 			"pro": {
 				"name": "Pro",
 				"description": "Details to be announced",
 				"price": "TBA",
-				"features": [],
-				"buttonText": "Coming Later"
+				"features": []
 			}
 		}
 	},
 	"problems": {
-		"title": "Rent tracking shouldn't be this hard",
+		"title": "We understand your challenges",
 		"subtitle": "If you're still using paper or spreadsheets, you know the pain",
 		"items": [
 			{
-				"title": "Second-guessing payments",
-				"description": "Wondering if that payment came in or if you missed it, then checking bank statements to be sure"
-			},
-			{
-				"title": "Spreadsheets that fight you",
-				"description": "Excel files with broken formulas, forgotten updates, and no easy way to see the full picture"
-			},
-			{
 				"title": "Mental load across rooms",
-				"description": "The more rooms you manage, the harder it is to remember who paid, who is late, and who always forgets"
+				"description": "The more rooms you have, the harder it gets to track who has paid"
+			},
+			{
+				"title": "Messy spreadsheets",
+				"description": "Excel files that grow confusing over time, with formulas breaking unexpectedly"
+			},
+			{
+				"title": "Paper notes everywhere",
+				"description": "Scattered notebooks and sticky notes that are easy to lose or misplace"
 			}
 		],
 		"solution": {
@@ -90,9 +88,8 @@
 		}
 	},
 	"cta": {
-		"title": "Track rent without the spreadsheets",
-		"subtitle": "Free during early access. No account required to try it.",
-		"button": "Get Early Access",
+		"title": "Track rent with clarity",
+		"subtitle": "No spreadsheets, no stress",
 		"launchApp": "Launch App"
 	},
 	"footer": {
