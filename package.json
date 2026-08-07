@@ -48,7 +48,7 @@
 		"supabase": "2.111.0",
 		"tailwindcss": "4",
 		"typescript": "6",
-		"fallow": "3.11.0",
+		"fallow": "3.13.0",
 		"vitest": "4.1.10"
 	}
 }
