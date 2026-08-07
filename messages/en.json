@@ -48,20 +48,41 @@
 	},
 	"pricing": {
 		"title": "Simple, honest pricing",
-		"subtitle": "Free during early access. Pricing announced when ready.",
-		"comingSoon": "Coming Soon",
+		"subtitle": "Start free with up to 5 rooms. Upgrade when you need more.",
 		"tiers": {
 			"free": {
 				"name": "Free",
-				"description": "Free during early access",
+				"description": "No sign-up needed",
 				"price": "$0",
-				"features": []
+				"period": "forever",
+				"features": ["Up to 5 rooms", "All core features", "No card required"],
+				"cta": "Start free"
 			},
-			"pro": {
-				"name": "Pro",
-				"description": "Details to be announced",
-				"price": "TBA",
-				"features": []
+			"monthly": {
+				"name": "Monthly",
+				"description": "Flexible, cancel anytime",
+				"price": "$4",
+				"period": "/month",
+				"features": ["Unlimited rooms", "All core features", "Cancel anytime"],
+				"cta": "Get Unlimited"
+			},
+			"yearly": {
+				"name": "Annually",
+				"description": "Save 19%",
+				"price": "$39",
+				"period": "/year",
+				"badge": "Most popular",
+				"features": ["Unlimited rooms", "All core features", "Cancel anytime"],
+				"cta": "Get Unlimited"
+			},
+			"lifetime": {
+				"name": "Lifetime",
+				"description": "For early adopters",
+				"price": "$69",
+				"period": "one-time",
+				"badge": "Best value",
+				"features": ["Unlimited rooms", "All core features", "Yours forever"],
+				"cta": "Get Unlimited"
 			}
 		}
 	},
