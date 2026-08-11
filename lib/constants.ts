@@ -6,7 +6,10 @@ export const DATABASE_TABLES = {
 	SERVICES: "services",
 	PROPERTY_SERVICES: "property_services",
 	ROOM_SERVICES: "room_services",
+	USER_ENTITLEMENTS: "user_entitlements",
 };
+
+export const FREE_ROOM_LIMIT = 5;
 
 export const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
 

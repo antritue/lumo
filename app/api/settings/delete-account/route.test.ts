@@ -56,6 +56,19 @@ describe("DELETE /api/settings/delete-account", () => {
 		const res = await DELETE();
 
 		expect(res.status).toBe(204);
+		expect(mockFrom).toHaveBeenCalledTimes(8);
+		for (const table of [
+			"rent_payment_charges",
+			"rent_payments",
+			"room_services",
+			"property_services",
+			"rooms",
+			"properties",
+			"services",
+			"user_entitlements",
+		]) {
+			expect(mockFrom).toHaveBeenCalledWith(table);
+		}
 		expect(mockAdminDeleteUser).toHaveBeenCalledWith("test-user-id");
 	});
 });
