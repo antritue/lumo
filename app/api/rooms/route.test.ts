@@ -131,8 +131,58 @@ describe("GET /api/rooms", () => {
 });
 
 describe("POST /api/rooms", () => {
+	// Property existence chain: select -> eq -> eq -> single
+	const mockPropertySelect = vi.fn();
+	const mockPropertyEq = vi.fn();
+	const mockPropertyEq2 = vi.fn();
+	const mockPropertySingle = vi.fn();
+
+	// Entitlement chain: select -> eq -> maybeSingle
+	const mockEntitlementSelect = vi.fn();
+	const mockEntitlementEq = vi.fn();
+	const mockEntitlementMaybeSingle = vi.fn();
+
+	// Room count chain: select -> eq
+	const mockCountSelect = vi.fn();
+	const mockCountEq = vi.fn();
+
+	// Room insert chain: insert -> select -> single
+	const mockRoomInsert = vi.fn();
+	const mockRoomInsertSelect = vi.fn();
+	const mockRoomInsertSingle = vi.fn();
+
 	beforeEach(() => {
 		vi.clearAllMocks();
+
+		// Property chain
+		mockPropertySelect.mockReturnValue({ eq: mockPropertyEq });
+		mockPropertyEq.mockReturnValue({ eq: mockPropertyEq2 });
+		mockPropertyEq2.mockReturnValue({ single: mockPropertySingle });
+
+		// Entitlement chain (default: no entitlement → free)
+		mockEntitlementSelect.mockReturnValue({ eq: mockEntitlementEq });
+		mockEntitlementEq.mockReturnValue({
+			maybeSingle: mockEntitlementMaybeSingle,
+		});
+		mockEntitlementMaybeSingle.mockResolvedValue({ data: null, error: null });
+
+		// Count chain (default: 0 rooms)
+		mockCountSelect.mockReturnValue({ eq: mockCountEq });
+		mockCountEq.mockResolvedValue({ count: 0, error: null });
+
+		// Insert chain
+		mockRoomInsert.mockReturnValue({ select: mockRoomInsertSelect });
+		mockRoomInsertSelect.mockReturnValue({ single: mockRoomInsertSingle });
+
+		mockFrom.mockImplementation((table: string) => {
+			if (table === "properties") {
+				return { select: mockPropertySelect };
+			}
+			if (table === "user_entitlements") {
+				return { select: mockEntitlementSelect };
+			}
+			return { select: mockCountSelect, insert: mockRoomInsert };
+		});
 	});
 
 	const createRequest = (
@@ -156,60 +206,70 @@ describe("POST /api/rooms", () => {
 		});
 	};
 
-	const setupPropertyCheckMock = (exists: boolean) => {
-		const mockPropertySelect = vi.fn();
-		const mockPropertyEq = vi.fn();
-		const mockPropertyEq2 = vi.fn();
-		const mockPropertySingle = vi.fn();
-
-		mockPropertySelect.mockReturnValue({ eq: mockPropertyEq });
-		mockPropertyEq.mockReturnValue({ eq: mockPropertyEq2 });
-		mockPropertyEq2.mockReturnValue({ single: mockPropertySingle });
+	const mockPropertyExists = () => {
 		mockPropertySingle.mockResolvedValue({
-			data: exists ? { id: "prop-1" } : null,
-			error: exists ? null : { code: "PGRST116" },
+			data: { id: "prop-1" },
+			error: null,
 		});
-
-		return mockPropertySelect;
 	};
 
-	const setupInsertMock = (data: unknown, error: unknown = null) => {
-		const mockRoomInsert = vi.fn();
-		const mockRoomSelect = vi.fn();
-		const mockRoomSingle = vi.fn();
+	const mockPropertyMissing = () => {
+		mockPropertySingle.mockResolvedValue({
+			data: null,
+			error: { code: "PGRST116" },
+		});
+	};
 
-		mockRoomInsert.mockReturnValue({ select: mockRoomSelect });
-		mockRoomSelect.mockReturnValue({ single: mockRoomSingle });
-		mockRoomSingle.mockResolvedValue({ data, error });
+	const mockNoEntitlement = () => {
+		mockEntitlementMaybeSingle.mockResolvedValue({ data: null, error: null });
+	};
 
-		return mockRoomInsert;
+	const mockPaidEntitlement = () => {
+		mockEntitlementMaybeSingle.mockResolvedValue({
+			data: {
+				id: "ent-1",
+				user_id: "test-user-id",
+				polar_customer_id: "cust-1",
+				tier: "lifetime",
+				status: "active",
+				current_period_end: null,
+			},
+			error: null,
+		});
+	};
+
+	const mockRoomCount = (count: number) => {
+		mockCountEq.mockResolvedValue({ count, error: null });
+	};
+
+	const mockInsertSuccess = () => {
+		mockRoomInsertSingle.mockResolvedValue({
+			data: {
+				id: "new-room-id",
+				name: "Room 101",
+				property_id: "prop-1",
+				user_id: "test-user-id",
+				monthly_rent: 500,
+				notes: null,
+			},
+			error: null,
+		});
+	};
+
+	const validBody = {
+		name: "Room 101",
+		propertyId: "550e8400-e29b-41d4-a716-446655440000",
+		monthlyRent: 500,
 	};
 
 	it("should return 201 when authenticated user creates a room", async () => {
 		mockAuthenticatedUser();
+		mockPropertyExists();
+		mockNoEntitlement();
+		mockRoomCount(0);
+		mockInsertSuccess();
 
-		const mockPropertySelect = setupPropertyCheckMock(true);
-		const mockRoomInsert = setupInsertMock({
-			id: "new-room-id",
-			name: "Room 101",
-			property_id: "prop-1",
-			user_id: "test-user-id",
-			monthly_rent: 500,
-			notes: null,
-		});
-
-		mockFrom.mockImplementation((table: string) => {
-			if (table === "properties") {
-				return { select: mockPropertySelect };
-			}
-			return { insert: mockRoomInsert };
-		});
-
-		const req = createRequest({
-			name: "Room 101",
-			propertyId: "550e8400-e29b-41d4-a716-446655440000",
-			monthlyRent: 500,
-		});
+		const req = createRequest(validBody);
 		const res = await createRoom(req);
 		const data = await res.json();
 
@@ -224,13 +284,39 @@ describe("POST /api/rooms", () => {
 		});
 	});
 
+	it("should return 403 with ROOM_LIMIT_REACHED when free user is at the room cap", async () => {
+		mockAuthenticatedUser();
+		mockPropertyExists();
+		mockNoEntitlement();
+		mockRoomCount(5);
+
+		const req = createRequest(validBody);
+		const res = await createRoom(req);
+		const data = await res.json();
+
+		expect(res.status).toBe(403);
+		expect(data.error).toBe("ROOM_LIMIT_REACHED");
+		expect(mockRoomInsert).not.toHaveBeenCalled();
+	});
+
+	it("should return 201 when paid user exceeds the free room cap", async () => {
+		mockAuthenticatedUser();
+		mockPropertyExists();
+		mockPaidEntitlement();
+		mockRoomCount(10);
+		mockInsertSuccess();
+
+		const req = createRequest(validBody);
+		const res = await createRoom(req);
+
+		expect(res.status).toBe(201);
+		expect(mockRoomInsert).toHaveBeenCalled();
+	});
+
 	it("should return 401 when user is not authenticated", async () => {
 		mockUnauthenticated();
 
-		const req = createRequest({
-			name: "Room 101",
-			propertyId: "550e8400-e29b-41d4-a716-446655440000",
-		});
+		const req = createRequest(validBody);
 		const res = await createRoom(req);
 		const data = await res.json();
 
@@ -264,19 +350,9 @@ describe("POST /api/rooms", () => {
 
 	it("should return 404 when property does not exist", async () => {
 		mockAuthenticatedUser();
+		mockPropertyMissing();
 
-		const mockPropertySelect = setupPropertyCheckMock(false);
-		mockFrom.mockImplementation((table: string) => {
-			if (table === "properties") {
-				return { select: mockPropertySelect };
-			}
-			return {};
-		});
-
-		const req = createRequest({
-			name: "Room 101",
-			propertyId: "550e8400-e29b-41d4-a716-446655440000",
-		});
+		const req = createRequest(validBody);
 		const res = await createRoom(req);
 		const data = await res.json();
 
@@ -284,26 +360,17 @@ describe("POST /api/rooms", () => {
 		expect(data.error).toBe("Property not found");
 	});
 
-	it("should return 500 when database error occurs", async () => {
+	it("should return 500 when database error occurs during insert", async () => {
 		mockAuthenticatedUser();
-
-		const mockPropertySelect = setupPropertyCheckMock(true);
-		const mockRoomInsert = setupInsertMock(null, {
-			code: "some-error",
-			message: "DB failure",
+		mockPropertyExists();
+		mockNoEntitlement();
+		mockRoomCount(0);
+		mockRoomInsertSingle.mockResolvedValue({
+			data: null,
+			error: { code: "some-error", message: "DB failure" },
 		});
 
-		mockFrom.mockImplementation((table: string) => {
-			if (table === "properties") {
-				return { select: mockPropertySelect };
-			}
-			return { insert: mockRoomInsert };
-		});
-
-		const req = createRequest({
-			name: "Room 101",
-			propertyId: "550e8400-e29b-41d4-a716-446655440000",
-		});
+		const req = createRequest(validBody);
 		const res = await createRoom(req);
 		const data = await res.json();
 

@@ -23,6 +23,7 @@ export async function DELETE() {
 			DATABASE_TABLES.ROOMS,
 			DATABASE_TABLES.PROPERTIES,
 			DATABASE_TABLES.SERVICES,
+			DATABASE_TABLES.USER_ENTITLEMENTS,
 		];
 
 		for (const table of tables) {

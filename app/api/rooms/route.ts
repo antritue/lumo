@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
+import { getRoomLimit, getUserEntitlement } from "@/lib/entitlement";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { mapToCamelCase } from "@/lib/utils";
 import { roomSchema } from "@/lib/validations/room";
@@ -85,6 +86,27 @@ export async function createRoom(request: NextRequest) {
 				{ error: "Property not found" },
 				{ status: 404 },
 			);
+		}
+
+		const entitlement = await getUserEntitlement(user.id, supabase);
+		const roomLimit = getRoomLimit(entitlement);
+
+		if (roomLimit !== null) {
+			const { count, error: countError } = await supabase
+				.from(DATABASE_TABLES.ROOMS)
+				.select("id", { count: "exact", head: true })
+				.eq("user_id", user.id);
+
+			if (countError) {
+				throw countError;
+			}
+
+			if ((count ?? 0) >= roomLimit) {
+				return NextResponse.json(
+					{ error: "ROOM_LIMIT_REACHED" },
+					{ status: 403 },
+				);
+			}
 		}
 
 		const { data, error } = await supabase

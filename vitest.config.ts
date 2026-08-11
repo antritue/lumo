@@ -22,7 +22,11 @@ export default defineConfig({
 				test: {
 					name: "node",
 					environment: "node",
-					include: ["app/api/**/*.test.ts", "components/**/*.test.ts"],
+					include: [
+						"app/api/**/*.test.ts",
+						"components/**/*.test.ts",
+						"lib/**/*.test.ts",
+					],
 					exclude: ["**/use-auth.test.ts"],
 				},
 			},
