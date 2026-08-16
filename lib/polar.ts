@@ -23,6 +23,14 @@ const POLAR_PRODUCT_IDS = {
 
 export type PolarTier = keyof typeof POLAR_PRODUCT_IDS;
 
+export function getPolarProductId(tier: PolarTier): string {
+	const id = POLAR_PRODUCT_IDS[tier];
+	if (!id) {
+		throw new Error(`Polar product ID for ${tier} is not configured.`);
+	}
+	return id;
+}
+
 export function tierFromProductId(productId: string): PolarTier | null {
 	for (const [tier, id] of Object.entries(POLAR_PRODUCT_IDS)) {
 		if (id === productId) {
