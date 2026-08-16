@@ -503,6 +503,56 @@ components:
       required:
         - message
 
+    BillingStatus:
+      type: object
+      properties:
+        tier:
+          type: ["string", "null"]
+          enum: [monthly, yearly, lifetime, null]
+          description: The user's paid tier, or null on the free plan.
+        isPaid:
+          type: boolean
+        roomLimit:
+          type: ["integer", "null"]
+          description: Max rooms on the free plan (5), or null when paid (unlimited).
+        roomCount:
+          type: integer
+          description: Total rooms across all properties.
+      required:
+        - tier
+        - isPaid
+        - roomLimit
+        - roomCount
+
+    CheckoutInput:
+      type: object
+      properties:
+        tier:
+          type: string
+          enum: [monthly, yearly, lifetime]
+      required:
+        - tier
+
+    CheckoutResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Polar checkout URL to redirect the buyer to.
+      required:
+        - url
+
+    PortalResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Polar customer portal URL to redirect the user to.
+      required:
+        - url
+
   responses:
     Unauthorized:
       description: Authentication required
@@ -1576,5 +1626,104 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 error: Room service not found
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/billing/status:
+    get:
+      summary: Get billing status
+      description: Returns the authenticated user's plan tier, paid status, room limit, and current room count.
+      operationId: getBillingStatus
+      tags:
+        - Billing
+      responses:
+        "200":
+          description: Billing status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingStatus"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/billing/checkout:
+    post:
+      summary: Create Polar checkout
+      description: Creates a Polar checkout session for the given tier and returns its purchase URL.
+      operationId: createBillingCheckout
+      tags:
+        - Billing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutInput"
+            example:
+              tier: monthly
+      responses:
+        "200":
+          description: Checkout URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/billing/portal:
+    get:
+      summary: Open customer portal
+      description: Returns the Polar customer portal URL to manage an existing subscription.
+      operationId: openBillingPortal
+      tags:
+        - Billing
+      responses:
+        "200":
+          description: Customer portal URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortalResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/polar/webhook:
+    post:
+      summary: Polar webhook
+      description: Receives Polar webhook events (orders, subscriptions) and upserts the user's entitlement.
+      operationId: polarWebhook
+      tags:
+        - Billing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Webhook received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received:
+                    type: boolean
+        "400":
+          description: Invalid signature or payload
         "500":
           $ref: "#/components/responses/InternalServerError"

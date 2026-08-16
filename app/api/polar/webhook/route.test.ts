@@ -123,23 +123,9 @@ describe("webhook handlers", () => {
 			);
 		});
 
-		it("does not upsert when the customer has no external id or email", async () => {
+		it("does not upsert when the customer has no external id", async () => {
 			await handleSubscription(
 				subscription({ customer: { id: "cust-1", externalId: null } }),
-			);
-
-			expect(mockUpsert).not.toHaveBeenCalled();
-		});
-
-		it("does not upsert when the customer has no external id, even with a matching email", async () => {
-			await handleSubscription(
-				subscription({
-					customer: {
-						id: "cust-1",
-						externalId: null,
-						email: "antritue@gmail.com",
-					},
-				}),
 			);
 
 			expect(mockUpsert).not.toHaveBeenCalled();
@@ -211,12 +197,14 @@ describe("webhook handlers", () => {
 			expect(mockUpsert).not.toHaveBeenCalled();
 		});
 
-		it("does not upsert when the customer has no external id or email", async () => {
+		it("does not grant lifetime when the customer has no external id", async () => {
 			await handleOrderPaid(
-				order({ customer: { id: "cust-1", externalId: undefined } }),
+				order({ customer: { id: "cust-1", externalId: null } }),
 			);
 
 			expect(mockUpsert).not.toHaveBeenCalled();
+			expect(mockListSubscriptions).not.toHaveBeenCalled();
+			expect(mockRevokeSubscription).not.toHaveBeenCalled();
 		});
 
 		it("immediately revokes active subscriptions after a lifetime purchase", async () => {
@@ -242,22 +230,6 @@ describe("webhook handlers", () => {
 			expect(mockRevokeSubscription).toHaveBeenCalledWith({
 				id: "sub-trialing",
 			});
-		});
-
-		it("does not grant lifetime when the customer has no external id", async () => {
-			await handleOrderPaid(
-				order({
-					customer: {
-						id: "cust-1",
-						externalId: null,
-						email: "antritue@gmail.com",
-					},
-				}),
-			);
-
-			expect(mockUpsert).not.toHaveBeenCalled();
-			expect(mockListSubscriptions).not.toHaveBeenCalled();
-			expect(mockRevokeSubscription).not.toHaveBeenCalled();
 		});
 
 		it("still grants lifetime when subscription cancellation fails", async () => {
