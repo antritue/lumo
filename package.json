@@ -34,7 +34,7 @@
 		"resend": "6.20.0",
 		"tailwind-merge": "3.6.0",
 		"zod": "4.4.3",
-		"zustand": "5.0.14"
+		"zustand": "5.0.15"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.7",
