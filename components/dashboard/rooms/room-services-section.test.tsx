@@ -248,7 +248,7 @@ describe("RoomServicesSection", () => {
 
 			expect(
 				screen.getByText(
-					"Services work in three layers: create templates globally, customize per property, assign to rooms.",
+					"Services work in three layers: create templates globally, customize per property, assign to rooms",
 				),
 			).toBeInTheDocument();
 			expect(screen.getByRole("link", { name: /services/i })).toHaveAttribute(

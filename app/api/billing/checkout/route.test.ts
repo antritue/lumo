@@ -65,7 +65,7 @@ describe("POST /api/billing/checkout", () => {
 			products: ["prod-monthly"],
 			externalCustomerId: "test-user-id",
 			customerEmail: "a@b.com",
-			successUrl: expect.stringContaining("/dashboard?checkout="),
+			successUrl: expect.stringContaining("/dashboard/settings?checkout="),
 		});
 	});
 

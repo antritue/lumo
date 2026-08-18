@@ -1,7 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
-import { useRoomsStore } from "./store";
+import { RoomLimitReachedError, useRoomsStore } from "./store";
 import type { Room } from "./types";
 
 Object.defineProperty(global, "crypto", {
@@ -255,6 +255,19 @@ describe("RoomsStore", () => {
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
+		});
+
+		it("throws RoomLimitReachedError on a 403 response", async () => {
+			authenticate();
+
+			mockFetch.mockResolvedValueOnce({ ok: false, status: 403 });
+
+			await expect(
+				useRoomsStore.getState().createRoom("prop-1", "Limit Room"),
+			).rejects.toThrow(RoomLimitReachedError);
+
+			const { rooms } = useRoomsStore.getState();
+			expect(rooms).toHaveLength(0);
 		});
 	});
 

@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
+import { UpgradeDialog } from "../billing/upgrade-dialog";
 import { DeleteRoomDialog } from "../rooms/delete-room-dialog";
-import { useRoomsStore } from "../rooms/store";
+import { RoomLimitReachedError, useRoomsStore } from "../rooms/store";
 import type { Room } from "../rooms/types";
 import { UpsertRoomDialog } from "../rooms/upsert-room-dialog";
 
@@ -44,6 +45,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 
 	const [upsertRoom, setUpsertRoom] = useState<"add" | Room | null>(null);
 	const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
+	const [upgradeOpen, setUpgradeOpen] = useState(false);
 
 	useEffect(() => {
 		fetchRoomsByPropertyId(propertyId);
@@ -58,7 +60,16 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 		if (id) {
 			await updateRoom(id, name, monthlyRent, notes);
 		} else {
-			await createRoom(propertyId, name, monthlyRent, notes);
+			try {
+				await createRoom(propertyId, name, monthlyRent, notes);
+			} catch (error) {
+				if (error instanceof RoomLimitReachedError) {
+					setUpsertRoom(null);
+					setUpgradeOpen(true);
+					return;
+				}
+				throw error;
+			}
 		}
 		setUpsertRoom(null);
 	};
@@ -197,6 +208,8 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 				onOpenChange={(open) => !open && setDeletingRoom(null)}
 				onDelete={handleDeleteRoom}
 			/>
+
+			<UpgradeDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} />
 		</div>
 	);
 }
