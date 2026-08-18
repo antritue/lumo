@@ -3,6 +3,13 @@ import { devtools } from "zustand/middleware";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import type { Room } from "./types";
 
+export class RoomLimitReachedError extends Error {
+	constructor() {
+		super("Room limit reached");
+		this.name = "RoomLimitReachedError";
+	}
+}
+
 interface RoomsState {
 	rooms: Room[];
 	isRoomsLoading: boolean;
@@ -142,6 +149,9 @@ export const useRoomsStore = create<RoomsState>()(
 					});
 
 					if (!res.ok) {
+						if (res.status === 403) {
+							throw new RoomLimitReachedError();
+						}
 						const error = new Error("Failed to create room");
 						console.error("Failed to create room:", error);
 						throw error;

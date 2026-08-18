@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { SettingsBillingCard } from "@/components/dashboard/settings/billing-card";
 import { DeleteAccountDialog } from "@/components/dashboard/settings/delete-account-dialog";
 import { useSettingsStore } from "@/components/dashboard/settings/store";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,8 @@ export default function SettingsPage() {
 			</div>
 
 			<div className="mt-6 space-y-6">
+				<SettingsBillingCard />
+
 				<section>
 					<Card className="border-destructive/20">
 						<CardHeader>

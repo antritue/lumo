@@ -1,7 +1,7 @@
 {
 	"metadata": {
 		"title": "Lumo - Quản lý tiền thuê cho chủ nhà trọ",
-		"description": "Theo dõi tiền thuê trên các phòng của bạn. Xem phòng nào đã đóng và phòng nào còn thiếu — không cần bảng tính.",
+		"description": "Theo dõi tiền thuê trên các phòng của bạn. Xem phòng nào đã đóng và phòng nào còn thiếu — không cần bảng tính",
 		"keywords": "quản lý tiền thuê, ứng dụng quản lý nhà trọ, theo dõi tiền phòng, chủ nhà trọ, quản lý cho thuê"
 	},
 	"header": {
@@ -15,13 +15,13 @@
 	"auth": {
 		"error": {
 			"title": "Lỗi xác thực",
-			"description": "Đã có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại."
+			"description": "Đã có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại"
 		}
 	},
 	"hero": {
 		"badge": "Dành cho chủ nhà trọ",
 		"headline": "Theo dõi tiền thuê thật đơn giản",
-		"subtext": "Biết phòng nào đã đóng tiền và phòng nào còn thiếu. Không cần bảng tính.",
+		"subtext": "Biết phòng nào đã đóng tiền và phòng nào còn thiếu. Không cần bảng tính",
 		"cta": "Đăng ký sớm",
 		"launchApp": "Mở ứng dụng",
 		"previewProperties": "Giao diện danh sách nhà cho thuê hiển thị phòng và trạng thái thanh toán",
@@ -48,7 +48,8 @@
 	},
 	"pricing": {
 		"title": "Bảng giá đơn giản, minh bạch",
-		"subtitle": "Bắt đầu miễn phí với tối đa 5 phòng. Nâng cấp khi bạn cần thêm.",
+		"subtitle": "Bắt đầu miễn phí với tối đa 5 phòng. Nâng cấp khi bạn cần thêm",
+		"buyError": "Đã xảy ra lỗi khi bắt đầu thanh toán. Vui lòng thử lại",
 		"tiers": {
 			"free": {
 				"name": "Miễn phí",
@@ -121,7 +122,7 @@
 		],
 		"solution": {
 			"title": "Rõ ràng, không rắc rối",
-			"description": "Lumo thay thế phỏng đoán bằng một màn hình duy nhất cho bạn biết chính xác mọi thứ đang ở đâu. Theo dõi phòng, tháng, và thanh toán thật dễ dàng."
+			"description": "Lumo thay thế phỏng đoán bằng một màn hình duy nhất cho bạn biết chính xác mọi thứ đang ở đâu. Theo dõi phòng, tháng, và thanh toán thật dễ dàng"
 		}
 	},
 	"cta": {
@@ -131,8 +132,8 @@
 	},
 	"footer": {
 		"madeWith": "Được tạo với",
-		"forOwners": "dành cho chủ nhà trọ độc lập.",
-		"copyright": "© {year} Lumo. Bảo lưu mọi quyền."
+		"forOwners": "dành cho chủ nhà trọ độc lập",
+		"copyright": "© {year} Lumo. Bảo lưu mọi quyền"
 	},
 	"languageSwitcher": {
 		"label": "Ngôn ngữ"
@@ -145,14 +146,14 @@
 		"shared": {
 			"errorState": {
 				"title": "Không thể tải dữ liệu",
-				"description": "Đã xảy ra lỗi khi tải thông tin. Vui lòng thử lại.",
+				"description": "Đã xảy ra lỗi khi tải thông tin. Vui lòng thử lại",
 				"retry": "Thử lại"
 			}
 		},
 		"development": {
 			"devBadge": "Sắp ra mắt",
 			"title": "Đang phát triển",
-			"inDevelopment": "Tính năng này sắp ra mắt."
+			"inDevelopment": "Tính năng này sắp ra mắt"
 		},
 		"authBanner": {
 			"title": "Bạn chưa đăng nhập",
@@ -169,18 +170,46 @@
 		"settings": {
 			"title": "Cài đặt",
 			"deleteAccountTitle": "Xóa tài khoản",
-			"deleteAccountDescription": "Xóa vĩnh viễn tài khoản và tất cả dữ liệu liên quan. Hành động này không thể hoàn tác.",
+			"deleteAccountDescription": "Xóa vĩnh viễn tài khoản và tất cả dữ liệu liên quan. Hành động này không thể hoàn tác",
 			"deleteAccountButton": "Xóa tài khoản",
-			"deleteAccountMessage": "Thao tác này sẽ xóa vĩnh viễn tài khoản của bạn và tất cả dữ liệu liên quan, bao gồm nhà cho thuê, phòng, dịch vụ, người thuê và lịch sử thanh toán. Hành động này không thể hoàn tác.",
+			"deleteAccountMessage": "Thao tác này sẽ xóa vĩnh viễn tài khoản của bạn và tất cả dữ liệu liên quan, bao gồm nhà cho thuê, phòng, dịch vụ, người thuê và lịch sử thanh toán. Hành động này không thể hoàn tác",
 			"deleteAccountConfirmLabel": "Nhập DELETE để xác nhận",
 			"deleteAccountConfirm": "Xóa tài khoản",
 			"cancel": "Hủy",
 			"errors": {
 				"delete": {
 					"title": "Lỗi",
-					"description": "Không thể xóa tài khoản. Vui lòng thử lại."
+					"description": "Không thể xóa tài khoản. Vui lòng thử lại"
 				}
 			}
+		},
+		"billing": {
+			"upgradeTitle": "Nâng cấp để có số phòng không giới hạn",
+			"upgradeDescription": "Bạn đã đạt giới hạn phòng của gói miễn phí. Chọn một gói để tiếp tục thêm phòng",
+			"cancel": "Hủy",
+			"checkoutErrorTitle": "Thanh toán thất bại",
+			"checkoutErrorDescription": "Đã xảy ra lỗi khi bắt đầu thanh toán. Vui lòng thử lại"
+		},
+		"settingsBilling": {
+			"title": "Gói",
+			"planDescription": "Gói của bạn và giới hạn phòng",
+			"currentPlan": "Gói hiện tại",
+			"planStatusActive": "Đang hoạt động",
+			"planFree": "Miễn phí",
+			"planMonthly": "Hàng tháng",
+			"planYearly": "Hàng năm",
+			"planLifetime": "Một lần",
+			"roomUsage": "Đã dùng {count} trên {limit} phòng",
+			"unlimitedRooms": "Số phòng không giới hạn",
+			"manageSubscription": "Quản lý đăng ký",
+			"buyLifetime": "Mua trọn đời",
+			"buyLifetimeDescription": "Mua một lần và dừng gói định kỳ của bạn",
+			"upgrade": "Nâng cấp",
+			"signedOutPrompt": "Đăng nhập để theo dõi phòng của bạn",
+			"signIn": "Đăng nhập",
+			"portalErrorTitle": "Không thể mở trang đăng ký",
+			"portalErrorDescription": "Không thể mở trang đăng ký của bạn. Vui lòng thử lại sau",
+			"loading": "Đang tải…"
 		},
 		"properties": {
 			"emptyTitle": "Chưa có nhà",
@@ -195,7 +224,7 @@
 			"editTitle": "Sửa nhà",
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa nhà?",
-			"deleteMessage": "Nhà \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"deleteMessage": "Nhà \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
 			"deleteConfirm": "Xóa nhà",
 			"searchPlaceholder": "Tìm nhà...",
 			"previous": "Trước",
@@ -205,25 +234,25 @@
 			"errors": {
 				"create": {
 					"title": "Thêm nhà thất bại",
-					"description": "Có lỗi xảy ra khi thêm nhà. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi thêm nhà. Vui lòng thử lại"
 				},
 				"update": {
 					"title": "Cập nhật thất bại",
-					"description": "Có lỗi xảy ra khi cập nhật. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi cập nhật. Vui lòng thử lại"
 				},
 				"delete": {
 					"title": "Xóa nhà thất bại",
-					"description": "Có lỗi xảy ra khi xóa nhà. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi xóa nhà. Vui lòng thử lại"
 				}
 			}
 		},
 		"roomServices": {
 			"title": "Dịch vụ",
 			"infoButtonLabel": "Tìm hiểu cách hoạt động",
-			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng.",
+			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng",
 			"customizedTooltip": "Đã chỉnh riêng cho nhà này",
 			"roomTipBefore": "Mẹo: tạo dịch vụ mẫu trong ",
-			"roomTipAfter": " trước.",
+			"roomTipAfter": " trước",
 			"empty": "Phòng này chưa có dịch vụ",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
@@ -233,10 +262,10 @@
 		"propertyServices": {
 			"title": "Dịch vụ",
 			"infoButtonLabel": "Tìm hiểu cách hoạt động",
-			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng.",
+			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng",
 			"customizedTooltip": "Đã chỉnh riêng",
 			"globalTipBefore": "Mẹo: tạo dịch vụ mẫu trong ",
-			"globalTipAfter": " trước.",
+			"globalTipAfter": " trước",
 			"count": "{count, plural, =0 {0 dịch vụ} =1 {1 dịch vụ} other {# dịch vụ}}",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
@@ -245,7 +274,7 @@
 		},
 		"services": {
 			"emptyTitle": "Chưa có dịch vụ",
-			"emptySubtitle": "Dịch vụ là khoản phí phụ có thể thêm vào phòng. Tạo dịch vụ đầu tiên.",
+			"emptySubtitle": "Dịch vụ là khoản phí phụ có thể thêm vào phòng. Tạo dịch vụ đầu tiên",
 			"name": "Tên dịch vụ",
 			"optional": "không bắt buộc",
 			"addButton": "Thêm dịch vụ",
@@ -257,7 +286,7 @@
 			"editTitle": "Sửa dịch vụ",
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa dịch vụ?",
-			"deleteMessage": "Dịch vụ \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"deleteMessage": "Dịch vụ \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
 			"deleteConfirm": "Xóa dịch vụ",
 			"flat": "Phí cố định",
 			"variable": "Theo số lượng",
@@ -273,19 +302,19 @@
 			"suggestions": "Một số dịch vụ thường dùng:",
 			"quickAdd": "Thêm nhanh:",
 			"orCustom": "hoặc tự nhập",
-			"globalServiceNotice": "Dịch vụ được dùng chung cho tất cả nhà. Mỗi nhà có thể chỉnh riêng hoặc xóa từng dịch vụ.",
+			"globalServiceNotice": "Dịch vụ được dùng chung cho tất cả nhà. Mỗi nhà có thể chỉnh riêng hoặc xóa từng dịch vụ",
 			"errors": {
 				"create": {
 					"title": "Thêm dịch vụ thất bại",
-					"description": "Có lỗi xảy ra khi thêm dịch vụ. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi thêm dịch vụ. Vui lòng thử lại"
 				},
 				"update": {
 					"title": "Cập nhật thất bại",
-					"description": "Có lỗi xảy ra khi cập nhật dịch vụ. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi cập nhật dịch vụ. Vui lòng thử lại"
 				},
 				"delete": {
 					"title": "Xóa dịch vụ thất bại",
-					"description": "Có lỗi xảy ra khi xóa dịch vụ. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi xóa dịch vụ. Vui lòng thử lại"
 				}
 			}
 		},
@@ -300,15 +329,15 @@
 			"errors": {
 				"create": {
 					"title": "Thêm phòng thất bại",
-					"description": "Có lỗi xảy ra khi thêm phòng. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi thêm phòng. Vui lòng thử lại"
 				},
 				"update": {
 					"title": "Cập nhật thất bại",
-					"description": "Có lỗi xảy ra khi cập nhật phòng. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi cập nhật phòng. Vui lòng thử lại"
 				},
 				"delete": {
 					"title": "Xóa phòng thất bại",
-					"description": "Có lỗi xảy ra khi xóa phòng. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi xóa phòng. Vui lòng thử lại"
 				}
 			},
 			"inputPlaceholder": "Tên hoặc số phòng",
@@ -322,7 +351,7 @@
 			"editTitle": "Sửa phòng",
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa phòng?",
-			"deleteMessage": "Phòng \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"deleteMessage": "Phòng \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
 			"deleteConfirm": "Xóa phòng",
 			"backToProperties": "Quay lại",
 			"notFound": "Không tìm thấy phòng",
@@ -335,15 +364,15 @@
 			"errors": {
 				"create": {
 					"title": "Thêm thanh toán thất bại",
-					"description": "Có lỗi xảy ra khi thêm thanh toán. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi thêm thanh toán. Vui lòng thử lại"
 				},
 				"update": {
 					"title": "Cập nhật thất bại",
-					"description": "Có lỗi xảy ra khi cập nhật thanh toán. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi cập nhật thanh toán. Vui lòng thử lại"
 				},
 				"delete": {
 					"title": "Xóa thanh toán thất bại",
-					"description": "Có lỗi xảy ra khi xóa thanh toán. Vui lòng thử lại."
+					"description": "Có lỗi xảy ra khi xóa thanh toán. Vui lòng thử lại"
 				}
 			},
 			"addButton": "Thêm thanh toán",
@@ -354,7 +383,7 @@
 			"delete": "Xóa",
 			"editTitle": "Sửa thanh toán",
 			"deleteTitle": "Xóa thanh toán?",
-			"deleteDescription": "Thanh toán này sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"deleteDescription": "Thanh toán này sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
 			"deleteConfirm": "Xóa thanh toán",
 			"includesServices": "gồm dịch vụ",
 			"serviceCharges": "Phí dịch vụ",
@@ -375,13 +404,13 @@
 				"clear": "Xóa",
 				"thisMonth": "Tháng này",
 				"errors": {
-					"monthOccupied": "Tháng này đã có thanh toán."
+					"monthOccupied": "Tháng này đã có thanh toán"
 				}
 			}
 		},
 		"feedback": {
 			"listTitle": "Phản hồi",
-			"subtitle": "Chúng tôi luôn lắng nghe phản hồi của bạn và sẽ phản hồi bằng tiếng Việt hoặc tiếng Anh theo mong muốn của bạn.",
+			"subtitle": "Chúng tôi luôn lắng nghe phản hồi của bạn và sẽ phản hồi bằng tiếng Việt hoặc tiếng Anh theo mong muốn của bạn",
 			"nameLabel": "Tên",
 			"namePlaceholder": "Để chúng tôi biết cách xưng hô với bạn",
 			"emailLabel": "Email",
@@ -398,7 +427,7 @@
 			"thankYouMessage": "Cảm ơn bạn đã dành thời gian chia sẻ ý kiến. Chúng tôi rất trân trọng điều đó!",
 			"sendAnother": "Gửi phản hồi khác",
 			"errorTitle": "Gửi phản hồi thất bại",
-			"errorDescription": "Đã xảy ra lỗi. Vui lòng thử lại."
+			"errorDescription": "Đã xảy ra lỗi. Vui lòng thử lại"
 		}
 	}
 }

@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { act } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
-import { useRoomsStore } from "../rooms/store";
+import { RoomLimitReachedError, useRoomsStore } from "../rooms/store";
 import type { Room } from "../rooms/types";
 import { PropertyDetailRooms } from "./property-detail-rooms";
 
@@ -183,6 +183,35 @@ describe("PropertyDetailRooms", () => {
 			await act(async () => {});
 
 			expect(createRoom).toHaveBeenCalledWith("prop-1", "New Room", null, null);
+		});
+
+		it("opens the upgrade dialog when createRoom rejects with RoomLimitReachedError", async () => {
+			const user = userEvent.setup();
+			useRoomsStore.setState({
+				createRoom: vi.fn().mockRejectedValue(new RoomLimitReachedError()),
+			});
+
+			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
+
+			await user.click(screen.getByRole("button", { name: /add room/i }));
+
+			const dialog = screen.getByRole("dialog");
+			const nameInput = within(dialog).getByRole("textbox", {
+				name: /room name/i,
+			});
+			await user.type(nameInput, "Sixth Room");
+
+			const form = within(dialog)
+				.getByRole("button", { name: /add room/i })
+				.closest("form");
+			expect(form).not.toBeNull();
+
+			fireEvent.submit(form as HTMLFormElement);
+			await act(async () => {});
+
+			expect(
+				screen.getByRole("heading", { name: /upgrade for unlimited rooms/i }),
+			).toBeInTheDocument();
 		});
 
 		it("deletes room on delete confirm", async () => {

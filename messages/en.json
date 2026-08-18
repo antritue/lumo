@@ -1,7 +1,7 @@
 {
 	"metadata": {
 		"title": "Lumo - Rent tracking for independent landlords",
-		"description": "Track rent payments across your rooms. See which rooms have paid and which are pending — no spreadsheets required.",
+		"description": "Track rent payments across your rooms. See which rooms have paid and which are pending — no spreadsheets required",
 		"keywords": "rent tracking, landlord app, independent landlord, rent payment tracker, property management"
 	},
 	"header": {
@@ -15,13 +15,13 @@
 	"auth": {
 		"error": {
 			"title": "Auth failed",
-			"description": "Something went wrong during authentication. Please try again."
+			"description": "Something went wrong during authentication. Please try again"
 		}
 	},
 	"hero": {
 		"badge": "For independent landlords",
 		"headline": "Rent tracking, made simple",
-		"subtext": "Know which rooms are paid and which are still pending. No spreadsheets required.",
+		"subtext": "Know which rooms are paid and which are still pending. No spreadsheets required",
 		"cta": "Get Early Access",
 		"launchApp": "Launch App",
 		"previewProperties": "Properties view showing rooms and rent payment status",
@@ -48,7 +48,8 @@
 	},
 	"pricing": {
 		"title": "Simple, honest pricing",
-		"subtitle": "Start free with up to 5 rooms. Upgrade when you need more.",
+		"subtitle": "Start free with up to 5 rooms. Upgrade when you need more",
+		"buyError": "There was a problem starting checkout. Please try again",
 		"tiers": {
 			"free": {
 				"name": "Free",
@@ -67,7 +68,7 @@
 				"cta": "Get Unlimited"
 			},
 			"yearly": {
-				"name": "Annually",
+				"name": "Yearly",
 				"description": "Save 19%",
 				"price": "$39",
 				"period": "/year",
@@ -105,7 +106,7 @@
 		],
 		"solution": {
 			"title": "Clarity, without the complexity",
-			"description": "Lumo replaces guesswork with a single screen that tells you exactly where things stand. Track rooms, months, and payments without the stress."
+			"description": "Lumo replaces guesswork with a single screen that tells you exactly where things stand. Track rooms, months, and payments without the stress"
 		}
 	},
 	"cta": {
@@ -115,8 +116,8 @@
 	},
 	"footer": {
 		"madeWith": "Made with",
-		"forOwners": "for independent property owners.",
-		"copyright": "© {year} Lumo. All rights reserved."
+		"forOwners": "for independent property owners",
+		"copyright": "© {year} Lumo. All rights reserved"
 	},
 	"languageSwitcher": {
 		"label": "Language"
@@ -129,14 +130,14 @@
 		"shared": {
 			"errorState": {
 				"title": "Failed to load data",
-				"description": "There was a problem loading the information. Please try again.",
+				"description": "There was a problem loading the information. Please try again",
 				"retry": "Try again"
 			}
 		},
 		"development": {
 			"devBadge": "Coming Soon",
 			"title": "Work in Progress",
-			"inDevelopment": "This feature is coming soon."
+			"inDevelopment": "This feature is coming soon"
 		},
 		"authBanner": {
 			"title": "You’re not signed in",
@@ -153,22 +154,50 @@
 		"settings": {
 			"title": "Settings",
 			"deleteAccountTitle": "Delete Account",
-			"deleteAccountDescription": "Permanently delete your account and all associated data. This action cannot be undone.",
+			"deleteAccountDescription": "Permanently delete your account and all associated data. This action cannot be undone",
 			"deleteAccountButton": "Delete Account",
-			"deleteAccountMessage": "This will permanently delete your account and all associated data, including properties, rooms, services, tenants, and payment records. This action cannot be undone.",
+			"deleteAccountMessage": "This will permanently delete your account and all associated data, including properties, rooms, services, tenants, and payment records. This action cannot be undone",
 			"deleteAccountConfirmLabel": "Type DELETE to confirm",
 			"deleteAccountConfirm": "Delete Account",
 			"cancel": "Cancel",
 			"errors": {
 				"delete": {
 					"title": "Error",
-					"description": "Failed to delete account. Please try again."
+					"description": "Failed to delete account. Please try again"
 				}
 			}
 		},
+		"billing": {
+			"upgradeTitle": "Upgrade for unlimited rooms",
+			"upgradeDescription": "You've reached the free plan's room limit. Choose a plan to keep adding rooms",
+			"cancel": "Cancel",
+			"checkoutErrorTitle": "Checkout failed",
+			"checkoutErrorDescription": "There was a problem starting checkout. Please try again"
+		},
+		"settingsBilling": {
+			"title": "Plan",
+			"planDescription": "Your plan and room limit",
+			"currentPlan": "Current plan",
+			"planStatusActive": "Active",
+			"planFree": "Free",
+			"planMonthly": "Monthly",
+			"planYearly": "Yearly",
+			"planLifetime": "Lifetime",
+			"roomUsage": "{count} of {limit} rooms used",
+			"unlimitedRooms": "Unlimited rooms",
+			"manageSubscription": "Manage subscription",
+			"buyLifetime": "Buy lifetime",
+			"buyLifetimeDescription": "Buy lifetime once and stop your recurring plan",
+			"upgrade": "Upgrade",
+			"signedOutPrompt": "Sign in to track your rooms",
+			"signIn": "Sign In",
+			"portalErrorTitle": "Unable to open subscription",
+			"portalErrorDescription": "We couldn't open your subscription page. Please try again later",
+			"loading": "Loading…"
+		},
 		"feedback": {
 			"listTitle": "Feedback",
-			"subtitle": "We'd love to hear your thoughts. We'll reply in either English or Vietnamese, whichever you prefer.",
+			"subtitle": "We'd love to hear your thoughts. We'll reply in either English or Vietnamese, whichever you prefer",
 			"nameLabel": "Name",
 			"namePlaceholder": "So we know what to call you",
 			"emailLabel": "Email",
@@ -185,7 +214,7 @@
 			"thankYouMessage": "Thanks for taking the time to share your feedback. We appreciate it!",
 			"sendAnother": "Send another feedback",
 			"errorTitle": "Failed to send feedback",
-			"errorDescription": "Something went wrong. Please try again."
+			"errorDescription": "Something went wrong. Please try again"
 		},
 		"properties": {
 			"emptyTitle": "No properties yet",
@@ -200,7 +229,7 @@
 			"editTitle": "Edit property",
 			"saveButton": "Save",
 			"deleteTitle": "Delete property?",
-			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
+			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone",
 			"deleteConfirm": "Delete property",
 			"searchPlaceholder": "Search properties...",
 			"previous": "Previous",
@@ -210,25 +239,25 @@
 			"errors": {
 				"create": {
 					"title": "Failed to add property",
-					"description": "There was a problem adding this property. Please try again."
+					"description": "There was a problem adding this property. Please try again"
 				},
 				"update": {
 					"title": "Failed to update property",
-					"description": "There was a problem updating this property. Please try again."
+					"description": "There was a problem updating this property. Please try again"
 				},
 				"delete": {
 					"title": "Failed to delete property",
-					"description": "There was a problem deleting this property. Please try again."
+					"description": "There was a problem deleting this property. Please try again"
 				}
 			}
 		},
 		"roomServices": {
 			"title": "Services",
 			"infoButtonLabel": "About service hierarchy",
-			"titleTooltip": "Services work in three layers: create templates globally, customize per property, assign to rooms.",
+			"titleTooltip": "Services work in three layers: create templates globally, customize per property, assign to rooms",
 			"customizedTooltip": "Customized from property default",
 			"roomTipBefore": "Tip: create common services in ",
-			"roomTipAfter": " first.",
+			"roomTipAfter": " first",
 			"empty": "No services configured for this room",
 			"addService": "Add service",
 			"remove": "Remove",
@@ -238,10 +267,10 @@
 		"propertyServices": {
 			"title": "Services",
 			"infoButtonLabel": "About service hierarchy",
-			"titleTooltip": "Services work in three layers: create templates globally, customize per property, assign to rooms.",
+			"titleTooltip": "Services work in three layers: create templates globally, customize per property, assign to rooms",
 			"customizedTooltip": "Customized from global default",
 			"globalTipBefore": "Tip: create common services in ",
-			"globalTipAfter": " first.",
+			"globalTipAfter": " first",
 			"count": "{count, plural, =0 {0 services} =1 {1 service} other {# services}}",
 			"addService": "Add service",
 			"remove": "Remove",
@@ -250,7 +279,7 @@
 		},
 		"services": {
 			"emptyTitle": "No services yet",
-			"emptySubtitle": "Services are optional charges you can add to rooms. Create your first service to get started.",
+			"emptySubtitle": "Services are optional charges you can add to rooms. Create your first service to get started",
 			"name": "Service name",
 			"optional": "optional",
 			"addButton": "Add service",
@@ -262,7 +291,7 @@
 			"editTitle": "Edit service",
 			"saveButton": "Save",
 			"deleteTitle": "Delete service?",
-			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
+			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone",
 			"deleteConfirm": "Delete service",
 			"flat": "Flat fee",
 			"variable": "Usage-based",
@@ -278,19 +307,19 @@
 			"suggestions": "Quick add common services:",
 			"quickAdd": "Quick add:",
 			"orCustom": "or fill in details",
-			"globalServiceNotice": "Services are shared across all properties. Each property can customize or remove individual services.",
+			"globalServiceNotice": "Services are shared across all properties. Each property can customize or remove individual services",
 			"errors": {
 				"create": {
 					"title": "Failed to add service",
-					"description": "There was a problem adding this service. Please try again."
+					"description": "There was a problem adding this service. Please try again"
 				},
 				"update": {
 					"title": "Failed to update service",
-					"description": "There was a problem updating this service. Please try again."
+					"description": "There was a problem updating this service. Please try again"
 				},
 				"delete": {
 					"title": "Failed to delete service",
-					"description": "There was a problem deleting this service. Please try again."
+					"description": "There was a problem deleting this service. Please try again"
 				}
 			}
 		},
@@ -305,15 +334,15 @@
 			"errors": {
 				"create": {
 					"title": "Failed to add room",
-					"description": "There was a problem adding this room. Please try again."
+					"description": "There was a problem adding this room. Please try again"
 				},
 				"update": {
 					"title": "Failed to update room",
-					"description": "There was a problem updating this room. Please try again."
+					"description": "There was a problem updating this room. Please try again"
 				},
 				"delete": {
 					"title": "Failed to delete room",
-					"description": "There was a problem deleting this room. Please try again."
+					"description": "There was a problem deleting this room. Please try again"
 				}
 			},
 			"inputPlaceholder": "Room name or number",
@@ -327,7 +356,7 @@
 			"editTitle": "Edit room",
 			"saveButton": "Save",
 			"deleteTitle": "Delete room?",
-			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone.",
+			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone",
 			"deleteConfirm": "Delete room",
 			"backToProperties": "Back to properties",
 			"notFound": "Room not found",
@@ -340,15 +369,15 @@
 			"errors": {
 				"create": {
 					"title": "Failed to add payment",
-					"description": "There was a problem adding this payment. Please try again."
+					"description": "There was a problem adding this payment. Please try again"
 				},
 				"update": {
 					"title": "Failed to update payment",
-					"description": "There was a problem updating this payment. Please try again."
+					"description": "There was a problem updating this payment. Please try again"
 				},
 				"delete": {
 					"title": "Failed to delete payment",
-					"description": "There was a problem deleting this payment. Please try again."
+					"description": "There was a problem deleting this payment. Please try again"
 				}
 			},
 			"addButton": "Add payment record",
@@ -359,7 +388,7 @@
 			"delete": "Delete",
 			"editTitle": "Edit payment record",
 			"deleteTitle": "Delete payment record?",
-			"deleteDescription": "This will permanently delete this payment record. This cannot be undone.",
+			"deleteDescription": "This will permanently delete this payment record. This cannot be undone",
 			"deleteConfirm": "Delete record",
 			"includesServices": "inc. services",
 			"serviceCharges": "Service Charges",
@@ -380,7 +409,7 @@
 				"clear": "Clear",
 				"thisMonth": "This month",
 				"errors": {
-					"monthOccupied": "A payment record already exists for this month."
+					"monthOccupied": "A payment record already exists for this month"
 				}
 			}
 		}

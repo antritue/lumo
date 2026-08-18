@@ -181,7 +181,7 @@ describe("UpsertRoomDialog", () => {
 			);
 
 			expect(
-				await screen.findByText(/failed to add room/i),
+				await screen.findByRole("heading", { name: /failed to add room/i }),
 			).toBeInTheDocument();
 		});
 
@@ -375,7 +375,7 @@ describe("UpsertRoomDialog", () => {
 			fireEvent.submit(form);
 
 			expect(
-				await screen.findByText(/failed to update room/i),
+				await screen.findByRole("heading", { name: /failed to update room/i }),
 			).toBeInTheDocument();
 		});
 	});

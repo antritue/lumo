@@ -31,7 +31,7 @@ export async function createCheckout(request: NextRequest) {
 
 		// Polar redirects the buyer here after payment. {CHECKOUT_ID} is a
 		// Polar placeholder replaced with the actual session id; unused for now.
-		const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?checkout={CHECKOUT_ID}`;
+		const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?checkout={CHECKOUT_ID}`;
 
 		const checkout = await polar.checkouts.create({
 			products: [getPolarProductId(tier)],
