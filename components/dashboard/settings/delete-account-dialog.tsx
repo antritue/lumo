@@ -46,7 +46,7 @@ export function DeleteAccountDialog({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2">
+					<DialogTitle className="flex items-center justify-center gap-2">
 						<AlertTriangle className="h-5 w-5 text-amber-600" />
 						{t("deleteAccountTitle")}
 					</DialogTitle>

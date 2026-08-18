@@ -31,10 +31,11 @@ export function ErrorDialog({
 						<AlertCircle className="h-6 w-6 text-destructive" />
 					</div>
 					<DialogTitle className="text-center">{title}</DialogTitle>
-					<DialogDescription className="text-center">
-						{description}
-					</DialogDescription>
+					<DialogDescription className="sr-only">{title}</DialogDescription>
 				</DialogHeader>
+				<p className="text-center text-sm text-muted-foreground leading-relaxed">
+					{description}
+				</p>
 				<div className="flex justify-center pt-2">
 					<Button
 						onClick={() => onOpenChange(false)}
