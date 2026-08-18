@@ -15,6 +15,7 @@ interface Tier {
 	highlight?: boolean;
 	accent?: boolean;
 	cta: string;
+	href: string;
 	features: string[];
 }
 
@@ -85,17 +86,19 @@ function TierCard({ tier }: { tier: Tier }) {
 						</li>
 					))}
 				</ul>
-				<Link href="/dashboard" target="_blank" className="mt-8 block">
-					<Button
-						variant={
-							tier.highlight ? "default" : tier.accent ? "accent" : "outline"
-						}
-						size="lg"
-						className="w-full"
-					>
-						{tier.cta}
-					</Button>
-				</Link>
+				<div className="mt-8">
+					<Link href={tier.href} target="_blank" className="block">
+						<Button
+							variant={
+								tier.highlight ? "default" : tier.accent ? "accent" : "outline"
+							}
+							size="lg"
+							className="w-full"
+						>
+							{tier.cta}
+						</Button>
+					</Link>
+				</div>
 			</CardContent>
 		</Card>
 	);
@@ -112,6 +115,7 @@ export async function Pricing() {
 			period: t("tiers.free.period"),
 			features: t.raw("tiers.free.features") as string[],
 			cta: t("tiers.free.cta"),
+			href: "/dashboard",
 		},
 		{
 			name: t("tiers.monthly.name"),
@@ -120,6 +124,7 @@ export async function Pricing() {
 			period: t("tiers.monthly.period"),
 			features: t.raw("tiers.monthly.features") as string[],
 			cta: t("tiers.monthly.cta"),
+			href: "/dashboard/settings",
 		},
 		{
 			name: t("tiers.yearly.name"),
@@ -130,6 +135,7 @@ export async function Pricing() {
 			highlight: true,
 			features: t.raw("tiers.yearly.features") as string[],
 			cta: t("tiers.yearly.cta"),
+			href: "/dashboard/settings",
 		},
 		{
 			name: t("tiers.lifetime.name"),
@@ -140,6 +146,7 @@ export async function Pricing() {
 			accent: true,
 			features: t.raw("tiers.lifetime.features") as string[],
 			cta: t("tiers.lifetime.cta"),
+			href: "/dashboard/settings",
 		},
 	];
 

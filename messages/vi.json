@@ -66,7 +66,7 @@
 			"monthly": {
 				"name": "Hàng tháng",
 				"description": "Linh hoạt, hủy bất cứ lúc nào",
-				"price": "$4",
+				"price": "$5",
 				"period": "/tháng",
 				"features": [
 					"Không giới hạn phòng",
@@ -77,8 +77,8 @@
 			},
 			"yearly": {
 				"name": "Hàng năm",
-				"description": "Tiết kiệm 19%",
-				"price": "$39",
+				"description": "Chỉ $4/tháng",
+				"price": "$48",
 				"period": "/năm",
 				"badge": "Phổ biến nhất",
 				"features": [
@@ -91,7 +91,7 @@
 			"lifetime": {
 				"name": "Một lần",
 				"description": "Dành cho người dùng sớm",
-				"price": "$69",
+				"price": "$79",
 				"period": "trả một lần",
 				"badge": "Đáng giá nhất",
 				"features": [
