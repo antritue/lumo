@@ -53,6 +53,7 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 We use a multi-project setup to balance development speed with production data safety.
 
 -   **Dual Supabase Projects**: We maintain separate projects for **Development** and **Production**. This ensures test user data is isolated and protects real records.
+-   **Dual Polar Environments**: One Polar account/organization with **two environments** — sandbox (test) + production. Products, API keys, and webhooks are created **separately in each dashboard**; they are distinct values, never shared. See [the payments plan](./plans/polar-payments.md) for setup steps.
 -   **Single Google Cloud Project**: A single OAuth project is used for both environments to maintain unified branding and simplify the app verification process.
 -   **Site URL Security**: Login security is enforced via the **Site URL** setting in the Supabase Dashboard. This removes the need for additional "Redirect URI" whitelisting as long as the code matches the Site URL.
     -   **Development**: `http://localhost:3000`
@@ -77,15 +78,31 @@ We use a multi-project setup to balance development speed with production data s
     ```
 
 2.  **Environment Setup**
-    Create a `.env.local` file in the root. You will need Supabase and Resend credentials.
+    Create a `.env.local` file in the root. You will need Supabase, Resend, and Polar credentials.
     ```
     NEXT_PUBLIC_SUPABASE_URL=your_project_url
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_anon_key
     SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
     RESEND_API_KEY=your_resend_api_key
     OWNER_EMAIL=your_email@example.com
+    POLAR_ACCESS_TOKEN=your_polar_token
+    POLAR_WEBHOOK_SECRET=your_polar_webhook_secret
+    POLAR_SERVER=sandbox
+    POLAR_PRODUCT_ID_MONTHLY=your_monthly_product_id
+    POLAR_PRODUCT_ID_YEARLY=your_yearly_product_id
+    POLAR_PRODUCT_ID_LIFETIME=your_lifetime_product_id
+    NEXT_PUBLIC_APP_URL=http://localhost:3000
     ```
     Get your Resend API key from the [Resend dashboard](https://resend.com) under **API Keys**.
+    Polar values come from the Polar dashboard: access token from **Settings → API Keys**, webhook secret from **Settings → Webhooks**, product IDs from each product. Use **sandbox** values locally and **production** values in production (`POLAR_SERVER` switches the SDK). Sandbox test card: `4242 4242 4242 4242`. Full setup in [the payments plan](./plans/polar-payments.md).
+
+    **Local webhooks:** Polar can't reach `localhost`. Tunnel with the Polar CLI:
+    ```bash
+    polar listen http://localhost:3000/api/polar/webhook
+    ```
+    The URL **must include the full path** — without it, events hit the root route, which returns `200` without invoking the handler and the DB never updates.
+
+    **Production webhooks:** endpoint at `https://www.lumo.homes/api/polar/webhook` in the **production** dashboard, with production env vars on the host (`POLAR_SERVER=production`, `POLAR_ACCESS_TOKEN`, `POLAR_WEBHOOK_SECRET`, `POLAR_PRODUCT_ID_*`). Full checklist in [the payments plan](./plans/polar-payments.md#production-deployment-checklist).
 
 3.  **Run Development Server**
     ```bash
@@ -127,9 +144,6 @@ We use **Zustand** for domain state (properties, rooms, rent data, and auth). St
     ```
 -   **State Boundaries**: Domain data goes in stores. UI state (dialogs, form visibility) stays local to components.
 -   **Data Fetching**: Client Components with Supabase client-side fetching.
--   **Forms**: Use `zod` for schema validation (see `lib/validations`).
--   **Supabase**: The client is initialized in `lib/supabase.ts`. It relies on environment variables being present; otherwise, it throws an error to fail fast.
--   **Internationalization**: Data passed to components should be localized. Use `next-intl` hooks (`useTranslations`) in client components and `getTranslations` in server components.
 
 ---
 

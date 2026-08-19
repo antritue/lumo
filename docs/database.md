@@ -15,6 +15,7 @@ erDiagram
     "auth.users" ||--o{ room_services : "owns"
     "auth.users" ||--o{ rent_payments : "owns"
     "auth.users" ||--o{ rent_payment_charges : "owns"
+    "auth.users" ||--o| user_entitlements : "has"
     properties ||--o{ rooms : "contains"
     properties ||--o{ property_services : "has"
     rooms ||--o{ room_services : "has"
@@ -88,6 +89,14 @@ erDiagram
         numeric flat_amount
         numeric usage
         numeric total
+    }
+    user_entitlements {
+        uuid id PK
+        uuid user_id FK
+        text polar_customer_id
+        text tier
+        text status
+        timestamptz current_period_end
     }
 ```
 
@@ -201,6 +210,21 @@ Stores service charge line items associated with a rent payment.
 | | `usage` | `numeric` | Optional usage amount for variable pricing. |
 | | `total` | `numeric` | Computed total for this charge line. |
 
+### `user_entitlements`
+
+Stores the paid plan entitlement for each user, written by Polar webhooks via the service-role client. It is the source of truth for room limits — the app reads this table to decide whether a user is on the free plan (max 5 rooms) or paid (unlimited rooms).
+
+| Key | Column | Type | Description |
+| :--- | :--- | :--- | :--- |
+| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
+| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. Unique. |
+| | `polar_customer_id` | `text` | The Polar customer ID linked to the user. |
+| | `tier` | `text` | `'monthly'`, `'yearly'`, or `'lifetime'`. |
+| | `status` | `text` | `'active'` (paid), `'canceled'` (keeps access until `current_period_end`), or `'revoked'` (immediate loss). |
+| | `current_period_end` | `timestamptz` | End of the current billing period; null for lifetime. |
+
+Unique constraint on `user_id`.
+
 ### Account Deletion
 
 When a user deletes their account, data is cleaned up in FK-safe order:
@@ -208,6 +232,7 @@ When a user deletes their account, data is cleaned up in FK-safe order:
 ```
 rent_payment_charges → rent_payments → room_services
 → rooms → property_services → properties → services
+→ user_entitlements
 ```
 
 Then the `auth.users` record is removed via the Supabase admin client (`service_role` key). There is no `ON DELETE CASCADE` on `user_id` foreign keys — the application handles deletion explicitly.
