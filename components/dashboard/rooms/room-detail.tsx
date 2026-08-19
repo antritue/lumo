@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { DeleteRentPaymentDialog } from "@/components/dashboard/rent-payments/delete-rent-payment-dialog";
@@ -25,6 +26,7 @@ interface RoomDetailProps {
 }
 
 export function RoomDetail({ room }: RoomDetailProps) {
+	const router = useRouter();
 	const updateRoom = useRoomsStore((state) => state.updateRoom);
 	const deleteRoom = useRoomsStore((state) => state.deleteRoom);
 
@@ -78,7 +80,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	const handleConfirmDeleteRoom = async (id: string) => {
 		await deleteRoom(id);
 		closeDeleteRoom();
-		window.location.href = "/dashboard/properties";
+		router.push("/dashboard/properties");
 	};
 
 	const handleConfirmDeletePayment = async (id: string) => {
