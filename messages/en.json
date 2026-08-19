@@ -178,7 +178,6 @@
 			"title": "Plan",
 			"planDescription": "Your plan and room limit",
 			"currentPlan": "Current plan",
-			"planStatusActive": "Active",
 			"planFree": "Free",
 			"planMonthly": "Monthly",
 			"planYearly": "Yearly",
