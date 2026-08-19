@@ -223,7 +223,7 @@ it("creates first item and closes dialog on submit", async () => {
 describe("<Feature>Page", () => {
   describe("when fetching items failed", () => {
     it("shows error state with retry button", () => {
-      useItemsStore.setState({ itemsFetchFailed: true, isItemsLoading: false, hasItemsFetched: true });
+      useItemsStore.setState({ isItemsFetchFailed: true, isItemsLoading: false, hasItemsFetched: true });
       renderWithProviders(<FeaturePage />);
 
       expect(screen.getByRole("heading", { name: /list title/i })).toBeInTheDocument();

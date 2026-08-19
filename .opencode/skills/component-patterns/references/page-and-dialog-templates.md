@@ -16,7 +16,7 @@ export default function ItemsPage() {
   const items = useItemsStore((s) => s.items);
   const isLoading = useItemsStore((s) => s.isItemsLoading);
   const hasFetched = useItemsStore((s) => s.hasItemsFetched);
-  const fetchFailed = useItemsStore((s) => s.itemsFetchFailed);
+  const fetchFailed = useItemsStore((s) => s.isItemsFetchFailed);
   const fetchItems = useItemsStore((s) => s.fetchItems);
   const user = useAuthStore((s) => s.user);
   const authLoading = useAuthStore((s) => s.loading);

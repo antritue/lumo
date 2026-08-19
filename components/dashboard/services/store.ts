@@ -36,7 +36,7 @@ interface ServicesState {
 	services: Service[];
 	isServicesLoading: boolean;
 	hasServicesFetched: boolean;
-	servicesFetchFailed: boolean;
+	isServicesFetchFailed: boolean;
 
 	fetchServices: () => Promise<void>;
 	createService: (
@@ -64,7 +64,7 @@ export const useServicesStore = create<ServicesState>()(
 			services: [],
 			isServicesLoading: false,
 			hasServicesFetched: false,
-			servicesFetchFailed: false,
+			isServicesFetchFailed: false,
 
 			fetchServices: async () => {
 				const { hasServicesFetched, isServicesLoading } = get();
@@ -77,7 +77,7 @@ export const useServicesStore = create<ServicesState>()(
 						services: SEEDED_SERVICES,
 						isServicesLoading: false,
 						hasServicesFetched: true,
-						servicesFetchFailed: false,
+						isServicesFetchFailed: false,
 					});
 					return;
 				}
@@ -98,14 +98,14 @@ export const useServicesStore = create<ServicesState>()(
 						services: data,
 						isServicesLoading: false,
 						hasServicesFetched: true,
-						servicesFetchFailed: false,
+						isServicesFetchFailed: false,
 					});
 				} catch (error) {
 					console.error("Failed to fetch services:", error);
 					set({
 						isServicesLoading: false,
 						hasServicesFetched: false,
-						servicesFetchFailed: true,
+						isServicesFetchFailed: true,
 					});
 					throw error;
 				}
@@ -244,7 +244,7 @@ export const useServicesStore = create<ServicesState>()(
 					services: [],
 					isServicesLoading: false,
 					hasServicesFetched: false,
-					servicesFetchFailed: false,
+					isServicesFetchFailed: false,
 				}),
 		}),
 		{ name: "services" },

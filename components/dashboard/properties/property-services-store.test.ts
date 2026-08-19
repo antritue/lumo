@@ -47,7 +47,7 @@ describe("PropertyServicesStore", () => {
 			services: [],
 			isServicesLoading: false,
 			hasServicesFetched: false,
-			servicesFetchFailed: false,
+			isServicesFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();

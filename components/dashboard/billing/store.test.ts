@@ -28,7 +28,7 @@ describe("BillingStore", () => {
 			status: null,
 			isStatusLoading: false,
 			hasStatusFetched: false,
-			statusFetchFailed: false,
+			isStatusFetchFailed: false,
 			isCheckoutLoading: false,
 		});
 		useAuthStore.setState({ user: null });
@@ -68,7 +68,7 @@ describe("BillingStore", () => {
 			expect(isStatusLoading).toBe(false);
 		});
 
-		it("sets statusFetchFailed on error", async () => {
+		it("sets isStatusFetchFailed on error", async () => {
 			authenticate();
 			const consoleSpy = mockErrorConsole();
 
@@ -79,9 +79,9 @@ describe("BillingStore", () => {
 
 			await expect(useBillingStore.getState().fetchStatus()).rejects.toThrow();
 
-			const { statusFetchFailed, isStatusLoading, hasStatusFetched } =
+			const { isStatusFetchFailed, isStatusLoading, hasStatusFetched } =
 				useBillingStore.getState();
-			expect(statusFetchFailed).toBe(true);
+			expect(isStatusFetchFailed).toBe(true);
 			expect(hasStatusFetched).toBe(true);
 			expect(isStatusLoading).toBe(false);
 			consoleSpy.mockRestore();
@@ -192,7 +192,7 @@ describe("BillingStore", () => {
 				status: null,
 				isStatusLoading: false,
 				hasStatusFetched: false,
-				statusFetchFailed: false,
+				isStatusFetchFailed: false,
 				isCheckoutLoading: false,
 			});
 		});

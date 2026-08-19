@@ -23,7 +23,7 @@ describe("ServiceList", () => {
 			services: [mockService()],
 			isServicesLoading: false,
 			hasServicesFetched: true,
-			servicesFetchFailed: false,
+			isServicesFetchFailed: false,
 		});
 		vi.restoreAllMocks();
 	});

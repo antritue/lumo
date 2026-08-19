@@ -19,8 +19,8 @@ export default function ServicesPage() {
 	const hasServicesFetched = useServicesStore(
 		(state) => state.hasServicesFetched,
 	);
-	const servicesFetchFailed = useServicesStore(
-		(state) => state.servicesFetchFailed,
+	const isServicesFetchFailed = useServicesStore(
+		(state) => state.isServicesFetchFailed,
 	);
 	const fetchServices = useServicesStore((state) => state.fetchServices);
 	const user = useAuthStore((state) => state.user);
@@ -31,7 +31,7 @@ export default function ServicesPage() {
 	}, [authLoading, fetchServices]);
 
 	let content: React.JSX.Element;
-	if (servicesFetchFailed && !isServicesLoading) {
+	if (isServicesFetchFailed && !isServicesLoading) {
 		content = <ErrorState onRetry={fetchServices} />;
 	} else if (
 		(!hasServicesFetched || isServicesLoading) &&

@@ -49,7 +49,7 @@ describe("SettingsPage", () => {
 			status: null,
 			isStatusLoading: false,
 			hasStatusFetched: false,
-			statusFetchFailed: false,
+			isStatusFetchFailed: false,
 			isCheckoutLoading: false,
 			fetchStatus: vi.fn(),
 		});

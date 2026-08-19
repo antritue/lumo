@@ -143,7 +143,7 @@ Load this file when writing tests for a specific component type and you need the
 
 | Branch | Store setup |
 |--------|-------------|
-| Fetch failed | `itemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
+| Fetch failed | `isItemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
 | Loading | `isItemsLoading: true`, `hasItemsFetched: true` |
 | Empty (no items) | `hasItemsFetched: true`, `items: []` |
 | Item list | `items: [mockItem(), ...]`, `hasItemsFetched: true` |

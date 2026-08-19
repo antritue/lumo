@@ -11,7 +11,7 @@ describe("ServicesPage", () => {
 			services: [],
 			isServicesLoading: false,
 			hasServicesFetched: false,
-			servicesFetchFailed: false,
+			isServicesFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null, loading: true });
 		vi.clearAllMocks();
@@ -91,10 +91,10 @@ describe("ServicesPage", () => {
 		expect(screen.getByText("Water")).toBeInTheDocument();
 	});
 
-	it("displays error state when servicesFetchFailed is true", () => {
+	it("displays error state when isServicesFetchFailed is true", () => {
 		useAuthStore.setState({ user: null, loading: false });
 		useServicesStore.setState({
-			servicesFetchFailed: true,
+			isServicesFetchFailed: true,
 			isServicesLoading: false,
 			hasServicesFetched: true,
 		});

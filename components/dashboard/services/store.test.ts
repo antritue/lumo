@@ -37,7 +37,7 @@ describe("ServicesStore", () => {
 			services: [],
 			isServicesLoading: false,
 			hasServicesFetched: false,
-			servicesFetchFailed: false,
+			isServicesFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
@@ -97,12 +97,12 @@ describe("ServicesStore", () => {
 				services,
 				isServicesLoading,
 				hasServicesFetched,
-				servicesFetchFailed,
+				isServicesFetchFailed,
 			} = useServicesStore.getState();
 			expect(services).toEqual([]);
 			expect(isServicesLoading).toBe(false);
 			expect(hasServicesFetched).toBe(false);
-			expect(servicesFetchFailed).toBe(true);
+			expect(isServicesFetchFailed).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
@@ -363,7 +363,7 @@ describe("ServicesStore", () => {
 				],
 				isServicesLoading: true,
 				hasServicesFetched: true,
-				servicesFetchFailed: true,
+				isServicesFetchFailed: true,
 			});
 
 			useServicesStore.getState().clearStore();
@@ -371,7 +371,7 @@ describe("ServicesStore", () => {
 			expect(useServicesStore.getState().services).toEqual([]);
 			expect(useServicesStore.getState().isServicesLoading).toBe(false);
 			expect(useServicesStore.getState().hasServicesFetched).toBe(false);
-			expect(useServicesStore.getState().servicesFetchFailed).toBe(false);
+			expect(useServicesStore.getState().isServicesFetchFailed).toBe(false);
 		});
 	});
 });

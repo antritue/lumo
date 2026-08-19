@@ -48,7 +48,7 @@ describe("PropertyDetailServices", () => {
 			services: [mockGlobalService()],
 			isServicesLoading: false,
 			hasServicesFetched: true,
-			servicesFetchFailed: false,
+			isServicesFetchFailed: false,
 			fetchServices: vi.fn(),
 		});
 		usePropertyServicesStore.setState({
