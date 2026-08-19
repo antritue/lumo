@@ -93,6 +93,7 @@ describe("FeedbackPage", () => {
 						type: "feature",
 						message: "Would love dark mode",
 					}),
+					credentials: "include",
 				}),
 			);
 		});

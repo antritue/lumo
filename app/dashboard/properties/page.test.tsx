@@ -12,7 +12,7 @@ describe("PropertiesPage", () => {
 			properties: [],
 			isPropertiesLoading: false,
 			hasPropertiesFetched: false,
-			propertiesFetchFailed: false,
+			isPropertiesFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null, loading: true });
 		vi.clearAllMocks();
@@ -22,7 +22,7 @@ describe("PropertiesPage", () => {
 		it("shows error message and retry button", () => {
 			useAuthStore.setState({ user: null, loading: false });
 			usePropertiesStore.setState({
-				propertiesFetchFailed: true,
+				isPropertiesFetchFailed: true,
 				isPropertiesLoading: false,
 				hasPropertiesFetched: false,
 			});
@@ -43,7 +43,7 @@ describe("PropertiesPage", () => {
 
 			useAuthStore.setState({ user: null, loading: false });
 			usePropertiesStore.setState({
-				propertiesFetchFailed: true,
+				isPropertiesFetchFailed: true,
 				isPropertiesLoading: false,
 				hasPropertiesFetched: false,
 				fetchProperties: fetchPropertiesSpy,

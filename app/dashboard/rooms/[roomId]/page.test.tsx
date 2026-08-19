@@ -7,6 +7,10 @@ import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { renderWithProviders } from "@/test/render";
 import RoomDetailPage from "./page";
 
+vi.mock("next/navigation", () => ({
+	useRouter: vi.fn(() => ({ push: vi.fn() })),
+}));
+
 // Mock React's use hook
 vi.mock("react", async () => {
 	const actual = await vi.importActual("react");

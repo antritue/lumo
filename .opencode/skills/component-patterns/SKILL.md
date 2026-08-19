@@ -47,7 +47,7 @@ export interface Item {
 
 ## Store (`store.ts`)
 
-Use Zustand with devtools. Three-flag pattern: `isItemsLoading`, `hasItemsFetched`, `itemsFetchFailed`.
+Use Zustand with devtools. Three-flag pattern: `isItemsLoading`, `hasItemsFetched`, `isItemsFetchFailed`.
 
 **Load `references/store-template.md` for the full store code with all CRUD operations and variant patterns (per-ID dedup, seed defaults).**
 

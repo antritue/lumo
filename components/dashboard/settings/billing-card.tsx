@@ -56,16 +56,26 @@ export function SettingsBillingCard() {
 				? t("settingsBilling.planYearly")
 				: t("settingsBilling.planLifetime");
 
-	const handleLifetimeCheckout = () => {
-		startCheckout("lifetime")
-			.then((url) => {
-				if (url) {
-					window.location.assign(url);
-				}
-			})
-			.catch(() => {
-				setCheckoutErrorOpen(true);
-			});
+	const handleLifetimeCheckout = async () => {
+		try {
+			const url = await startCheckout("lifetime");
+			if (url) {
+				window.location.assign(url);
+			}
+		} catch {
+			setCheckoutErrorOpen(true);
+		}
+	};
+
+	const handlePortal = async () => {
+		try {
+			const url = await startPortal();
+			if (url) {
+				window.location.assign(url);
+			}
+		} catch {
+			setPortalErrorOpen(true);
+		}
 	};
 
 	const handleSignIn = async () => {
@@ -127,20 +137,13 @@ export function SettingsBillingCard() {
 					) : (
 						<div className="space-y-5">
 							<div className="rounded-xl border border-border bg-secondary/50 p-4">
-								<div className="flex items-start justify-between gap-4">
-									<div className="space-y-1">
-										<p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-											{t("settingsBilling.currentPlan")}
-										</p>
-										<p className="text-xl font-semibold text-foreground">
-											{planLabel}
-										</p>
-									</div>
-									{isPaid && (
-										<span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-primary">
-											{t("settingsBilling.planStatusActive")}
-										</span>
-									)}
+								<div className="space-y-1">
+									<p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+										{t("settingsBilling.currentPlan")}
+									</p>
+									<p className="text-xl font-semibold text-foreground">
+										{planLabel}
+									</p>
 								</div>
 
 								{!isPaid && roomLimit > 0 && (
@@ -195,17 +198,7 @@ export function SettingsBillingCard() {
 													variant="outline"
 													className="w-fit"
 													disabled={isCheckoutLoading}
-													onClick={() => {
-														startPortal()
-															.then((url) => {
-																if (url) {
-																	window.location.assign(url);
-																}
-															})
-															.catch(() => {
-																setPortalErrorOpen(true);
-															});
-													}}
+													onClick={handlePortal}
 												>
 													{t("settingsBilling.manageSubscription")}
 												</Button>

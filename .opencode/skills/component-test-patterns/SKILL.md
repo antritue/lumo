@@ -68,7 +68,7 @@ await user.type(input, "Some text");
 ```typescript
 beforeEach(() => {
   use<Feature>Store.setState({
-    items: [], isItemsLoading: false, hasItemsFetched: false, itemsFetchFailed: false,
+    items: [], isItemsLoading: false, hasItemsFetched: false, isItemsFetchFailed: false,
   });
   useAuthStore.setState({ user: null });
   vi.restoreAllMocks();
@@ -209,7 +209,7 @@ Set store flags directly (no API calls needed). Each if/else branch maps to a de
 
 | Branch | Store setup |
 |--------|-------------|
-| Fetch failed | `itemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
+| Fetch failed | `isItemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
 | Loading | `isItemsLoading: true`, `hasItemsFetched: true` |
 | Empty (no items) | `hasItemsFetched: true`, `items: []` |
 | Item list | `items: [mockItem(), ...]`, `hasItemsFetched: true` |

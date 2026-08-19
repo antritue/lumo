@@ -1,10 +1,14 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { RoomDetail } from "./room-detail";
 import { useRoomsStore } from "./store";
 import type { Room } from "./types";
+
+vi.mock("next/navigation", () => ({
+	useRouter: vi.fn(() => ({ push: vi.fn() })),
+}));
 
 describe("RoomDetail", () => {
 	const mockRoom: Room = {

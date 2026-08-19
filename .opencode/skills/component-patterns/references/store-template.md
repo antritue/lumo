@@ -11,7 +11,7 @@ interface ItemsState {
   items: Item[];
   isItemsLoading: boolean;
   hasItemsFetched: boolean;
-  itemsFetchFailed: boolean;
+  isItemsFetchFailed: boolean;
 
   fetchItems: () => Promise<void>;
   createItem: (/* fields */) => Promise<void>;
@@ -25,7 +25,7 @@ export const useItemsStore = create<ItemsState>()(
     items: [],
     isItemsLoading: false,
     hasItemsFetched: false,
-    itemsFetchFailed: false,
+    isItemsFetchFailed: false,
 
     fetchItems: async () => {
       const user = useAuthStore.getState().user;
@@ -38,7 +38,7 @@ export const useItemsStore = create<ItemsState>()(
         set({ isItemsLoading: true });
         set({ items: data, isItemsLoading: false, hasItemsFetched: true });
       } catch (error) {
-        set({ isItemsLoading: false, itemsFetchFailed: true });
+        set({ isItemsLoading: false, isItemsFetchFailed: true });
         throw error;
       }
     },
@@ -78,7 +78,7 @@ export const useItemsStore = create<ItemsState>()(
     },
 
     clearStore: () => set({
-      items: [], isItemsLoading: false, hasItemsFetched: false, itemsFetchFailed: false,
+      items: [], isItemsLoading: false, hasItemsFetched: false, isItemsFetchFailed: false,
     }),
   }), { name: "items" }),
 );

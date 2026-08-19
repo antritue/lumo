@@ -18,8 +18,8 @@ export default function PropertiesPage() {
 	const hasPropertiesFetched = usePropertiesStore(
 		(state) => state.hasPropertiesFetched,
 	);
-	const propertiesFetchFailed = usePropertiesStore(
-		(state) => state.propertiesFetchFailed,
+	const isPropertiesFetchFailed = usePropertiesStore(
+		(state) => state.isPropertiesFetchFailed,
 	);
 	const fetchProperties = usePropertiesStore((state) => state.fetchProperties);
 	const user = useAuthStore((state) => state.user);
@@ -32,7 +32,7 @@ export default function PropertiesPage() {
 	}, [user, fetchProperties]);
 
 	let content: React.JSX.Element;
-	if (propertiesFetchFailed && !isPropertiesLoading) {
+	if (isPropertiesFetchFailed && !isPropertiesLoading) {
 		content = <ErrorState onRetry={fetchProperties} />;
 	} else if (
 		(!hasPropertiesFetched || isPropertiesLoading) &&

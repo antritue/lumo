@@ -29,7 +29,7 @@ describe("SettingsBillingCard", () => {
 			status: null,
 			isStatusLoading: false,
 			hasStatusFetched: false,
-			statusFetchFailed: false,
+			isStatusFetchFailed: false,
 			isCheckoutLoading: false,
 			fetchStatus: vi.fn(),
 			startCheckout: vi.fn(),

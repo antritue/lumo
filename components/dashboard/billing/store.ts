@@ -7,7 +7,7 @@ interface BillingState {
 	status: BillingStatus | null;
 	isStatusLoading: boolean;
 	hasStatusFetched: boolean;
-	statusFetchFailed: boolean;
+	isStatusFetchFailed: boolean;
 	isCheckoutLoading: boolean;
 
 	fetchStatus: () => Promise<void>;
@@ -20,7 +20,7 @@ const initialState = {
 	status: null,
 	isStatusLoading: false,
 	hasStatusFetched: false,
-	statusFetchFailed: false,
+	isStatusFetchFailed: false,
 	isCheckoutLoading: false,
 };
 
@@ -37,7 +37,7 @@ export const useBillingStore = create<BillingState>()(
 				if (isStatusLoading) return;
 
 				try {
-					set({ isStatusLoading: true, statusFetchFailed: false });
+					set({ isStatusLoading: true, isStatusFetchFailed: false });
 					const res = await fetch("/api/billing/status", {
 						method: "GET",
 						credentials: "include",
@@ -58,7 +58,7 @@ export const useBillingStore = create<BillingState>()(
 					set({
 						isStatusLoading: false,
 						hasStatusFetched: true,
-						statusFetchFailed: true,
+						isStatusFetchFailed: true,
 					});
 					throw error;
 				}

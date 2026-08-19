@@ -25,6 +25,7 @@ export const useSettingsStore = create<SettingsState>()(
 				try {
 					const res = await fetch("/api/settings/delete-account", {
 						method: "DELETE",
+						credentials: "include",
 					});
 
 					if (!res.ok) {
