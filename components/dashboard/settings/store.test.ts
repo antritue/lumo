@@ -39,6 +39,13 @@ describe("SettingsStore", () => {
 
 			await useSettingsStore.getState().deleteAccount();
 
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/settings/delete-account",
+				expect.objectContaining({
+					method: "DELETE",
+					credentials: "include",
+				}),
+			);
 			expect(useSettingsStore.getState().isDeleting).toBe(false);
 			expect(useSettingsStore.getState().deleteError).toBeNull();
 		});
