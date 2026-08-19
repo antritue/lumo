@@ -83,7 +83,7 @@ If a feature adds complexity without removing confusion, it does not belong in L
 
 ### Service Management (3-Tier Hierarchy)
 
-- **Global Service Catalog** — Reusable service templates (Electricity, Water, WiFi, Cleaning, Parking). Auto-seeded for new users via DB trigger. Customizable name, pricing type (flat/variable), and unit label.
+- **Global Service Catalog** — Reusable service templates with quick-add hints (Electricity, Water, WiFi, Cleaning, Parking). Electricity and Water are auto-seeded for new users via DB trigger; the rest are one-click hint templates. Customizable name, pricing type (flat/variable), and unit label.
 - **Property-Level Services** — Activate/deactivate services per property with pricing overrides. Inline shelf for one-click activation from global catalog.
 - **Room-Level Services** — Activate/deactivate services per room, cascaded from property services. Inline shelf with quick-add pills.
 
@@ -91,6 +91,12 @@ If a feature adds complexity without removing confusion, it does not belong in L
 
 - **Google OAuth** via Supabase. Session management with auth state synced across all stores.
 - **Auth-Branching (Offline-First)** — The entire app works without signing in. All CRUD falls back to local state with generated UUIDs. Users can try the full experience before committing to auth. A dismissible banner reminds users their data is local-only when unauthenticated.
+
+### Billing & Plans
+
+- **Polar payments** — Checkout for all three paid tiers plus a customer portal (manage/cancel/invoices), powered by Polar as Merchant of Record.
+- **Room-cap gating** — Free = up to 5 rooms; any paid tier unlocks unlimited rooms. The cap is server-enforced (403); at the limit, the "+" button opens an upgrade dialog instead of the add-room dialog.
+- **Entitlements** — `user_entitlements` is the source of truth, updated by Polar webhooks. A lifetime purchase auto-cancels active subscriptions; rooms are never deleted on cancel or downgrade.
 
 ### Internationalization
 
@@ -100,6 +106,11 @@ If a feature adds complexity without removing confusion, it does not belong in L
 
 - **Landing Page** — Hero, problems, features, pricing, CTA, footer sections.
 - **Privacy Policy, Terms of Service** — Static legal pages.
+
+### Settings & Feedback
+
+- **Settings** — Billing card (current plan, room usage, upgrade / manage subscription / buy lifetime) and account deletion with FK-safe data cleanup.
+- **Feedback** — Feedback page (bug / feature / other) sent via email (Resend).
 
 ### Cross-Cutting
 
@@ -114,66 +125,34 @@ If a feature adds complexity without removing confusion, it does not belong in L
 > [!NOTE]
 > Working hypothesis based on early survey data (4 responses, Jan 2026). Subject to change with more validation.
 
-### Current Implementation
+Four tiers, gated by room count:
+- **Free** — Up to 5 rooms. All core features, no time limit, no card required.
+- **Monthly** — $5/month, unlimited rooms, cancel anytime.
+- **Yearly** — $48/year (only $4/mo), unlimited rooms.
+- **Lifetime** — $79 one-time, unlimited rooms, yours forever.
 
-The marketing page shows two tiers:
-- **Free** — All features, free during early access.
-- **Pro** — Listed as "Coming Soon" with no pricing or feature details yet.
+**Goal:** Free tier proves value; paid tier unlocks clarity at scale. The free cap ends at 5 rooms — before manual tracking becomes stressful at ~8+ rooms.
 
-The one-time-payment / room-count-gating model described below is the current working hypothesis but has **not been implemented** — the implemented pricing page intentionally leaves details TBD.
+**Why room count:** it's the natural upgrade moment (you feel the pain before hitting the limit) and it aligns with user value (more rooms = more uncertainty = more value from Lumo). No feature gating preserves simplicity.
 
-### Strategic Thinking
-
-**Goal:** Free tier proves value. Paid tier unlocks clarity at scale.
-
-**Free tier should end before pain peaks.**
-- At 5 rooms, landlords can still manage manually
-- At 8+ rooms, uncertainty and mental load increase sharply
-- Free tier stops at ~5 rooms so users can experience Lumo before manual tracking becomes stressful.
-
-### Working Assumptions
-
-**Free Tier (~5 rooms)**
-- All core features included
-- No time limit
-- No feature gating
-- Rationale: Build trust, prove simplicity, create habit
-
-**Paid Upgrade (6+ rooms)**
-- Triggered by room count, not features
-- One-time payment (no subscriptions)
-- Same features, more rooms
-- Rationale: Clarity at scale is the unlock, not new features
-
-**Why one-time payment?**
-- Removes ongoing friction and decision fatigue
-- Aligns with user mindset (landlords think in ownership)
-- Simple to explain and justify
-
-### Why Room Count?
-
-- Natural upgrade moment (you feel the pain before hitting the limit)
-- Aligns with user value (more rooms = more uncertainty = more value from Lumo)
-- Easy to understand and explain
-- No feature gating preserves simplicity
-
-**Philosophy:** Free users are not failures. They are future upgrades, referrals, and proof that the product is simple enough.
+**Philosophy:** Free users are not failures. They are future upgrades, referrals, and proof the product is simple enough.
 
 ---
 
 ## 7. Monetization Direction
 
-### Payment Model (Working Hypothesis)
-- **One-time payment** (no subscriptions)
-- Price range: TBD (likely $20–60 USD)
-- Unlocks additional capacity (assumed to be unlimited rooms)
+### Payment Model
+- **Free tier**: up to 5 rooms, no card required
+- **Paid tiers**: $5/month, $48/year, or $79 one-time — each unlocks unlimited rooms
+- Processed by Polar (checkout, webhooks, customer portal)
 
 ### Upgrade Trigger
-- Happens when user tries to create 6th room
-- Presented calmly, not aggressively
-- Clear value statement: "Manage all your rooms with clarity"
+- Happens when user tries to create 6th room (server-enforced with a 403)
+- The "+" button opens a calm upgrade dialog instead of the add-room dialog
+- Clear value statement: "Upgrade for unlimited rooms"
+- Existing rooms are never deleted on downgrade or cancellation
 
-All pricing and thresholds are working hypotheses until validated by real usage. The implemented marketing page shows "Pricing will be announced soon."
+All pricing and thresholds are working hypotheses until validated by real usage. The implemented marketing page shows the four tiers above and checkout works end-to-end.
 
 ---
 
@@ -181,17 +160,17 @@ All pricing and thresholds are working hypotheses until validated by real usage.
 
 | Category | Technology |
 |---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript 6 (strict) |
-| Styling | Tailwind CSS 4 + shadcn/ui (Radix primitives) |
-| State | Zustand 5 with devtools |
-| Validation | Zod 4 |
+| Framework | Next.js (App Router) |
+| Language | TypeScript (strict) |
+| Styling | Tailwind CSS + shadcn/ui (Radix primitives) |
+| State | Zustand with devtools |
+| Validation | Zod |
 | Database/Auth | Supabase (Postgres + Google OAuth) |
-| i18n | next-intl 4 |
+| i18n | next-intl |
 | Email | Resend |
 | Icons | lucide-react |
-| Linting | Biome 2 |
-| Testing | Vitest 4 + Testing Library (64 test files) |
+| Linting | Biome |
+| Testing | Vitest + Testing Library |
 
 ---
 
@@ -205,11 +184,13 @@ All pricing and thresholds are working hypotheses until validated by real usage.
 - **Test co-location** — Every component, store, page, and API route has a co-located test file.
 - **Dedup patterns** — Fetch deduplication guards prevent duplicate requests (critical with React StrictMode).
 
-### DB Schema (7 tables)
+### DB Schema
 
-`properties`, `rooms`, `rent_payments`, `rent_payment_charges`, `services`, `property_services`, `room_services`
+`properties`, `rooms`, `rent_payments`, `rent_payment_charges`, `services`, `property_services`, `room_services`, `user_entitlements`
 
-All tables have RLS enforcing `auth.uid() = user_id`. Electricity/Water auto-seeded for new users via Postgres trigger.
+All tables have RLS scoping access to the owner; `user_entitlements` allows select-only for the
+owner with writes performed via the service-role client (Polar webhooks). Electricity and Water
+are auto-seeded for new users via a Postgres trigger.
 
 ---
 
