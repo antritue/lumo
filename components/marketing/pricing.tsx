@@ -164,6 +164,10 @@ export async function Pricing() {
 					<TierCard key={tier.name} tier={tier} />
 				))}
 			</div>
+
+			<p className="mt-10 text-center text-sm text-muted-foreground">
+				{t("taxNote")}
+			</p>
 		</Section>
 	);
 }

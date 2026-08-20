@@ -1,4 +1,5 @@
 import { CtaSection } from "@/components/marketing/cta-section";
+import { Faq } from "@/components/marketing/faq";
 import { Features } from "@/components/marketing/features";
 import { Footer } from "@/components/marketing/footer";
 import { Header } from "@/components/marketing/header";
@@ -14,6 +15,7 @@ export default async function Home() {
 			<Problems />
 			<Features />
 			<Pricing />
+			<Faq />
 			<CtaSection />
 			<Footer />
 		</main>
