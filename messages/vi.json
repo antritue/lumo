@@ -50,6 +50,7 @@
 		"title": "Bảng giá đơn giản, minh bạch",
 		"subtitle": "Bắt đầu miễn phí với tối đa 5 phòng. Nâng cấp khi bạn cần thêm",
 		"buyError": "Đã xảy ra lỗi khi bắt đầu thanh toán. Vui lòng thử lại",
+		"taxNote": "Giá chưa bao gồm thuế. Thuế sẽ được tính theo khu vực của bạn và cộng vào lúc thanh toán",
 		"tiers": {
 			"free": {
 				"name": "Miễn phí",
@@ -89,7 +90,7 @@
 				"cta": "Dùng không giới hạn"
 			},
 			"lifetime": {
-				"name": "Một lần",
+				"name": "Trọn đời",
 				"description": "Dành cho người dùng sớm",
 				"price": "$79",
 				"period": "trả một lần",
@@ -102,6 +103,24 @@
 				"cta": "Dùng không giới hạn"
 			}
 		}
+	},
+	"faq": {
+		"title": "Câu hỏi thường gặp",
+		"subtitle": "Những điều bạn cần biết về gói và thanh toán",
+		"items": [
+			{
+				"question": "Tôi đang dùng gói trả phí. Nếu tôi mua gói Trọn đời thì sao?",
+				"answer": "Gói Trọn đời sẽ có hiệu lực ngay và thay thế gói hiện tại. Nếu bạn đang trả phí, gói đó sẽ được tự động hủy để bạn không bị tính phí hai lần. Bạn chỉ trả một lần $79 và không phát sinh thêm bất kỳ khoản phí nào. Trả một lần là dùng mãi mãi, không giới hạn số phòng."
+			},
+			{
+				"question": "Tôi có thể đổi giữa gói Hàng tháng và Hàng năm không? Tôi có bị tính đủ giá mới ngay không?",
+				"answer": "Có. Bạn có thể đổi bất cứ lúc nào trong mục Quản lý thanh toán ở cài đặt. Đổi từ gói Hàng tháng sang gói Hàng năm, số tiền còn lại của tháng hiện tại sẽ được trừ vào gói mới, nên bạn chỉ trả phần chênh lệch chứ không phải toàn bộ giá cả năm. Đổi từ gói Hàng năm sang gói Hàng tháng thì ngược lại: số tiền còn lại của gói năm sẽ được giữ làm tín dụng và trừ dần vào các kỳ thanh toán hàng tháng tiếp theo."
+			},
+			{
+				"question": "Tôi có thể hủy bất cứ lúc nào không? Chuyện gì xảy ra với phòng của tôi?",
+				"answer": "Có. Bạn có thể hủy bất cứ lúc nào trong mục Quản lý thanh toán ở cài đặt. Bạn vẫn dùng đầy đủ đến hết kỳ thanh toán đã trả, và phòng của bạn không bao giờ bị xóa. Sau khi hết kỳ, tài khoản sẽ quay về gói miễn phí 5 phòng. Các phòng hiện có vẫn được giữ nguyên, chỉ là bạn không thể tạo thêm phòng vượt giới hạn của gói miễn phí."
+			}
+		]
 	},
 	"problems": {
 		"title": "Chúng tôi thấu hiểu những khó khăn của bạn",
@@ -197,7 +216,7 @@
 			"planFree": "Miễn phí",
 			"planMonthly": "Hàng tháng",
 			"planYearly": "Hàng năm",
-			"planLifetime": "Một lần",
+			"planLifetime": "Trọn đời",
 			"roomUsage": "Đã dùng {count} trên {limit} phòng",
 			"unlimitedRooms": "Số phòng không giới hạn",
 			"manageSubscription": "Quản lý đăng ký",

@@ -50,6 +50,7 @@
 		"title": "Simple, honest pricing",
 		"subtitle": "Start free with up to 5 rooms. Upgrade when you need more",
 		"buyError": "There was a problem starting checkout. Please try again",
+		"taxNote": "Prices don't include tax. Tax is calculated based on your location and added at checkout",
 		"tiers": {
 			"free": {
 				"name": "Free",
@@ -86,6 +87,24 @@
 				"cta": "Get Unlimited"
 			}
 		}
+	},
+	"faq": {
+		"title": "Frequently asked questions",
+		"subtitle": "Everything you need to know about plans and billing",
+		"items": [
+			{
+				"question": "I'm on a paid plan. What happens if I buy Lifetime?",
+				"answer": "Your Lifetime plan activates immediately and takes over. If you're on a paid plan, your existing subscription is automatically canceled, so you won't be charged again. It's a single $79 payment with no recurring fees. Pay once, and it's yours permanently with unlimited rooms."
+			},
+			{
+				"question": "Can I switch between Monthly and Yearly, and am I charged the full new price right away?",
+				"answer": "Yes. Switch anytime from Manage billing in your settings. Moving from Monthly to Yearly is prorated: the remaining value of your current month is credited, so you only pay the difference instead of the full yearly price. Moving from Yearly to Monthly works in reverse: the remaining value of your yearly plan carries over as credit that's applied to your upcoming monthly invoices."
+			},
+			{
+				"question": "Can I cancel anytime, and what happens to my rooms?",
+				"answer": "Cancel anytime from Manage billing in your settings. You keep full access until the end of your paid period, and your rooms are never deleted. After the period lapses, your account returns to the free tier of 5 rooms. Existing rooms stay, and you just can't create more than the free limit."
+			}
+		]
 	},
 	"problems": {
 		"title": "We understand your challenges",
