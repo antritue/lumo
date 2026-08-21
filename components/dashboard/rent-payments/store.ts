@@ -131,7 +131,7 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 						rentPayments: [
 							...state.rentPayments,
 							{
-								id: crypto.randomUUID(),
+								id,
 								roomId,
 								period,
 								rentAmount,
