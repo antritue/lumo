@@ -5,6 +5,7 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import { RoomDetail } from "@/components/dashboard/rooms/room-detail";
 import { RoomNotFound } from "@/components/dashboard/rooms/room-not-found";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
+import { ErrorState } from "@/components/shared/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RoomDetailPage({
@@ -15,15 +16,16 @@ export default function RoomDetailPage({
 	const { roomId } = use(params);
 	const room = useRoomsStore((state) => state.getRoomById(roomId));
 	const isRoomsLoading = useRoomsStore((state) => state.isRoomsLoading);
+	const isRoomsFetchFailed = useRoomsStore((state) => state.isRoomsFetchFailed);
 	const fetchRoomById = useRoomsStore((state) => state.fetchRoomById);
 	const user = useAuthStore((state) => state.user);
 	const authLoading = useAuthStore((state) => state.loading);
 
 	useEffect(() => {
-		if (!room && user) {
+		if (user) {
 			fetchRoomById(roomId);
 		}
-	}, [roomId, user, room, fetchRoomById]);
+	}, [roomId, user, fetchRoomById]);
 
 	if (isRoomsLoading || authLoading) {
 		return (
@@ -90,7 +92,13 @@ export default function RoomDetailPage({
 
 	return (
 		<div className="max-w-4xl mx-auto py-4 px-4">
-			{room ? <RoomDetail room={room} /> : <RoomNotFound />}
+			{isRoomsFetchFailed && !isRoomsLoading ? (
+				<ErrorState onRetry={() => fetchRoomById(roomId)} />
+			) : room ? (
+				<RoomDetail room={room} />
+			) : (
+				<RoomNotFound />
+			)}
 		</div>
 	);
 }

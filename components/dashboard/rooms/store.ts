@@ -80,7 +80,11 @@ export const useRoomsStore = create<RoomsState>()(
 					}));
 				} catch (error) {
 					console.error("Failed to fetch room:", error);
-					set({ isRoomsLoading: false, fetchingRoomId: null });
+					set({
+						isRoomsLoading: false,
+						fetchingRoomId: null,
+						isRoomsFetchFailed: true,
+					});
 				}
 			},
 
