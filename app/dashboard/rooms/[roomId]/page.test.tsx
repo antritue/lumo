@@ -41,7 +41,11 @@ const createParams = (roomId: string) => ({
 
 describe("RoomDetailPage", () => {
 	beforeEach(() => {
-		useRoomsStore.setState({ rooms: [], isRoomsLoading: false });
+		useRoomsStore.setState({
+			rooms: [],
+			isRoomsLoading: false,
+			isRoomsFetchFailed: false,
+		});
 		useAuthStore.setState({ user: null, loading: false });
 		vi.clearAllMocks();
 		mockFetch.mockResolvedValue({ ok: true, json: async () => [] });
@@ -75,15 +79,11 @@ describe("RoomDetailPage", () => {
 		expect(skeletonElements.length).toBeGreaterThan(0);
 	});
 
-	it("fetches room by ID when not in store and user is authenticated", async () => {
+	it("fetches room by ID when user is authenticated", async () => {
 		mockUse.mockReturnValue({ roomId: "room-1" });
 		useAuthStore.setState({
 			user: { id: "user-1" } as User,
 			loading: false,
-		});
-		mockFetch.mockResolvedValueOnce({
-			ok: true,
-			json: async () => mockRoom,
 		});
 
 		renderWithProviders(<RoomDetailPage {...createParams("room-1")} />);
@@ -97,22 +97,6 @@ describe("RoomDetailPage", () => {
 				}),
 			);
 		});
-	});
-
-	it("does not fetch room when already in store", () => {
-		mockUse.mockReturnValue({ roomId: "room-1" });
-		useAuthStore.setState({
-			user: { id: "user-1" } as User,
-			loading: false,
-		});
-		useRoomsStore.setState({ rooms: [mockRoom] });
-
-		renderWithProviders(<RoomDetailPage {...createParams("room-1")} />);
-
-		expect(mockFetch).not.toHaveBeenCalledWith(
-			"/api/rooms/room-1",
-			expect.anything(),
-		);
 	});
 
 	it("does not fetch room when user is not authenticated", () => {
@@ -151,6 +135,20 @@ describe("RoomDetailPage", () => {
 		).toBeInTheDocument();
 	});
 
+	it("displays error state when fetch fails", async () => {
+		mockUse.mockReturnValue({ roomId: "room-1" });
+		useRoomsStore.setState({ isRoomsFetchFailed: true });
+
+		renderWithProviders(<RoomDetailPage {...createParams("room-1")} />);
+
+		expect(
+			screen.getByRole("heading", { name: /failed to load data/i }),
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole("button", { name: /try again/i }),
+		).toBeInTheDocument();
+	});
+
 	it("displays room notes when present", async () => {
 		mockUse.mockReturnValue({ roomId: "room-1" });
 		useRoomsStore.setState({
@@ -159,7 +157,9 @@ describe("RoomDetailPage", () => {
 
 		renderWithProviders(<RoomDetailPage {...createParams("room-1")} />);
 
-		expect(screen.getByText("Large room with balcony")).toBeInTheDocument();
+		expect(
+			await screen.findByText("Large room with balcony"),
+		).toBeInTheDocument();
 	});
 
 	it("displays rent payments section", async () => {
@@ -170,7 +170,7 @@ describe("RoomDetailPage", () => {
 
 		renderWithProviders(<RoomDetailPage {...createParams("room-1")} />);
 
-		expect(screen.getByText("Payment Records")).toBeInTheDocument();
+		expect(await screen.findByText("Payment Records")).toBeInTheDocument();
 		expect(
 			screen.getByRole("button", { name: /add payment record/i }),
 		).toBeInTheDocument();

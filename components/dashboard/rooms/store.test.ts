@@ -492,9 +492,11 @@ describe("RoomsStore", () => {
 
 			await useRoomsStore.getState().fetchRoomById("room-1");
 
-			const { rooms, isRoomsLoading } = useRoomsStore.getState();
+			const { rooms, isRoomsLoading, isRoomsFetchFailed } =
+				useRoomsStore.getState();
 			expect(rooms).toEqual([]);
 			expect(isRoomsLoading).toBe(false);
+			expect(isRoomsFetchFailed).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
