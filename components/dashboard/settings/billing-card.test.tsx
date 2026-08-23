@@ -72,7 +72,7 @@ describe("SettingsBillingCard", () => {
 				status: { tier: "lifetime", isPaid: false, roomLimit: 5, roomCount: 3 },
 			},
 		])("shows the free plan with room usage for a $name", ({ status }) => {
-			useBillingStore.setState({ status, hasStatusFetched: true });
+			useBillingStore.setState({ status });
 
 			renderWithProviders(<SettingsBillingCard />);
 
@@ -91,7 +91,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 10,
 				},
-				hasStatusFetched: true,
 			});
 
 			renderWithProviders(<SettingsBillingCard />);
@@ -111,7 +110,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 			});
 
 			renderWithProviders(<SettingsBillingCard />);
@@ -135,7 +133,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 			});
 
 			renderWithProviders(<SettingsBillingCard />);
@@ -153,7 +150,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 			});
 
 			renderWithProviders(<SettingsBillingCard />);
@@ -174,7 +170,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 				isCheckoutLoading: true,
 			});
 
@@ -185,8 +180,8 @@ describe("SettingsBillingCard", () => {
 			).toBeDisabled();
 		});
 
-		it("shows a loading skeleton until billing status is fetched for a signed-in user", () => {
-			useBillingStore.setState({ hasStatusFetched: false });
+		it("shows a loading skeleton while status is loading", () => {
+			useBillingStore.setState({ isStatusLoading: true });
 
 			const { container } = renderWithProviders(<SettingsBillingCard />);
 
@@ -271,7 +266,6 @@ describe("SettingsBillingCard", () => {
 			const user = userEvent.setup();
 			useBillingStore.setState({
 				status: { tier: null, isPaid: false, roomLimit: 5, roomCount: 5 },
-				hasStatusFetched: true,
 			});
 
 			renderWithProviders(<SettingsBillingCard />);
@@ -295,7 +289,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 				startPortal,
 			});
 
@@ -323,7 +316,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 				startCheckout,
 			});
 
@@ -346,7 +338,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 				startCheckout: vi.fn().mockRejectedValue(new Error("Polar down")),
 			});
 
@@ -369,7 +360,6 @@ describe("SettingsBillingCard", () => {
 					roomLimit: null,
 					roomCount: 6,
 				},
-				hasStatusFetched: true,
 				startPortal: vi.fn().mockRejectedValue(new Error("Polar down")),
 			});
 

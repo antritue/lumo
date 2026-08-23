@@ -82,7 +82,7 @@ describe("BillingStore", () => {
 			const { isStatusFetchFailed, isStatusLoading, hasStatusFetched } =
 				useBillingStore.getState();
 			expect(isStatusFetchFailed).toBe(true);
-			expect(hasStatusFetched).toBe(true);
+			expect(hasStatusFetched).toBe(false);
 			expect(isStatusLoading).toBe(false);
 			consoleSpy.mockRestore();
 		});
