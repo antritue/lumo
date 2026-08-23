@@ -57,7 +57,6 @@ export const useBillingStore = create<BillingState>()(
 					console.error("Failed to fetch billing status:", error);
 					set({
 						isStatusLoading: false,
-						hasStatusFetched: true,
 						isStatusFetchFailed: true,
 					});
 					throw error;

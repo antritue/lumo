@@ -8,6 +8,7 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import { useBillingStore } from "@/components/dashboard/billing/store";
 import { UpgradeDialog } from "@/components/dashboard/billing/upgrade-dialog";
 import { ErrorDialog } from "@/components/shared/error-dialog";
+import { ErrorState } from "@/components/shared/error-state";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -23,7 +24,8 @@ export function SettingsBillingCard() {
 	const t = useTranslations("app");
 	const authT = useTranslations("auth");
 	const status = useBillingStore((s) => s.status);
-	const hasStatusFetched = useBillingStore((s) => s.hasStatusFetched);
+	const isStatusFetchFailed = useBillingStore((s) => s.isStatusFetchFailed);
+	const isStatusLoading = useBillingStore((s) => s.isStatusLoading);
 	const fetchStatus = useBillingStore((s) => s.fetchStatus);
 	const startPortal = useBillingStore((s) => s.startPortal);
 	const startCheckout = useBillingStore((s) => s.startCheckout);
@@ -96,11 +98,13 @@ export function SettingsBillingCard() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					{authLoading || (user && !hasStatusFetched) ? (
+					{authLoading || isStatusLoading ? (
 						<div className="space-y-3">
 							<Skeleton className="h-5 w-28" />
 							<Skeleton className="h-4 w-44" />
 						</div>
+					) : isStatusFetchFailed ? (
+						<ErrorState onRetry={() => fetchStatus()} />
 					) : !user ? (
 						<div className="space-y-5">
 							<div className="rounded-xl border border-border bg-secondary/50 p-4">
