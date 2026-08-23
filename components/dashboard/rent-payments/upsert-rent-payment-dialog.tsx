@@ -34,7 +34,7 @@ interface UpsertRentPaymentDialogProps {
 		period: string,
 		charges: ServiceCharge[],
 		paymentId: string,
-	) => void;
+	) => Promise<void>;
 }
 
 function formatCurrencyValue(value: number, locale: string): string {
@@ -173,7 +173,7 @@ export function UpsertRentPaymentDialog({
 		try {
 			const paymentId = await onSave(id, period, parsedRentAmount, status);
 			if (onSaveServiceCharges) {
-				onSaveServiceCharges(period, serviceCharges, paymentId);
+				await onSaveServiceCharges(period, serviceCharges, paymentId);
 			}
 			onOpenChange(false);
 		} catch {
