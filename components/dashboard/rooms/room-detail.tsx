@@ -61,6 +61,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		isPaymentsFetchFailed,
 		retryFetchPayments,
 		serviceChargesByPeriod,
+		chargesInitialized,
 		updateServiceCharges,
 		defaultCharges,
 	} = useRoomPayments(room.id, room.propertyId);
@@ -134,6 +135,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 				isPaymentsFetchFailed={isPaymentsFetchFailed}
 				onRetryPayments={retryFetchPayments}
 				serviceChargesByPeriod={serviceChargesByPeriod}
+				isChargesLoaded={chargesInitialized}
 			/>
 
 			{paymentDialogMode && (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import type {
@@ -66,7 +66,7 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 	const [serviceChargesByPeriod, setServiceChargesByPeriod] = useState<
 		Record<string, ServiceCharge[]>
 	>({});
-	const chargesInitialized = useRef(false);
+	const [chargesInitialized, setChargesInitialized] = useState(false);
 
 	useEffect(() => {
 		fetchRentPaymentsByRoomId(roomId);
@@ -90,18 +90,7 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 	useEffect(() => {
 		if (roomServices.length === 0) return;
 		if (rentPayments.length === 0) return;
-		if (chargesInitialized.current) return;
-		chargesInitialized.current = true;
-
-		setServiceChargesByPeriod((prev) => {
-			const next = { ...prev };
-			for (const payment of rentPayments) {
-				if (!next[payment.period]) {
-					next[payment.period] = generateChargesFromServices(roomServices);
-				}
-			}
-			return next;
-		});
+		if (chargesInitialized) return;
 
 		const loadCharges = async () => {
 			try {
@@ -125,11 +114,19 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 				});
 			} catch (error) {
 				console.error("Failed to load persisted charges:", error);
+			} finally {
+				setChargesInitialized(true);
 			}
 		};
 
 		loadCharges();
-	}, [roomServices, rentPayments, roomId, fetchRentPaymentChargesByRoomId]);
+	}, [
+		roomServices,
+		rentPayments,
+		roomId,
+		fetchRentPaymentChargesByRoomId,
+		chargesInitialized,
+	]);
 
 	const retryFetchPayments = useCallback(() => {
 		fetchRentPaymentsByRoomId(roomId);
@@ -204,6 +201,7 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 		isPaymentsFetchFailed,
 		retryFetchPayments,
 		serviceChargesByPeriod,
+		chargesInitialized,
 		updateServiceCharges,
 		defaultCharges,
 	};
