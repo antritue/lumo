@@ -26,6 +26,7 @@ interface RoomPaymentsSectionProps {
 	isPaymentsFetchFailed?: boolean;
 	onRetryPayments?: () => void;
 	serviceChargesByPeriod?: Record<string, ServiceCharge[]>;
+	isChargesLoaded?: boolean;
 }
 
 export function RoomPaymentsSection({
@@ -39,6 +40,7 @@ export function RoomPaymentsSection({
 	isPaymentsFetchFailed,
 	onRetryPayments,
 	serviceChargesByPeriod,
+	isChargesLoaded = true,
 }: RoomPaymentsSectionProps) {
 	const t = useTranslations("app.rentPayments");
 
@@ -82,7 +84,7 @@ export function RoomPaymentsSection({
 
 			{isPaymentsFetchFailed ? (
 				<ErrorState onRetry={onRetryPayments} />
-			) : isPaymentsLoading ? (
+			) : isPaymentsLoading || !isChargesLoaded ? (
 				<div className="space-y-2">
 					{["rp-sk-0", "rp-sk-1"].map((key) => (
 						<div
