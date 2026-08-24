@@ -64,7 +64,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		chargesInitialized,
 		updateServiceCharges,
 		defaultCharges,
-	} = useRoomPayments(room.id, room.propertyId);
+	} = useRoomPayments(room.id);
 
 	const handleSaveRoom = async (
 		id: string | null,
