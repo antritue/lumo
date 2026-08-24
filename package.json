@@ -51,6 +51,6 @@
 		"tailwindcss": "4",
 		"typescript": "6",
 		"fallow": "3.17.0",
-		"vitest": "4.1.10"
+		"vitest": "4.1.11"
 	}
 }
