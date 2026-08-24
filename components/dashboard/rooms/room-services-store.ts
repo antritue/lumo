@@ -77,8 +77,9 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 					return;
 				}
 
-				const { fetchingRoomId } = get();
+				const { fetchingRoomId, roomServicesByRoomId } = get();
 				if (fetchingRoomId === roomId) return;
+				if (roomId in roomServicesByRoomId) return;
 
 				try {
 					set({

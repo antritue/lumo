@@ -21,38 +21,39 @@ function generateChargesFromServices(services: RoomService[]): ServiceCharge[] {
 	}));
 }
 
-export function useRoomPayments(roomId: string, propertyId?: string) {
-	const allRentPayments = useRentPaymentsStore((state) => state.rentPayments);
-	const isPaymentsLoading = useRentPaymentsStore(
-		(state) => state.isPaymentsLoading,
-	);
-	const isPaymentsFetchFailed = useRentPaymentsStore(
-		(state) => state.isPaymentsFetchFailed,
-	);
-	const fetchRentPaymentsByRoomId = useRentPaymentsStore(
-		(state) => state.fetchRentPaymentsByRoomId,
-	);
-	const createRentPayment = useRentPaymentsStore(
-		(state) => state.createRentPayment,
-	);
-	const updateRentPayment = useRentPaymentsStore(
-		(state) => state.updateRentPayment,
-	);
-	const deleteRentPayment = useRentPaymentsStore(
-		(state) => state.deleteRentPayment,
-	);
-	const saveRentPaymentCharges = useRentPaymentsStore(
-		(state) => state.saveRentPaymentCharges,
-	);
-	const fetchRentPaymentChargesByRoomId = useRentPaymentsStore(
-		(state) => state.fetchRentPaymentChargesByRoomId,
+type ChargesState = {
+	roomId: string;
+	status: "initial" | "loading" | "done";
+	byPeriod: Record<string, ServiceCharge[]>;
+};
+
+export function useRoomPayments(roomId: string) {
+	const {
+		rentPayments: allRentPayments,
+		isPaymentsLoading,
+		isPaymentsFetchFailed,
+		fetchRentPaymentsByRoomId,
+		createRentPayment,
+		updateRentPayment,
+		deleteRentPayment,
+		saveRentPaymentCharges,
+		fetchRentPaymentChargesByRoomId,
+	} = useRentPaymentsStore(
+		useShallow((state) => ({
+			rentPayments: state.rentPayments,
+			isPaymentsLoading: state.isPaymentsLoading,
+			isPaymentsFetchFailed: state.isPaymentsFetchFailed,
+			fetchRentPaymentsByRoomId: state.fetchRentPaymentsByRoomId,
+			createRentPayment: state.createRentPayment,
+			updateRentPayment: state.updateRentPayment,
+			deleteRentPayment: state.deleteRentPayment,
+			saveRentPaymentCharges: state.saveRentPaymentCharges,
+			fetchRentPaymentChargesByRoomId: state.fetchRentPaymentChargesByRoomId,
+		})),
 	);
 
 	const roomServices = useRoomServicesStore(
 		useShallow((state) => state.roomServicesByRoomId[roomId] ?? []),
-	);
-	const fetchRoomServices = useRoomServicesStore(
-		(state) => state.fetchRoomServices,
 	);
 
 	const [togglingPaymentId, setTogglingPaymentId] = useState<string | null>(
@@ -63,20 +64,15 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 		() => setToggleStatusError(false),
 		[],
 	);
-	const [serviceChargesByPeriod, setServiceChargesByPeriod] = useState<
-		Record<string, ServiceCharge[]>
-	>({});
-	const [chargesInitialized, setChargesInitialized] = useState(false);
+	const [charges, setCharges] = useState<ChargesState>({
+		roomId,
+		status: "initial",
+		byPeriod: {},
+	});
 
 	useEffect(() => {
 		fetchRentPaymentsByRoomId(roomId);
 	}, [roomId, fetchRentPaymentsByRoomId]);
-
-	useEffect(() => {
-		if (propertyId) {
-			fetchRoomServices(roomId, propertyId);
-		}
-	}, [roomId, propertyId, fetchRoomServices]);
 
 	const rentPayments = useMemo(
 		() =>
@@ -86,83 +82,83 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 		[allRentPayments, roomId],
 	);
 
-	// Load persisted charges on initial mount only
+	// Load persisted charges once per room, once its rent payments exist
 	useEffect(() => {
-		if (roomServices.length === 0) return;
-		if (rentPayments.length === 0) return;
-		if (chargesInitialized) return;
+		if (charges.roomId !== roomId) {
+			setCharges({ roomId, status: "initial", byPeriod: {} });
+			return;
+		}
+		if (charges.status !== "initial") return;
+
+		// Read from the store — the rendered isPaymentsLoading can be stale
+		if (useRentPaymentsStore.getState().isPaymentsLoading) return;
+
+		if (rentPayments.length === 0) {
+			setCharges((current) => ({ ...current, status: "done" }));
+			return;
+		}
+
+		setCharges((current) => ({ ...current, status: "loading" }));
+
+		const periodByPaymentId = Object.fromEntries(
+			rentPayments.map((payment) => [payment.id, payment.period]),
+		);
+
+		const applyPersisted = (persisted: Record<string, ServiceCharge[]>) => {
+			setCharges((current) => {
+				if (current.roomId !== roomId) return current;
+				const byPeriod = { ...current.byPeriod };
+				for (const [paymentId, chargeList] of Object.entries(persisted)) {
+					const period = periodByPaymentId[paymentId];
+					if (period) byPeriod[period] = chargeList;
+				}
+				return { ...current, byPeriod };
+			});
+		};
 
 		const loadCharges = async () => {
 			try {
-				const persisted = await fetchRentPaymentChargesByRoomId(roomId);
-
-				setServiceChargesByPeriod((prev) => {
-					const next = { ...prev };
-					const paymentIdToPeriod: Record<string, string> = {};
-					for (const payment of rentPayments) {
-						paymentIdToPeriod[payment.id] = payment.period;
-					}
-
-					for (const [paymentId, charges] of Object.entries(persisted)) {
-						const period = paymentIdToPeriod[paymentId];
-						if (period) {
-							next[period] = charges;
-						}
-					}
-
-					return next;
-				});
+				applyPersisted(await fetchRentPaymentChargesByRoomId(roomId));
 			} catch (error) {
 				console.error("Failed to load persisted charges:", error);
 			} finally {
-				setChargesInitialized(true);
+				setCharges((current) =>
+					current.roomId === roomId ? { ...current, status: "done" } : current,
+				);
 			}
 		};
 
 		loadCharges();
-	}, [
-		roomServices,
-		rentPayments,
-		roomId,
-		fetchRentPaymentChargesByRoomId,
-		chargesInitialized,
-	]);
+	}, [roomId, rentPayments, charges, fetchRentPaymentChargesByRoomId]);
 
 	const retryFetchPayments = useCallback(() => {
 		fetchRentPaymentsByRoomId(roomId);
 	}, [fetchRentPaymentsByRoomId, roomId]);
 
-	const handleSavePayment = async (
+	const handleSavePayment = (
 		id: string | null,
 		period: string,
 		rentAmount: number,
 		status: PaymentStatus,
-	): Promise<string> => {
-		if (id) {
-			return await updateRentPayment(id, period, rentAmount, status);
-		}
-		return await createRentPayment(roomId, period, rentAmount, status);
-	};
-
-	const handleDeletePayment = async (id: string) => {
-		await deleteRentPayment(id);
-	};
+	): Promise<string> =>
+		id
+			? updateRentPayment(id, period, rentAmount, status)
+			: createRentPayment(roomId, period, rentAmount, status);
 
 	const handleToggleStatus = useCallback(
 		async (id: string) => {
 			setTogglingPaymentId(id);
 			setToggleStatusError(false);
 			try {
-				const allPayments = useRentPaymentsStore.getState().rentPayments;
-				const payment = allPayments.find((p) => p.id === id);
+				const payment = useRentPaymentsStore
+					.getState()
+					.rentPayments.find((p) => p.id === id);
 				if (!payment) return;
-				const newStatus: PaymentStatus =
-					payment.status === "paid" ? "pending" : "paid";
 				await updateRentPayment(
 					id,
 					payment.period,
 					payment.rentAmount,
-					newStatus,
+					payment.status === "paid" ? "pending" : "paid",
 				);
 			} catch {
 				setToggleStatusError(true);
@@ -174,12 +170,12 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 	);
 
 	const updateServiceCharges = useCallback(
-		async (period: string, charges: ServiceCharge[], paymentId: string) => {
-			setServiceChargesByPeriod((prev) => ({
-				...prev,
-				[period]: charges,
+		async (period: string, chargeList: ServiceCharge[], paymentId: string) => {
+			setCharges((current) => ({
+				...current,
+				byPeriod: { ...current.byPeriod, [period]: chargeList },
 			}));
-			await saveRentPaymentCharges(paymentId, charges);
+			await saveRentPaymentCharges(paymentId, chargeList);
 		},
 		[saveRentPaymentCharges],
 	);
@@ -192,7 +188,7 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 	return {
 		rentPayments,
 		handleSavePayment,
-		handleDeletePayment,
+		handleDeletePayment: deleteRentPayment,
 		handleToggleStatus,
 		togglingPaymentId,
 		toggleStatusError,
@@ -200,8 +196,8 @@ export function useRoomPayments(roomId: string, propertyId?: string) {
 		isPaymentsLoading,
 		isPaymentsFetchFailed,
 		retryFetchPayments,
-		serviceChargesByPeriod,
-		chargesInitialized,
+		serviceChargesByPeriod: charges.byPeriod,
+		chargesInitialized: charges.status === "done",
 		updateServiceCharges,
 		defaultCharges,
 	};

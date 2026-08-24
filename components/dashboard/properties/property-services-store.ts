@@ -80,8 +80,9 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 					return;
 				}
 
-				const { fetchingPropertyId } = get();
+				const { fetchingPropertyId, propertyServicesByPropertyId } = get();
 				if (fetchingPropertyId === propertyId) return;
+				if (propertyId in propertyServicesByPropertyId) return;
 
 				try {
 					set({
