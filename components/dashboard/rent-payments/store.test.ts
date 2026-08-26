@@ -496,7 +496,7 @@ describe("RentPaymentsStore", () => {
 			).toEqual(charges);
 		});
 
-		it("calls API when authenticated", async () => {
+		it("calls API and writes to store when authenticated", async () => {
 			authenticate();
 
 			mockFetch.mockResolvedValueOnce({ ok: true });
@@ -530,6 +530,9 @@ describe("RentPaymentsStore", () => {
 					credentials: "include",
 				}),
 			);
+			expect(
+				useRentPaymentsStore.getState().serviceChargesByPaymentId["payment-1"],
+			).toEqual(charges);
 		});
 
 		it("handles API error gracefully", async () => {
@@ -561,7 +564,7 @@ describe("RentPaymentsStore", () => {
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
-		it("fetches and returns charges when authenticated", async () => {
+		it("fetches, merges into store, and returns charges when authenticated", async () => {
 			authenticate();
 
 			const mockResponse: Record<string, ServiceCharge[]> = {
@@ -593,6 +596,9 @@ describe("RentPaymentsStore", () => {
 				}),
 			);
 			expect(useRentPaymentsStore.getState().fetchingRoomChargesId).toBeNull();
+			expect(useRentPaymentsStore.getState().serviceChargesByPaymentId).toEqual(
+				mockResponse,
+			);
 		});
 
 		it("handles fetch error gracefully", async () => {

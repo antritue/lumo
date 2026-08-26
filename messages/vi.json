@@ -180,6 +180,7 @@
 			"close": "Đóng"
 		},
 		"sidebar": {
+			"overview": "Tổng quan",
 			"properties": "Nhà cho thuê",
 			"tenants": "Người thuê",
 			"services": "Dịch vụ",
@@ -431,6 +432,23 @@
 					"monthOccupied": "Tháng này đã có thanh toán"
 				}
 			}
+		},
+		"overview": {
+			"listTitle": "Tổng quan",
+			"emptyTitle": "Chưa có phòng nào",
+			"emptySubtitle": "Thêm nhà và phòng để xem tổng quan thanh toán tại đây",
+			"cardCollected": "Đã thu",
+			"collectedSubtitle": "{paid}/{total} phòng đã đóng",
+			"cardPending": "Chờ thanh toán",
+			"pendingSubtitle": "{count} phòng chờ thanh toán",
+			"cardNotRecorded": "Chưa ghi nhận",
+			"statusPaid": "Đã đóng",
+			"statusPending": "Chờ đóng",
+			"statusNotRecorded": "Chưa ghi nhận",
+			"roomCount": "{count} phòng",
+			"paidCount": "{paid}/{total} đã đóng",
+			"expandAria": "Mở rộng {name}",
+			"collapseAria": "Thu gọn {name}"
 		},
 		"feedback": {
 			"listTitle": "Phản hồi",

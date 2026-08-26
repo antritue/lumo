@@ -229,14 +229,14 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 						console.error("Failed to save rent payment charges:", error);
 						throw error;
 					}
-				} else {
-					set((state) => ({
-						serviceChargesByPaymentId: {
-							...state.serviceChargesByPaymentId,
-							[paymentId]: charges,
-						},
-					}));
 				}
+
+				set((state) => ({
+					serviceChargesByPaymentId: {
+						...state.serviceChargesByPaymentId,
+						[paymentId]: charges,
+					},
+				}));
 			},
 
 			fetchRentPaymentChargesByRoomId: async (roomId) => {
@@ -259,7 +259,13 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 					}
 
 					const data: Record<string, ServiceCharge[]> = await res.json();
-					set({ fetchingRoomChargesId: null });
+					set((state) => ({
+						fetchingRoomChargesId: null,
+						serviceChargesByPaymentId: {
+							...state.serviceChargesByPaymentId,
+							...data,
+						},
+					}));
 					return data;
 				} catch (error) {
 					console.error("Failed to fetch rent payment charges:", error);
