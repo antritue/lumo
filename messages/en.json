@@ -164,6 +164,7 @@
 			"close": "Dismiss"
 		},
 		"sidebar": {
+			"overview": "Overview",
 			"properties": "Properties",
 			"tenants": "Tenants",
 			"services": "Services",
@@ -212,6 +213,23 @@
 			"portalErrorTitle": "Unable to open subscription",
 			"portalErrorDescription": "We couldn't open your subscription page. Please try again later",
 			"loading": "Loading…"
+		},
+		"overview": {
+			"listTitle": "Overview",
+			"emptyTitle": "No rooms to display",
+			"emptySubtitle": "Add properties and rooms to see a payment overview here",
+			"cardCollected": "Collected",
+			"collectedSubtitle": "{paid} of {total} rooms paid",
+			"cardPending": "Pending",
+			"pendingSubtitle": "{count, plural, =1 {# room awaiting payment} other {# rooms awaiting payment}}",
+			"cardNotRecorded": "Not recorded",
+			"statusPaid": "Paid",
+			"statusPending": "Pending",
+			"statusNotRecorded": "Not recorded",
+			"roomCount": "{count} rooms",
+			"paidCount": "{paid}/{total} paid",
+			"expandAria": "Expand {name}",
+			"collapseAria": "Collapse {name}"
 		},
 		"feedback": {
 			"listTitle": "Feedback",
