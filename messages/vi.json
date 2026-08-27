@@ -442,13 +442,16 @@
 			"cardPending": "Chờ thanh toán",
 			"pendingSubtitle": "{count} phòng chờ thanh toán",
 			"cardNotRecorded": "Chưa ghi nhận",
+			"notRecordedValue": "{count} phòng",
+			"notRecordedHint": "Thêm ghi nhận để xem đầy đủ dữ liệu",
 			"statusPaid": "Đã đóng",
 			"statusPending": "Chờ đóng",
 			"statusNotRecorded": "Chưa ghi nhận",
 			"roomCount": "{count} phòng",
 			"paidCount": "{paid}/{total} đã đóng",
 			"expandAria": "Mở rộng {name}",
-			"collapseAria": "Thu gọn {name}"
+			"collapseAria": "Thu gọn {name}",
+			"collectedLabel": "đã thu"
 		},
 		"feedback": {
 			"listTitle": "Phản hồi",

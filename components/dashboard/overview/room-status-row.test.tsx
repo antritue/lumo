@@ -95,7 +95,12 @@ describe("RoomStatusRow", () => {
 		renderWithProviders(<RoomStatusRow room={mockOverviewRoom()} />);
 
 		expect(screen.getByText(/not recorded/i)).toBeInTheDocument();
-		expect(screen.queryByRole("button")).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole("button", { name: /paid/i }),
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole("button", { name: /pending/i }),
+		).not.toBeInTheDocument();
 	});
 
 	it("links to the room detail page", () => {

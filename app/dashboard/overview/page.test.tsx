@@ -181,7 +181,7 @@ describe("OverviewPage", () => {
 
 		renderWithProviders(<OverviewPage />);
 
-		expect(screen.getByText(/collected/i)).toBeInTheDocument();
+		expect(screen.getByText("Collected")).toBeInTheDocument();
 		expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
 		expect(screen.getByText("Room 101")).toBeInTheDocument();
 		expect(screen.getByText("Room 102")).toBeInTheDocument();
