@@ -18,9 +18,12 @@ export function computeOverviewSnapshot(
 	chargesByPaymentId: Record<string, ServiceCharge[]>,
 	period: string,
 ): OverviewSnapshot {
+	const paymentByRoomId = new Map(
+		payments.filter((p) => p.period === period).map((p) => [p.roomId, p]),
+	);
+
 	const overviewRooms: OverviewRoom[] = rooms.map((room) => {
-		const payment =
-			payments.find((p) => p.roomId === room.id && p.period === period) ?? null;
+		const payment = paymentByRoomId.get(room.id) ?? null;
 		const charges = payment ? (chargesByPaymentId[payment.id] ?? []) : [];
 		const total = payment
 			? payment.rentAmount +
