@@ -1,8 +1,12 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { useAuthStore } from "@/components/dashboard/auth/store";
 import { usePropertiesStore } from "@/components/dashboard/properties/store";
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
-import type { PaymentRecord } from "@/components/dashboard/rent-payments/types";
+import type {
+	PaymentRecord,
+	PaymentStatus,
+} from "@/components/dashboard/rent-payments/types";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import {
 	computeOverviewSnapshot,
@@ -14,9 +18,11 @@ interface OverviewState {
 	period: string | null;
 	snapshot: OverviewSnapshot | null;
 	summary: OverviewSummary | null;
+
 	isOverviewLoading: boolean;
 	hasOverviewFetched: boolean;
 	isOverviewFetchFailed: boolean;
+	fetchingPeriod: string | null;
 	togglingPaymentId: string | null;
 
 	fetchOverview: (period: string) => Promise<void>;
@@ -49,17 +55,20 @@ export const useOverviewStore = create<OverviewState>()(
 			period: null,
 			snapshot: null,
 			summary: null,
+
 			isOverviewLoading: false,
 			hasOverviewFetched: false,
 			isOverviewFetchFailed: false,
+			fetchingPeriod: null,
 			togglingPaymentId: null,
 
-			fetchOverview: async (period) => {
-				set({ isOverviewLoading: true, isOverviewFetchFailed: false });
+			fetchOverview: async (period: string) => {
+				const user = useAuthStore.getState().user;
+				const { fetchingPeriod } = get();
+				if (fetchingPeriod === period) return;
 
-				try {
+				if (!user) {
 					const { snapshot, summary } = recomputeSnapshot(period);
-
 					set({
 						period,
 						snapshot,
@@ -68,21 +77,66 @@ export const useOverviewStore = create<OverviewState>()(
 						hasOverviewFetched: true,
 						isOverviewFetchFailed: false,
 					});
+					return;
+				}
+
+				try {
+					set({
+						isOverviewLoading: true,
+						fetchingPeriod: period,
+						isOverviewFetchFailed: false,
+					});
+
+					const res = await fetch(`/api/overview?period=${period}`, {
+						method: "GET",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						throw new Error("Failed to fetch overview");
+					}
+
+					const data: OverviewSnapshot = await res.json();
+					const summary = computeOverviewSummary(data.rooms);
+
+					const enrichedProperties = data.properties.map((prop) => {
+						const propertyRooms = data.rooms.filter(
+							(room) => room.propertyId === prop.id,
+						);
+						return {
+							...prop,
+							rooms: propertyRooms,
+							paidCount: propertyRooms.filter(
+								(room) => room.payment?.status === "paid",
+							).length,
+						};
+					});
+
+					set({
+						period,
+						snapshot: { ...data, properties: enrichedProperties },
+						summary,
+						isOverviewLoading: false,
+						fetchingPeriod: null,
+						hasOverviewFetched: true,
+					});
 				} catch (error) {
-					console.error("Failed to compute overview:", error);
+					console.error("Failed to fetch overview:", error);
 					set({
 						isOverviewLoading: false,
+						fetchingPeriod: null,
 						isOverviewFetchFailed: true,
 					});
 					throw error;
 				}
 			},
 
-			togglePaymentStatus: async (payment) => {
+			togglePaymentStatus: async (payment: PaymentRecord) => {
 				const { togglingPaymentId } = get();
 				if (togglingPaymentId === payment.id) return;
 
-				const newStatus = payment.status === "paid" ? "pending" : "paid";
+				const newStatus: PaymentStatus =
+					payment.status === "paid" ? "pending" : "paid";
 				set({ togglingPaymentId: payment.id });
 
 				try {
@@ -100,10 +154,36 @@ export const useOverviewStore = create<OverviewState>()(
 					throw error;
 				}
 
-				const { period } = get();
-				if (period) {
-					const { snapshot, summary } = recomputeSnapshot(period);
-					set({ snapshot, summary });
+				const { period, snapshot } = get();
+				if (period && snapshot) {
+					const updatedRooms = snapshot.rooms.map((room) =>
+						room.payment?.id === payment.id
+							? { ...room, payment: { ...room.payment, status: newStatus } }
+							: room,
+					);
+					const updatedProperties = snapshot.properties.map((prop) => ({
+						...prop,
+						rooms: prop.rooms.map((room) =>
+							room.payment?.id === payment.id
+								? { ...room, payment: { ...room.payment, status: newStatus } }
+								: room,
+						),
+						paidCount: prop.rooms.filter(
+							(room) =>
+								(room.payment?.id === payment.id
+									? newStatus
+									: room.payment?.status) === "paid",
+						).length,
+					}));
+					const summary = computeOverviewSummary(updatedRooms);
+					set({
+						snapshot: {
+							...snapshot,
+							rooms: updatedRooms,
+							properties: updatedProperties,
+						},
+						summary,
+					});
 				}
 
 				set({ togglingPaymentId: null });
@@ -117,6 +197,7 @@ export const useOverviewStore = create<OverviewState>()(
 					isOverviewLoading: false,
 					hasOverviewFetched: false,
 					isOverviewFetchFailed: false,
+					fetchingPeriod: null,
 					togglingPaymentId: null,
 				}),
 		}),
