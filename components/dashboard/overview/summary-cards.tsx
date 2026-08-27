@@ -62,8 +62,8 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
 			iconClass: "text-muted-foreground",
 			valueClass: "text-foreground",
 			label: t("cardNotRecorded"),
-			value: String(summary.notRecordedCount),
-			subtitle: null,
+			value: t("notRecordedValue", { count: summary.notRecordedCount }),
+			subtitle: t("notRecordedHint"),
 		},
 	];
 

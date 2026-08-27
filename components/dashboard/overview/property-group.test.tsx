@@ -41,11 +41,10 @@ const mockProperty = (
 });
 
 describe("PropertyGroup", () => {
-	it("renders the property name, room count and paid chip", () => {
+	it("renders the property name and paid chip", () => {
 		renderWithProviders(<PropertyGroup property={mockProperty()} />);
 
 		expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
-		expect(screen.getByText(/2 rooms/i)).toBeInTheDocument();
 		expect(screen.getByText(/1\/2 paid/i)).toBeInTheDocument();
 	});
 

@@ -24,7 +24,7 @@ describe("SummaryCards", () => {
 		expect(screen.getByText("$800")).toBeInTheDocument();
 		expect(screen.getByText("2 rooms awaiting payment")).toBeInTheDocument();
 		expect(screen.getByText(/not recorded/i)).toBeInTheDocument();
-		expect(screen.getByText("1")).toBeInTheDocument();
+		expect(screen.getByText("1 room")).toBeInTheDocument();
 	});
 
 	it("uses singular wording for a single pending room", () => {
@@ -56,7 +56,7 @@ describe("SummaryCards", () => {
 		renderWithProviders(<SummaryCards summary={summary} />);
 
 		expect(screen.getAllByText("$0")).toHaveLength(2);
-		expect(screen.getByText("0")).toBeInTheDocument();
+		expect(screen.getByText("0 rooms")).toBeInTheDocument();
 		expect(screen.getByText("0 of 0 rooms paid")).toBeInTheDocument();
 		expect(screen.getByText("0 rooms awaiting payment")).toBeInTheDocument();
 	});

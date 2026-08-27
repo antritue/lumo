@@ -18,19 +18,20 @@ export function RoomStatusRow({ room }: RoomStatusRowProps) {
 	return (
 		<Link href={`/dashboard/rooms/${room.id}`} className="block">
 			<div className="flex items-center gap-3 px-3.5 py-3 rounded-lg border border-border/40 bg-background hover:bg-muted/50 transition-colors">
-				<div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary/50 shrink-0">
+				<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/50 shrink-0">
 					<DoorOpen className="h-4 w-4 text-muted-foreground" />
 				</div>
-				<div className="flex-1 min-w-0">
-					<p className="font-medium text-sm truncate">{room.name}</p>
-					<p className="text-xs text-muted-foreground">
-						{formatCurrency(
-							payment ? room.total : (room.monthlyRent ?? 0),
-							locale,
-						)}
-					</p>
-				</div>
+				<span className="font-medium text-sm text-foreground truncate">
+					{room.name}
+				</span>
 				{payment ? <StatusBadge payment={payment} /> : <NotRecordedBadge />}
+				<div className="flex-1" />
+				<p className="text-sm font-semibold text-foreground shrink-0">
+					{formatCurrency(
+						payment ? room.total : (room.monthlyRent ?? 0),
+						locale,
+					)}
+				</p>
 			</div>
 		</Link>
 	);
