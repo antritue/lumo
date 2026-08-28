@@ -1,5 +1,4 @@
 import {
-	Blocks,
 	Home,
 	LayoutDashboard,
 	MessageSquare,
@@ -27,12 +26,6 @@ export const navItems: NavItem[] = [
 		icon: Home,
 		labelKey: "properties",
 		activeMatch: ["/dashboard/properties", "/dashboard/rooms"],
-	},
-	{
-		href: "/dashboard/services",
-		icon: Blocks,
-		labelKey: "services",
-		activeMatch: ["/dashboard/services"],
 	},
 	{
 		href: "/dashboard/tenants",

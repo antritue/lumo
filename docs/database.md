@@ -10,15 +10,14 @@ This document outlines the database structure and relationships within Lumo.
 erDiagram
     "auth.users" ||--o{ properties : "owns"
     "auth.users" ||--o{ rooms : "owns"
-    "auth.users" ||--o{ services : "owns"
     "auth.users" ||--o{ property_services : "owns"
-    "auth.users" ||--o{ room_services : "owns"
+    "auth.users" ||--o{ room_service_overrides : "owns"
     "auth.users" ||--o{ rent_payments : "owns"
     "auth.users" ||--o{ rent_payment_charges : "owns"
     "auth.users" ||--o| user_entitlements : "has"
     properties ||--o{ rooms : "contains"
     properties ||--o{ property_services : "has"
-    rooms ||--o{ room_services : "has"
+    property_services ||--o{ room_service_overrides : "overrides"
     rooms ||--o{ rent_payments : "has"
     rent_payments ||--o{ rent_payment_charges : "has"
     "auth.users" {
@@ -38,15 +37,6 @@ erDiagram
         numeric monthly_rent
         text notes
     }
-    services {
-        uuid id PK
-        uuid user_id FK
-        text name
-        text unit_label
-        text pricing_type
-        numeric flat_amount
-        numeric unit_price
-    }
     property_services {
         uuid id PK
         uuid property_id FK
@@ -58,16 +48,12 @@ erDiagram
         numeric flat_amount
         numeric unit_price
     }
-    room_services {
+    room_service_overrides {
         uuid id PK
         uuid room_id FK
-        uuid service_id
+        uuid service_id FK
         uuid user_id FK
-        text service_name
-        text pricing_type
-        text unit_label
-        numeric flat_amount
-        numeric unit_price
+        boolean is_enabled
     }
     rent_payments {
         uuid id PK
@@ -125,25 +111,9 @@ Stores information about rooms within properties.
 | | `monthly_rent` | `numeric` | Optional monthly rent amount for the room. |
 | | `notes` | `text` | Optional additional notes about the room. |
 
-### `services`
-
-Stores the user-definable service catalog for service charges (electricity, water, wifi, etc.).
-
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `name` | `text` | The display name of the service (e.g. "Electricity"). |
-| | `unit_label` | `text` | Optional unit label for variable pricing (e.g. "kWh", "m³"). |
-| | `pricing_type` | `text` | `'flat'` or `'variable'`. |
-| | `flat_amount` | `numeric` | Optional flat monthly fee. Null until user sets a price. |
-| | `unit_price` | `numeric` | Optional price per unit for variable services. Null until user sets a price. |
-
-Two default services (Electricity kWh, Water m³) are auto-seeded for every new user via a trigger `on_auth_user_created_services` on `auth.users` insert.
-
 ### `property_services`
 
-Stores property-level service configurations. Each row defines a service assigned to a property with its own name, pricing type, and amount. Services are self-contained per property — there is no FK dependency on the global `services` table. On room creation, entries from `property_services` pre-populate `room_services`.
+Stores property-level service configurations (the master catalog). Each row defines a service assigned to a property with its own name, pricing type, and amount. Rooms inherit these services by default; room-level rows in `room_services` only exist when a room deviates from the property default.
 
 | Key | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
@@ -159,21 +129,17 @@ Stores property-level service configurations. Each row defines a service assigne
 
 Unique constraint on `(property_id, service_id)`.
 
-### `room_services`
+### `room_service_overrides`
 
-Stores room-level service configurations. Each row defines a service assigned to a room with its own name, pricing type, and amount. Services are self-contained per room — there is no FK dependency on the global `services` table. On room creation, entries from `property_services` pre-populate `room_services`.
+Stores room-level service overrides. Each row represents a deviation from the property default — either a custom price or a disabled service. If a room has no row for a given property service, it inherits the property default automatically. `service_id` is a foreign key to `property_services(id)` with `ON DELETE CASCADE`.
 
 | Key | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
 | `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
 | `FK` | `room_id` | `uuid` | Foreign Key to `rooms(id)`. Cascades on delete. |
-| | `service_id` | `uuid` | UUID identifying the service type (no FK constraint). |
+| `FK` | `service_id` | `uuid` | Foreign Key to `property_services(id)`. Cascades on delete. |
 | `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `service_name` | `text` | The display name of the service (e.g. "Electricity"). |
-| | `pricing_type` | `text` | `'flat'` or `'variable'`. |
-| | `unit_label` | `text` | Optional unit label for variable pricing (e.g. "kWh", "m³"). |
-| | `flat_amount` | `numeric` | Optional flat monthly fee. |
-| | `unit_price` | `numeric` | Optional price per unit for variable services. |
+| | `is_enabled` | `boolean` | Whether this service is active for the room. Defaults to `true`. |
 
 Unique constraint on `(room_id, service_id)`.
 
@@ -230,8 +196,8 @@ Unique constraint on `user_id`.
 When a user deletes their account, data is cleaned up in FK-safe order:
 
 ```
-rent_payment_charges → rent_payments → room_services
-→ rooms → property_services → properties → services
+rent_payment_charges → rent_payments → room_service_overrides
+→ rooms → property_services → properties
 → user_entitlements
 ```
 
