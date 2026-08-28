@@ -81,11 +81,10 @@ If a feature adds complexity without removing confusion, it does not belong in L
 - **Rent Payments** — Record payments per room per period (YYYY-MM). Status tracking (paid/pending). Period validation prevents duplicate months.
 - **Rent Payment Charges** — Line-item service charges attached to each payment. Flat or variable pricing with usage entry. Auto-calculated totals.
 
-### Service Management (3-Tier Hierarchy)
+### Service Management (2-Layer Hierarchy)
 
-- **Global Service Catalog** — Reusable service templates with quick-add hints (Electricity, Water, WiFi, Cleaning, Parking). Electricity and Water are auto-seeded for new users via DB trigger; the rest are one-click hint templates. Customizable name, pricing type (flat/variable), and unit label.
-- **Property-Level Services** — Activate/deactivate services per property with pricing overrides. Inline shelf for one-click activation from global catalog.
-- **Room-Level Services** — Activate/deactivate services per room, cascaded from property services. Inline shelf with quick-add pills.
+- **Property-Level Services** — Master catalog per property. Add services (Electricity, Water, WiFi, Cleaning, Parking) with pricing type (flat/variable) and rates. Quick-add presets for common services.
+- **Room-Level Services** — Rooms inherit all property services automatically. Landlords can override pricing per room or disable a service for specific rooms. Clear "Inherited" vs "Custom" indicators with one-click reset to property default.
 
 ### Authentication & Data Model
 
@@ -179,18 +178,17 @@ All pricing and thresholds are working hypotheses until validated by real usage.
 - **App Router** — Public routes under `/[locale]/`, dashboard under `/dashboard/`, API under `/api/`.
 - **Feature-based organization** — Dashboard code grouped by feature (properties, rooms, services, rent-payments). Each feature has its own Zustand store, types, components, and dialogs with barrel exports.
 - **Auth-branching stores** — Every store operation checks `useAuthStore.getState().user`. If null, operations work on local state. Enables the offline-first experience.
-- **Self-contained services** — `property_services` and `room_services` tables carry their own `service_name` and `pricing_type`. No FK to the global `services` table, allowing per-property/per-room customization.
+- **Self-contained services** — `property_services` is the master catalog per property. `room_service_overrides` stores only overrides (custom prices or disabled services) with a FK to `property_services`. Rooms inherit property services automatically.
 - **No prop drilling** — Components access Zustand stores directly. UI state (dialog open/close) stays local.
 - **Test co-location** — Every component, store, page, and API route has a co-located test file.
 - **Dedup patterns** — Fetch deduplication guards prevent duplicate requests (critical with React StrictMode).
 
 ### DB Schema
 
-`properties`, `rooms`, `rent_payments`, `rent_payment_charges`, `services`, `property_services`, `room_services`, `user_entitlements`
+`properties`, `rooms`, `rent_payments`, `rent_payment_charges`, `property_services`, `room_service_overrides`, `user_entitlements`
 
 All tables have RLS scoping access to the owner; `user_entitlements` allows select-only for the
-owner with writes performed via the service-role client (Polar webhooks). Electricity and Water
-are auto-seeded for new users via a Postgres trigger.
+owner with writes performed via the service-role client (Polar webhooks).
 
 ---
 
@@ -270,7 +268,7 @@ A first-user review identified these prioritized improvements:
 |----------|-------|--------|
 | P0 | No first-run onboarding | Low |
 | P1 | "Tenants" nav item is a dead end | Trivial |
-| P1 | 3-tier service hierarchy confusing (global vs property vs room) | Medium |
+| P1 | ~~3-tier service hierarchy confusing (global vs property vs room)~~ | ~~Medium~~ Done |
 | P2 | Amber customization dot missing tooltip on rooms | Trivial |
 | P2 | Rent payment dialog is dense with many service charges | Medium |
 | P2 | No dashboard / overview page | High |

@@ -28,7 +28,7 @@ export async function listRoomServices(
 		const { id: roomId } = await params;
 
 		const { data, error } = await supabase
-			.from(DATABASE_TABLES.ROOM_SERVICES)
+			.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
 			.select()
 			.order("service_name")
 			.eq("room_id", roomId)
@@ -99,7 +99,7 @@ export async function createRoomService(
 		);
 
 		const { data, error } = await supabase
-			.from(DATABASE_TABLES.ROOM_SERVICES)
+			.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
 			.insert(insertDataArray)
 			.select();
 

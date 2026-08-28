@@ -48,7 +48,7 @@ export async function updateRoomService(
 
 		if (Object.keys(updateData).length === 0) {
 			const { data, error } = await supabase
-				.from(DATABASE_TABLES.ROOM_SERVICES)
+				.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
 				.select()
 				.eq("room_id", roomId)
 				.eq("service_id", serviceId)
@@ -69,7 +69,7 @@ export async function updateRoomService(
 		}
 
 		const { data, error } = await supabase
-			.from(DATABASE_TABLES.ROOM_SERVICES)
+			.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
 			.update(updateData)
 			.eq("room_id", roomId)
 			.eq("service_id", serviceId)
@@ -116,7 +116,7 @@ export async function deleteRoomService(
 		const { id: roomId, serviceId } = await params;
 
 		const { error, count } = await supabase
-			.from(DATABASE_TABLES.ROOM_SERVICES)
+			.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
 			.delete({ count: "exact" })
 			.eq("room_id", roomId)
 			.eq("service_id", serviceId)
