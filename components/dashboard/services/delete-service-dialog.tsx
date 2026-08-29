@@ -12,10 +12,9 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { Service } from "./types";
 
 interface DeleteServiceDialogProps {
-	service: Service | null;
+	service: { id: string; serviceName: string } | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	onDelete: (id: string) => Promise<void>;
@@ -78,7 +77,7 @@ export function DeleteServiceDialog({
 				) : (
 					<div className="space-y-4">
 						<p className="text-sm text-muted-foreground leading-relaxed">
-							{t("deleteMessage", { name: service.name })}
+							{t("deleteMessage", { name: service.serviceName })}
 						</p>
 
 						<div className="flex gap-3">

@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useAuthStore } from "@/components/dashboard/auth/store";
-import { useServicesStore } from "@/components/dashboard/services/store";
 import type { PropertyService } from "./types";
 
 interface PropertyServicesState {
@@ -13,7 +12,6 @@ interface PropertyServicesState {
 	fetchPropertyServices: (propertyId: string) => Promise<void>;
 	addPropertyService: (
 		propertyId: string,
-		serviceId: string,
 		data: {
 			serviceName: string;
 			unitLabel: string | null;
@@ -51,34 +49,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 			fetchPropertyServices: async (propertyId) => {
 				const user = useAuthStore.getState().user;
 
-				if (!user) {
-					const { propertyServicesByPropertyId } = get();
-					if (propertyServicesByPropertyId[propertyId]) return;
-
-					await useServicesStore.getState().fetchServices();
-					const globalServices = useServicesStore.getState().services;
-
-					const seeded: PropertyService[] = globalServices.map(
-						(globalService) => ({
-							id: crypto.randomUUID(),
-							propertyId,
-							serviceId: globalService.id,
-							serviceName: globalService.name,
-							unitLabel: globalService.unitLabel,
-							pricingType: globalService.pricingType,
-							flatAmount: globalService.flatAmount,
-							unitPrice: globalService.unitPrice,
-						}),
-					);
-
-					set((state) => ({
-						propertyServicesByPropertyId: {
-							...state.propertyServicesByPropertyId,
-							[propertyId]: seeded,
-						},
-					}));
-					return;
-				}
+				if (!user) return;
 
 				const { fetchingPropertyId, propertyServicesByPropertyId } = get();
 				if (fetchingPropertyId === propertyId) return;
@@ -124,18 +95,13 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 				}
 			},
 
-			addPropertyService: async (propertyId, serviceId, data) => {
+			addPropertyService: async (propertyId, data) => {
 				const user = useAuthStore.getState().user;
-				const { propertyServicesByPropertyId } = get();
-				const current = propertyServicesByPropertyId[propertyId] ?? [];
-
-				if (current.some((ps) => ps.serviceId === serviceId)) return;
 
 				if (!user) {
 					const newService: PropertyService = {
 						id: crypto.randomUUID(),
 						propertyId,
-						serviceId,
 						serviceName: data.serviceName,
 						unitLabel: data.unitLabel,
 						pricingType: data.pricingType,
@@ -161,7 +127,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify([{ serviceId, ...data }]),
+						body: JSON.stringify(data),
 						credentials: "include",
 					});
 
@@ -169,7 +135,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 						throw new Error("Failed to add property service");
 					}
 
-					const [responseData] = (await res.json()) as PropertyService[];
+					const responseData = (await res.json()) as PropertyService;
 
 					set((state) => ({
 						propertyServicesByPropertyId: {
@@ -195,8 +161,10 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 							...state.propertyServicesByPropertyId,
 							[propertyId]: (
 								state.propertyServicesByPropertyId[propertyId] ?? []
-							).map((ps) =>
-								ps.serviceId === serviceId ? { ...ps, ...data } : ps,
+							).map((propertyService) =>
+								propertyService.id === serviceId
+									? { ...propertyService, ...data }
+									: propertyService,
 							),
 						},
 					}));
@@ -227,8 +195,10 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 							...state.propertyServicesByPropertyId,
 							[propertyId]: (
 								state.propertyServicesByPropertyId[propertyId] ?? []
-							).map((ps) =>
-								ps.serviceId === serviceId ? { ...ps, ...responseData } : ps,
+							).map((propertyService) =>
+								propertyService.id === serviceId
+									? { ...propertyService, ...responseData }
+									: propertyService,
 							),
 						},
 					}));
@@ -247,7 +217,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 							...state.propertyServicesByPropertyId,
 							[propertyId]: (
 								state.propertyServicesByPropertyId[propertyId] ?? []
-							).filter((ps) => ps.serviceId !== serviceId),
+							).filter((propertyService) => propertyService.id !== serviceId),
 						},
 					}));
 					return;
@@ -271,7 +241,7 @@ export const usePropertyServicesStore = create<PropertyServicesState>()(
 							...state.propertyServicesByPropertyId,
 							[propertyId]: (
 								state.propertyServicesByPropertyId[propertyId] ?? []
-							).filter((ps) => ps.serviceId !== serviceId),
+							).filter((propertyService) => propertyService.id !== serviceId),
 						},
 					}));
 				} catch (error) {
