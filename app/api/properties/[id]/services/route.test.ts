@@ -151,7 +151,7 @@ describe("POST /api/properties/[id]/services", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockInsert.mockReturnValue({ select: mockSelect });
-		mockSelect.mockReturnValue({});
+		mockSelect.mockReturnValue({ single: vi.fn() });
 	});
 
 	const createParams = (id: string) => ({
@@ -159,7 +159,7 @@ describe("POST /api/properties/[id]/services", () => {
 	});
 
 	const createRequest = (
-		body: Partial<PropertyServiceInput>[] | Record<string, unknown>[],
+		body: Partial<PropertyServiceInput> | Record<string, unknown>,
 	) => {
 		return new NextRequest(
 			`http://localhost:3000/api/properties/${PROP_ID}/services`,
@@ -182,113 +182,52 @@ describe("POST /api/properties/[id]/services", () => {
 		});
 	};
 
-	it("should return 201 when creating a single property service", async () => {
+	it("should return 201 when creating a property service", async () => {
 		mockAuthenticatedUser();
-		mockSelect.mockResolvedValueOnce({
-			data: [
-				{
-					id: "ps-1",
-					property_id: PROP_ID,
-					service_id: SVC_1_ID,
-					user_id: USER_ID,
-					service_name: "WiFi",
-					pricing_type: "flat",
-					flat_amount: 50,
-					unit_price: null,
-					unit_label: null,
-				},
-			],
-			error: null,
-		});
-
-		const req = createRequest([
-			{
-				serviceId: SVC_1_ID,
-				serviceName: "WiFi",
-				pricingType: "flat",
-				flatAmount: 50,
-			},
-		]);
-		const res = await createPropertyService(req, createParams(PROP_ID));
-		const data = await res.json();
-
-		expect(res.status).toBe(201);
-		expect(data).toEqual([
-			{
+		const mockSingle = vi.fn();
+		mockSelect.mockReturnValue({ single: mockSingle });
+		mockSingle.mockResolvedValueOnce({
+			data: {
 				id: "ps-1",
-				propertyId: PROP_ID,
-				serviceId: SVC_1_ID,
-				userId: USER_ID,
-				serviceName: "WiFi",
-				pricingType: "flat",
-				flatAmount: 50,
-				unitPrice: null,
-				unitLabel: null,
+				property_id: PROP_ID,
+				user_id: USER_ID,
+				service_name: "WiFi",
+				pricing_type: "flat",
+				flat_amount: 50,
+				unit_price: null,
+				unit_label: null,
 			},
-		]);
-	});
-
-	it("should return 201 when creating multiple property services in bulk", async () => {
-		mockAuthenticatedUser();
-		mockSelect.mockResolvedValueOnce({
-			data: [
-				{
-					id: "ps-1",
-					property_id: PROP_ID,
-					service_id: SVC_1_ID,
-					user_id: USER_ID,
-					service_name: "Electricity",
-					pricing_type: "variable",
-					flat_amount: null,
-					unit_price: 0.15,
-					unit_label: "kWh",
-				},
-				{
-					id: "ps-2",
-					property_id: PROP_ID,
-					service_id: SVC_2_ID,
-					user_id: USER_ID,
-					service_name: "Water",
-					pricing_type: "variable",
-					flat_amount: null,
-					unit_price: 0.1,
-					unit_label: "m³",
-				},
-			],
 			error: null,
 		});
 
-		const req = createRequest([
-			{
-				serviceId: SVC_1_ID,
-				serviceName: "Electricity",
-				pricingType: "variable",
-				unitPrice: 0.15,
-				unitLabel: "kWh",
-			},
-			{
-				serviceId: SVC_2_ID,
-				serviceName: "Water",
-				pricingType: "variable",
-				unitPrice: 0.1,
-				unitLabel: "m³",
-			},
-		]);
+		const req = createRequest({
+			serviceName: "WiFi",
+			pricingType: "flat",
+			flatAmount: 50,
+		});
 		const res = await createPropertyService(req, createParams(PROP_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
-		expect(data).toHaveLength(2);
-		expect(data[0].serviceName).toBe("Electricity");
-		expect(data[1].serviceName).toBe("Water");
+		expect(data).toEqual({
+			id: "ps-1",
+			propertyId: PROP_ID,
+			userId: USER_ID,
+			serviceName: "WiFi",
+			pricingType: "flat",
+			flatAmount: 50,
+			unitPrice: null,
+			unitLabel: null,
+		});
 	});
 
 	it("should return 401 when user is not authenticated", async () => {
 		mockUnauthenticated();
 
-		const req = createRequest([
-			{ serviceId: SVC_1_ID, serviceName: "WiFi", pricingType: "flat" },
-		]);
+		const req = createRequest({
+			serviceName: "WiFi",
+			pricingType: "flat",
+		});
 		const res = await createPropertyService(req, createParams(PROP_ID));
 		const data = await res.json();
 
@@ -296,13 +235,13 @@ describe("POST /api/properties/[id]/services", () => {
 		expect(data.error).toBe("Unauthorized");
 	});
 
-	it("should return 400 when required field is missing in an item", async () => {
+	it("should return 400 when required field is missing", async () => {
 		mockAuthenticatedUser();
 
-		const req = createRequest([{ pricingType: "flat" }] as Record<
+		const req = createRequest({ pricingType: "flat" } as Record<
 			string,
 			unknown
-		>[]);
+		>);
 		const res = await createPropertyService(req, createParams(PROP_ID));
 		const data = await res.json();
 
@@ -312,18 +251,17 @@ describe("POST /api/properties/[id]/services", () => {
 
 	it("should return 500 when database error occurs", async () => {
 		mockAuthenticatedUser();
-		mockSelect.mockResolvedValueOnce({
+		const mockSingle = vi.fn();
+		mockSelect.mockReturnValue({ single: mockSingle });
+		mockSingle.mockResolvedValueOnce({
 			data: null,
 			error: { code: "some-error", message: "DB failure" },
 		});
 
-		const req = createRequest([
-			{
-				serviceId: SVC_1_ID,
-				serviceName: "WiFi",
-				pricingType: "flat",
-			},
-		]);
+		const req = createRequest({
+			serviceName: "WiFi",
+			pricingType: "flat",
+		});
 		const res = await createPropertyService(req, createParams(PROP_ID));
 		const data = await res.json();
 

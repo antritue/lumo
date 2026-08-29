@@ -12,8 +12,6 @@ const mockUpdate = vi.fn();
 const mockSelect = vi.fn();
 const mockSingle = vi.fn();
 const mockEq = vi.fn();
-const mockEq2 = vi.fn();
-const mockEq3 = vi.fn();
 
 vi.mock("@/lib/supabase-server", () => ({
 	createSupabaseServerClient: vi.fn(() => ({
@@ -32,8 +30,6 @@ describe("DELETE /api/properties/[id]/services/[serviceId]", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockDelete.mockReturnValue({ eq: mockEq });
-		mockEq.mockReturnValue({ eq: mockEq2 });
-		mockEq2.mockReturnValue({ eq: mockEq3 });
 	});
 
 	const createRequest = () => {
@@ -61,7 +57,7 @@ describe("DELETE /api/properties/[id]/services/[serviceId]", () => {
 
 	it("should return 204 when authenticated user deletes a property service", async () => {
 		mockAuthenticatedUser();
-		mockEq3.mockResolvedValue({
+		mockEq.mockResolvedValue({
 			error: null,
 			count: 1,
 		});
@@ -74,9 +70,7 @@ describe("DELETE /api/properties/[id]/services/[serviceId]", () => {
 
 		expect(res.status).toBe(204);
 		expect(mockDelete).toHaveBeenCalledWith({ count: "exact" });
-		expect(mockEq).toHaveBeenCalledWith("property_id", PROP_ID);
-		expect(mockEq2).toHaveBeenCalledWith("service_id", SVC_1_ID);
-		expect(mockEq3).toHaveBeenCalledWith("user_id", USER_ID);
+		expect(mockEq).toHaveBeenCalledWith("id", SVC_1_ID);
 	});
 
 	it("should return 401 when user is not authenticated", async () => {
@@ -95,7 +89,7 @@ describe("DELETE /api/properties/[id]/services/[serviceId]", () => {
 
 	it("should return 404 when property service is not found", async () => {
 		mockAuthenticatedUser();
-		mockEq3.mockResolvedValue({
+		mockEq.mockResolvedValue({
 			error: null,
 			count: 0,
 		});
@@ -113,7 +107,7 @@ describe("DELETE /api/properties/[id]/services/[serviceId]", () => {
 
 	it("should return 500 when database error occurs", async () => {
 		mockAuthenticatedUser();
-		mockEq3.mockResolvedValue({
+		mockEq.mockResolvedValue({
 			data: null,
 			error: { code: "some-error", message: "DB failure" },
 		});
@@ -134,10 +128,8 @@ describe("PATCH /api/properties/[id]/services/[serviceId]", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockUpdate.mockReturnValue({ eq: mockEq });
-		mockSelect.mockReturnValue({ eq: mockEq, single: mockSingle });
-		mockEq.mockReturnValue({ eq: mockEq2 });
-		mockEq2.mockReturnValue({ eq: mockEq3 });
-		mockEq3.mockReturnValue({ select: mockSelect, single: mockSingle });
+		mockEq.mockReturnValue({ select: mockSelect });
+		mockSelect.mockReturnValue({ single: mockSingle });
 	});
 
 	const createRequest = (
@@ -172,9 +164,8 @@ describe("PATCH /api/properties/[id]/services/[serviceId]", () => {
 		mockAuthenticatedUser();
 		mockSingle.mockResolvedValue({
 			data: {
-				id: "ps-1",
+				id: SVC_1_ID,
 				property_id: PROP_ID,
-				service_id: SVC_1_ID,
 				user_id: USER_ID,
 				service_name: "WiFi",
 				pricing_type: "flat",
@@ -197,9 +188,8 @@ describe("PATCH /api/properties/[id]/services/[serviceId]", () => {
 
 		expect(res.status).toBe(200);
 		expect(data).toEqual({
-			id: "ps-1",
+			id: SVC_1_ID,
 			propertyId: PROP_ID,
-			serviceId: SVC_1_ID,
 			userId: USER_ID,
 			serviceName: "WiFi",
 			pricingType: "flat",
@@ -214,9 +204,8 @@ describe("PATCH /api/properties/[id]/services/[serviceId]", () => {
 		// Update chain: update() -> eq() -> eq() -> eq() -> select() -> single()
 		mockSingle.mockResolvedValueOnce({
 			data: {
-				id: "ps-1",
+				id: SVC_1_ID,
 				property_id: PROP_ID,
-				service_id: SVC_1_ID,
 				user_id: USER_ID,
 				service_name: "Updated WiFi",
 				pricing_type: null,

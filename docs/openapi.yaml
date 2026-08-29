@@ -376,9 +376,6 @@ components:
         propertyId:
           type: string
           format: uuid
-        serviceId:
-          type: string
-          format: uuid
         userId:
           type: string
           format: uuid
@@ -398,16 +395,12 @@ components:
       required:
         - id
         - propertyId
-        - serviceId
         - userId
         - pricingType
 
     PropertyServiceInput:
       type: object
       properties:
-        serviceId:
-          type: string
-          format: uuid
         serviceName:
           type: string
         unitLabel:
@@ -1511,23 +1504,18 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/PropertyServiceInput"
+              $ref: "#/components/schemas/PropertyServiceInput"
             example:
-              - serviceId: 550e8400-e29b-41d4-a716-446655440000
-                serviceName: WiFi
-                pricingType: flat
-                flatAmount: 15
+              serviceName: WiFi
+              pricingType: flat
+              flatAmount: 15
       responses:
         "201":
-          description: Property service(s) created
+          description: Property service created
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PropertyService"
+                $ref: "#/components/schemas/PropertyService"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":

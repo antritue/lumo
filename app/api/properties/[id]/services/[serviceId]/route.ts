@@ -27,7 +27,7 @@ export async function updatePropertyService(
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
-		const { id: propertyId, serviceId } = await params;
+		const { serviceId } = await params;
 		const body = await request.json();
 
 		const validation = propertyServiceSchema.partial().safeParse(body);
@@ -52,9 +52,7 @@ export async function updatePropertyService(
 			const { data, error } = await supabase
 				.from(DATABASE_TABLES.PROPERTY_SERVICES)
 				.select()
-				.eq("property_id", propertyId)
-				.eq("service_id", serviceId)
-				.eq("user_id", user.id)
+				.eq("id", serviceId)
 				.single();
 
 			if (error) {
@@ -73,9 +71,7 @@ export async function updatePropertyService(
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.PROPERTY_SERVICES)
 			.update(updateData)
-			.eq("property_id", propertyId)
-			.eq("service_id", serviceId)
-			.eq("user_id", user.id)
+			.eq("id", serviceId)
 			.select()
 			.single();
 
@@ -115,14 +111,12 @@ export async function deletePropertyService(
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
-		const { id: propertyId, serviceId } = await params;
+		const { serviceId } = await params;
 
 		const { error, count } = await supabase
 			.from(DATABASE_TABLES.PROPERTY_SERVICES)
 			.delete({ count: "exact" })
-			.eq("property_id", propertyId)
-			.eq("service_id", serviceId)
-			.eq("user_id", user.id);
+			.eq("id", serviceId);
 
 		if (error) {
 			throw error;
