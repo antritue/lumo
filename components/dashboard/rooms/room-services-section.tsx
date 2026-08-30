@@ -73,15 +73,14 @@ export function RoomServicesSection({
 				.filter(
 					(propertyService) =>
 						!roomServices.some(
-							(roomService) =>
-								roomService.serviceId === propertyService.serviceId,
+							(roomService) => roomService.serviceId === propertyService.id,
 						),
 				)
 				.map(
 					(propertyService): Service => ({
-						id: propertyService.serviceId,
+						id: propertyService.id,
 						userId: "",
-						name: propertyService.serviceName,
+						serviceName: propertyService.serviceName,
 						unitLabel: propertyService.unitLabel,
 						pricingType: propertyService.pricingType,
 						flatAmount: propertyService.flatAmount,
@@ -112,7 +111,7 @@ export function RoomServicesSection({
 	}, [propertyId, fetchPropertyServices]);
 
 	const findPropertyService = (roomService: RoomService) =>
-		propertyServices.find((p) => p.serviceId === roomService.serviceId);
+		propertyServices.find((p) => p.id === roomService.serviceId);
 
 	const isRoomServiceCustom = (roomService: RoomService) => {
 		if (isPropertyServicesLoading) return false;
@@ -132,7 +131,7 @@ export function RoomServicesSection({
 		return {
 			id: roomService.serviceId,
 			userId: "",
-			name: roomService.serviceName,
+			serviceName: roomService.serviceName,
 			unitLabel: roomService.unitLabel ?? propertyService?.unitLabel ?? null,
 			pricingType: roomService.pricingType,
 			flatAmount: roomService.flatAmount ?? propertyService?.flatAmount ?? null,
@@ -188,7 +187,7 @@ export function RoomServicesSection({
 		setActivatingServiceId(service.id);
 		try {
 			await addRoomService(roomId, service.id, {
-				serviceName: service.name,
+				serviceName: service.serviceName,
 				unitLabel: service.unitLabel,
 				pricingType: service.pricingType,
 				flatAmount: service.flatAmount,
@@ -348,7 +347,7 @@ export function RoomServicesSection({
 								{activatingServiceId === service.id ? (
 									<Loader2 className="h-3 w-3 animate-spin" />
 								) : null}
-								{service.name}
+								{service.serviceName}
 							</button>
 						))}
 					</div>
@@ -372,12 +371,7 @@ export function RoomServicesSection({
 					deletingService
 						? {
 								id: deletingService.serviceId,
-								userId: "",
-								name: deletingService.serviceName,
-								unitLabel: deletingService.unitLabel,
-								pricingType: deletingService.pricingType,
-								flatAmount: deletingService.flatAmount,
-								unitPrice: deletingService.unitPrice,
+								serviceName: deletingService.serviceName,
 							}
 						: null
 				}

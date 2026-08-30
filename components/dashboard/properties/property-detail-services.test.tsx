@@ -4,8 +4,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
 import type { PropertyService } from "@/components/dashboard/properties/types";
-import { useServicesStore } from "@/components/dashboard/services/store";
-import type { Service } from "@/components/dashboard/services/types";
 import { renderWithProviders } from "@/test/render";
 import { PropertyDetailServices } from "./property-detail-services";
 
@@ -15,23 +13,11 @@ Object.defineProperty(global, "crypto", {
 	},
 });
 
-const mockGlobalService = (overrides: Partial<Service> = {}): Service => ({
-	id: "svc-elec",
-	userId: "",
-	name: "Electricity",
-	unitLabel: "kWh",
-	pricingType: "variable",
-	flatAmount: null,
-	unitPrice: null,
-	...overrides,
-});
-
 const mockPropertyService = (
 	overrides: Partial<PropertyService> = {},
 ): PropertyService => ({
 	id: "ps-1",
 	propertyId: "prop-1",
-	serviceId: "svc-elec",
 	serviceName: "Electricity",
 	unitLabel: "kWh",
 	pricingType: "variable",
@@ -44,13 +30,6 @@ describe("PropertyDetailServices", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		useAuthStore.setState({ user: null });
-		useServicesStore.setState({
-			services: [mockGlobalService()],
-			isServicesLoading: false,
-			hasServicesFetched: true,
-			isServicesFetchFailed: false,
-			fetchServices: vi.fn(),
-		});
 		usePropertyServicesStore.setState({
 			propertyServicesByPropertyId: {},
 			isPropertyServicesLoading: false,
@@ -111,7 +90,6 @@ describe("PropertyDetailServices", () => {
 						mockPropertyService(),
 						mockPropertyService({
 							id: "ps-2",
-							serviceId: "svc-water",
 							serviceName: "Water",
 						}),
 					],
@@ -123,19 +101,7 @@ describe("PropertyDetailServices", () => {
 			expect(screen.getByText("2")).toBeInTheDocument();
 		});
 
-		it("shows custom dot when service differs from global default", () => {
-			usePropertyServicesStore.setState({
-				propertyServicesByPropertyId: {
-					"prop-1": [mockPropertyService({ flatAmount: 100 })],
-				},
-			});
-
-			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
-
-			expect(document.querySelector(".bg-amber-500")).toBeInTheDocument();
-		});
-
-		it("shows inline shelf with available global services", () => {
+		it("shows preset shelf when presets are not yet added", () => {
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
 			expect(screen.getByText("Quick add from global:")).toBeInTheDocument();
@@ -144,10 +110,28 @@ describe("PropertyDetailServices", () => {
 			).toBeInTheDocument();
 		});
 
-		it("hides inline shelf when all global services are already added", () => {
+		it("hides preset shelf when all presets are already added", () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
-					"prop-1": [mockPropertyService()],
+					"prop-1": [
+						mockPropertyService({ serviceName: "Electricity" }),
+						mockPropertyService({
+							id: "ps-2",
+							serviceName: "Water",
+						}),
+						mockPropertyService({
+							id: "ps-3",
+							serviceName: "WiFi",
+						}),
+						mockPropertyService({
+							id: "ps-4",
+							serviceName: "Cleaning",
+						}),
+						mockPropertyService({
+							id: "ps-5",
+							serviceName: "Parking",
+						}),
+					],
 				},
 			});
 
@@ -164,23 +148,6 @@ describe("PropertyDetailServices", () => {
 			);
 
 			expect(container.querySelector("svg.lucide-info")).toBeInTheDocument();
-		});
-
-		it("shows custom dot for service not in global catalog", () => {
-			usePropertyServicesStore.setState({
-				propertyServicesByPropertyId: {
-					"prop-1": [
-						mockPropertyService({
-							serviceId: "svc-custom",
-							serviceName: "Custom",
-						}),
-					],
-				},
-			});
-
-			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
-
-			expect(document.querySelector(".bg-amber-500")).toBeInTheDocument();
 		});
 	});
 
@@ -201,28 +168,6 @@ describe("PropertyDetailServices", () => {
 			expect(fetchPropertyServices).toHaveBeenCalledWith("prop-1");
 		});
 
-		it("opens info popover with hierarchy explanation on icon click", async () => {
-			const user = userEvent.setup();
-
-			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
-
-			await user.click(
-				screen.getByRole("button", {
-					name: /about service hierarchy/i,
-				}),
-			);
-
-			expect(
-				screen.getByText(
-					"Services work in three layers: create templates globally, customize per property, assign to rooms",
-				),
-			).toBeInTheDocument();
-			expect(screen.getByRole("link", { name: /services/i })).toHaveAttribute(
-				"href",
-				"/dashboard/services",
-			);
-		});
-
 		it("opens add dialog on plus button click", async () => {
 			const user = userEvent.setup();
 
@@ -236,41 +181,23 @@ describe("PropertyDetailServices", () => {
 			).toBeInTheDocument();
 		});
 
-		it("calls addPropertyService when inline shelf button is clicked", async () => {
-			const addPropertyService = vi.fn().mockResolvedValue(undefined);
-			usePropertyServicesStore.setState({ addPropertyService });
-
+		it("opens add dialog with preset data when preset button is clicked", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
 			await user.click(screen.getByRole("button", { name: /electricity/i }));
 
-			expect(addPropertyService).toHaveBeenCalledWith("prop-1", "svc-elec", {
-				serviceName: "Electricity",
-				unitLabel: "kWh",
-				pricingType: "variable",
-				flatAmount: null,
-				unitPrice: null,
-			});
+			expect(screen.getByRole("dialog")).toBeInTheDocument();
+			const nameInput = within(screen.getByRole("dialog")).getByRole(
+				"textbox",
+				{
+					name: /service name/i,
+				},
+			);
+			expect(nameInput).toHaveValue("Electricity");
 		});
 
-		it("shows loading spinner on inline shelf button during activation", async () => {
-			const neverResolve = new Promise(() => {});
-			usePropertyServicesStore.setState({
-				addPropertyService: vi.fn().mockReturnValue(neverResolve),
-			});
-
-			const user = userEvent.setup();
-			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
-
-			const button = screen.getByRole("button", { name: /electricity/i });
-			await user.click(button);
-
-			expect(button.querySelector(".animate-spin")).toBeInTheDocument();
-			expect(button).toBeDisabled();
-		});
-
-		it("opens edit dialog on badge click with merged values", async () => {
+		it("opens edit dialog on badge click", async () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
 					"prop-1": [mockPropertyService({ unitPrice: 200 })],
@@ -335,7 +262,6 @@ describe("PropertyDetailServices", () => {
 
 			expect(addPropertyService).toHaveBeenCalledWith(
 				"prop-1",
-				expect.any(String),
 				expect.objectContaining({ serviceName: "WiFi" }),
 			);
 		});
@@ -365,7 +291,7 @@ describe("PropertyDetailServices", () => {
 
 			expect(updatePropertyService).toHaveBeenCalledWith(
 				"prop-1",
-				"svc-elec",
+				"ps-1",
 				expect.objectContaining({ serviceName: "Updated Name" }),
 			);
 		});
@@ -396,7 +322,7 @@ describe("PropertyDetailServices", () => {
 				}),
 			);
 
-			expect(deletePropertyService).toHaveBeenCalledWith("prop-1", "svc-elec");
+			expect(deletePropertyService).toHaveBeenCalledWith("prop-1", "ps-1");
 		});
 	});
 });

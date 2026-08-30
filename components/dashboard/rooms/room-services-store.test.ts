@@ -49,7 +49,6 @@ describe("RoomServicesStore", () => {
 					{
 						id: "ps-1",
 						propertyId: "prop-1",
-						serviceId: "svc-elec",
 						serviceName: "Electricity",
 						unitLabel: "kWh",
 						pricingType: "variable",
@@ -59,7 +58,6 @@ describe("RoomServicesStore", () => {
 					{
 						id: "ps-2",
 						propertyId: "prop-1",
-						serviceId: "svc-water",
 						serviceName: "Water",
 						unitLabel: "m³",
 						pricingType: "variable",
@@ -86,9 +84,9 @@ describe("RoomServicesStore", () => {
 			const services = roomServicesByRoomId["room-1"];
 			expect(services).toHaveLength(2);
 			expect(services[0].serviceName).toBe("Electricity");
-			expect(services[0].serviceId).toBe("svc-elec");
+			expect(services[0].serviceId).toBe("ps-1");
 			expect(services[1].serviceName).toBe("Water");
-			expect(services[1].serviceId).toBe("svc-water");
+			expect(services[1].serviceId).toBe("ps-2");
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 

@@ -3,17 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { DeleteServiceDialog } from "./delete-service-dialog";
-import type { Service } from "./types";
 
 describe("DeleteServiceDialog", () => {
-	const mockService: Service = {
+	const mockService = {
 		id: "svc-1",
-		userId: "user-1",
-		name: "WiFi",
-		unitLabel: null,
-		pricingType: "flat",
-		flatAmount: 15,
-		unitPrice: null,
+		serviceName: "WiFi",
 	};
 	const mockOnOpenChange = vi.fn();
 	const mockOnDelete = vi.fn();

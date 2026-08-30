@@ -9,7 +9,6 @@ export interface Property {
 export interface PropertyService {
 	id: string;
 	propertyId: string;
-	serviceId: string;
 	serviceName: string;
 	unitLabel: string | null;
 	pricingType: "flat" | "variable";

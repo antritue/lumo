@@ -13,17 +13,23 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import type { Service } from "./types";
 
 interface UpsertServiceDialogProps {
 	mode: "add" | "edit";
-	service?: Service;
+	service?: {
+		id: string;
+		serviceName: string;
+		unitLabel: string | null;
+		pricingType: "flat" | "variable";
+		flatAmount: number | null;
+		unitPrice: number | null;
+	};
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	customServiceNotice?: string;
 	onSave: (
 		id: string | null,
-		name: string,
+		serviceName: string,
 		unitLabel: string | null,
 		pricingType: "flat" | "variable",
 		flatAmount: number | null,
@@ -58,7 +64,7 @@ export function UpsertServiceDialog({
 			setErrorMessage("");
 		}
 		if (service) {
-			setServiceName(service.name);
+			setServiceName(service.serviceName);
 			setUnitLabel(service.unitLabel ?? "");
 			setPricingType(service.pricingType);
 			setAmount(
@@ -76,8 +82,8 @@ export function UpsertServiceDialog({
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
-		const trimmedName = serviceName.trim();
-		if (!trimmedName) return;
+		const trimmedServiceName = serviceName.trim();
+		if (!trimmedServiceName) return;
 
 		setIsSubmitting(true);
 
@@ -86,7 +92,7 @@ export function UpsertServiceDialog({
 			const id = mode === "edit" && service ? service.id : null;
 			await onSave(
 				id,
-				trimmedName,
+				trimmedServiceName,
 				unitLabel || null,
 				pricingType,
 				pricingType === "flat" ? parsedAmount : null,

@@ -60,7 +60,7 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 					const seeded: RoomService[] = propertyServices.map((ps) => ({
 						id: crypto.randomUUID(),
 						roomId,
-						serviceId: ps.serviceId,
+						serviceId: ps.id,
 						serviceName: ps.serviceName,
 						unitLabel: ps.unitLabel,
 						pricingType: ps.pricingType,

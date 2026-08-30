@@ -2,16 +2,14 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
-import type { Service } from "./types";
 import { UpsertServiceDialog } from "./upsert-service-dialog";
 
 describe("UpsertServiceDialog", () => {
-	const mockService: Service = {
+	const mockService = {
 		id: "svc-1",
-		userId: "user-1",
-		name: "WiFi",
+		serviceName: "WiFi",
 		unitLabel: null,
-		pricingType: "flat",
+		pricingType: "flat" as const,
 		flatAmount: 15,
 		unitPrice: null,
 	};
