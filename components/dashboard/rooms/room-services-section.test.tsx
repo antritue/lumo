@@ -34,7 +34,6 @@ const mockPropertyService = (
 ): PropertyService => ({
 	id: "ps-1",
 	propertyId: "prop-1",
-	serviceId: "svc-elec",
 	serviceName: "Electricity",
 	unitLabel: "kWh",
 	pricingType: "variable",
@@ -275,7 +274,7 @@ describe("RoomServicesSection", () => {
 		it("opens edit dialog with inherited values on badge click", async () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
-					"prop-1": [mockPropertyService({ flatAmount: 75 })],
+					"prop-1": [mockPropertyService({ id: "svc-elec", flatAmount: 75 })],
 				},
 			});
 			useRoomServicesStore.setState({
@@ -292,7 +291,7 @@ describe("RoomServicesSection", () => {
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
 
-			await user.click(screen.getByText("Electricity"));
+			await user.click(screen.getAllByText("Electricity")[0]);
 
 			const dialog = screen.getByRole("dialog");
 			expect(dialog).toBeInTheDocument();
@@ -343,7 +342,7 @@ describe("RoomServicesSection", () => {
 
 			await user.click(screen.getByRole("button", { name: /electricity/i }));
 
-			expect(addRoomService).toHaveBeenCalledWith("room-1", "svc-elec", {
+			expect(addRoomService).toHaveBeenCalledWith("room-1", "ps-1", {
 				serviceName: "Electricity",
 				unitLabel: "kWh",
 				pricingType: "variable",
