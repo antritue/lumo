@@ -138,6 +138,8 @@ Stores room-level service overrides. Each row represents a deviation from the pr
 | `FK` | `service_id` | `uuid` | Foreign Key to `property_services(id)`. Cascades on delete. |
 | `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
 | | `is_enabled` | `boolean` | Whether this service is active for the room. Defaults to `true`. |
+| | `custom_flat_amount` | `numeric` | Optional custom flat amount override for this room. |
+| | `custom_unit_price` | `numeric` | Optional custom unit price override for this room. |
 
 Unique constraint on `(room_id, service_id)`.
 
