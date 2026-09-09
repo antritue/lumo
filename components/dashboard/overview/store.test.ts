@@ -221,14 +221,14 @@ describe("OverviewStore", () => {
 				roomServicesByRoomId: {
 					"room-1": [
 						{
-							id: "rs-1",
-							roomId: "room-1",
-							serviceId: "svc-electricity",
+							propertyServiceId: "svc-electricity",
 							serviceName: "Electricity",
 							pricingType: "flat",
 							flatAmount: 50,
 							unitPrice: null,
 							unitLabel: null,
+							isOverridden: false,
+							isEnabled: true,
 						},
 					],
 				},

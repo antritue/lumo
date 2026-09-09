@@ -8,13 +8,13 @@ export interface Room {
 	updatedAt?: string;
 }
 
-export interface RoomService {
-	id: string;
-	roomId: string;
-	serviceId: string;
+export interface EffectiveRoomService {
+	propertyServiceId: string;
 	serviceName: string;
 	unitLabel: string | null;
 	pricingType: "flat" | "variable";
 	flatAmount: number | null;
 	unitPrice: number | null;
+	isEnabled: boolean;
+	isOverridden: boolean;
 }

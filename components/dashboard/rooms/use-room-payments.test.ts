@@ -9,7 +9,7 @@ import type {
 	ServiceCharge,
 } from "@/components/dashboard/rent-payments/types";
 import { useRoomServicesStore } from "./room-services-store";
-import type { RoomService } from "./types";
+import type { EffectiveRoomService } from "./types";
 import { useRoomPayments } from "./use-room-payments";
 
 const ROOM_ID = "room-1";
@@ -241,26 +241,26 @@ describe("useRoomPayments", () => {
 
 	describe("defaultCharges", () => {
 		it("derives charges from room services", () => {
-			const services: RoomService[] = [
+			const services: EffectiveRoomService[] = [
 				{
-					id: "rs-1",
-					roomId: ROOM_ID,
-					serviceId: "svc-1",
+					propertyServiceId: "svc-1",
 					serviceName: "Electricity",
 					pricingType: "variable",
 					unitLabel: "kWh",
 					unitPrice: 0.15,
 					flatAmount: null,
+					isOverridden: false,
+					isEnabled: true,
 				},
 				{
-					id: "rs-2",
-					roomId: ROOM_ID,
-					serviceId: "svc-2",
+					propertyServiceId: "svc-2",
 					serviceName: "Internet",
 					pricingType: "flat",
 					unitLabel: null,
 					unitPrice: null,
 					flatAmount: 100,
+					isOverridden: false,
+					isEnabled: true,
 				},
 			];
 			useRoomServicesStore.setState({
@@ -291,6 +291,39 @@ describe("useRoomPayments", () => {
 					total: 100,
 				},
 			]);
+		});
+
+		it("excludes disabled services from default charges", () => {
+			const services: EffectiveRoomService[] = [
+				{
+					propertyServiceId: "svc-1",
+					serviceName: "Electricity",
+					pricingType: "variable",
+					unitLabel: "kWh",
+					unitPrice: 0.15,
+					flatAmount: null,
+					isOverridden: false,
+					isEnabled: true,
+				},
+				{
+					propertyServiceId: "svc-2",
+					serviceName: "Internet",
+					pricingType: "flat",
+					unitLabel: null,
+					unitPrice: null,
+					flatAmount: 100,
+					isOverridden: false,
+					isEnabled: false,
+				},
+			];
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: { [ROOM_ID]: services },
+			});
+
+			const { result } = renderHook(() => useRoomPayments(ROOM_ID));
+
+			expect(result.current.defaultCharges).toHaveLength(1);
+			expect(result.current.defaultCharges[0].serviceId).toBe("svc-1");
 		});
 	});
 
