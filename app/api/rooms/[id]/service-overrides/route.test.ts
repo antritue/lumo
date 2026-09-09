@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { RoomServiceOverrideInput } from "@/lib/validations/room-service";
-import { createRoomService, listRoomServices } from "./route";
+import { listRoomServiceOverrides, upsertRoomServiceOverride } from "./route";
 
 const ROOM_ID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const USER_ID = "bbbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbb";
@@ -17,7 +17,7 @@ vi.mock("@/lib/supabase-server", () => ({
 	})),
 }));
 
-describe("GET /api/rooms/[id]/services", () => {
+describe("GET /api/rooms/[id]/service-overrides", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
@@ -61,9 +61,9 @@ describe("GET /api/rooms/[id]/services", () => {
 		});
 
 		const req = new NextRequest(
-			`http://localhost:3000/api/rooms/${ROOM_ID}/services`,
+			`http://localhost:3000/api/rooms/${ROOM_ID}/service-overrides`,
 		);
-		const res = await listRoomServices(req, createParams(ROOM_ID));
+		const res = await listRoomServiceOverrides(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
@@ -84,9 +84,9 @@ describe("GET /api/rooms/[id]/services", () => {
 		mockUnauthenticated();
 
 		const req = new NextRequest(
-			`http://localhost:3000/api/rooms/${ROOM_ID}/services`,
+			`http://localhost:3000/api/rooms/${ROOM_ID}/service-overrides`,
 		);
-		const res = await listRoomServices(req, createParams(ROOM_ID));
+		const res = await listRoomServiceOverrides(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -106,9 +106,9 @@ describe("GET /api/rooms/[id]/services", () => {
 		});
 
 		const req = new NextRequest(
-			`http://localhost:3000/api/rooms/${ROOM_ID}/services`,
+			`http://localhost:3000/api/rooms/${ROOM_ID}/service-overrides`,
 		);
-		const res = await listRoomServices(req, createParams(ROOM_ID));
+		const res = await listRoomServiceOverrides(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);
@@ -116,7 +116,7 @@ describe("GET /api/rooms/[id]/services", () => {
 	});
 });
 
-describe("POST /api/rooms/[id]/services", () => {
+describe("POST /api/rooms/[id]/service-overrides", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
@@ -129,7 +129,7 @@ describe("POST /api/rooms/[id]/services", () => {
 		body: Partial<RoomServiceOverrideInput> | Record<string, unknown>,
 	) => {
 		return new NextRequest(
-			`http://localhost:3000/api/rooms/${ROOM_ID}/services`,
+			`http://localhost:3000/api/rooms/${ROOM_ID}/service-overrides`,
 			{
 				method: "POST",
 				body: JSON.stringify(body),
@@ -175,7 +175,7 @@ describe("POST /api/rooms/[id]/services", () => {
 			serviceId: SVC_1_ID,
 			isEnabled: false,
 		});
-		const res = await createRoomService(req, createParams(ROOM_ID));
+		const res = await upsertRoomServiceOverride(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(201);
@@ -194,7 +194,7 @@ describe("POST /api/rooms/[id]/services", () => {
 		mockUnauthenticated();
 
 		const req = createRequest({ serviceId: SVC_1_ID });
-		const res = await createRoomService(req, createParams(ROOM_ID));
+		const res = await upsertRoomServiceOverride(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -205,7 +205,7 @@ describe("POST /api/rooms/[id]/services", () => {
 		mockAuthenticatedUser();
 
 		const req = createRequest({ isEnabled: true });
-		const res = await createRoomService(req, createParams(ROOM_ID));
+		const res = await upsertRoomServiceOverride(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(400);
@@ -230,7 +230,7 @@ describe("POST /api/rooms/[id]/services", () => {
 			serviceId: SVC_1_ID,
 			isEnabled: true,
 		});
-		const res = await createRoomService(req, createParams(ROOM_ID));
+		const res = await upsertRoomServiceOverride(req, createParams(ROOM_ID));
 		const data = await res.json();
 
 		expect(res.status).toBe(500);

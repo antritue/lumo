@@ -4,7 +4,7 @@ import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { roomServiceOverrideSchema } from "@/lib/validations/room-service";
 
-export async function listRoomServices(
+export async function listRoomServiceOverrides(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -41,7 +41,7 @@ export async function listRoomServices(
 	}
 }
 
-export async function createRoomService(
+export async function upsertRoomServiceOverride(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -101,5 +101,5 @@ export async function createRoomService(
 	}
 }
 
-export const GET = listRoomServices;
-export const POST = createRoomService;
+export const GET = listRoomServiceOverrides;
+export const POST = upsertRoomServiceOverride;

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { deleteRoomService } from "./route";
+import { deleteRoomServiceOverride } from "./route";
 
 const ROOM_ID = "room-id";
 const USER_ID = "user-id";
@@ -21,7 +21,7 @@ vi.mock("@/lib/supabase-server", () => ({
 	})),
 }));
 
-describe("DELETE /api/rooms/[id]/services/[serviceId]", () => {
+describe("DELETE /api/rooms/[id]/service-overrides/[serviceId]", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockDelete.mockReturnValue({ eq: mockEq1 });
@@ -30,7 +30,7 @@ describe("DELETE /api/rooms/[id]/services/[serviceId]", () => {
 
 	const createRequest = () => {
 		return new NextRequest(
-			`http://localhost:3000/api/rooms/${ROOM_ID}/services/${SVC_1_ID}`,
+			`http://localhost:3000/api/rooms/${ROOM_ID}/service-overrides/${SVC_1_ID}`,
 			{ method: "DELETE" },
 		);
 	};
@@ -59,7 +59,10 @@ describe("DELETE /api/rooms/[id]/services/[serviceId]", () => {
 		});
 
 		const req = createRequest();
-		const res = await deleteRoomService(req, createParams(ROOM_ID, SVC_1_ID));
+		const res = await deleteRoomServiceOverride(
+			req,
+			createParams(ROOM_ID, SVC_1_ID),
+		);
 
 		expect(res.status).toBe(204);
 		expect(mockDelete).toHaveBeenCalledWith({ count: "exact" });
@@ -71,7 +74,10 @@ describe("DELETE /api/rooms/[id]/services/[serviceId]", () => {
 		mockUnauthenticated();
 
 		const req = createRequest();
-		const res = await deleteRoomService(req, createParams(ROOM_ID, SVC_1_ID));
+		const res = await deleteRoomServiceOverride(
+			req,
+			createParams(ROOM_ID, SVC_1_ID),
+		);
 		const data = await res.json();
 
 		expect(res.status).toBe(401);
@@ -86,7 +92,7 @@ describe("DELETE /api/rooms/[id]/services/[serviceId]", () => {
 		});
 
 		const req = createRequest();
-		const res = await deleteRoomService(
+		const res = await deleteRoomServiceOverride(
 			req,
 			createParams(ROOM_ID, "00000000-0000-4000-8000-ffffffffffff"),
 		);
@@ -104,7 +110,10 @@ describe("DELETE /api/rooms/[id]/services/[serviceId]", () => {
 		});
 
 		const req = createRequest();
-		const res = await deleteRoomService(req, createParams(ROOM_ID, SVC_1_ID));
+		const res = await deleteRoomServiceOverride(
+			req,
+			createParams(ROOM_ID, SVC_1_ID),
+		);
 		const data = await res.json();
 
 		expect(res.status).toBe(500);

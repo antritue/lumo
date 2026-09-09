@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
-export async function deleteRoomService(
+export async function deleteRoomServiceOverride(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ id: string; serviceId: string }> },
 ) {
@@ -47,4 +47,4 @@ export async function deleteRoomService(
 	}
 }
 
-export const DELETE = deleteRoomService;
+export const DELETE = deleteRoomServiceOverride;
