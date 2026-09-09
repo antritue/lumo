@@ -87,6 +87,26 @@ describe("RoomServicesSection", () => {
 			expect(screen.getByText("Electricity")).toBeInTheDocument();
 		});
 
+		it("shows price below service name", () => {
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							pricingType: "flat",
+							flatAmount: 50,
+							unitPrice: null,
+						}),
+					],
+				},
+			});
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(screen.getByText(/\$50\/month/i)).toBeInTheDocument();
+		});
+
 		it("shows service count", () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {

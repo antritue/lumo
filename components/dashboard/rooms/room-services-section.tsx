@@ -154,7 +154,7 @@ export function RoomServicesSection({
 			{isRoomServicesLoading && (
 				<div className="flex flex-wrap gap-2">
 					{["rs-sk-0", "rs-sk-1", "rs-sk-2"].map((key) => (
-						<Skeleton key={key} className="h-8 w-20 rounded-full" />
+						<Skeleton key={key} className="h-12 w-28 rounded-xl" />
 					))}
 				</div>
 			)}
@@ -189,7 +189,7 @@ export function RoomServicesSection({
 							>
 								<PopoverTrigger asChild>
 									<div
-										className={`inline-flex items-stretch rounded-full text-sm font-medium overflow-hidden ${
+										className={`inline-flex items-stretch rounded-xl text-sm font-medium overflow-hidden ${
 											service.isEnabled
 												? "bg-secondary"
 												: "bg-secondary/50 opacity-60"
@@ -198,17 +198,24 @@ export function RoomServicesSection({
 										<button
 											type="button"
 											onClick={() => openEditDialog(service)}
-											className="flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer text-left min-w-0"
+											className="flex flex-col items-start justify-center gap-0.5 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer text-left min-w-0"
 										>
-											<span className="truncate max-w-[120px]">
-												{service.serviceName}
+											<span className="flex items-center gap-1.5 min-w-0">
+												<span className="truncate max-w-[140px] leading-tight">
+													{service.serviceName}
+												</span>
+												{service.isOverridden && (
+													<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+												)}
+												{!service.isEnabled && (
+													<span className="text-[10px] text-muted-foreground">
+														/off
+													</span>
+												)}
 											</span>
-											{service.isOverridden && (
-												<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
-											)}
-											{!service.isEnabled && (
-												<span className="text-[10px] text-muted-foreground">
-													/off
+											{formatAmount(service) && (
+												<span className="text-xs font-normal text-muted-foreground whitespace-nowrap leading-tight">
+													{formatAmount(service)}
 												</span>
 											)}
 										</button>
