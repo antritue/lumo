@@ -83,6 +83,48 @@ describe("PropertyDetailServices", () => {
 			expect(screen.getByText("Electricity")).toBeInTheDocument();
 		});
 
+		it("shows flat fee below service name", () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [
+						mockPropertyService({
+							serviceName: "WiFi",
+							pricingType: "flat",
+							flatAmount: 50,
+							unitPrice: null,
+							unitLabel: null,
+						}),
+					],
+				},
+			});
+
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			expect(screen.getByText("WiFi")).toBeInTheDocument();
+			expect(screen.getByText(/\$50\/month/i)).toBeInTheDocument();
+		});
+
+		it("shows unit price below service name", () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [
+						mockPropertyService({
+							serviceName: "Electricity",
+							pricingType: "variable",
+							flatAmount: null,
+							unitPrice: 0.15,
+							unitLabel: "kWh",
+						}),
+					],
+				},
+			});
+
+			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
+
+			expect(screen.getByText("Electricity")).toBeInTheDocument();
+			expect(screen.getByText(/\$0\.15\/kWh/i)).toBeInTheDocument();
+		});
+
 		it("shows service count", () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {

@@ -13,6 +13,26 @@ export function formatCurrency(amount: number, locale: string): string {
 	}).format(amount);
 }
 
+export function formatServicePrice(
+	service: {
+		pricingType: "flat" | "variable";
+		flatAmount: number | null;
+		unitPrice: number | null;
+		unitLabel: string | null;
+	},
+	locale: string,
+	perMonth: string,
+	defaultUnit: string,
+): string {
+	if (service.pricingType === "flat" && service.flatAmount != null) {
+		return `${formatCurrency(service.flatAmount, locale)}${perMonth}`;
+	}
+	if (service.pricingType === "variable" && service.unitPrice != null) {
+		return `${formatCurrency(service.unitPrice, locale)}/${service.unitLabel ?? defaultUnit}`;
+	}
+	return "";
+}
+
 function toCamelCase(str: string): string {
 	return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
 }
