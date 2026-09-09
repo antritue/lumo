@@ -276,7 +276,18 @@
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
 			"customServiceNotice": "Dịch vụ này đã được chỉnh riêng cho nhà này",
-			"quickAddFromProperty": "Thêm từ nhà:"
+			"quickAddFromProperty": "Thêm từ nhà:",
+			"inheritedLabel": "Kế thừa",
+			"inheritedTooltip": "Sử dụng cấu hình mặc định của nhà",
+			"customLabel": "Tùy chỉnh",
+			"customTooltip": "Phòng này có thiết lập riêng cho dịch vụ này",
+			"disabledLabel": "Tắt",
+			"disabled": "Đã tắt cho phòng này",
+			"enable": "Bật",
+			"disable": "Tắt",
+			"resetToDefault": "Khôi phục mặc định",
+			"fetchError": "Không thể tải danh sách dịch vụ",
+			"retry": "Thử lại"
 		},
 		"propertyServices": {
 			"title": "Dịch vụ",

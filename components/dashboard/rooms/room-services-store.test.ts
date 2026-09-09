@@ -2,29 +2,37 @@ import type { User } from "@supabase/supabase-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
+import type { PropertyService } from "@/components/dashboard/properties/types";
 import { useRoomServicesStore } from "./room-services-store";
-import type { RoomService } from "./types";
-
-Object.defineProperty(global, "crypto", {
-	value: {
-		randomUUID: () => "test-uuid",
-	},
-});
+import type { EffectiveRoomService } from "./types";
 
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
-const mockRoomService = (
-	overrides: Partial<RoomService> = {},
-): RoomService => ({
-	id: "test-uuid",
-	roomId: "room-1",
-	serviceId: "svc-1",
-	serviceName: "",
-	unitLabel: null,
-	pricingType: "flat",
+const mockPropertyService = (
+	overrides: Partial<PropertyService> = {},
+): PropertyService => ({
+	id: "ps-1",
+	propertyId: "prop-1",
+	serviceName: "Electricity",
+	unitLabel: "kWh",
+	pricingType: "variable",
 	flatAmount: null,
-	unitPrice: null,
+	unitPrice: 0.12,
+	...overrides,
+});
+
+const mockEffectiveService = (
+	overrides: Partial<EffectiveRoomService> = {},
+): EffectiveRoomService => ({
+	propertyServiceId: "ps-1",
+	serviceName: "Electricity",
+	unitLabel: "kWh",
+	pricingType: "variable",
+	flatAmount: null,
+	unitPrice: 0.12,
+	isOverridden: false,
+	isEnabled: true,
 	...overrides,
 });
 
@@ -43,94 +51,38 @@ describe("RoomServicesStore", () => {
 			fetchingRoomId: null,
 			isRoomServicesFetchFailed: false,
 		});
-		usePropertyServicesStore.setState({
-			propertyServicesByPropertyId: {
-				"prop-1": [
-					{
-						id: "ps-1",
-						propertyId: "prop-1",
-						serviceName: "Electricity",
-						unitLabel: "kWh",
-						pricingType: "variable",
-						flatAmount: null,
-						unitPrice: null,
-					},
-					{
-						id: "ps-2",
-						propertyId: "prop-1",
-						serviceName: "Water",
-						unitLabel: "m³",
-						pricingType: "variable",
-						flatAmount: null,
-						unitPrice: null,
-					},
-				],
-			},
-			isPropertyServicesLoading: false,
-			fetchingPropertyId: null,
-			isPropertyServicesFetchFailed: false,
-		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
 	});
-
 	describe("fetchRoomServices", () => {
-		it("seeds from property services when unauthenticated", async () => {
+		beforeEach(() => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+				isPropertyServicesLoading: false,
+				fetchingPropertyId: null,
+				isPropertyServicesFetchFailed: false,
+				fetchPropertyServices: vi.fn().mockResolvedValue(undefined),
+			});
+		});
+
+		it("does nothing when unauthenticated", async () => {
 			await useRoomServicesStore
 				.getState()
 				.fetchRoomServices("room-1", "prop-1");
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			const services = roomServicesByRoomId["room-1"];
-			expect(services).toHaveLength(2);
-			expect(services[0].serviceName).toBe("Electricity");
-			expect(services[0].serviceId).toBe("ps-1");
-			expect(services[1].serviceName).toBe("Water");
-			expect(services[1].serviceId).toBe("ps-2");
+			expect(roomServicesByRoomId["room-1"]).toBeUndefined();
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
-		it("skips seeding when room already has services in the store", async () => {
-			useRoomServicesStore.setState({
-				roomServicesByRoomId: {
-					"room-1": [
-						mockRoomService({
-							id: "existing",
-							serviceId: "svc-existing",
-							serviceName: "Existing",
-						}),
-					],
-				},
-			});
-
-			await useRoomServicesStore
-				.getState()
-				.fetchRoomServices("room-1", "prop-1");
-
-			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toHaveLength(1);
-			expect(roomServicesByRoomId["room-1"][0].serviceName).toBe("Existing");
-		});
-
-		it("fetches and sets room services when authenticated", async () => {
+		it("fetches overrides and merges with property services", async () => {
 			authenticate();
-
-			const mockServices = [
-				mockRoomService({
-					id: "rs-1",
-					serviceId: "svc-elec",
-					serviceName: "Electricity",
-				}),
-				mockRoomService({
-					id: "rs-2",
-					serviceId: "svc-water",
-					serviceName: "Water",
-				}),
-			];
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => mockServices,
+				json: async () => [],
 			});
 
 			await useRoomServicesStore
@@ -139,10 +91,10 @@ describe("RoomServicesStore", () => {
 
 			const { roomServicesByRoomId, isRoomServicesLoading } =
 				useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toEqual(mockServices);
+			expect(roomServicesByRoomId["room-1"]).toEqual([mockEffectiveService()]);
 			expect(isRoomServicesLoading).toBe(false);
 			expect(mockFetch).toHaveBeenCalledWith(
-				"/api/rooms/room-1/services",
+				"/api/rooms/room-1/service-overrides",
 				expect.objectContaining({
 					method: "GET",
 					credentials: "include",
@@ -150,8 +102,43 @@ describe("RoomServicesStore", () => {
 			);
 		});
 
-		it("stores empty room services when authenticated room has no services", async () => {
+		it("applies override values when override exists", async () => {
 			authenticate();
+
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService({ id: "ps-1" })],
+				},
+			});
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => [
+					{
+						service_id: "ps-1",
+						is_enabled: false,
+						custom_flat_amount: 75,
+						custom_unit_price: null,
+					},
+				],
+			});
+
+			await useRoomServicesStore
+				.getState()
+				.fetchRoomServices("room-1", "prop-1");
+
+			const { roomServicesByRoomId } = useRoomServicesStore.getState();
+			expect(roomServicesByRoomId["room-1"][0].flatAmount).toBe(75);
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(false);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(true);
+		});
+
+		it("stores empty array when property has no services", async () => {
+			authenticate();
+
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: { "prop-1": [] },
+			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
@@ -164,11 +151,6 @@ describe("RoomServicesStore", () => {
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
 			expect(roomServicesByRoomId["room-1"]).toHaveLength(0);
-			expect(mockFetch).toHaveBeenCalledTimes(1);
-			expect(mockFetch).toHaveBeenCalledWith(
-				"/api/rooms/room-1/services",
-				expect.objectContaining({ method: "GET" }),
-			);
 		});
 
 		it("handles fetch error gracefully", async () => {
@@ -206,171 +188,120 @@ describe("RoomServicesStore", () => {
 		});
 	});
 
-	describe("addRoomService", () => {
-		it("adds service locally when unauthenticated", async () => {
-			await useRoomServicesStore
-				.getState()
-				.addRoomService("room-1", "svc-new", {
-					serviceName: "New Service",
-					unitLabel: "units",
-					pricingType: "variable",
-					flatAmount: null,
-					unitPrice: 50,
-				});
-
-			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			const services = roomServicesByRoomId["room-1"];
-			expect(services).toHaveLength(1);
-			expect(services[0].serviceId).toBe("svc-new");
-			expect(services[0].serviceName).toBe("New Service");
-			expect(services[0].unitLabel).toBe("units");
-			expect(services[0].pricingType).toBe("variable");
-			expect(services[0].unitPrice).toBe(50);
-			expect(mockFetch).not.toHaveBeenCalled();
-		});
-
+	describe("toggleService", () => {
 		it("calls API and updates state when authenticated", async () => {
 			authenticate();
 
-			const created = mockRoomService({
-				id: "server-id",
-				roomId: "room-1",
-				serviceId: "svc-new",
-				serviceName: "Test",
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							propertyServiceId: "ps-1",
+							isEnabled: true,
+						}),
+					],
+				},
 			});
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => [created],
+				json: async () => ({ id: "ov-1", is_enabled: false }),
 			});
 
 			await useRoomServicesStore
 				.getState()
-				.addRoomService("room-1", "svc-new", {
-					serviceName: "Test",
-					unitLabel: null,
-					pricingType: "flat",
-					flatAmount: null,
-					unitPrice: null,
-				});
+				.toggleService("room-1", "ps-1", false);
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toHaveLength(1);
-			expect(roomServicesByRoomId["room-1"][0]).toEqual(created);
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(false);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(true);
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				"/api/rooms/room-1/services",
+				"/api/rooms/room-1/service-overrides",
 				expect.objectContaining({
 					method: "POST",
-					body: JSON.stringify([
-						{
-							serviceId: "svc-new",
-							serviceName: "Test",
-							unitLabel: null,
-							pricingType: "flat",
-							flatAmount: null,
-							unitPrice: null,
-						},
-					]),
+					body: JSON.stringify({ serviceId: "ps-1", isEnabled: false }),
 					credentials: "include",
 				}),
 			);
 		});
 
-		it("does not add duplicate serviceId", async () => {
+		it("clears overridden flag when backend reverts to default", async () => {
+			authenticate();
+
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [
-						mockRoomService({
-							id: "existing",
-							serviceId: "svc-existing",
+						mockEffectiveService({
+							propertyServiceId: "ps-1",
+							isEnabled: false,
+							isOverridden: true,
 						}),
 					],
 				},
+				roomPropertyMap: { "room-1": "prop-1" },
+			});
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => null,
 			});
 
 			await useRoomServicesStore
 				.getState()
-				.addRoomService("room-1", "svc-existing", {
-					serviceName: "Dup",
-					unitLabel: null,
-					pricingType: "flat",
-					flatAmount: null,
-					unitPrice: null,
-				});
+				.toggleService("room-1", "ps-1", true);
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toHaveLength(1);
-			expect(mockFetch).not.toHaveBeenCalled();
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(true);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(false);
 		});
 
 		it("handles API error gracefully", async () => {
 			authenticate();
+
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							propertyServiceId: "ps-1",
+							isEnabled: true,
+						}),
+					],
+				},
+			});
 
 			mockFetch.mockResolvedValueOnce({ ok: false });
 
 			const consoleSpy = mockErrorConsole();
 
 			await expect(
-				useRoomServicesStore.getState().addRoomService("room-1", "svc-new", {
-					serviceName: "Fail",
-					unitLabel: null,
-					pricingType: "flat",
-					flatAmount: null,
-					unitPrice: null,
-				}),
-			).rejects.toThrow("Failed to add room service");
+				useRoomServicesStore.getState().toggleService("room-1", "ps-1", false),
+			).rejects.toThrow("Failed to toggle service");
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toBeUndefined();
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(true);
 			expect(consoleSpy).toHaveBeenCalled();
 
 			consoleSpy.mockRestore();
 		});
 	});
 
-	describe("updateRoomService", () => {
-		it("updates service locally when unauthenticated", async () => {
-			useRoomServicesStore.setState({
-				roomServicesByRoomId: {
-					"room-1": [
-						mockRoomService({
-							id: "1",
-							serviceId: "svc-1",
-							serviceName: "Original",
-						}),
-						mockRoomService({
-							id: "2",
-							serviceId: "svc-2",
-							serviceName: "Second",
-						}),
-					],
-				},
-			});
-
-			await useRoomServicesStore
-				.getState()
-				.updateRoomService("room-1", "svc-1", {
-					serviceName: "Updated",
-				});
-
-			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"][0].serviceName).toBe("Updated");
-			expect(roomServicesByRoomId["room-1"][1].serviceName).toBe("Second");
-			expect(mockFetch).not.toHaveBeenCalled();
-		});
-
+	describe("setCustomPrice", () => {
 		it("calls API and updates state when authenticated", async () => {
 			authenticate();
 
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [
-						mockRoomService({
-							id: "1",
-							roomId: "room-1",
-							serviceId: "svc-1",
-							serviceName: "Original",
+						mockEffectiveService({
+							propertyServiceId: "ps-1",
+							flatAmount: null,
+							unitPrice: 0.12,
 						}),
 					],
 				},
@@ -378,159 +309,89 @@ describe("RoomServicesStore", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({
-					id: "1",
-					serviceName: "Updated",
-				}),
+				json: async () => ({ id: "ov-1" }),
 			});
 
 			await useRoomServicesStore
 				.getState()
-				.updateRoomService("room-1", "svc-1", {
-					serviceName: "Updated",
-				});
+				.setCustomPrice("room-1", "ps-1", 100, null);
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"][0].serviceName).toBe("Updated");
+			expect(roomServicesByRoomId["room-1"][0].flatAmount).toBe(100);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(true);
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				"/api/rooms/room-1/services/svc-1",
+				"/api/rooms/room-1/service-overrides",
 				expect.objectContaining({
-					method: "PATCH",
-					body: JSON.stringify({ serviceName: "Updated" }),
+					method: "POST",
+					body: JSON.stringify({
+						serviceId: "ps-1",
+						customFlatAmount: 100,
+						customUnitPrice: null,
+					}),
 					credentials: "include",
 				}),
 			);
 		});
-
-		it("handles API error gracefully", async () => {
-			authenticate();
-
-			useRoomServicesStore.setState({
-				roomServicesByRoomId: {
-					"room-1": [
-						mockRoomService({
-							id: "1",
-							roomId: "room-1",
-							serviceId: "svc-1",
-							serviceName: "Original",
-						}),
-					],
-				},
-			});
-
-			mockFetch.mockResolvedValueOnce({ ok: false });
-
-			const consoleSpy = mockErrorConsole();
-
-			await expect(
-				useRoomServicesStore.getState().updateRoomService("room-1", "svc-1", {
-					serviceName: "Updated",
-				}),
-			).rejects.toThrow("Failed to update room service");
-
-			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"][0].serviceName).toBe("Original");
-			expect(consoleSpy).toHaveBeenCalled();
-
-			consoleSpy.mockRestore();
-		});
 	});
 
-	describe("deleteRoomService", () => {
-		it("removes service locally when unauthenticated", async () => {
-			useRoomServicesStore.setState({
-				roomServicesByRoomId: {
-					"room-1": [
-						mockRoomService({
-							id: "1",
-							serviceId: "svc-keep",
-						}),
-						mockRoomService({
-							id: "2",
-							serviceId: "svc-remove",
-						}),
-					],
-				},
-			});
-
-			await useRoomServicesStore
-				.getState()
-				.deleteRoomService("room-1", "svc-remove");
-
-			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toHaveLength(1);
-			expect(roomServicesByRoomId["room-1"][0].serviceId).toBe("svc-keep");
-			expect(mockFetch).not.toHaveBeenCalled();
-		});
-
-		it("calls API and updates state when authenticated", async () => {
+	describe("resetToDefault", () => {
+		it("deletes override and applies inherited values", async () => {
 			authenticate();
 
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [
-						mockRoomService({
-							id: "1",
-							roomId: "room-1",
-							serviceId: "svc-keep",
-						}),
-						mockRoomService({
-							id: "2",
-							roomId: "room-1",
-							serviceId: "svc-remove",
+						mockEffectiveService({
+							propertyServiceId: "ps-1",
+							isOverridden: true,
+							isEnabled: false,
 						}),
 					],
 				},
+				roomPropertyMap: { "room-1": "prop-1" },
 			});
 
 			mockFetch.mockResolvedValueOnce({ ok: true });
 
-			await useRoomServicesStore
-				.getState()
-				.deleteRoomService("room-1", "svc-remove");
+			await useRoomServicesStore.getState().resetToDefault("room-1", "ps-1");
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toHaveLength(1);
-			expect(roomServicesByRoomId["room-1"][0].serviceId).toBe("svc-keep");
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(false);
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(true);
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				"/api/rooms/room-1/services/svc-remove",
+				"/api/rooms/room-1/service-overrides/ps-1",
 				expect.objectContaining({
 					method: "DELETE",
 					credentials: "include",
 				}),
 			);
+			expect(mockFetch).toHaveBeenCalledTimes(1);
 		});
 
-		it("handles API error gracefully", async () => {
+		it("does nothing when service is not overridden", async () => {
 			authenticate();
 
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [
-						mockRoomService({
-							id: "1",
-							roomId: "room-1",
-							serviceId: "svc-keep",
+						mockEffectiveService({
+							propertyServiceId: "ps-1",
+							isOverridden: false,
 						}),
 					],
 				},
 			});
 
-			mockFetch.mockResolvedValueOnce({ ok: false });
+			await useRoomServicesStore.getState().resetToDefault("room-1", "ps-1");
 
-			const consoleSpy = mockErrorConsole();
-
-			await expect(
-				useRoomServicesStore.getState().deleteRoomService("room-1", "svc-keep"),
-			).rejects.toThrow("Failed to remove room service");
-
-			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toHaveLength(1);
-			expect(consoleSpy).toHaveBeenCalled();
-
-			consoleSpy.mockRestore();
+			expect(mockFetch).not.toHaveBeenCalled();
 		});
 	});
 
@@ -538,7 +399,7 @@ describe("RoomServicesStore", () => {
 		it("resets all store data to initial state", () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
-					"room-1": [mockRoomService()],
+					"room-1": [mockEffectiveService()],
 				},
 				isRoomServicesLoading: true,
 				fetchingRoomId: "room-1",

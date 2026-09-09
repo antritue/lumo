@@ -471,6 +471,49 @@ components:
         - userId
         - pricingType
 
+    RoomServiceOverride:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        room_id:
+          type: string
+          format: uuid
+        service_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        is_enabled:
+          type: boolean
+        custom_flat_amount:
+          type: ["number", "null"]
+        custom_unit_price:
+          type: ["number", "null"]
+      required:
+        - id
+        - room_id
+        - service_id
+        - user_id
+        - is_enabled
+
+    RoomServiceOverrideInput:
+      type: object
+      properties:
+        serviceId:
+          type: string
+          format: uuid
+        isEnabled:
+          type: boolean
+        customFlatAmount:
+          type: ["number", "null"]
+        customUnitPrice:
+          type: ["number", "null"]
+      required:
+        - serviceId
+
     RoomServiceInput:
       type: object
       properties:
@@ -1599,7 +1642,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /api/rooms/{roomId}/services:
+  /api/rooms/{roomId}/service-overrides:
     parameters:
       - name: roomId
         in: path
@@ -1610,53 +1653,49 @@ paths:
           format: uuid
 
     get:
-      summary: List room services
-      description: Returns all services configured for a room
-      operationId: listRoomServices
+      summary: List room service overrides
+      description: Returns raw override rows for a room. Frontend merges with property services to build effective services.
+      operationId: listRoomServiceOverrides
       tags:
-        - Room Services
+        - Room Service Overrides
       responses:
         "200":
-          description: List of room services
+          description: List of override rows
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/RoomService"
+                  $ref: "#/components/schemas/RoomServiceOverride"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
     post:
-      summary: Add service to room
-      description: Adds a service to a room
-      operationId: createRoomService
+      summary: Upsert room service override
+      description: Creates or updates an override row (toggle enable/disable, custom pricing)
+      operationId: upsertRoomServiceOverride
       tags:
-        - Room Services
+        - Room Service Overrides
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/RoomServiceInput"
+              $ref: "#/components/schemas/RoomServiceOverrideInput"
             example:
-              - serviceId: 550e8400-e29b-41d4-a716-446655440000
-                serviceName: WiFi
-                pricingType: flat
-                flatAmount: 15
+              serviceId: 550e8400-e29b-41d4-a716-446655440000
+              isEnabled: false
       responses:
-        "201":
-          description: Room service(s) created
+        "200":
+          description: Override upserted, or null if reverted to default (no-op deleted)
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/RoomService"
+                oneOf:
+                  - $ref: "#/components/schemas/RoomServiceOverride"
+                  - type: "null"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1664,7 +1703,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /api/rooms/{roomId}/services/{serviceId}:
+  /api/rooms/{roomId}/service-overrides/{serviceId}:
     parameters:
       - name: roomId
         in: path
@@ -1676,67 +1715,30 @@ paths:
       - name: serviceId
         in: path
         required: true
-        description: Service UUID
+        description: Property service UUID
         schema:
           type: string
           format: uuid
 
-    patch:
-      summary: Update room service
-      description: Updates pricing overrides or service name for a room service. All fields are optional.
-      operationId: updateRoomService
-      tags:
-        - Room Services
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RoomServiceUpdateInput"
-            example:
-              pricingType: flat
-              flatAmount: 20
-      responses:
-        "200":
-          description: Room service updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RoomService"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          description: Room service not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                error: Room service not found
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
     delete:
-      summary: Remove service from room
-      description: Removes a service configuration from a room
-      operationId: deleteRoomService
+      summary: Remove service override from room
+      description: Removes the override row, reverting the room to the property default
+      operationId: deleteRoomServiceOverride
       tags:
-        - Room Services
+        - Room Service Overrides
       responses:
         "204":
-          description: Room service deleted
+          description: Override deleted
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-          description: Room service not found
+          description: Override not found
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
               example:
-                error: Room service not found
+                error: Room service override not found
         "500":
           $ref: "#/components/responses/InternalServerError"
 

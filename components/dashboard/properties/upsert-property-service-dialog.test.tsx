@@ -2,9 +2,9 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
-import { UpsertServiceDialog } from "./upsert-service-dialog";
+import { UpsertPropertyServiceDialog } from "./upsert-property-service-dialog";
 
-describe("UpsertServiceDialog", () => {
+describe("UpsertPropertyServiceDialog", () => {
 	const mockService = {
 		id: "svc-1",
 		serviceName: "WiFi",
@@ -24,7 +24,7 @@ describe("UpsertServiceDialog", () => {
 		it("displays add mode with empty fields", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -49,7 +49,7 @@ describe("UpsertServiceDialog", () => {
 
 		it("hides unit label when pricing is flat", () => {
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -65,7 +65,7 @@ describe("UpsertServiceDialog", () => {
 
 		it("displays edit mode with service data", () => {
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="edit"
 					service={mockService}
 					open={true}
@@ -87,7 +87,7 @@ describe("UpsertServiceDialog", () => {
 	describe("Interactions", () => {
 		it("disables save button when name is empty", () => {
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -105,7 +105,7 @@ describe("UpsertServiceDialog", () => {
 		it("enables save button when name is entered", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -130,7 +130,7 @@ describe("UpsertServiceDialog", () => {
 		it("saves service with correct data in add mode", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -163,7 +163,7 @@ describe("UpsertServiceDialog", () => {
 		it("saves service with variable pricing in add mode", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -204,7 +204,7 @@ describe("UpsertServiceDialog", () => {
 
 		it("saves service with correct data in edit mode", async () => {
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="edit"
 					service={mockService}
 					open={true}
@@ -236,7 +236,7 @@ describe("UpsertServiceDialog", () => {
 		it("shows loading state while saving", async () => {
 			const onSave = vi.fn();
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={vi.fn()}
@@ -264,7 +264,7 @@ describe("UpsertServiceDialog", () => {
 		it("shows error dialog on save failure and restores form", async () => {
 			const onSave = vi.fn().mockRejectedValue(new Error("API error"));
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={vi.fn()}
@@ -294,7 +294,7 @@ describe("UpsertServiceDialog", () => {
 		it("shows update error message in edit mode", async () => {
 			const onSave = vi.fn().mockRejectedValue(new Error("API error"));
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="edit"
 					service={mockService}
 					open={true}
@@ -321,7 +321,7 @@ describe("UpsertServiceDialog", () => {
 		it("closes dialog without saving on cancel", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<UpsertServiceDialog
+				<UpsertPropertyServiceDialog
 					mode="add"
 					open={true}
 					onOpenChange={mockOnOpenChange}

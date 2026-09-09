@@ -1,15 +1,9 @@
 "use client";
 
-import { Info, Loader2, Plus, X } from "lucide-react";
-import Link from "next/link";
+import { Info, Loader2, RotateCcw } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
-import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
-import type { PropertyService } from "@/components/dashboard/properties/types";
-import { DeleteServiceDialog } from "@/components/dashboard/services/delete-service-dialog";
-import type { Service } from "@/components/dashboard/services/types";
-import { UpsertServiceDialog } from "@/components/dashboard/services/upsert-service-dialog";
-import { ErrorState } from "@/components/shared/error-state";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
 	Popover,
 	PopoverContent,
@@ -17,10 +11,9 @@ import {
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRoomServicesStore } from "./room-services-store";
-import type { RoomService } from "./types";
+import type { EffectiveRoomService } from "./types";
 
-const EMPTY_ROOM_SERVICES: RoomService[] = [];
-const EMPTY_PROPERTY_SERVICES: PropertyService[] = [];
+const EMPTY_EFFECTIVE_SERVICES: EffectiveRoomService[] = [];
 
 interface RoomServicesSectionProps {
 	roomId: string;
@@ -36,18 +29,14 @@ export function RoomServicesSection({
 	const locale = useLocale();
 
 	const roomServices = useRoomServicesStore(
-		(state) => state.roomServicesByRoomId[roomId] ?? EMPTY_ROOM_SERVICES,
+		(state) => state.roomServicesByRoomId[roomId] ?? EMPTY_EFFECTIVE_SERVICES,
 	);
 	const fetchRoomServices = useRoomServicesStore(
 		(state) => state.fetchRoomServices,
 	);
-	const addRoomService = useRoomServicesStore((state) => state.addRoomService);
-	const updateRoomService = useRoomServicesStore(
-		(state) => state.updateRoomService,
-	);
-	const deleteRoomService = useRoomServicesStore(
-		(state) => state.deleteRoomService,
-	);
+	const toggleService = useRoomServicesStore((state) => state.toggleService);
+	const setCustomPrice = useRoomServicesStore((state) => state.setCustomPrice);
+	const resetToDefault = useRoomServicesStore((state) => state.resetToDefault);
 
 	const isRoomServicesLoading = useRoomServicesStore(
 		(state) => state.fetchingRoomId === roomId,
@@ -56,162 +45,80 @@ export function RoomServicesSection({
 		(state) => state.isRoomServicesFetchFailed,
 	);
 
-	const propertyServices = usePropertyServicesStore(
-		(state) =>
-			state.propertyServicesByPropertyId[propertyId] ?? EMPTY_PROPERTY_SERVICES,
-	);
-	const isPropertyServicesLoading = usePropertyServicesStore(
-		(state) => state.fetchingPropertyId === propertyId,
-	);
-	const fetchPropertyServices = usePropertyServicesStore(
-		(state) => state.fetchPropertyServices,
-	);
-
-	const availableServices = useMemo(
-		() =>
-			propertyServices
-				.filter(
-					(propertyService) =>
-						!roomServices.some(
-							(roomService) => roomService.serviceId === propertyService.id,
-						),
-				)
-				.map(
-					(propertyService): Service => ({
-						id: propertyService.id,
-						userId: "",
-						serviceName: propertyService.serviceName,
-						unitLabel: propertyService.unitLabel,
-						pricingType: propertyService.pricingType,
-						flatAmount: propertyService.flatAmount,
-						unitPrice: propertyService.unitPrice,
-					}),
-				),
-		[propertyServices, roomServices],
-	);
-
-	const [dialogMode, setDialogMode] = useState<"add" | "edit" | null>(null);
-	const [editingService, setEditingService] = useState<Service | undefined>(
-		undefined,
-	);
-	const [isEditingCustom, setIsEditingCustom] = useState(false);
-	const [deletingService, setDeletingService] = useState<RoomService | null>(
+	const [togglingServiceId, setTogglingServiceId] = useState<string | null>(
 		null,
 	);
-	const [activatingServiceId, setActivatingServiceId] = useState<string | null>(
+	const [resettingServiceId, setResettingServiceId] = useState<string | null>(
 		null,
 	);
+	const [editingService, setEditingService] =
+		useState<EffectiveRoomService | null>(null);
+	const [editAmount, setEditAmount] = useState("");
+	const [savingEdit, setSavingEdit] = useState(false);
 
 	useEffect(() => {
 		fetchRoomServices(roomId, propertyId);
 	}, [roomId, propertyId, fetchRoomServices]);
 
-	useEffect(() => {
-		fetchPropertyServices(propertyId);
-	}, [propertyId, fetchPropertyServices]);
-
-	const findPropertyService = (roomService: RoomService) =>
-		propertyServices.find((p) => p.id === roomService.serviceId);
-
-	const isRoomServiceCustom = (roomService: RoomService) => {
-		if (isPropertyServicesLoading) return false;
-		const propertyService = findPropertyService(roomService);
-		if (!propertyService) return true;
-		return (
-			roomService.serviceName !== propertyService.serviceName ||
-			roomService.unitLabel !== propertyService.unitLabel ||
-			roomService.pricingType !== propertyService.pricingType ||
-			roomService.flatAmount !== propertyService.flatAmount ||
-			roomService.unitPrice !== propertyService.unitPrice
-		);
-	};
-
-	const resolveService = (roomService: RoomService): Service => {
-		const propertyService = findPropertyService(roomService);
-		return {
-			id: roomService.serviceId,
-			userId: "",
-			serviceName: roomService.serviceName,
-			unitLabel: roomService.unitLabel ?? propertyService?.unitLabel ?? null,
-			pricingType: roomService.pricingType,
-			flatAmount: roomService.flatAmount ?? propertyService?.flatAmount ?? null,
-			unitPrice: roomService.unitPrice ?? propertyService?.unitPrice ?? null,
-		};
-	};
-
-	const handleEditService = (roomService: RoomService) => {
-		setEditingService(resolveService(roomService));
-		setIsEditingCustom(isRoomServiceCustom(roomService));
-		setDialogMode("edit");
-	};
-
-	const handleSave = async (
-		id: string | null,
-		name: string,
-		unitLabel: string | null,
-		pricingType: "flat" | "variable",
-		flatAmount: number | null,
-		unitPrice: number | null,
-	) => {
-		if (id) {
-			await updateRoomService(roomId, id, {
-				serviceName: name,
-				unitLabel,
-				pricingType,
-				flatAmount,
-				unitPrice,
-			});
-		} else {
-			const newId = crypto.randomUUID();
-			await addRoomService(roomId, newId, {
-				serviceName: name,
-				unitLabel,
-				pricingType,
-				flatAmount,
-				unitPrice,
-			});
+	const handleToggle = async (service: EffectiveRoomService) => {
+		setTogglingServiceId(service.propertyServiceId);
+		try {
+			await toggleService(
+				roomId,
+				service.propertyServiceId,
+				!service.isEnabled,
+			);
+		} finally {
+			setTogglingServiceId(null);
 		}
-		setDialogMode(null);
 	};
 
-	const handleDeleteService = async (serviceId: string) => {
-		await deleteRoomService(roomId, serviceId);
-		setDeletingService(null);
+	const handleReset = async (service: EffectiveRoomService) => {
+		setResettingServiceId(service.propertyServiceId);
+		try {
+			await resetToDefault(roomId, service.propertyServiceId);
+		} finally {
+			setResettingServiceId(null);
+		}
 	};
 
 	const handleRetry = () => {
 		fetchRoomServices(roomId, propertyId);
 	};
 
-	const handleActivateProperty = async (service: Service) => {
-		setActivatingServiceId(service.id);
+	const openEditDialog = (service: EffectiveRoomService) => {
+		setEditingService(service);
+		setEditAmount(
+			service.pricingType === "flat"
+				? (service.flatAmount?.toString() ?? "")
+				: (service.unitPrice?.toString() ?? ""),
+		);
+	};
+
+	const handleSaveEdit = async () => {
+		if (!editingService) return;
+		setSavingEdit(true);
 		try {
-			await addRoomService(roomId, service.id, {
-				serviceName: service.serviceName,
-				unitLabel: service.unitLabel,
-				pricingType: service.pricingType,
-				flatAmount: service.flatAmount,
-				unitPrice: service.unitPrice,
-			});
+			const parsedAmount = editAmount ? Number.parseFloat(editAmount) : null;
+			await setCustomPrice(
+				roomId,
+				editingService.propertyServiceId,
+				editingService.pricingType === "flat" ? parsedAmount : null,
+				editingService.pricingType === "variable" ? parsedAmount : null,
+			);
+			setEditingService(null);
 		} finally {
-			setActivatingServiceId(null);
+			setSavingEdit(false);
 		}
 	};
 
-	const formatAmount = (roomService: RoomService): string => {
-		const propertyService = findPropertyService(roomService);
-		const flatAmount =
-			roomService.flatAmount ?? propertyService?.flatAmount ?? null;
-		const unitPrice =
-			roomService.unitPrice ?? propertyService?.unitPrice ?? null;
-		const unitLabel =
-			roomService.unitLabel ?? propertyService?.unitLabel ?? null;
+	const formatAmount = (service: EffectiveRoomService): string => {
 		const currency = locale === "vi" ? "VND" : "USD";
-		if (roomService.pricingType === "flat" && flatAmount != null) {
-			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(flatAmount)}${ts("perMonth")}`;
+		if (service.pricingType === "flat" && service.flatAmount != null) {
+			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(service.flatAmount)}${ts("perMonth")}`;
 		}
-		if (roomService.pricingType === "variable" && unitPrice != null) {
-			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(unitPrice)}/${unitLabel ?? ts("unit")}`;
+		if (service.pricingType === "variable" && service.unitPrice != null) {
+			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(service.unitPrice)}/${service.unitLabel ?? ts("unit")}`;
 		}
 		return "";
 	};
@@ -239,31 +146,16 @@ export function RoomServicesSection({
 						className="max-w-64 text-xs leading-relaxed space-y-2"
 					>
 						<p>{t("titleTooltip")}</p>
-						<p className="flex items-center gap-1.5">
-							<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
-							{t("customizedTooltip")}
+						<p>
+							<span className="font-medium">{t("inheritedLabel")}</span>{" "}
+							{t("inheritedTooltip")}
 						</p>
 						<p>
-							{t("roomTipBefore")}
-							<Link
-								href="/dashboard/services"
-								className="underline underline-offset-2 hover:text-foreground transition-colors"
-							>
-								{t("title")}
-							</Link>
-							{t("roomTipAfter")}
+							<span className="font-medium">{t("customLabel")}</span>{" "}
+							{t("customTooltip")}
 						</p>
 					</PopoverContent>
 				</Popover>
-				<div className="flex-1" />
-				<button
-					type="button"
-					onClick={() => setDialogMode("add")}
-					className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
-					aria-label={t("addService")}
-				>
-					<Plus className="h-4 w-4" />
-				</button>
 			</div>
 
 			{isRoomServicesLoading && (
@@ -275,50 +167,173 @@ export function RoomServicesSection({
 			)}
 
 			{isRoomServicesFetchFailed && !isRoomServicesLoading && (
-				<ErrorState onRetry={handleRetry} />
+				<div className="flex items-center gap-2">
+					<span className="text-sm text-destructive">{t("fetchError")}</span>
+					<button
+						type="button"
+						onClick={handleRetry}
+						className="text-sm text-foreground underline underline-offset-2 hover:no-underline cursor-pointer"
+					>
+						{t("retry")}
+					</button>
+				</div>
 			)}
 
 			{!isRoomServicesLoading &&
 				!isRoomServicesFetchFailed &&
 				roomServices.length > 0 && (
 					<div className="flex flex-wrap gap-2">
-						{roomServices.map((roomService) => (
-							<div
-								key={roomService.id}
-								className="inline-flex items-stretch rounded-2xl bg-secondary text-sm font-medium overflow-hidden"
+						{roomServices.map((service) => (
+							<Popover
+								key={service.propertyServiceId}
+								open={
+									editingService?.propertyServiceId ===
+									service.propertyServiceId
+								}
+								onOpenChange={(open) => {
+									if (!open) setEditingService(null);
+								}}
 							>
-								<button
-									type="button"
-									onClick={() => handleEditService(roomService)}
-									className="flex flex-col py-1.5 pl-3 pr-1.5 min-w-0 cursor-pointer text-left hover:bg-muted transition-colors"
-								>
-									<div className="flex items-center gap-1">
-										<span className="font-medium">
-											{roomService.serviceName}
-										</span>
-										{isRoomServiceCustom(roomService) && (
-											<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+								<PopoverTrigger asChild>
+									<div
+										className={`inline-flex items-stretch rounded-full text-sm font-medium overflow-hidden ${
+											service.isEnabled
+												? "bg-secondary"
+												: "bg-secondary/50 opacity-60"
+										}`}
+									>
+										<button
+											type="button"
+											onClick={() => openEditDialog(service)}
+											className="flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer text-left min-w-0"
+										>
+											<span className="truncate max-w-[120px]">
+												{service.serviceName}
+											</span>
+											{service.isOverridden && (
+												<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+											)}
+											{!service.isEnabled && (
+												<span className="text-[10px] text-muted-foreground">
+													/off
+												</span>
+											)}
+										</button>
+										<div className="w-px self-stretch bg-border/50" />
+										<button
+											type="button"
+											onClick={(e) => {
+												e.stopPropagation();
+												handleToggle(service);
+											}}
+											disabled={togglingServiceId === service.propertyServiceId}
+											className="flex items-center justify-center px-2 py-1.5 hover:bg-muted transition-colors cursor-pointer disabled:opacity-40 text-xs text-muted-foreground"
+											aria-label={
+												service.isEnabled
+													? `${t("disable")} ${service.serviceName}`
+													: `${t("enable")} ${service.serviceName}`
+											}
+										>
+											{togglingServiceId === service.propertyServiceId ? (
+												<Loader2 className="h-3 w-3 animate-spin" />
+											) : service.isEnabled ? (
+												t("disable")
+											) : (
+												t("enable")
+											)}
+										</button>
+										{service.isOverridden && (
+											<>
+												<div className="w-px self-stretch bg-border/50" />
+												<button
+													type="button"
+													onClick={(e) => {
+														e.stopPropagation();
+														handleReset(service);
+													}}
+													disabled={
+														resettingServiceId === service.propertyServiceId
+													}
+													className="flex items-center justify-center px-2 py-1.5 hover:bg-muted transition-colors cursor-pointer disabled:opacity-40 text-muted-foreground"
+													aria-label={`${t("resetToDefault")} ${service.serviceName}`}
+												>
+													{resettingServiceId === service.propertyServiceId ? (
+														<Loader2 className="h-3 w-3 animate-spin" />
+													) : (
+														<RotateCcw className="h-3 w-3" />
+													)}
+												</button>
+											</>
 										)}
 									</div>
-									<span className="text-xs text-muted-foreground">
-										{roomService.pricingType === "flat"
-											? `${ts("flat")} · ${formatAmount(roomService)}`
-											: `${ts("variable")} · ${formatAmount(roomService)}`}
-									</span>
-								</button>
-								<div className="w-px self-stretch bg-border/50" />
-								<button
-									type="button"
-									onClick={(e) => {
-										e.stopPropagation();
-										setDeletingService(roomService);
-									}}
-									className="flex items-center justify-center pr-2 pl-1.5 hover:bg-muted hover:text-red-500 transition-colors cursor-pointer shrink-0"
-									aria-label={`${t("remove")} ${roomService.serviceName}`}
+								</PopoverTrigger>
+								<PopoverContent
+									align="start"
+									className="w-64 p-3"
+									sideOffset={4}
 								>
-									<X className="h-3 w-3" />
-								</button>
-							</div>
+									<div className="space-y-3">
+										<div className="flex items-center justify-between">
+											<span className="text-sm font-medium">
+												{service.serviceName}
+											</span>
+											{service.isOverridden ? (
+												<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+													{t("customLabel")}
+												</span>
+											) : (
+												<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+													{t("inheritedLabel")}
+												</span>
+											)}
+										</div>
+										<div className="space-y-1.5">
+											<label
+												htmlFor={`edit-amount-${service.propertyServiceId}`}
+												className="text-xs text-muted-foreground"
+											>
+												{service.pricingType === "flat"
+													? ts("flatAmount")
+													: ts("unitPrice")}
+											</label>
+											<input
+												id={`edit-amount-${service.propertyServiceId}`}
+												type="number"
+												value={editAmount}
+												onChange={(e) => setEditAmount(e.target.value)}
+												className="w-full h-8 px-2 text-sm rounded-md border border-input bg-background"
+												min="0"
+												step="0.01"
+											/>
+										</div>
+										<div className="flex gap-2">
+											<Button
+												size="sm"
+												className="flex-1 h-8"
+												disabled={savingEdit}
+												onClick={handleSaveEdit}
+											>
+												{savingEdit ? (
+													<Loader2 className="h-3 w-3 animate-spin" />
+												) : (
+													ts("saveButton")
+												)}
+											</Button>
+											<Button
+												size="sm"
+												variant="ghost"
+												className="h-8"
+												onClick={() => setEditingService(null)}
+											>
+												{ts("cancel")}
+											</Button>
+										</div>
+										<p className="text-[11px] text-muted-foreground">
+											{formatAmount(service)}
+										</p>
+									</div>
+								</PopoverContent>
+							</Popover>
 						))}
 					</div>
 				)}
@@ -328,57 +343,6 @@ export function RoomServicesSection({
 				roomServices.length === 0 && (
 					<p className="text-sm text-muted-foreground">{t("empty")}</p>
 				)}
-
-			{!isRoomServicesLoading &&
-				!isRoomServicesFetchFailed &&
-				availableServices.length > 0 && (
-					<div className="flex items-center gap-2 flex-wrap">
-						<span className="text-sm text-muted-foreground shrink-0">
-							{t("quickAddFromProperty")}
-						</span>
-						{availableServices.map((service) => (
-							<button
-								key={service.id}
-								type="button"
-								disabled={activatingServiceId === service.id}
-								onClick={() => handleActivateProperty(service)}
-								className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-xs font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
-							>
-								{activatingServiceId === service.id ? (
-									<Loader2 className="h-3 w-3 animate-spin" />
-								) : null}
-								{service.serviceName}
-							</button>
-						))}
-					</div>
-				)}
-
-			<UpsertServiceDialog
-				mode={dialogMode === "edit" ? "edit" : "add"}
-				service={dialogMode === "edit" ? editingService : undefined}
-				customServiceNotice={
-					dialogMode === "edit" && isEditingCustom
-						? t("customServiceNotice")
-						: undefined
-				}
-				open={dialogMode !== null}
-				onOpenChange={(open) => !open && setDialogMode(null)}
-				onSave={handleSave}
-			/>
-
-			<DeleteServiceDialog
-				service={
-					deletingService
-						? {
-								id: deletingService.serviceId,
-								serviceName: deletingService.serviceName,
-							}
-						: null
-				}
-				open={!!deletingService}
-				onOpenChange={(open) => !open && setDeletingService(null)}
-				onDelete={handleDeleteService}
-			/>
 		</div>
 	);
 }

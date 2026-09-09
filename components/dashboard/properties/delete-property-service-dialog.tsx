@@ -13,19 +13,19 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 
-interface DeleteServiceDialogProps {
+interface DeletePropertyServiceDialogProps {
 	service: { id: string; serviceName: string } | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	onDelete: (id: string) => Promise<void>;
 }
 
-export function DeleteServiceDialog({
+export function DeletePropertyServiceDialog({
 	service,
 	open,
 	onOpenChange,
 	onDelete,
-}: DeleteServiceDialogProps) {
+}: DeletePropertyServiceDialogProps) {
 	const t = useTranslations("app.services");
 
 	const [isSubmitting, setIsSubmitting] = useState(false);

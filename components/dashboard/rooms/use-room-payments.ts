@@ -6,19 +6,23 @@ import type {
 	ServiceCharge,
 } from "@/components/dashboard/rent-payments/types";
 import { useRoomServicesStore } from "@/components/dashboard/rooms/room-services-store";
-import type { RoomService } from "@/components/dashboard/rooms/types";
+import type { EffectiveRoomService } from "@/components/dashboard/rooms/types";
 
-function generateChargesFromServices(services: RoomService[]): ServiceCharge[] {
-	return services.map((s) => ({
-		serviceId: s.serviceId,
-		serviceName: s.serviceName,
-		pricingType: s.pricingType,
-		unitLabel: s.unitLabel,
-		unitPrice: s.unitPrice,
-		flatAmount: s.pricingType === "flat" ? s.flatAmount : null,
-		usage: s.pricingType === "variable" ? 0 : null,
-		total: s.pricingType === "flat" ? (s.flatAmount ?? 0) : 0,
-	}));
+function generateChargesFromServices(
+	services: EffectiveRoomService[],
+): ServiceCharge[] {
+	return services
+		.filter((s) => s.isEnabled)
+		.map((s) => ({
+			serviceId: s.propertyServiceId,
+			serviceName: s.serviceName,
+			pricingType: s.pricingType,
+			unitLabel: s.unitLabel,
+			unitPrice: s.unitPrice,
+			flatAmount: s.pricingType === "flat" ? s.flatAmount : null,
+			usage: s.pricingType === "variable" ? 0 : null,
+			total: s.pricingType === "flat" ? (s.flatAmount ?? 0) : 0,
+		}));
 }
 
 type ChargesState = {

@@ -2,9 +2,9 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
-import { DeleteServiceDialog } from "./delete-service-dialog";
+import { DeletePropertyServiceDialog } from "./delete-property-service-dialog";
 
-describe("DeleteServiceDialog", () => {
+describe("DeletePropertyServiceDialog", () => {
 	const mockService = {
 		id: "svc-1",
 		serviceName: "WiFi",
@@ -19,7 +19,7 @@ describe("DeleteServiceDialog", () => {
 	describe("Display", () => {
 		it("does not display when closed", () => {
 			renderWithProviders(
-				<DeleteServiceDialog
+				<DeletePropertyServiceDialog
 					service={mockService}
 					open={false}
 					onOpenChange={mockOnOpenChange}
@@ -32,7 +32,7 @@ describe("DeleteServiceDialog", () => {
 
 		it("displays dialog with all elements when open", () => {
 			renderWithProviders(
-				<DeleteServiceDialog
+				<DeletePropertyServiceDialog
 					service={mockService}
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -63,7 +63,7 @@ describe("DeleteServiceDialog", () => {
 		it("calls onDelete with service id when delete button is clicked", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<DeleteServiceDialog
+				<DeletePropertyServiceDialog
 					service={mockService}
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -84,7 +84,7 @@ describe("DeleteServiceDialog", () => {
 		it("shows loading state while deleting", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<DeleteServiceDialog
+				<DeletePropertyServiceDialog
 					service={mockService}
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -108,7 +108,7 @@ describe("DeleteServiceDialog", () => {
 			const user = userEvent.setup();
 			const onDelete = vi.fn().mockRejectedValue(new Error("API error"));
 			renderWithProviders(
-				<DeleteServiceDialog
+				<DeletePropertyServiceDialog
 					service={mockService}
 					open={true}
 					onOpenChange={mockOnOpenChange}
@@ -129,7 +129,7 @@ describe("DeleteServiceDialog", () => {
 		it("closes dialog without calling onDelete when cancel is clicked", async () => {
 			const user = userEvent.setup();
 			renderWithProviders(
-				<DeleteServiceDialog
+				<DeletePropertyServiceDialog
 					service={mockService}
 					open={true}
 					onOpenChange={mockOnOpenChange}

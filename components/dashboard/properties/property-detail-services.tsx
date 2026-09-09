@@ -3,8 +3,6 @@
 import { Info, Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
-import { DeleteServiceDialog } from "@/components/dashboard/services/delete-service-dialog";
-import { UpsertServiceDialog } from "@/components/dashboard/services/upsert-service-dialog";
 import { ErrorState } from "@/components/shared/error-state";
 import {
 	Popover,
@@ -12,8 +10,10 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DeletePropertyServiceDialog } from "./delete-property-service-dialog";
 import { usePropertyServicesStore } from "./property-services-store";
 import type { PropertyService } from "./types";
+import { UpsertPropertyServiceDialog } from "./upsert-property-service-dialog";
 
 const EMPTY_SERVICES: PropertyService[] = [];
 
@@ -256,7 +256,7 @@ export function PropertyDetailServices({
 				</div>
 			)}
 
-			<UpsertServiceDialog
+			<UpsertPropertyServiceDialog
 				mode={dialogMode === "edit" ? "edit" : "add"}
 				service={
 					dialogMode === "edit" && editingService
@@ -274,7 +274,7 @@ export function PropertyDetailServices({
 				onSave={handleUpsertService}
 			/>
 
-			<DeleteServiceDialog
+			<DeletePropertyServiceDialog
 				service={deletingService}
 				open={!!deletingService}
 				onOpenChange={(open) => !open && setDeletingService(null)}

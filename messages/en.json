@@ -301,7 +301,18 @@
 			"addService": "Add service",
 			"remove": "Remove",
 			"customServiceNotice": "This service has been customized from the property default",
-			"quickAddFromProperty": "Quick add from property:"
+			"quickAddFromProperty": "Quick add from property:",
+			"inheritedLabel": "Inherited",
+			"inheritedTooltip": "Using the property default configuration",
+			"customLabel": "Custom",
+			"customTooltip": "This room has a custom override for this service",
+			"disabledLabel": "Disabled",
+			"disabled": "Disabled for this room",
+			"enable": "Enable",
+			"disable": "Disable",
+			"resetToDefault": "Reset to default",
+			"fetchError": "Failed to load services",
+			"retry": "Try again"
 		},
 		"propertyServices": {
 			"title": "Services",

@@ -2,14 +2,9 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { DATABASE_TABLES } from "@/lib/constants";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { mapToCamelCase } from "@/lib/utils";
-import { roomServiceSchema } from "@/lib/validations/room-service";
+import { roomServiceOverrideSchema } from "@/lib/validations/room-service";
 
-function mapRoomService(row: Record<string, unknown>): Record<string, unknown> {
-	return mapToCamelCase(row);
-}
-
-export async function listRoomServices(
+export async function listRoomServiceOverrides(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -27,18 +22,16 @@ export async function listRoomServices(
 
 		const { id: roomId } = await params;
 
-		const { data, error } = await supabase
+		const { data: overrides, error } = await supabase
 			.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
-			.select()
-			.order("service_name")
-			.eq("room_id", roomId)
-			.eq("user_id", user.id);
+			.select("*")
+			.eq("room_id", roomId);
 
 		if (error) {
 			throw error;
 		}
 
-		return NextResponse.json(data.map(mapRoomService), { status: 200 });
+		return NextResponse.json(overrides ?? [], { status: 200 });
 	} catch (err) {
 		console.error("RoomServices API Error:", err);
 		return NextResponse.json(
@@ -48,7 +41,7 @@ export async function listRoomServices(
 	}
 }
 
-export async function createRoomService(
+export async function upsertRoomServiceOverride(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
@@ -67,7 +60,7 @@ export async function createRoomService(
 		const { id: roomId } = await params;
 		const body = await request.json();
 
-		const validation = z.array(roomServiceSchema).safeParse(body);
+		const validation = roomServiceOverrideSchema.safeParse(body);
 		if (!validation.success) {
 			return NextResponse.json(
 				{ error: z.treeifyError(validation.error) },
@@ -75,39 +68,46 @@ export async function createRoomService(
 			);
 		}
 
-		const insertDataArray = validation.data.map(
-			({
-				serviceId,
-				serviceName,
-				unitLabel,
-				pricingType,
-				flatAmount,
-				unitPrice,
-			}) => {
-				const row: Record<string, unknown> = {
-					room_id: roomId,
-					service_id: serviceId,
-					service_name: serviceName,
-					user_id: user.id,
-					pricing_type: pricingType,
-				};
-				if (unitLabel !== undefined) row.unit_label = unitLabel;
-				if (flatAmount !== undefined) row.flat_amount = flatAmount;
-				if (unitPrice !== undefined) row.unit_price = unitPrice;
-				return row;
-			},
-		);
+		const { serviceId, isEnabled, customFlatAmount, customUnitPrice } =
+			validation.data;
+
+		const row: Record<string, unknown> = {
+			room_id: roomId,
+			service_id: serviceId,
+			user_id: user.id,
+			is_enabled: isEnabled,
+		};
+		if (customFlatAmount !== undefined)
+			row.custom_flat_amount = customFlatAmount;
+		if (customUnitPrice !== undefined) row.custom_unit_price = customUnitPrice;
 
 		const { data, error } = await supabase
 			.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
-			.insert(insertDataArray)
-			.select();
+			.upsert(row, { onConflict: "room_id,service_id" })
+			.select()
+			.single();
 
 		if (error) {
 			throw error;
 		}
 
-		return NextResponse.json(data.map(mapRoomService), { status: 201 });
+		// An override identical to the property default (enabled, no custom
+		// prices) is a no-op. Delete it so isOverridden stays accurate —
+		// otherwise re-enabling a service leaves a stale amber dot.
+		if (
+			data.is_enabled &&
+			data.custom_flat_amount == null &&
+			data.custom_unit_price == null
+		) {
+			await supabase
+				.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
+				.delete()
+				.eq("id", data.id);
+
+			return NextResponse.json(null, { status: 200 });
+		}
+
+		return NextResponse.json(data, { status: 200 });
 	} catch (err) {
 		console.error("RoomServices API Error:", err);
 		return NextResponse.json(
@@ -117,5 +117,5 @@ export async function createRoomService(
 	}
 }
 
-export const GET = listRoomServices;
-export const POST = createRoomService;
+export const GET = listRoomServiceOverrides;
+export const POST = upsertRoomServiceOverride;

@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-export const roomServiceSchema = z.object({
+export const roomServiceOverrideSchema = z.object({
 	serviceId: z.uuid(),
-	serviceName: z.string(),
-	unitLabel: z.string().nullable().optional(),
-	pricingType: z.enum(["flat", "variable"]),
-	flatAmount: z.number().positive().nullable().optional(),
-	unitPrice: z.number().positive().nullable().optional(),
+	isEnabled: z.boolean().optional().default(true),
+	customFlatAmount: z.number().positive().nullable().optional(),
+	customUnitPrice: z.number().positive().nullable().optional(),
 });
 
-export type RoomServiceInput = z.infer<typeof roomServiceSchema>;
+export type RoomServiceOverrideInput = z.infer<
+	typeof roomServiceOverrideSchema
+>;
