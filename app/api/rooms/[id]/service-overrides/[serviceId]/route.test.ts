@@ -51,7 +51,7 @@ describe("DELETE /api/rooms/[id]/service-overrides/[serviceId]", () => {
 		});
 	};
 
-	it("should return 204 when authenticated user deletes an override", async () => {
+	it("should return 204 when override is deleted", async () => {
 		mockAuthenticatedUser();
 		mockEq2.mockResolvedValue({
 			error: null,

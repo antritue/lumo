@@ -149,7 +149,7 @@ describe("POST /api/rooms/[id]/service-overrides", () => {
 		});
 	};
 
-	it("should return 201 when creating an override", async () => {
+	it("should return 200 when upserting an override", async () => {
 		mockAuthenticatedUser();
 
 		mockFrom.mockReturnValue({
@@ -178,7 +178,7 @@ describe("POST /api/rooms/[id]/service-overrides", () => {
 		const res = await upsertRoomServiceOverride(req, createParams(ROOM_ID));
 		const data = await res.json();
 
-		expect(res.status).toBe(201);
+		expect(res.status).toBe(200);
 		expect(data).toEqual({
 			id: "ov-1",
 			room_id: ROOM_ID,
@@ -188,6 +188,44 @@ describe("POST /api/rooms/[id]/service-overrides", () => {
 			custom_flat_amount: null,
 			custom_unit_price: null,
 		});
+	});
+
+	it("should return null when upsert results in no-op override", async () => {
+		mockAuthenticatedUser();
+
+		const mockDelete = vi.fn().mockReturnValue({
+			eq: vi.fn().mockResolvedValue({ error: null }),
+		});
+		mockFrom.mockReturnValue({
+			upsert: vi.fn().mockReturnValue({
+				select: vi.fn().mockReturnValue({
+					single: vi.fn().mockResolvedValue({
+						data: {
+							id: "ov-1",
+							room_id: ROOM_ID,
+							service_id: SVC_1_ID,
+							user_id: USER_ID,
+							is_enabled: true,
+							custom_flat_amount: null,
+							custom_unit_price: null,
+						},
+						error: null,
+					}),
+				}),
+			}),
+			delete: mockDelete,
+		});
+
+		const req = createRequest({
+			serviceId: SVC_1_ID,
+			isEnabled: true,
+		});
+		const res = await upsertRoomServiceOverride(req, createParams(ROOM_ID));
+		const data = await res.json();
+
+		expect(res.status).toBe(200);
+		expect(data).toBeNull();
+		expect(mockDelete).toHaveBeenCalled();
 	});
 
 	it("should return 401 when user is not authenticated", async () => {

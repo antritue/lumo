@@ -203,7 +203,10 @@ describe("RoomServicesStore", () => {
 				},
 			});
 
-			mockFetch.mockResolvedValueOnce({ ok: true });
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({ id: "ov-1", is_enabled: false }),
+			});
 
 			await useRoomServicesStore
 				.getState()
@@ -221,6 +224,41 @@ describe("RoomServicesStore", () => {
 					credentials: "include",
 				}),
 			);
+		});
+
+		it("clears overridden flag when backend reverts to default", async () => {
+			authenticate();
+
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							propertyServiceId: "ps-1",
+							isEnabled: false,
+							isOverridden: true,
+						}),
+					],
+				},
+				roomPropertyMap: { "room-1": "prop-1" },
+			});
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => null,
+			});
+
+			await useRoomServicesStore
+				.getState()
+				.toggleService("room-1", "ps-1", true);
+
+			const { roomServicesByRoomId } = useRoomServicesStore.getState();
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(true);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(false);
 		});
 
 		it("handles API error gracefully", async () => {
@@ -269,7 +307,10 @@ describe("RoomServicesStore", () => {
 				},
 			});
 
-			mockFetch.mockResolvedValueOnce({ ok: true });
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => ({ id: "ov-1" }),
+			});
 
 			await useRoomServicesStore
 				.getState()
@@ -295,9 +336,14 @@ describe("RoomServicesStore", () => {
 	});
 
 	describe("resetToDefault", () => {
-		it("deletes override and resets to inherited values", async () => {
+		it("deletes override and applies inherited values", async () => {
 			authenticate();
 
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [
@@ -308,6 +354,7 @@ describe("RoomServicesStore", () => {
 						}),
 					],
 				},
+				roomPropertyMap: { "room-1": "prop-1" },
 			});
 
 			mockFetch.mockResolvedValueOnce({ ok: true });
@@ -325,6 +372,7 @@ describe("RoomServicesStore", () => {
 					credentials: "include",
 				}),
 			);
+			expect(mockFetch).toHaveBeenCalledTimes(1);
 		});
 
 		it("does nothing when service is not overridden", async () => {

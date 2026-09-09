@@ -91,7 +91,23 @@ export async function upsertRoomServiceOverride(
 			throw error;
 		}
 
-		return NextResponse.json(data, { status: 201 });
+		// An override identical to the property default (enabled, no custom
+		// prices) is a no-op. Delete it so isOverridden stays accurate —
+		// otherwise re-enabling a service leaves a stale amber dot.
+		if (
+			data.is_enabled &&
+			data.custom_flat_amount == null &&
+			data.custom_unit_price == null
+		) {
+			await supabase
+				.from(DATABASE_TABLES.ROOM_SERVICE_OVERRIDES)
+				.delete()
+				.eq("id", data.id);
+
+			return NextResponse.json(null, { status: 200 });
+		}
+
+		return NextResponse.json(data, { status: 200 });
 	} catch (err) {
 		console.error("RoomServices API Error:", err);
 		return NextResponse.json(

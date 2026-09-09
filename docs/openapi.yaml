@@ -1688,12 +1688,14 @@ paths:
               serviceId: 550e8400-e29b-41d4-a716-446655440000
               isEnabled: false
       responses:
-        "201":
-          description: Override upserted
+        "200":
+          description: Override upserted, or null if reverted to default (no-op deleted)
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RoomServiceOverride"
+                oneOf:
+                  - $ref: "#/components/schemas/RoomServiceOverride"
+                  - type: "null"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":

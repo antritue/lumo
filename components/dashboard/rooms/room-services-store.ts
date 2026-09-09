@@ -14,6 +14,7 @@ interface RoomServiceOverrideRow {
 
 interface RoomServicesState {
 	roomServicesByRoomId: Record<string, EffectiveRoomService[]>;
+	roomPropertyMap: Record<string, string>;
 	isRoomServicesLoading: boolean;
 	isRoomServicesFetchFailed: boolean;
 	fetchingRoomId: string | null;
@@ -34,215 +35,268 @@ interface RoomServicesState {
 	clearStore: () => void;
 }
 
+const buildInheritedService = (
+	propertyService: PropertyService,
+): EffectiveRoomService => ({
+	propertyServiceId: propertyService.id,
+	serviceName: propertyService.serviceName,
+	unitLabel: propertyService.unitLabel,
+	pricingType: propertyService.pricingType,
+	flatAmount: propertyService.flatAmount,
+	unitPrice: propertyService.unitPrice,
+	isEnabled: true,
+	isOverridden: false,
+});
+
 export const useRoomServicesStore = create<RoomServicesState>()(
 	devtools(
-		(set, get) => ({
-			roomServicesByRoomId: {},
-			isRoomServicesLoading: false,
-			fetchingRoomId: null,
-			isRoomServicesFetchFailed: false,
-
-			fetchRoomServices: async (roomId, propertyId) => {
-				const user = useAuthStore.getState().user;
-				if (!user) return;
-
-				const { fetchingRoomId } = get();
-				if (fetchingRoomId === roomId) return;
-
-				try {
-					set({
-						isRoomServicesLoading: true,
-						fetchingRoomId: roomId,
-						isRoomServicesFetchFailed: false,
-					});
-
-					await usePropertyServicesStore
-						.getState()
-						.fetchPropertyServices(propertyId);
-					const propertyServices: PropertyService[] =
-						usePropertyServicesStore.getState().propertyServicesByPropertyId[
-							propertyId
-						] ?? [];
-
-					const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
-						method: "GET",
-						credentials: "include",
-					});
-
-					if (!res.ok) {
-						throw new Error("Failed to fetch room services");
-					}
-
-					const overrides = (await res.json()) as RoomServiceOverrideRow[];
-
-					const overrideMap = new Map(overrides.map((o) => [o.service_id, o]));
-
-					const effectiveServices: EffectiveRoomService[] = propertyServices
-						.map((ps) => {
-							const override = overrideMap.get(ps.id);
-							return {
-								propertyServiceId: ps.id,
-								serviceName: ps.serviceName,
-								unitLabel: ps.unitLabel,
-								pricingType: ps.pricingType,
-								flatAmount: override?.custom_flat_amount ?? ps.flatAmount,
-								unitPrice: override?.custom_unit_price ?? ps.unitPrice,
-								isEnabled: override?.is_enabled ?? true,
-								isOverridden: !!override,
-							};
-						})
-						.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
-
-					set((state) => ({
-						roomServicesByRoomId: {
-							...state.roomServicesByRoomId,
-							[roomId]: effectiveServices,
-						},
-						isRoomServicesLoading: false,
-						fetchingRoomId: null,
-					}));
-				} catch (error) {
-					console.error("Failed to fetch room services:", error);
-					set({
-						isRoomServicesLoading: false,
-						fetchingRoomId: null,
-						isRoomServicesFetchFailed: true,
-					});
-				}
-			},
-
-			toggleService: async (roomId, propertyServiceId, enabled) => {
-				const user = useAuthStore.getState().user;
-				if (!user) return;
-
-				try {
-					const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							serviceId: propertyServiceId,
-							isEnabled: enabled,
-						}),
-						credentials: "include",
-					});
-
-					if (!res.ok) {
-						throw new Error("Failed to toggle service");
-					}
-
-					set((state) => ({
-						roomServicesByRoomId: {
-							...state.roomServicesByRoomId,
-							[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map((s) =>
-								s.propertyServiceId === propertyServiceId
-									? { ...s, isEnabled: enabled, isOverridden: true }
-									: s,
-							),
-						},
-					}));
-				} catch (error) {
-					console.error("Failed to toggle service:", error);
-					throw error;
-				}
-			},
-
-			setCustomPrice: async (
-				roomId,
-				propertyServiceId,
-				flatAmount,
-				unitPrice,
+		(set, get) => {
+			const applyInheritedService = async (
+				roomId: string,
+				propertyServiceId: string,
 			) => {
-				const user = useAuthStore.getState().user;
-				if (!user) return;
+				const propertyId = get().roomPropertyMap[roomId];
+				const propertyService =
+					propertyId !== undefined
+						? (
+								usePropertyServicesStore.getState()
+									.propertyServicesByPropertyId[propertyId] ?? []
+							).find((ps) => ps.id === propertyServiceId)
+						: undefined;
 
-				try {
-					const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							serviceId: propertyServiceId,
-							customFlatAmount: flatAmount,
-							customUnitPrice: unitPrice,
-						}),
-						credentials: "include",
-					});
-
-					if (!res.ok) {
-						throw new Error("Failed to set custom price");
-					}
-
-					set((state) => ({
-						roomServicesByRoomId: {
-							...state.roomServicesByRoomId,
-							[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map((s) =>
-								s.propertyServiceId === propertyServiceId
-									? {
-											...s,
-											flatAmount,
-											unitPrice,
-											isOverridden: true,
-										}
-									: s,
-							),
-						},
-					}));
-				} catch (error) {
-					console.error("Failed to set custom price:", error);
-					throw error;
+				if (!propertyService) {
+					await get().fetchRoomServices(roomId, propertyId ?? "");
+					return;
 				}
-			},
 
-			resetToDefault: async (roomId, propertyServiceId) => {
-				const user = useAuthStore.getState().user;
-				if (!user) return;
+				const inherited = buildInheritedService(propertyService);
+				set((state) => ({
+					roomServicesByRoomId: {
+						...state.roomServicesByRoomId,
+						[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map((s) =>
+							s.propertyServiceId === propertyServiceId ? inherited : s,
+						),
+					},
+				}));
+			};
 
-				try {
-					const services = get().roomServicesByRoomId[roomId] ?? [];
-					const service = services.find(
-						(s) => s.propertyServiceId === propertyServiceId,
-					);
-					if (!service?.isOverridden) return;
+			return {
+				roomServicesByRoomId: {},
+				roomPropertyMap: {},
+				isRoomServicesLoading: false,
+				fetchingRoomId: null,
+				isRoomServicesFetchFailed: false,
 
-					const res = await fetch(
-						`/api/rooms/${roomId}/service-overrides/${service.propertyServiceId}`,
-						{
-							method: "DELETE",
+				fetchRoomServices: async (roomId, propertyId) => {
+					const user = useAuthStore.getState().user;
+					if (!user) return;
+
+					const { fetchingRoomId } = get();
+					if (fetchingRoomId === roomId) return;
+
+					try {
+						set({
+							isRoomServicesLoading: true,
+							fetchingRoomId: roomId,
+							isRoomServicesFetchFailed: false,
+						});
+
+						await usePropertyServicesStore
+							.getState()
+							.fetchPropertyServices(propertyId);
+						const propertyServices: PropertyService[] =
+							usePropertyServicesStore.getState().propertyServicesByPropertyId[
+								propertyId
+							] ?? [];
+
+						const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
+							method: "GET",
 							credentials: "include",
-						},
-					);
+						});
 
-					if (!res.ok) {
-						throw new Error("Failed to reset service");
+						if (!res.ok) {
+							throw new Error("Failed to fetch room services");
+						}
+
+						const overrides = (await res.json()) as RoomServiceOverrideRow[];
+
+						const overrideMap = new Map(
+							overrides.map((o) => [o.service_id, o]),
+						);
+
+						const effectiveServices: EffectiveRoomService[] = propertyServices
+							.map((ps) => {
+								const override = overrideMap.get(ps.id);
+								return {
+									propertyServiceId: ps.id,
+									serviceName: ps.serviceName,
+									unitLabel: ps.unitLabel,
+									pricingType: ps.pricingType,
+									flatAmount: override?.custom_flat_amount ?? ps.flatAmount,
+									unitPrice: override?.custom_unit_price ?? ps.unitPrice,
+									isEnabled: override?.is_enabled ?? true,
+									isOverridden: !!override,
+								};
+							})
+							.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
+
+						set((state) => ({
+							roomServicesByRoomId: {
+								...state.roomServicesByRoomId,
+								[roomId]: effectiveServices,
+							},
+							roomPropertyMap: {
+								...state.roomPropertyMap,
+								[roomId]: propertyId,
+							},
+							isRoomServicesLoading: false,
+							fetchingRoomId: null,
+						}));
+					} catch (error) {
+						console.error("Failed to fetch room services:", error);
+						set({
+							isRoomServicesLoading: false,
+							fetchingRoomId: null,
+							isRoomServicesFetchFailed: true,
+						});
 					}
+				},
 
-					set((state) => ({
-						roomServicesByRoomId: {
-							...state.roomServicesByRoomId,
-							[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map((s) =>
-								s.propertyServiceId === propertyServiceId
-									? {
-											...s,
-											isOverridden: false,
-											isEnabled: true,
-										}
-									: s,
-							),
-						},
-					}));
-				} catch (error) {
-					console.error("Failed to reset service:", error);
-					throw error;
-				}
-			},
+				toggleService: async (roomId, propertyServiceId, enabled) => {
+					const user = useAuthStore.getState().user;
+					if (!user) return;
 
-			clearStore: () =>
-				set({
-					roomServicesByRoomId: {},
-					isRoomServicesLoading: false,
-					fetchingRoomId: null,
-					isRoomServicesFetchFailed: false,
-				}),
-		}),
+					try {
+						const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({
+								serviceId: propertyServiceId,
+								isEnabled: enabled,
+							}),
+							credentials: "include",
+						});
+
+						if (!res.ok) {
+							throw new Error("Failed to toggle service");
+						}
+
+						const data = (await res.json()) as Record<string, unknown> | null;
+
+						if (!data) {
+							applyInheritedService(roomId, propertyServiceId);
+							return;
+						}
+
+						set((state) => ({
+							roomServicesByRoomId: {
+								...state.roomServicesByRoomId,
+								[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map((s) =>
+									s.propertyServiceId === propertyServiceId
+										? { ...s, isEnabled: enabled, isOverridden: true }
+										: s,
+								),
+							},
+						}));
+					} catch (error) {
+						console.error("Failed to toggle service:", error);
+						throw error;
+					}
+				},
+
+				setCustomPrice: async (
+					roomId,
+					propertyServiceId,
+					flatAmount,
+					unitPrice,
+				) => {
+					const user = useAuthStore.getState().user;
+					if (!user) return;
+
+					try {
+						const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({
+								serviceId: propertyServiceId,
+								customFlatAmount: flatAmount,
+								customUnitPrice: unitPrice,
+							}),
+							credentials: "include",
+						});
+
+						if (!res.ok) {
+							throw new Error("Failed to set custom price");
+						}
+
+						const data = (await res.json()) as Record<string, unknown> | null;
+
+						if (!data) {
+							applyInheritedService(roomId, propertyServiceId);
+							return;
+						}
+
+						set((state) => ({
+							roomServicesByRoomId: {
+								...state.roomServicesByRoomId,
+								[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map((s) =>
+									s.propertyServiceId === propertyServiceId
+										? {
+												...s,
+												flatAmount,
+												unitPrice,
+												isOverridden: true,
+											}
+										: s,
+								),
+							},
+						}));
+					} catch (error) {
+						console.error("Failed to set custom price:", error);
+						throw error;
+					}
+				},
+
+				resetToDefault: async (roomId, propertyServiceId) => {
+					const user = useAuthStore.getState().user;
+					if (!user) return;
+
+					try {
+						const services = get().roomServicesByRoomId[roomId] ?? [];
+						const service = services.find(
+							(s) => s.propertyServiceId === propertyServiceId,
+						);
+						if (!service?.isOverridden) return;
+
+						const res = await fetch(
+							`/api/rooms/${roomId}/service-overrides/${service.propertyServiceId}`,
+							{
+								method: "DELETE",
+								credentials: "include",
+							},
+						);
+
+						if (!res.ok) {
+							throw new Error("Failed to reset service");
+						}
+
+						applyInheritedService(roomId, propertyServiceId);
+					} catch (error) {
+						console.error("Failed to reset service:", error);
+						throw error;
+					}
+				},
+
+				clearStore: () =>
+					set({
+						roomServicesByRoomId: {},
+						roomPropertyMap: {},
+						isRoomServicesLoading: false,
+						fetchingRoomId: null,
+						isRoomServicesFetchFailed: false,
+					}),
+			};
+		},
 		{ name: "room-services" },
 	),
 );
