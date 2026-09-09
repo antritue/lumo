@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
-interface UpsertServiceDialogProps {
+interface UpsertPropertyServiceDialogProps {
 	mode: "add" | "edit";
 	service?: {
 		id: string;
@@ -37,14 +37,14 @@ interface UpsertServiceDialogProps {
 	) => Promise<void>;
 }
 
-export function UpsertServiceDialog({
+export function UpsertPropertyServiceDialog({
 	mode,
 	service,
 	open,
 	onOpenChange,
 	customServiceNotice,
 	onSave,
-}: UpsertServiceDialogProps) {
+}: UpsertPropertyServiceDialogProps) {
 	const t = useTranslations("app.services");
 	const locale = useLocale();
 	const currency = locale === "vi" ? "VND" : "USD";
