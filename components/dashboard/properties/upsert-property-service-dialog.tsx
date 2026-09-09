@@ -234,6 +234,10 @@ export function UpsertPropertyServiceDialog({
 							)}
 						</div>
 
+						<p className="text-xs text-muted-foreground leading-relaxed">
+							{mode === "add" ? t("addNotice") : t("editNotice")}
+						</p>
+
 						<div className="flex gap-3">
 							<Button
 								type="submit"

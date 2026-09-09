@@ -342,6 +342,8 @@
 			"saveButton": "Save",
 			"deleteTitle": "Delete service?",
 			"deleteMessage": "Removing \"{name}\" will remove it from all rooms under this property. Existing past payment records will not be affected",
+			"addNotice": "This service will be available to all rooms under this property. Past payment records will not be affected",
+			"editNotice": "Changes will apply to all rooms under this property. Past payment records will not be affected",
 			"deleteConfirm": "Delete service",
 			"flat": "Flat fee",
 			"variable": "Usage-based",
