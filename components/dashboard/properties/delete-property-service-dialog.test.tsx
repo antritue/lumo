@@ -48,7 +48,10 @@ describe("DeletePropertyServiceDialog", () => {
 			expect(heading).toBeInTheDocument();
 			expect(heading.querySelector("svg")).toBeInTheDocument();
 			expect(
-				within(dialog).getByText(/permanently delete "WiFi"/i),
+				within(dialog).getByText(/remove it from all rooms/i),
+			).toBeInTheDocument();
+			expect(
+				within(dialog).getByText(/past payment records will not be affected/i),
 			).toBeInTheDocument();
 			expect(
 				within(dialog).getByRole("button", { name: /delete service/i }),
@@ -98,7 +101,7 @@ describe("DeletePropertyServiceDialog", () => {
 			await user.click(deleteButton);
 
 			expect(screen.getByTestId("service-delete-loader")).toBeInTheDocument();
-			expect(screen.queryByText(/permanently delete/i)).not.toBeInTheDocument();
+			expect(screen.queryByText(/remove it from/i)).not.toBeInTheDocument();
 			expect(
 				screen.queryByRole("button", { name: /cancel/i }),
 			).not.toBeInTheDocument();

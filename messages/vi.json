@@ -316,7 +316,7 @@
 			"editTitle": "Sửa dịch vụ",
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa dịch vụ?",
-			"deleteMessage": "Dịch vụ \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
+			"deleteMessage": "Xóa \"{name}\" sẽ gỡ dịch vụ khỏi tất cả các phòng trong nhà này. Các hóa đơn thanh toán đã ghi sẽ không bị ảnh hưởng",
 			"deleteConfirm": "Xóa dịch vụ",
 			"flat": "Phí cố định",
 			"variable": "Theo số lượng",

@@ -341,7 +341,7 @@
 			"editTitle": "Edit service",
 			"saveButton": "Save",
 			"deleteTitle": "Delete service?",
-			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone",
+			"deleteMessage": "Removing \"{name}\" will remove it from all rooms under this property. Existing past payment records will not be affected",
 			"deleteConfirm": "Delete service",
 			"flat": "Flat fee",
 			"variable": "Usage-based",
