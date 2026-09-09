@@ -26,7 +26,6 @@ interface UpsertPropertyServiceDialogProps {
 	};
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	customServiceNotice?: string;
 	onSave: (
 		id: string | null,
 		serviceName: string,
@@ -42,7 +41,6 @@ export function UpsertPropertyServiceDialog({
 	service,
 	open,
 	onOpenChange,
-	customServiceNotice,
 	onSave,
 }: UpsertPropertyServiceDialogProps) {
 	const t = useTranslations("app.services");
@@ -117,12 +115,6 @@ export function UpsertPropertyServiceDialog({
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
-					{customServiceNotice && (
-						<p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5 text-center">
-							<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
-							{customServiceNotice}
-						</p>
-					)}
 					<DialogDescription className="sr-only">{title}</DialogDescription>
 				</DialogHeader>
 

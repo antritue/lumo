@@ -172,13 +172,9 @@ export function PropertyDetailServices({
 					<PopoverContent
 						side="top"
 						align="start"
-						className="max-w-64 text-xs leading-relaxed space-y-2"
+						className="max-w-64 text-xs leading-relaxed"
 					>
 						<p>{t("titleTooltip")}</p>
-						<p className="flex items-center gap-1.5">
-							<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
-							{t("customizedTooltip")}
-						</p>
 					</PopoverContent>
 				</Popover>
 				<div className="flex-1" />
@@ -238,7 +234,7 @@ export function PropertyDetailServices({
 			{isReady && existingPresetKeys.length > 0 && (
 				<div className="flex items-center gap-2 flex-wrap">
 					<span className="text-sm text-muted-foreground shrink-0">
-						{t("quickAddFromGlobal")}
+						{t("quickAddPresets")}
 					</span>
 					{existingPresetKeys.map((presetKey) => (
 						<button

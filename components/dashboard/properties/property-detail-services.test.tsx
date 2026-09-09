@@ -104,7 +104,7 @@ describe("PropertyDetailServices", () => {
 		it("shows preset shelf when presets are not yet added", () => {
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
-			expect(screen.getByText("Quick add from global:")).toBeInTheDocument();
+			expect(screen.getByText("Quick add:")).toBeInTheDocument();
 			expect(
 				screen.getByRole("button", { name: /electricity/i }),
 			).toBeInTheDocument();
@@ -137,9 +137,7 @@ describe("PropertyDetailServices", () => {
 
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
-			expect(
-				screen.queryByText("Quick add from global:"),
-			).not.toBeInTheDocument();
+			expect(screen.queryByText("Quick add:")).not.toBeInTheDocument();
 		});
 
 		it("shows tooltip info icon", () => {

@@ -268,15 +268,8 @@
 		"roomServices": {
 			"title": "Dịch vụ",
 			"infoButtonLabel": "Tìm hiểu cách hoạt động",
-			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng",
-			"customizedTooltip": "Đã chỉnh riêng cho nhà này",
-			"roomTipBefore": "Mẹo: tạo dịch vụ mẫu trong ",
-			"roomTipAfter": " trước",
+			"titleTooltip": "Tạo dịch vụ chung cho cả nhà, có thể chỉnh riêng cho từng phòng",
 			"empty": "Phòng này chưa có dịch vụ",
-			"addService": "Thêm dịch vụ",
-			"remove": "Xóa",
-			"customServiceNotice": "Dịch vụ này đã được chỉnh riêng cho nhà này",
-			"quickAddFromProperty": "Thêm từ nhà:",
 			"inheritedLabel": "Kế thừa",
 			"inheritedTooltip": "Sử dụng cấu hình mặc định của nhà",
 			"customLabel": "Tùy chỉnh",
@@ -292,15 +285,11 @@
 		"propertyServices": {
 			"title": "Dịch vụ",
 			"infoButtonLabel": "Tìm hiểu cách hoạt động",
-			"titleTooltip": "Dịch vụ có 3 cấp: tạo mẫu chung → chỉnh theo nhà → gán cho phòng",
-			"customizedTooltip": "Đã chỉnh riêng",
-			"globalTipBefore": "Mẹo: tạo dịch vụ mẫu trong ",
-			"globalTipAfter": " trước",
+			"titleTooltip": "Tạo dịch vụ chung cho cả nhà, có thể chỉnh riêng cho từng phòng",
 			"count": "{count, plural, =0 {0 dịch vụ} =1 {1 dịch vụ} other {# dịch vụ}}",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
-			"customServiceNotice": "Dịch vụ này đã được chỉnh riêng",
-			"quickAddFromGlobal": "Thêm từ danh sách chung:"
+			"quickAddPresets": "Thêm nhanh:"
 		},
 		"services": {
 			"emptyTitle": "Chưa có dịch vụ",
@@ -334,7 +323,6 @@
 			"suggestions": "Một số dịch vụ thường dùng:",
 			"quickAdd": "Thêm nhanh:",
 			"orCustom": "hoặc tự nhập",
-			"globalServiceNotice": "Dịch vụ được dùng chung cho tất cả nhà. Mỗi nhà có thể chỉnh riêng hoặc xóa từng dịch vụ",
 			"errors": {
 				"create": {
 					"title": "Thêm dịch vụ thất bại",
