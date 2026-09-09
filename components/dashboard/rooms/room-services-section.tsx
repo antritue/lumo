@@ -10,6 +10,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatServicePrice } from "@/lib/utils";
 import { useRoomServicesStore } from "./room-services-store";
 import type { EffectiveRoomService } from "./types";
 
@@ -112,16 +113,8 @@ export function RoomServicesSection({
 		}
 	};
 
-	const formatAmount = (service: EffectiveRoomService): string => {
-		const currency = locale === "vi" ? "VND" : "USD";
-		if (service.pricingType === "flat" && service.flatAmount != null) {
-			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(service.flatAmount)}${ts("perMonth")}`;
-		}
-		if (service.pricingType === "variable" && service.unitPrice != null) {
-			return `${new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 0 }).format(service.unitPrice)}/${service.unitLabel ?? ts("unit")}`;
-		}
-		return "";
-	};
+	const formatAmount = (service: EffectiveRoomService): string =>
+		formatServicePrice(service, locale, ts("perMonth"), ts("unit"));
 
 	return (
 		<div className="space-y-4">

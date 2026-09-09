@@ -10,6 +10,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatServicePrice } from "@/lib/utils";
 import { DeletePropertyServiceDialog } from "./delete-property-service-dialog";
 import { usePropertyServicesStore } from "./property-services-store";
 import type { PropertyService } from "./types";
@@ -40,8 +41,8 @@ const PRESETS = {
 	},
 	parking: {
 		names: { en: "Parking", vi: "Giữ xe" },
-		unitLabel: "vehicle",
-		pricingType: "variable" as const,
+		unitLabel: null,
+		pricingType: "flat" as const,
 	},
 };
 
@@ -55,6 +56,7 @@ export function PropertyDetailServices({
 	propertyId,
 }: PropertyDetailServicesProps) {
 	const t = useTranslations("app.propertyServices");
+	const ts = useTranslations("app.services");
 	const locale = useLocale() as "en" | "vi";
 
 	const propertyServices = usePropertyServicesStore(
@@ -152,6 +154,9 @@ export function PropertyDetailServices({
 		setPresetToAdd(null);
 	};
 
+	const formatPrice = (service: PropertyService): string =>
+		formatServicePrice(service, locale, ts("perMonth"), ts("unit"));
+
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center gap-3">
@@ -172,13 +177,9 @@ export function PropertyDetailServices({
 					<PopoverContent
 						side="top"
 						align="start"
-						className="max-w-64 text-xs leading-relaxed space-y-2"
+						className="max-w-64 text-xs leading-relaxed"
 					>
 						<p>{t("titleTooltip")}</p>
-						<p className="flex items-center gap-1.5">
-							<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
-							{t("customizedTooltip")}
-						</p>
 					</PopoverContent>
 				</Popover>
 				<div className="flex-1" />
@@ -209,7 +210,7 @@ export function PropertyDetailServices({
 					{propertyServices.map((propertyService) => (
 						<div
 							key={propertyService.id}
-							className="inline-flex items-stretch rounded-full bg-secondary text-sm font-medium overflow-hidden"
+							className="inline-flex items-stretch rounded-xl bg-secondary text-sm font-medium overflow-hidden"
 						>
 							<button
 								type="button"
@@ -217,9 +218,16 @@ export function PropertyDetailServices({
 									setEditingService(propertyService);
 									setDialogMode("edit");
 								}}
-								className="flex items-center gap-1 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer"
+								className="flex flex-col items-start justify-center gap-0.5 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer min-w-0"
 							>
-								{propertyService.serviceName}
+								<span className="truncate max-w-[140px] leading-tight">
+									{propertyService.serviceName}
+								</span>
+								{formatPrice(propertyService) && (
+									<span className="text-xs font-normal text-muted-foreground whitespace-nowrap leading-tight">
+										{formatPrice(propertyService)}
+									</span>
+								)}
 							</button>
 							<div className="w-px self-stretch bg-border/50" />
 							<button
@@ -238,7 +246,7 @@ export function PropertyDetailServices({
 			{isReady && existingPresetKeys.length > 0 && (
 				<div className="flex items-center gap-2 flex-wrap">
 					<span className="text-sm text-muted-foreground shrink-0">
-						{t("quickAddFromGlobal")}
+						{t("quickAddPresets")}
 					</span>
 					{existingPresetKeys.map((presetKey) => (
 						<button
