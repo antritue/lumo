@@ -241,7 +241,20 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 
 			fetchRentPaymentChargesByRoomId: async (roomId) => {
 				const user = useAuthStore.getState().user;
-				if (!user) return {};
+
+				if (!user) {
+					const { rentPayments, serviceChargesByPaymentId } = get();
+					const result: Record<string, ServiceCharge[]> = {};
+					for (const payment of rentPayments) {
+						if (
+							payment.roomId === roomId &&
+							serviceChargesByPaymentId[payment.id] !== undefined
+						) {
+							result[payment.id] = serviceChargesByPaymentId[payment.id];
+						}
+					}
+					return result;
+				}
 
 				const { fetchingRoomChargesId } = get();
 				if (fetchingRoomChargesId === roomId) return {};
