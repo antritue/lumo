@@ -3,6 +3,8 @@
 import { Info, Loader2, RotateCcw } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
+import type { PropertyService } from "@/components/dashboard/properties/types";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
@@ -15,6 +17,7 @@ import { useRoomServicesStore } from "./room-services-store";
 import type { EffectiveRoomService } from "./types";
 
 const EMPTY_EFFECTIVE_SERVICES: EffectiveRoomService[] = [];
+const EMPTY_PROPERTY_SERVICES: PropertyService[] = [];
 
 interface RoomServicesSectionProps {
 	roomId: string;
@@ -44,6 +47,10 @@ export function RoomServicesSection({
 	);
 	const isRoomServicesFetchFailed = useRoomServicesStore(
 		(state) => state.isRoomServicesFetchFailed,
+	);
+	const propertyServices = usePropertyServicesStore(
+		(state) =>
+			state.propertyServicesByPropertyId[propertyId] ?? EMPTY_PROPERTY_SERVICES,
 	);
 
 	const [togglingServiceId, setTogglingServiceId] = useState<string | null>(
@@ -78,6 +85,7 @@ export function RoomServicesSection({
 		setResettingServiceId(service.propertyServiceId);
 		try {
 			await resetToDefault(roomId, service.propertyServiceId);
+			setEditingService(null);
 		} finally {
 			setResettingServiceId(null);
 		}
@@ -116,6 +124,19 @@ export function RoomServicesSection({
 	const formatAmount = (service: EffectiveRoomService): string =>
 		formatServicePrice(service, locale, ts("perMonth"), ts("unit"));
 
+	const formatDefaultAmount = (service: EffectiveRoomService): string => {
+		const propertyService = propertyServices.find(
+			(ps) => ps.id === service.propertyServiceId,
+		);
+		if (!propertyService) return "";
+		return formatServicePrice(
+			propertyService,
+			locale,
+			ts("perMonth"),
+			ts("unit"),
+		);
+	};
+
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center gap-3">
@@ -139,12 +160,10 @@ export function RoomServicesSection({
 						className="max-w-64 text-xs leading-relaxed space-y-2"
 					>
 						<p>{t("titleTooltip")}</p>
-						<p>
-							<span className="font-medium">{t("inheritedLabel")}</span>{" "}
-							{t("inheritedTooltip")}
-						</p>
-						<p>
-							<span className="font-medium">{t("customLabel")}</span>{" "}
+						<p className="flex items-center gap-1.5">
+							<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">
+								{t("customLabel")}
+							</span>
 							{t("customTooltip")}
 						</p>
 					</PopoverContent>
@@ -154,7 +173,7 @@ export function RoomServicesSection({
 			{isRoomServicesLoading && (
 				<div className="flex flex-wrap gap-2">
 					{["rs-sk-0", "rs-sk-1", "rs-sk-2"].map((key) => (
-						<Skeleton key={key} className="h-8 w-20 rounded-full" />
+						<Skeleton key={key} className="h-12 w-28 rounded-xl" />
 					))}
 				</div>
 			)}
@@ -189,7 +208,7 @@ export function RoomServicesSection({
 							>
 								<PopoverTrigger asChild>
 									<div
-										className={`inline-flex items-stretch rounded-full text-sm font-medium overflow-hidden ${
+										className={`inline-flex items-stretch rounded-xl text-sm font-medium overflow-hidden ${
 											service.isEnabled
 												? "bg-secondary"
 												: "bg-secondary/50 opacity-60"
@@ -198,85 +217,91 @@ export function RoomServicesSection({
 										<button
 											type="button"
 											onClick={() => openEditDialog(service)}
-											className="flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer text-left min-w-0"
+											className="flex flex-col items-start justify-center gap-0.5 pl-3 pr-1.5 py-1.5 hover:bg-muted transition-colors cursor-pointer text-left min-w-0"
 										>
-											<span className="truncate max-w-[120px]">
-												{service.serviceName}
+											<span className="flex items-center gap-1.5 min-w-0">
+												<span className="truncate max-w-[140px] leading-tight">
+													{service.serviceName}
+												</span>
+												{service.isOverridden && (
+													<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+												)}
 											</span>
-											{service.isOverridden && (
-												<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
-											)}
-											{!service.isEnabled && (
-												<span className="text-[10px] text-muted-foreground">
-													/off
+											{formatAmount(service) && (
+												<span className="text-xs font-normal text-muted-foreground whitespace-nowrap leading-tight">
+													{formatAmount(service)}
 												</span>
 											)}
 										</button>
 										<div className="w-px self-stretch bg-border/50" />
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												handleToggle(service);
-											}}
-											disabled={togglingServiceId === service.propertyServiceId}
-											className="flex items-center justify-center px-2 py-1.5 hover:bg-muted transition-colors cursor-pointer disabled:opacity-40 text-xs text-muted-foreground"
-											aria-label={
-												service.isEnabled
-													? `${t("disable")} ${service.serviceName}`
-													: `${t("enable")} ${service.serviceName}`
-											}
-										>
+										<span className="flex items-center justify-center px-2.5">
 											{togglingServiceId === service.propertyServiceId ? (
-												<Loader2 className="h-3 w-3 animate-spin" />
-											) : service.isEnabled ? (
-												t("disable")
+												<Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
 											) : (
-												t("enable")
-											)}
-										</button>
-										{service.isOverridden && (
-											<>
-												<div className="w-px self-stretch bg-border/50" />
 												<button
 													type="button"
+													role="switch"
+													aria-checked={service.isEnabled}
+													aria-label={
+														service.isEnabled
+															? `${t("disable")} ${service.serviceName}`
+															: `${t("enable")} ${service.serviceName}`
+													}
 													onClick={(e) => {
 														e.stopPropagation();
-														handleReset(service);
+														handleToggle(service);
 													}}
-													disabled={
-														resettingServiceId === service.propertyServiceId
-													}
-													className="flex items-center justify-center px-2 py-1.5 hover:bg-muted transition-colors cursor-pointer disabled:opacity-40 text-muted-foreground"
-													aria-label={`${t("resetToDefault")} ${service.serviceName}`}
+													className={`relative inline-flex h-[18px] w-8 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
+														service.isEnabled
+															? "bg-primary"
+															: "bg-muted-foreground/30"
+													}`}
 												>
-													{resettingServiceId === service.propertyServiceId ? (
-														<Loader2 className="h-3 w-3 animate-spin" />
-													) : (
-														<RotateCcw className="h-3 w-3" />
-													)}
+													<span
+														className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+															service.isEnabled
+																? "translate-x-[15px]"
+																: "translate-x-[1px]"
+														}`}
+													/>
 												</button>
-											</>
-										)}
+											)}
+										</span>
 									</div>
 								</PopoverTrigger>
 								<PopoverContent
 									align="start"
 									className="w-64 p-3"
 									sideOffset={4}
+									onOpenAutoFocus={(e) => e.preventDefault()}
 								>
 									<div className="space-y-3">
 										<div className="flex items-center justify-between">
 											<span className="text-sm font-medium">
 												{service.serviceName}
 											</span>
-											{service.isOverridden ? (
-												<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
-													{t("customLabel")}
-												</span>
-											) : (
-												<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
-													{t("inheritedLabel")}
+											{service.isOverridden && (
+												<span className="flex items-center gap-1 shrink-0">
+													<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">
+														{t("customLabel")}
+													</span>
+													<button
+														type="button"
+														onClick={() => handleReset(service)}
+														disabled={
+															resettingServiceId === service.propertyServiceId
+														}
+														title={t("resetToDefault")}
+														aria-label={`${t("resetToDefault")} ${service.serviceName}`}
+														className="flex items-center justify-center h-5 w-5 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer disabled:opacity-40"
+													>
+														{resettingServiceId ===
+														service.propertyServiceId ? (
+															<Loader2 className="h-3 w-3 animate-spin" />
+														) : (
+															<RotateCcw className="h-3 w-3" />
+														)}
+													</button>
 												</span>
 											)}
 										</div>
@@ -294,6 +319,9 @@ export function RoomServicesSection({
 												type="number"
 												value={editAmount}
 												onChange={(e) => setEditAmount(e.target.value)}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") handleSaveEdit();
+												}}
 												className="w-full h-8 px-2 text-sm rounded-md border border-input bg-background"
 												min="0"
 												step="0.01"
@@ -301,10 +329,11 @@ export function RoomServicesSection({
 										</div>
 										<div className="flex gap-2">
 											<Button
+												type="button"
 												size="sm"
 												className="flex-1 h-8"
 												disabled={savingEdit}
-												onClick={handleSaveEdit}
+												onClick={() => handleSaveEdit()}
 											>
 												{savingEdit ? (
 													<Loader2 className="h-3 w-3 animate-spin" />
@@ -313,17 +342,22 @@ export function RoomServicesSection({
 												)}
 											</Button>
 											<Button
+												type="button"
 												size="sm"
-												variant="ghost"
-												className="h-8"
+												variant="outline"
+												className="flex-1 h-8"
 												onClick={() => setEditingService(null)}
 											>
 												{ts("cancel")}
 											</Button>
 										</div>
-										<p className="text-[11px] text-muted-foreground">
-											{formatAmount(service)}
-										</p>
+										{service.isOverridden && formatDefaultAmount(service) && (
+											<p className="text-[11px] text-muted-foreground">
+												{t("propertyDefault", {
+													price: formatDefaultAmount(service),
+												})}
+											</p>
+										)}
 									</div>
 								</PopoverContent>
 							</Popover>

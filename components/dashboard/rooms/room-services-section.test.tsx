@@ -3,6 +3,8 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
+import type { PropertyService } from "@/components/dashboard/properties/types";
 import { renderWithProviders } from "@/test/render";
 import { RoomServicesSection } from "./room-services-section";
 import { useRoomServicesStore } from "./room-services-store";
@@ -22,6 +24,19 @@ const mockEffectiveService = (
 	...overrides,
 });
 
+const mockPropertyService = (
+	overrides: Partial<PropertyService> = {},
+): PropertyService => ({
+	id: "ps-1",
+	propertyId: "prop-1",
+	serviceName: "Electricity",
+	unitLabel: "kWh",
+	pricingType: "variable",
+	flatAmount: null,
+	unitPrice: 0.1,
+	...overrides,
+});
+
 describe("RoomServicesSection", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -35,6 +50,13 @@ describe("RoomServicesSection", () => {
 			toggleService: vi.fn(),
 			setCustomPrice: vi.fn(),
 			resetToDefault: vi.fn(),
+		});
+		usePropertyServicesStore.setState({
+			propertyServicesByPropertyId: {},
+			isPropertyServicesLoading: false,
+			fetchingPropertyId: null,
+			isPropertyServicesFetchFailed: false,
+			fetchPropertyServices: vi.fn(),
 		});
 	});
 
@@ -87,6 +109,26 @@ describe("RoomServicesSection", () => {
 			expect(screen.getByText("Electricity")).toBeInTheDocument();
 		});
 
+		it("shows price below service name", () => {
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							pricingType: "flat",
+							flatAmount: 50,
+							unitPrice: null,
+						}),
+					],
+				},
+			});
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(screen.getByText(/\$50\/month/i)).toBeInTheDocument();
+		});
+
 		it("shows service count", () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
@@ -115,7 +157,7 @@ describe("RoomServicesSection", () => {
 			expect(container.querySelector(".bg-amber-500")).toBeInTheDocument();
 		});
 
-		it("shows /off label for disabled services", () => {
+		it("shows switch in off position for disabled services", () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [mockEffectiveService({ isEnabled: false })],
@@ -126,7 +168,27 @@ describe("RoomServicesSection", () => {
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
 
-			expect(screen.getByText("/off")).toBeInTheDocument();
+			expect(screen.getByRole("switch")).toHaveAttribute(
+				"aria-checked",
+				"false",
+			);
+		});
+
+		it("shows switch in on position for enabled services", () => {
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [mockEffectiveService({ isEnabled: true })],
+				},
+			});
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(screen.getByRole("switch")).toHaveAttribute(
+				"aria-checked",
+				"true",
+			);
 		});
 
 		it("shows empty state when no services", () => {
@@ -178,7 +240,7 @@ describe("RoomServicesSection", () => {
 				}),
 			);
 
-			expect(screen.getByText(/Inherited/i)).toBeInTheDocument();
+			expect(screen.getByText(/^Custom$/i)).toBeInTheDocument();
 		});
 
 		it("calls toggleService when disable button is clicked", async () => {
@@ -197,7 +259,7 @@ describe("RoomServicesSection", () => {
 			);
 
 			await user.click(
-				screen.getByRole("button", { name: /disable electricity/i }),
+				screen.getByRole("switch", { name: /disable electricity/i }),
 			);
 
 			expect(toggleService).toHaveBeenCalledWith("room-1", "ps-1", false);
@@ -219,13 +281,13 @@ describe("RoomServicesSection", () => {
 			);
 
 			await user.click(
-				screen.getByRole("button", { name: /enable electricity/i }),
+				screen.getByRole("switch", { name: /enable electricity/i }),
 			);
 
 			expect(toggleService).toHaveBeenCalledWith("room-1", "ps-1", true);
 		});
 
-		it("calls resetToDefault when reset button is clicked", async () => {
+		it("calls resetToDefault when reset link is clicked in popover", async () => {
 			const resetToDefault = vi.fn().mockResolvedValue(undefined);
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
@@ -240,21 +302,26 @@ describe("RoomServicesSection", () => {
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
 
+			await user.click(screen.getByText("Electricity"));
 			await user.click(screen.getByRole("button", { name: /reset/i }));
 
 			expect(resetToDefault).toHaveBeenCalledWith("room-1", "ps-1");
 		});
 
-		it("does not show reset button for non-overridden services", () => {
+		it("does not show reset link for non-overridden services", async () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [mockEffectiveService({ isOverridden: false })],
 				},
 			});
 
+			const user = userEvent.setup();
+
 			renderWithProviders(
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
+
+			await user.click(screen.getByText("Electricity"));
 
 			expect(
 				screen.queryByRole("button", { name: /reset/i }),
@@ -285,6 +352,58 @@ describe("RoomServicesSection", () => {
 			expect(screen.getByRole("spinbutton")).toBeInTheDocument();
 		});
 
+		it("shows property default in popover for overridden services", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService({ unitPrice: 0.1 })],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							unitPrice: 0.15,
+							isOverridden: true,
+						}),
+					],
+				},
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByText("Electricity"));
+
+			expect(screen.getByText(/property default:/i)).toBeInTheDocument();
+			expect(screen.getByText(/\$0\.1\/kWh/i)).toBeInTheDocument();
+		});
+
+		it("hides property default in popover for inherited services", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService({ unitPrice: 0.1 })],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [mockEffectiveService({ isOverridden: false })],
+				},
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByText("Electricity"));
+
+			expect(screen.queryByText(/property default:/i)).not.toBeInTheDocument();
+		});
+
 		it("calls setCustomPrice when saving edit popover", async () => {
 			const setCustomPrice = vi.fn().mockResolvedValue(undefined);
 			useRoomServicesStore.setState({
@@ -313,6 +432,36 @@ describe("RoomServicesSection", () => {
 			await user.type(input, "75");
 
 			await user.click(screen.getByRole("button", { name: /save/i }));
+
+			expect(setCustomPrice).toHaveBeenCalledWith("room-1", "ps-1", 75, null);
+		});
+
+		it("calls setCustomPrice when pressing Enter in edit popover", async () => {
+			const setCustomPrice = vi.fn().mockResolvedValue(undefined);
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							pricingType: "flat",
+							flatAmount: 50,
+							unitPrice: null,
+						}),
+					],
+				},
+				setCustomPrice,
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByText("Electricity"));
+
+			const input = screen.getByRole("spinbutton");
+			await user.clear(input);
+			await user.type(input, "75{Enter}");
 
 			expect(setCustomPrice).toHaveBeenCalledWith("room-1", "ps-1", 75, null);
 		});
