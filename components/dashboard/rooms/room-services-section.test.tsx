@@ -240,7 +240,7 @@ describe("RoomServicesSection", () => {
 				}),
 			);
 
-			expect(screen.getByText(/Inherited/i)).toBeInTheDocument();
+			expect(screen.getByText(/^Custom$/i)).toBeInTheDocument();
 		});
 
 		it("calls toggleService when disable button is clicked", async () => {

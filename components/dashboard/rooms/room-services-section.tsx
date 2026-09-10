@@ -160,12 +160,10 @@ export function RoomServicesSection({
 						className="max-w-64 text-xs leading-relaxed space-y-2"
 					>
 						<p>{t("titleTooltip")}</p>
-						<p>
-							<span className="font-medium">{t("inheritedLabel")}</span>{" "}
-							{t("inheritedTooltip")}
-						</p>
-						<p>
-							<span className="font-medium">{t("customLabel")}</span>{" "}
+						<p className="flex items-center gap-1.5">
+							<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">
+								{t("customLabel")}
+							</span>
 							{t("customTooltip")}
 						</p>
 					</PopoverContent>
@@ -281,7 +279,7 @@ export function RoomServicesSection({
 											<span className="text-sm font-medium">
 												{service.serviceName}
 											</span>
-											{service.isOverridden ? (
+											{service.isOverridden && (
 												<span className="flex items-center gap-1 shrink-0">
 													<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">
 														{t("customLabel")}
@@ -303,10 +301,6 @@ export function RoomServicesSection({
 															<RotateCcw className="h-3 w-3" />
 														)}
 													</button>
-												</span>
-											) : (
-												<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
-													{t("inheritedLabel")}
 												</span>
 											)}
 										</div>
