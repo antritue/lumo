@@ -56,7 +56,7 @@ export function PropertyDetailServices({
 	propertyId,
 }: PropertyDetailServicesProps) {
 	const t = useTranslations("app.propertyServices");
-	const ts = useTranslations("app.services");
+	const ts = useTranslations("app.serviceForm");
 	const locale = useLocale() as "en" | "vi";
 
 	const propertyServices = usePropertyServicesStore(

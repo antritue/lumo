@@ -167,7 +167,6 @@
 			"overview": "Overview",
 			"properties": "Properties",
 			"tenants": "Tenants",
-			"services": "Services",
 			"feedback": "Feedback",
 			"settings": "Settings"
 		},
@@ -311,40 +310,22 @@
 			"count": "{count, plural, =0 {0 services} =1 {1 service} other {# services}}",
 			"addService": "Add service",
 			"remove": "Remove",
-			"quickAddPresets": "Quick add:"
-		},
-		"services": {
-			"emptyTitle": "No services yet",
-			"emptySubtitle": "Services are optional charges you can add to rooms. Create your first service to get started",
+			"quickAddPresets": "Quick add:",
 			"name": "Service name",
 			"optional": "optional",
 			"addButton": "Add service",
-			"listTitle": "Your services",
-			"addAnother": "Add a new service",
-			"cancel": "Cancel",
-			"edit": "Edit",
-			"delete": "Delete",
 			"editTitle": "Edit service",
-			"saveButton": "Save",
 			"deleteTitle": "Delete service?",
 			"deleteMessage": "Removing \"{name}\" will remove it from all rooms under this property. Existing past payment records will not be affected",
+			"deleteConfirm": "Delete service",
 			"addNotice": "This service will be available to all rooms under this property. Past payment records will not be affected",
 			"editNotice": "Changes will apply to all rooms under this property. Past payment records will not be affected",
-			"deleteConfirm": "Delete service",
 			"flat": "Flat fee",
 			"variable": "Usage-based",
-			"perMonth": "/month",
+			"pricingType": "Pricing",
 			"flatAmountPlaceholder": "Monthly amount",
 			"unitPricePlaceholder": "Price per unit",
-			"unit": "unit",
 			"unitLabel": "Unit",
-			"pricingType": "Pricing",
-			"flatAmount": "Flat amount",
-			"unitPrice": "Unit price",
-			"notSet": "Not set",
-			"suggestions": "Quick add common services:",
-			"quickAdd": "Quick add:",
-			"orCustom": "or fill in details",
 			"errors": {
 				"create": {
 					"title": "Failed to add service",
@@ -359,6 +340,14 @@
 					"description": "There was a problem deleting this service. Please try again"
 				}
 			}
+		},
+		"serviceForm": {
+			"cancel": "Cancel",
+			"saveButton": "Save",
+			"flatAmount": "Flat amount",
+			"unitPrice": "Unit price",
+			"perMonth": "/month",
+			"unit": "unit"
 		},
 		"tenants": {},
 		"rooms": {

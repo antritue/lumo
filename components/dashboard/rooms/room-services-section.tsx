@@ -29,7 +29,7 @@ export function RoomServicesSection({
 	propertyId,
 }: RoomServicesSectionProps) {
 	const t = useTranslations("app.roomServices");
-	const ts = useTranslations("app.services");
+	const ts = useTranslations("app.serviceForm");
 	const locale = useLocale();
 
 	const roomServices = useRoomServicesStore(

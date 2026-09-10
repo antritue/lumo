@@ -43,7 +43,8 @@ export function UpsertPropertyServiceDialog({
 	onOpenChange,
 	onSave,
 }: UpsertPropertyServiceDialogProps) {
-	const t = useTranslations("app.services");
+	const t = useTranslations("app.propertyServices");
+	const tf = useTranslations("app.serviceForm");
 	const locale = useLocale();
 	const currency = locale === "vi" ? "VND" : "USD";
 	const [serviceName, setServiceName] = useState("");
@@ -184,7 +185,7 @@ export function UpsertPropertyServiceDialog({
 
 							<div className="space-y-2">
 								<label htmlFor="amount" className="text-sm font-medium">
-									{pricingType === "flat" ? t("flatAmount") : t("unitPrice")}
+									{pricingType === "flat" ? tf("flatAmount") : tf("unitPrice")}
 								</label>
 								<div className="relative">
 									<Input
@@ -237,7 +238,7 @@ export function UpsertPropertyServiceDialog({
 								className="flex-1"
 								disabled={!serviceName.trim()}
 							>
-								{mode === "edit" ? t("saveButton") : t("addButton")}
+								{mode === "edit" ? tf("saveButton") : t("addButton")}
 							</Button>
 							<Button
 								type="button"
@@ -246,7 +247,7 @@ export function UpsertPropertyServiceDialog({
 								className="flex-1"
 								onClick={() => onOpenChange(false)}
 							>
-								{t("cancel")}
+								{tf("cancel")}
 							</Button>
 						</div>
 					</form>

@@ -26,7 +26,8 @@ export function DeletePropertyServiceDialog({
 	onOpenChange,
 	onDelete,
 }: DeletePropertyServiceDialogProps) {
-	const t = useTranslations("app.services");
+	const t = useTranslations("app.propertyServices");
+	const tf = useTranslations("app.serviceForm");
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [errorOpen, setErrorOpen] = useState(false);
@@ -98,7 +99,7 @@ export function DeletePropertyServiceDialog({
 								onClick={() => onOpenChange(false)}
 								autoFocus
 							>
-								{t("cancel")}
+								{tf("cancel")}
 							</Button>
 						</div>
 					</div>
