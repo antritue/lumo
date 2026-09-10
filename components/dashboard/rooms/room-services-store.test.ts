@@ -67,13 +67,19 @@ describe("RoomServicesStore", () => {
 			});
 		});
 
-		it("does nothing when unauthenticated", async () => {
+		it("seeds inherited services from local cache when unauthenticated", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+
 			await useRoomServicesStore
 				.getState()
 				.fetchRoomServices("room-1", "prop-1");
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toBeUndefined();
+			expect(roomServicesByRoomId["room-1"]).toEqual([mockEffectiveService()]);
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
@@ -289,6 +295,54 @@ describe("RoomServicesStore", () => {
 
 			consoleSpy.mockRestore();
 		});
+
+		it("toggles service locally without API call when unauthenticated", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [mockEffectiveService()],
+				},
+				roomPropertyMap: { "room-1": "prop-1" },
+			});
+
+			await useRoomServicesStore
+				.getState()
+				.toggleService("room-1", "ps-1", false);
+
+			const { roomServicesByRoomId } = useRoomServicesStore.getState();
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(false);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(true);
+			expect(mockFetch).not.toHaveBeenCalled();
+		});
+
+		it("clears overridden flag when re-enabling with matching defaults unauthenticated", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({ isEnabled: false, isOverridden: true }),
+					],
+				},
+				roomPropertyMap: { "room-1": "prop-1" },
+			});
+
+			await useRoomServicesStore
+				.getState()
+				.toggleService("room-1", "ps-1", true);
+
+			const { roomServicesByRoomId } = useRoomServicesStore.getState();
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(true);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(false);
+			expect(mockFetch).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("setCustomPrice", () => {
@@ -332,6 +386,29 @@ describe("RoomServicesStore", () => {
 					credentials: "include",
 				}),
 			);
+		});
+
+		it("sets custom price locally without API call when unauthenticated", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [mockEffectiveService()],
+				},
+				roomPropertyMap: { "room-1": "prop-1" },
+			});
+
+			await useRoomServicesStore
+				.getState()
+				.setCustomPrice("room-1", "ps-1", null, 0.2);
+
+			const { roomServicesByRoomId } = useRoomServicesStore.getState();
+			expect(roomServicesByRoomId["room-1"][0].unitPrice).toBe(0.2);
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(true);
+			expect(mockFetch).not.toHaveBeenCalled();
 		});
 	});
 
@@ -391,6 +468,29 @@ describe("RoomServicesStore", () => {
 
 			await useRoomServicesStore.getState().resetToDefault("room-1", "ps-1");
 
+			expect(mockFetch).not.toHaveBeenCalled();
+		});
+
+		it("resets to default locally without API call when unauthenticated", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({ isEnabled: false, isOverridden: true }),
+					],
+				},
+				roomPropertyMap: { "room-1": "prop-1" },
+			});
+
+			await useRoomServicesStore.getState().resetToDefault("room-1", "ps-1");
+
+			const { roomServicesByRoomId } = useRoomServicesStore.getState();
+			expect(roomServicesByRoomId["room-1"][0].isOverridden).toBe(false);
+			expect(roomServicesByRoomId["room-1"][0].isEnabled).toBe(true);
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 	});
