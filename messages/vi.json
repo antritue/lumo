@@ -279,6 +279,7 @@
 			"enable": "Bật",
 			"disable": "Tắt",
 			"resetToDefault": "Khôi phục mặc định",
+			"propertyDefault": "Giá mặc định: {price}",
 			"fetchError": "Không thể tải danh sách dịch vụ",
 			"retry": "Thử lại"
 		},

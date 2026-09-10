@@ -3,6 +3,8 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
+import type { PropertyService } from "@/components/dashboard/properties/types";
 import { renderWithProviders } from "@/test/render";
 import { RoomServicesSection } from "./room-services-section";
 import { useRoomServicesStore } from "./room-services-store";
@@ -22,6 +24,19 @@ const mockEffectiveService = (
 	...overrides,
 });
 
+const mockPropertyService = (
+	overrides: Partial<PropertyService> = {},
+): PropertyService => ({
+	id: "ps-1",
+	propertyId: "prop-1",
+	serviceName: "Electricity",
+	unitLabel: "kWh",
+	pricingType: "variable",
+	flatAmount: null,
+	unitPrice: 0.1,
+	...overrides,
+});
+
 describe("RoomServicesSection", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -35,6 +50,13 @@ describe("RoomServicesSection", () => {
 			toggleService: vi.fn(),
 			setCustomPrice: vi.fn(),
 			resetToDefault: vi.fn(),
+		});
+		usePropertyServicesStore.setState({
+			propertyServicesByPropertyId: {},
+			isPropertyServicesLoading: false,
+			fetchingPropertyId: null,
+			isPropertyServicesFetchFailed: false,
+			fetchPropertyServices: vi.fn(),
 		});
 	});
 
@@ -328,6 +350,58 @@ describe("RoomServicesSection", () => {
 			await user.click(screen.getAllByText("Electricity")[0]);
 
 			expect(screen.getByRole("spinbutton")).toBeInTheDocument();
+		});
+
+		it("shows property default in popover for overridden services", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService({ unitPrice: 0.1 })],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							unitPrice: 0.15,
+							isOverridden: true,
+						}),
+					],
+				},
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByText("Electricity"));
+
+			expect(screen.getByText(/property default:/i)).toBeInTheDocument();
+			expect(screen.getByText(/\$0\.1\/kWh/i)).toBeInTheDocument();
+		});
+
+		it("hides property default in popover for inherited services", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService({ unitPrice: 0.1 })],
+				},
+			});
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [mockEffectiveService({ isOverridden: false })],
+				},
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByText("Electricity"));
+
+			expect(screen.queryByText(/property default:/i)).not.toBeInTheDocument();
 		});
 
 		it("calls setCustomPrice when saving edit popover", async () => {

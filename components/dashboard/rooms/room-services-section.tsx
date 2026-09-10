@@ -3,6 +3,8 @@
 import { Info, Loader2, RotateCcw } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
+import type { PropertyService } from "@/components/dashboard/properties/types";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
@@ -15,6 +17,7 @@ import { useRoomServicesStore } from "./room-services-store";
 import type { EffectiveRoomService } from "./types";
 
 const EMPTY_EFFECTIVE_SERVICES: EffectiveRoomService[] = [];
+const EMPTY_PROPERTY_SERVICES: PropertyService[] = [];
 
 interface RoomServicesSectionProps {
 	roomId: string;
@@ -44,6 +47,10 @@ export function RoomServicesSection({
 	);
 	const isRoomServicesFetchFailed = useRoomServicesStore(
 		(state) => state.isRoomServicesFetchFailed,
+	);
+	const propertyServices = usePropertyServicesStore(
+		(state) =>
+			state.propertyServicesByPropertyId[propertyId] ?? EMPTY_PROPERTY_SERVICES,
 	);
 
 	const [togglingServiceId, setTogglingServiceId] = useState<string | null>(
@@ -116,6 +123,19 @@ export function RoomServicesSection({
 
 	const formatAmount = (service: EffectiveRoomService): string =>
 		formatServicePrice(service, locale, ts("perMonth"), ts("unit"));
+
+	const formatDefaultAmount = (service: EffectiveRoomService): string => {
+		const propertyService = propertyServices.find(
+			(ps) => ps.id === service.propertyServiceId,
+		);
+		if (!propertyService) return "";
+		return formatServicePrice(
+			propertyService,
+			locale,
+			ts("perMonth"),
+			ts("unit"),
+		);
+	};
 
 	return (
 		<div className="space-y-4">
@@ -324,16 +344,20 @@ export function RoomServicesSection({
 											</Button>
 											<Button
 												size="sm"
-												variant="ghost"
-												className="h-8"
+												variant="outline"
+												className="flex-1 h-8"
 												onClick={() => setEditingService(null)}
 											>
 												{ts("cancel")}
 											</Button>
 										</div>
-										<p className="text-[11px] text-muted-foreground">
-											{formatAmount(service)}
-										</p>
+										{service.isOverridden && formatDefaultAmount(service) && (
+											<p className="text-[11px] text-muted-foreground">
+												{t("propertyDefault", {
+													price: formatDefaultAmount(service),
+												})}
+											</p>
+										)}
 									</div>
 								</PopoverContent>
 							</Popover>

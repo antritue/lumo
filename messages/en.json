@@ -304,6 +304,7 @@
 			"enable": "Enable",
 			"disable": "Disable",
 			"resetToDefault": "Reset to default",
+			"propertyDefault": "Property default: {price}",
 			"fetchError": "Failed to load services",
 			"retry": "Try again"
 		},
