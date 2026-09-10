@@ -183,7 +183,6 @@
 			"overview": "Tổng quan",
 			"properties": "Nhà cho thuê",
 			"tenants": "Người thuê",
-			"services": "Dịch vụ",
 			"feedback": "Phản hồi",
 			"settings": "Cài đặt"
 		},
@@ -286,40 +285,22 @@
 			"count": "{count, plural, =0 {0 dịch vụ} =1 {1 dịch vụ} other {# dịch vụ}}",
 			"addService": "Thêm dịch vụ",
 			"remove": "Xóa",
-			"quickAddPresets": "Thêm nhanh:"
-		},
-		"services": {
-			"emptyTitle": "Chưa có dịch vụ",
-			"emptySubtitle": "Dịch vụ là khoản phí phụ có thể thêm vào phòng. Tạo dịch vụ đầu tiên",
+			"quickAddPresets": "Thêm nhanh:",
 			"name": "Tên dịch vụ",
 			"optional": "không bắt buộc",
 			"addButton": "Thêm dịch vụ",
-			"listTitle": "Dịch vụ",
-			"addAnother": "Thêm dịch vụ mới",
-			"cancel": "Hủy",
-			"edit": "Sửa",
-			"delete": "Xóa",
 			"editTitle": "Sửa dịch vụ",
-			"saveButton": "Lưu",
 			"deleteTitle": "Xóa dịch vụ?",
 			"deleteMessage": "Xóa \"{name}\" sẽ gỡ dịch vụ khỏi tất cả các phòng trong nhà này. Các hóa đơn thanh toán đã ghi sẽ không bị ảnh hưởng",
+			"deleteConfirm": "Xóa dịch vụ",
 			"addNotice": "Dịch vụ này sẽ áp dụng cho tất cả các phòng trong nhà này. Các hóa đơn thanh toán đã ghi sẽ không bị ảnh hưởng",
 			"editNotice": "Thay đổi sẽ áp dụng cho tất cả các phòng trong nhà này. Các hóa đơn thanh toán đã ghi sẽ không bị ảnh hưởng",
-			"deleteConfirm": "Xóa dịch vụ",
 			"flat": "Phí cố định",
 			"variable": "Theo số lượng",
-			"perMonth": "/tháng",
+			"pricingType": "Loại phí",
 			"flatAmountPlaceholder": "Số tiền hàng tháng",
 			"unitPricePlaceholder": "Đơn giá",
-			"unit": "đơn vị",
 			"unitLabel": "Đơn vị",
-			"pricingType": "Loại phí",
-			"flatAmount": "Phí cố định",
-			"unitPrice": "Đơn giá",
-			"notSet": "Chưa thiết lập",
-			"suggestions": "Một số dịch vụ thường dùng:",
-			"quickAdd": "Thêm nhanh:",
-			"orCustom": "hoặc tự nhập",
 			"errors": {
 				"create": {
 					"title": "Thêm dịch vụ thất bại",
@@ -334,6 +315,14 @@
 					"description": "Có lỗi xảy ra khi xóa dịch vụ. Vui lòng thử lại"
 				}
 			}
+		},
+		"serviceForm": {
+			"cancel": "Hủy",
+			"saveButton": "Lưu",
+			"flatAmount": "Phí cố định",
+			"unitPrice": "Đơn giá",
+			"perMonth": "/tháng",
+			"unit": "đơn vị"
 		},
 		"tenants": {},
 		"rooms": {
