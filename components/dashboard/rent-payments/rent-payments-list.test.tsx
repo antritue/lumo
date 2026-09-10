@@ -183,6 +183,18 @@ describe("RentPaymentsList", () => {
 			expect(screen.queryByText("Electricity")).not.toBeInTheDocument();
 		});
 
+		it("does not render expand button when payment has no charges", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(
+				<RentPaymentsList payments={mockPayments} {...defaultProps} />,
+			);
+
+			expect(
+				screen.queryByRole("button", { name: /01-2026/i }),
+			).not.toBeInTheDocument();
+			expect(screen.getByText(/01-2026/i)).toBeInTheDocument();
+		});
+
 		it("calls onDelete with payment when delete button clicked", async () => {
 			const user = userEvent.setup();
 			const handleDelete = vi.fn();

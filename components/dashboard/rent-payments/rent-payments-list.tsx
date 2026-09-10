@@ -74,49 +74,56 @@ export function RentPaymentsList({
 			{payments.map((payment) => {
 				const isExpanded = expandedId === payment.id;
 				const charges = serviceChargesByPeriod[payment.period];
+				const isExpandable = !!charges && charges.length > 0;
 				const serviceTotal = charges ? calculateServiceTotal(charges) : 0;
 
 				return (
 					<div key={payment.id}>
-						<div className="flex items-center gap-3 px-3.5 py-3 rounded-xl border border-border hover:bg-muted/50 transition-colors w-full">
-							<button
-								type="button"
-								onClick={() => toggleExpand(payment.id)}
-								className="flex items-center gap-3 flex-1 min-w-0 text-left cursor-pointer bg-transparent border-0 p-0"
-							>
-								{charges && charges.length > 0 ? (
-									isExpanded ? (
-										<ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
-									) : (
-										<ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-									)
-								) : (
-									<div className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
-										<Receipt className="h-4 w-4 text-muted-foreground" />
-									</div>
-								)}
-								<div className="flex items-center gap-2 min-w-0">
-									<p className="text-sm font-medium text-foreground">
+						<div className="flex items-center gap-3 px-3.5 py-3 rounded-xl border border-border w-full">
+							{isExpandable ? (
+								<button
+									type="button"
+									onClick={() => toggleExpand(payment.id)}
+									aria-expanded={isExpanded}
+									className="flex items-center gap-3 min-w-0 text-left cursor-pointer bg-transparent border-0 p-0 rounded-md hover:bg-muted/50 transition-colors"
+								>
+									<span className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
+										{isExpanded ? (
+											<ChevronDown className="h-4 w-4 text-muted-foreground" />
+										) : (
+											<ChevronRight className="h-4 w-4 text-muted-foreground" />
+										)}
+									</span>
+									<p className="text-sm font-medium text-foreground whitespace-nowrap">
 										{formatPeriod(payment.period)}
 									</p>
-									<PaymentStatusBadge
-										status={payment.status}
-										onClick={() => onToggleStatus(payment)}
-										isLoading={togglingPaymentId === payment.id}
-									/>
-								</div>
-								<div className="flex-1" />
-								<div className="text-right">
-									<p className="text-sm font-semibold text-foreground">
-										{formatCurrency(payment.rentAmount + serviceTotal, locale)}
+								</button>
+							) : (
+								<>
+									<span className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
+										<Receipt className="h-4 w-4 text-muted-foreground" />
+									</span>
+									<p className="text-sm font-medium text-foreground whitespace-nowrap">
+										{formatPeriod(payment.period)}
 									</p>
-									{serviceTotal > 0 && (
-										<p className="text-xs text-muted-foreground">
-											{t("includesServices")}
-										</p>
-									)}
-								</div>
-							</button>
+								</>
+							)}
+							<PaymentStatusBadge
+								status={payment.status}
+								onClick={() => onToggleStatus(payment)}
+								isLoading={togglingPaymentId === payment.id}
+							/>
+							<div className="flex-1" />
+							<div className="text-right shrink-0">
+								<p className="text-sm font-semibold text-foreground">
+									{formatCurrency(payment.rentAmount + serviceTotal, locale)}
+								</p>
+								{serviceTotal > 0 && (
+									<p className="text-xs text-muted-foreground">
+										{t("includesServices")}
+									</p>
+								)}
+							</div>
 							{(onEdit || onDelete) && (
 								<Popover>
 									<PopoverTrigger asChild>
