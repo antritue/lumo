@@ -135,7 +135,7 @@ describe("RoomServicesSection", () => {
 			expect(container.querySelector(".bg-amber-500")).toBeInTheDocument();
 		});
 
-		it("shows /off label for disabled services", () => {
+		it("shows switch in off position for disabled services", () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [mockEffectiveService({ isEnabled: false })],
@@ -146,7 +146,27 @@ describe("RoomServicesSection", () => {
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
 
-			expect(screen.getByText("/off")).toBeInTheDocument();
+			expect(screen.getByRole("switch")).toHaveAttribute(
+				"aria-checked",
+				"false",
+			);
+		});
+
+		it("shows switch in on position for enabled services", () => {
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [mockEffectiveService({ isEnabled: true })],
+				},
+			});
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			expect(screen.getByRole("switch")).toHaveAttribute(
+				"aria-checked",
+				"true",
+			);
 		});
 
 		it("shows empty state when no services", () => {
@@ -217,7 +237,7 @@ describe("RoomServicesSection", () => {
 			);
 
 			await user.click(
-				screen.getByRole("button", { name: /disable electricity/i }),
+				screen.getByRole("switch", { name: /disable electricity/i }),
 			);
 
 			expect(toggleService).toHaveBeenCalledWith("room-1", "ps-1", false);
@@ -239,13 +259,13 @@ describe("RoomServicesSection", () => {
 			);
 
 			await user.click(
-				screen.getByRole("button", { name: /enable electricity/i }),
+				screen.getByRole("switch", { name: /enable electricity/i }),
 			);
 
 			expect(toggleService).toHaveBeenCalledWith("room-1", "ps-1", true);
 		});
 
-		it("calls resetToDefault when reset button is clicked", async () => {
+		it("calls resetToDefault when reset link is clicked in popover", async () => {
 			const resetToDefault = vi.fn().mockResolvedValue(undefined);
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
@@ -260,21 +280,26 @@ describe("RoomServicesSection", () => {
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
 
+			await user.click(screen.getByText("Electricity"));
 			await user.click(screen.getByRole("button", { name: /reset/i }));
 
 			expect(resetToDefault).toHaveBeenCalledWith("room-1", "ps-1");
 		});
 
-		it("does not show reset button for non-overridden services", () => {
+		it("does not show reset link for non-overridden services", async () => {
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [mockEffectiveService({ isOverridden: false })],
 				},
 			});
 
+			const user = userEvent.setup();
+
 			renderWithProviders(
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
+
+			await user.click(screen.getByText("Electricity"));
 
 			expect(
 				screen.queryByRole("button", { name: /reset/i }),

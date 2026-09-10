@@ -78,6 +78,7 @@ export function RoomServicesSection({
 		setResettingServiceId(service.propertyServiceId);
 		try {
 			await resetToDefault(roomId, service.propertyServiceId);
+			setEditingService(null);
 		} finally {
 			setResettingServiceId(null);
 		}
@@ -207,11 +208,6 @@ export function RoomServicesSection({
 												{service.isOverridden && (
 													<span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
 												)}
-												{!service.isEnabled && (
-													<span className="text-[10px] text-muted-foreground">
-														/off
-													</span>
-												)}
 											</span>
 											{formatAmount(service) && (
 												<span className="text-xs font-normal text-muted-foreground whitespace-nowrap leading-tight">
@@ -220,51 +216,39 @@ export function RoomServicesSection({
 											)}
 										</button>
 										<div className="w-px self-stretch bg-border/50" />
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												handleToggle(service);
-											}}
-											disabled={togglingServiceId === service.propertyServiceId}
-											className="flex items-center justify-center px-2 py-1.5 hover:bg-muted transition-colors cursor-pointer disabled:opacity-40 text-xs text-muted-foreground"
-											aria-label={
-												service.isEnabled
-													? `${t("disable")} ${service.serviceName}`
-													: `${t("enable")} ${service.serviceName}`
-											}
-										>
+										<span className="flex items-center justify-center px-2.5">
 											{togglingServiceId === service.propertyServiceId ? (
-												<Loader2 className="h-3 w-3 animate-spin" />
-											) : service.isEnabled ? (
-												t("disable")
+												<Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
 											) : (
-												t("enable")
-											)}
-										</button>
-										{service.isOverridden && (
-											<>
-												<div className="w-px self-stretch bg-border/50" />
 												<button
 													type="button"
+													role="switch"
+													aria-checked={service.isEnabled}
+													aria-label={
+														service.isEnabled
+															? `${t("disable")} ${service.serviceName}`
+															: `${t("enable")} ${service.serviceName}`
+													}
 													onClick={(e) => {
 														e.stopPropagation();
-														handleReset(service);
+														handleToggle(service);
 													}}
-													disabled={
-														resettingServiceId === service.propertyServiceId
-													}
-													className="flex items-center justify-center px-2 py-1.5 hover:bg-muted transition-colors cursor-pointer disabled:opacity-40 text-muted-foreground"
-													aria-label={`${t("resetToDefault")} ${service.serviceName}`}
+													className={`relative inline-flex h-[18px] w-8 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
+														service.isEnabled
+															? "bg-primary"
+															: "bg-muted-foreground/30"
+													}`}
 												>
-													{resettingServiceId === service.propertyServiceId ? (
-														<Loader2 className="h-3 w-3 animate-spin" />
-													) : (
-														<RotateCcw className="h-3 w-3" />
-													)}
+													<span
+														className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+															service.isEnabled
+																? "translate-x-[15px]"
+																: "translate-x-[1px]"
+														}`}
+													/>
 												</button>
-											</>
-										)}
+											)}
+										</span>
 									</div>
 								</PopoverTrigger>
 								<PopoverContent
@@ -278,8 +262,27 @@ export function RoomServicesSection({
 												{service.serviceName}
 											</span>
 											{service.isOverridden ? (
-												<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
-													{t("customLabel")}
+												<span className="flex items-center gap-1 shrink-0">
+													<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 whitespace-nowrap">
+														{t("customLabel")}
+													</span>
+													<button
+														type="button"
+														onClick={() => handleReset(service)}
+														disabled={
+															resettingServiceId === service.propertyServiceId
+														}
+														title={t("resetToDefault")}
+														aria-label={`${t("resetToDefault")} ${service.serviceName}`}
+														className="flex items-center justify-center h-5 w-5 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer disabled:opacity-40"
+													>
+														{resettingServiceId ===
+														service.propertyServiceId ? (
+															<Loader2 className="h-3 w-3 animate-spin" />
+														) : (
+															<RotateCcw className="h-3 w-3" />
+														)}
+													</button>
 												</span>
 											) : (
 												<span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
