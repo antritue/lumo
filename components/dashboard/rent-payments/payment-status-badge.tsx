@@ -26,7 +26,7 @@ export function PaymentStatusBadge({
 				onClick();
 			}}
 			className={cn(
-				"inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium cursor-pointer transition-colors disabled:opacity-40 disabled:pointer-events-none",
+				"inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium cursor-pointer transition-colors disabled:opacity-40 disabled:pointer-events-none shrink-0",
 				status === "paid"
 					? "border-green-500/40 text-green-500 hover:border-green-500/80 hover:bg-green-500/10"
 					: "border-amber-500/40 text-amber-500 hover:border-amber-500/80 hover:bg-amber-500/10",
