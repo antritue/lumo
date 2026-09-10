@@ -112,7 +112,7 @@ Stores information about rooms within properties.
 
 ### `property_services`
 
-Stores property-level service configurations (the master catalog). Each row defines a service assigned to a property with its own name, pricing type, and amount. Rooms inherit these services by default; room-level rows in `room_services` only exist when a room deviates from the property default.
+Stores property-level service configurations (the master catalog). Each row defines a service assigned to a property with its own name, pricing type, and amount. Rooms inherit these services by default; room-level rows in `room_service_overrides` only exist when a room deviates from the property default.
 
 | Key | Column | Type | Description |
 | :--- | :--- | :--- | :--- |
@@ -166,7 +166,7 @@ Stores service charge line items associated with a rent payment.
 | :--- | :--- | :--- | :--- |
 | `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
 | `FK` | `rent_payment_id` | `uuid` | Foreign Key to `rent_payments(id)`. Cascades on delete. |
-| | `service_id` | `uuid` | UUID identifying the service type. |
+| | `service_id` | `text` | Text snapshot of the service reference at charge time (not a foreign key). |
 | `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
 | | `service_name` | `text` | The display name of the service. |
 | | `pricing_type` | `text` | `'flat'` or `'variable'`. |

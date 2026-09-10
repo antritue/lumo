@@ -53,7 +53,7 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 We use a multi-project setup to balance development speed with production data safety.
 
 -   **Dual Supabase Projects**: We maintain separate projects for **Development** and **Production**. This ensures test user data is isolated and protects real records.
--   **Dual Polar Environments**: One Polar account/organization with **two environments** — sandbox (test) + production. Products, API keys, and webhooks are created **separately in each dashboard**; they are distinct values, never shared. See [the payments plan](./plans/polar-payments.md) for setup steps.
+-   **Dual Polar Environments**: One Polar account/organization with **two environments** — sandbox (test) + production. Products, API keys, and webhooks are created **separately in each dashboard**; they are distinct values, never shared. See [the payments plan](./polar-payments.md) for setup steps.
 -   **Single Google Cloud Project**: A single OAuth project is used for both environments to maintain unified branding and simplify the app verification process.
 -   **Site URL Security**: Login security is enforced via the **Site URL** setting in the Supabase Dashboard. This removes the need for additional "Redirect URI" whitelisting as long as the code matches the Site URL.
     -   **Development**: `http://localhost:3000`
@@ -94,7 +94,7 @@ We use a multi-project setup to balance development speed with production data s
     NEXT_PUBLIC_APP_URL=http://localhost:3000
     ```
     Get your Resend API key from the [Resend dashboard](https://resend.com) under **API Keys**.
-    Polar values come from the Polar dashboard: access token from **Settings → API Keys**, webhook secret from **Settings → Webhooks**, product IDs from each product. Use **sandbox** values locally and **production** values in production (`POLAR_SERVER` switches the SDK). Sandbox test card: `4242 4242 4242 4242`. Full setup in [the payments plan](./plans/polar-payments.md).
+    Polar values come from the Polar dashboard: access token from **Settings → API Keys**, webhook secret from **Settings → Webhooks**, product IDs from each product. Use **sandbox** values locally and **production** values in production (`POLAR_SERVER` switches the SDK). Sandbox test card: `4242 4242 4242 4242`. Full setup in [the payments plan](./polar-payments.md).
 
     **Local webhooks:** Polar can't reach `localhost`. Tunnel with the Polar CLI:
     ```bash
@@ -102,7 +102,7 @@ We use a multi-project setup to balance development speed with production data s
     ```
     The URL **must include the full path** — without it, events hit the root route, which returns `200` without invoking the handler and the DB never updates.
 
-    **Production webhooks:** endpoint at `https://www.lumo.homes/api/polar/webhook` in the **production** dashboard, with production env vars on the host (`POLAR_SERVER=production`, `POLAR_ACCESS_TOKEN`, `POLAR_WEBHOOK_SECRET`, `POLAR_PRODUCT_ID_*`). Full checklist in [the payments plan](./plans/polar-payments.md#production-deployment-checklist).
+    **Production webhooks:** endpoint at `https://www.lumo.homes/api/polar/webhook` in the **production** dashboard, with production env vars on the host (`POLAR_SERVER=production`, `POLAR_ACCESS_TOKEN`, `POLAR_WEBHOOK_SECRET`, `POLAR_PRODUCT_ID_*`). Full checklist in [the payments plan](./polar-payments.md#production-deployment-checklist).
 
 3.  **Run Development Server**
     ```bash
@@ -143,7 +143,7 @@ We use **Zustand** for domain state (properties, rooms, rent data, and auth). St
     const properties = usePropertiesStore((state) => state.properties);
     ```
 -   **State Boundaries**: Domain data goes in stores. UI state (dialogs, form visibility) stays local to components.
--   **Data Fetching**: Client Components with Supabase client-side fetching.
+-   **Data Fetching**: Stores call API routes (`app/api/`) when signed in and fall back to local state when signed out (see [ADR-0003](./adr/0003-auth-branching-offline-first.md)). No direct Supabase reads from components.
 
 ---
 

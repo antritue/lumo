@@ -79,6 +79,7 @@ If a feature adds complexity without removing confusion, it does not belong in L
 - **Properties** — Create, update, delete buildings. Split-panel layout with detail view.
 - **Rooms** — Create, update, delete rooms within properties. Dedicated room detail page with payments and services.
 - **Rent Payments** — Record payments per room per period (YYYY-MM). Status tracking (paid/pending). Period validation prevents duplicate months.
+- **Rent Overview** — Cross-property payment status per period with summary cards. Backed by `GET /api/overview`.
 - **Rent Payment Charges** — Line-item service charges attached to each payment. Flat or variable pricing with usage entry. Auto-calculated totals.
 
 ### Service Management (2-Layer Hierarchy)
@@ -176,7 +177,7 @@ All pricing and thresholds are working hypotheses until validated by real usage.
 ## 9. Architecture & Conventions
 
 - **App Router** — Public routes under `/[locale]/`, dashboard under `/dashboard/`, API under `/api/`.
-- **Feature-based organization** — Dashboard code grouped by feature (properties, rooms, services, rent-payments). Each feature has its own Zustand store, types, components, and dialogs with barrel exports.
+- **Feature-based organization** — Dashboard code grouped by feature (properties, rooms, rent-payments). Each feature has its own Zustand store, types, components, and dialogs with barrel exports.
 - **Auth-branching stores** — Every store operation checks `useAuthStore.getState().user`. If null, operations work on local state. Enables the offline-first experience.
 - **Self-contained services** — `property_services` is the master catalog per property. `room_service_overrides` stores only overrides (custom prices or disabled services) with a FK to `property_services`. Rooms inherit property services automatically.
 - **No prop drilling** — Components access Zustand stores directly. UI state (dialog open/close) stays local.
@@ -260,39 +261,20 @@ Lumo is successful when:
 
 ---
 
-## 14. UX Review Findings (July 2026)
-
-A first-user review identified these prioritized improvements:
-
-| Priority | Issue | Effort |
-|----------|-------|--------|
-| P0 | No first-run onboarding | Low |
-| P1 | "Tenants" nav item is a dead end | Trivial |
-| P1 | ~~3-tier service hierarchy confusing (global vs property vs room)~~ | ~~Medium~~ Done |
-| P2 | Amber customization dot missing tooltip on rooms | Trivial |
-| P2 | Rent payment dialog is dense with many service charges | Medium |
-| P2 | No dashboard / overview page | High |
-| P3 | Currency hardcoded by locale | Medium |
-| P3 | No bulk service pricing application | Medium |
-
----
-
-## 15. Long-Term Direction (Optional)
+## 14. Long-Term Direction (Optional)
 
 Extensions to consider **only after** core workflow is proven and loved:
 
 - First-run onboarding (P0)
-- Dashboard / overview page (P2)
 - Tenant management
 - Payment reminder notifications
-- Data export (for accountants)
 - Currency setting per property (P3)
 
 **Critical rule:** No extension should compromise simplicity or add mental load.
 
 ---
 
-## 16. Guiding Question (Always Ask)
+## 15. Guiding Question (Always Ask)
 
 Before building or changing anything:
 

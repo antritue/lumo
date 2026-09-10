@@ -167,8 +167,7 @@ lifetime entitlement and then **revokes the customer's active subscriptions imme
 (`cancelActiveSubscriptions`) so no further recurring charge is made. `handleSubscription` also
 guards the entitlement: subscription events (renewals, cancellations) never downgrade an active
 lifetime user back to a recurring tier. Whether Polar prorates or refunds any unused time on a
-switch/crossover has **not been verified yet** — do not publish FAQ copy on it until confirmed
-(see `docs/faq-pricing.md`).
+switch/crossover has **not been verified yet** — do not publish FAQ copy on it until confirmed.
 
 ### Customer portal
 The settings page offers a customer portal (manage payment method, invoices, cancel/reactivate) via
