@@ -51,18 +51,25 @@ const buildInheritedService = (
 export const useRoomServicesStore = create<RoomServicesState>()(
 	devtools(
 		(set, get) => {
+			const getPropertyService = (
+				roomId: string,
+				propertyServiceId: string,
+			): PropertyService | undefined => {
+				const propertyId = get().roomPropertyMap[roomId];
+				if (propertyId === undefined) return undefined;
+				return (
+					usePropertyServicesStore.getState().propertyServicesByPropertyId[
+						propertyId
+					] ?? []
+				).find((ps) => ps.id === propertyServiceId);
+			};
+
 			const applyInheritedService = async (
 				roomId: string,
 				propertyServiceId: string,
 			) => {
 				const propertyId = get().roomPropertyMap[roomId];
-				const propertyService =
-					propertyId !== undefined
-						? (
-								usePropertyServicesStore.getState()
-									.propertyServicesByPropertyId[propertyId] ?? []
-							).find((ps) => ps.id === propertyServiceId)
-						: undefined;
+				const propertyService = getPropertyService(roomId, propertyServiceId);
 
 				if (!propertyService) {
 					await get().fetchRoomServices(roomId, propertyId ?? "");
@@ -184,7 +191,33 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 
 				toggleService: async (roomId, propertyServiceId, enabled) => {
 					const user = useAuthStore.getState().user;
-					if (!user) return;
+
+					if (!user) {
+						const propertyService = getPropertyService(
+							roomId,
+							propertyServiceId,
+						);
+						set((state) => ({
+							roomServicesByRoomId: {
+								...state.roomServicesByRoomId,
+								[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map(
+									(s) => {
+										if (s.propertyServiceId !== propertyServiceId) return s;
+										if (!enabled)
+											return { ...s, isEnabled: false, isOverridden: true };
+										const matchesDefaults =
+											propertyService !== undefined &&
+											s.flatAmount === propertyService.flatAmount &&
+											s.unitPrice === propertyService.unitPrice;
+										return matchesDefaults && propertyService !== undefined
+											? buildInheritedService(propertyService)
+											: { ...s, isEnabled: true, isOverridden: true };
+									},
+								),
+							},
+						}));
+						return;
+					}
 
 					try {
 						const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
@@ -231,7 +264,32 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 					unitPrice,
 				) => {
 					const user = useAuthStore.getState().user;
-					if (!user) return;
+
+					if (!user) {
+						const propertyService = getPropertyService(
+							roomId,
+							propertyServiceId,
+						);
+						set((state) => ({
+							roomServicesByRoomId: {
+								...state.roomServicesByRoomId,
+								[roomId]: (state.roomServicesByRoomId[roomId] ?? []).map(
+									(s) => {
+										if (s.propertyServiceId !== propertyServiceId) return s;
+										const matchesDefaults =
+											propertyService !== undefined &&
+											flatAmount === propertyService.flatAmount &&
+											unitPrice === propertyService.unitPrice &&
+											s.isEnabled;
+										return matchesDefaults && propertyService !== undefined
+											? buildInheritedService(propertyService)
+											: { ...s, flatAmount, unitPrice, isOverridden: true };
+									},
+								),
+							},
+						}));
+						return;
+					}
 
 					try {
 						const res = await fetch(`/api/rooms/${roomId}/service-overrides`, {
@@ -279,7 +337,16 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 
 				resetToDefault: async (roomId, propertyServiceId) => {
 					const user = useAuthStore.getState().user;
-					if (!user) return;
+
+					if (!user) {
+						const services = get().roomServicesByRoomId[roomId] ?? [];
+						const service = services.find(
+							(s) => s.propertyServiceId === propertyServiceId,
+						);
+						if (!service?.isOverridden) return;
+						await applyInheritedService(roomId, propertyServiceId);
+						return;
+					}
 
 					try {
 						const services = get().roomServicesByRoomId[roomId] ?? [];
