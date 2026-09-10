@@ -67,13 +67,19 @@ describe("RoomServicesStore", () => {
 			});
 		});
 
-		it("does nothing when unauthenticated", async () => {
+		it("seeds inherited services from local cache when unauthenticated", async () => {
+			usePropertyServicesStore.setState({
+				propertyServicesByPropertyId: {
+					"prop-1": [mockPropertyService()],
+				},
+			});
+
 			await useRoomServicesStore
 				.getState()
 				.fetchRoomServices("room-1", "prop-1");
 
 			const { roomServicesByRoomId } = useRoomServicesStore.getState();
-			expect(roomServicesByRoomId["room-1"]).toBeUndefined();
+			expect(roomServicesByRoomId["room-1"]).toEqual([mockEffectiveService()]);
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 

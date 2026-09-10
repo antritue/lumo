@@ -89,7 +89,27 @@ export const useRoomServicesStore = create<RoomServicesState>()(
 
 				fetchRoomServices: async (roomId, propertyId) => {
 					const user = useAuthStore.getState().user;
-					if (!user) return;
+
+					if (!user) {
+						const propertyServices: PropertyService[] =
+							usePropertyServicesStore.getState().propertyServicesByPropertyId[
+								propertyId
+							] ?? [];
+
+						set((state) => ({
+							roomServicesByRoomId: {
+								...state.roomServicesByRoomId,
+								[roomId]: propertyServices
+									.map(buildInheritedService)
+									.sort((a, b) => a.serviceName.localeCompare(b.serviceName)),
+							},
+							roomPropertyMap: {
+								...state.roomPropertyMap,
+								[roomId]: propertyId,
+							},
+						}));
+						return;
+					}
 
 					const { fetchingRoomId } = get();
 					if (fetchingRoomId === roomId) return;
