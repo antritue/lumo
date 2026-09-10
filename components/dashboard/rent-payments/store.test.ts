@@ -555,12 +555,34 @@ describe("RentPaymentsStore", () => {
 	});
 
 	describe("fetchRentPaymentChargesByRoomId", () => {
-		it("returns empty when unauthenticated", async () => {
+		it("returns empty when unauthenticated with no local charges", async () => {
 			const result = await useRentPaymentsStore
 				.getState()
 				.fetchRentPaymentChargesByRoomId("room-1");
 
 			expect(result).toEqual({});
+			expect(mockFetch).not.toHaveBeenCalled();
+		});
+
+		it("returns local charges for room payments when unauthenticated", async () => {
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					mockPayment({ id: "payment-1", roomId: "room-1" }),
+					mockPayment({ id: "payment-2", roomId: "room-2" }),
+				],
+				serviceChargesByPaymentId: {
+					"payment-1": [mockServiceCharge()],
+					"payment-2": [mockServiceCharge({ serviceName: "Water" })],
+				},
+			});
+
+			const result = await useRentPaymentsStore
+				.getState()
+				.fetchRentPaymentChargesByRoomId("room-1");
+
+			expect(result).toEqual({
+				"payment-1": [mockServiceCharge()],
+			});
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
