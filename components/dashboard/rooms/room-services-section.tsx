@@ -273,6 +273,7 @@ export function RoomServicesSection({
 									align="start"
 									className="w-64 p-3"
 									sideOffset={4}
+									onOpenAutoFocus={(e) => e.preventDefault()}
 								>
 									<div className="space-y-3">
 										<div className="flex items-center justify-between">
@@ -318,6 +319,9 @@ export function RoomServicesSection({
 												type="number"
 												value={editAmount}
 												onChange={(e) => setEditAmount(e.target.value)}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") handleSaveEdit();
+												}}
 												className="w-full h-8 px-2 text-sm rounded-md border border-input bg-background"
 												min="0"
 												step="0.01"
@@ -325,10 +329,11 @@ export function RoomServicesSection({
 										</div>
 										<div className="flex gap-2">
 											<Button
+												type="button"
 												size="sm"
 												className="flex-1 h-8"
 												disabled={savingEdit}
-												onClick={handleSaveEdit}
+												onClick={() => handleSaveEdit()}
 											>
 												{savingEdit ? (
 													<Loader2 className="h-3 w-3 animate-spin" />
@@ -337,6 +342,7 @@ export function RoomServicesSection({
 												)}
 											</Button>
 											<Button
+												type="button"
 												size="sm"
 												variant="outline"
 												className="flex-1 h-8"

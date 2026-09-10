@@ -435,5 +435,35 @@ describe("RoomServicesSection", () => {
 
 			expect(setCustomPrice).toHaveBeenCalledWith("room-1", "ps-1", 75, null);
 		});
+
+		it("calls setCustomPrice when pressing Enter in edit popover", async () => {
+			const setCustomPrice = vi.fn().mockResolvedValue(undefined);
+			useRoomServicesStore.setState({
+				roomServicesByRoomId: {
+					"room-1": [
+						mockEffectiveService({
+							pricingType: "flat",
+							flatAmount: 50,
+							unitPrice: null,
+						}),
+					],
+				},
+				setCustomPrice,
+			});
+
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
+			);
+
+			await user.click(screen.getByText("Electricity"));
+
+			const input = screen.getByRole("spinbutton");
+			await user.clear(input);
+			await user.type(input, "75{Enter}");
+
+			expect(setCustomPrice).toHaveBeenCalledWith("room-1", "ps-1", 75, null);
+		});
 	});
 });
