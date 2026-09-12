@@ -288,6 +288,20 @@ describe("OverviewStore", () => {
 			expect(mockFetch).toHaveBeenCalledTimes(1);
 		});
 
+		it("bypasses dedup when force is true", async () => {
+			authenticate();
+			mockFetch.mockResolvedValue({
+				ok: true,
+				json: async () => mockSnapshot,
+			});
+
+			await useOverviewStore.getState().fetchOverview("2026-08");
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+
+			await useOverviewStore.getState().fetchOverview("2026-08", true);
+			expect(mockFetch).toHaveBeenCalledTimes(2);
+		});
+
 		it("marks fetch failed on error", async () => {
 			authenticate();
 			mockFetch.mockResolvedValueOnce({ ok: false });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { AuthProvider } from "@/components/dashboard/auth";
+import { DemoSeedInitializer } from "@/components/dashboard/demo/demo-seed-initializer";
 import { AppShell } from "@/components/dashboard/layout";
 import { getAppLocale } from "@/lib/app-locale";
 
@@ -40,6 +41,7 @@ export default async function AppLayout({
 	return (
 		<NextIntlClientProvider locale={locale} messages={messages}>
 			<AuthProvider>
+				<DemoSeedInitializer />
 				<AppShell>{children}</AppShell>
 			</AuthProvider>
 		</NextIntlClientProvider>

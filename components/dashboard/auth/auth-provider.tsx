@@ -26,13 +26,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
 		const {
 			data: { subscription },
-		} = supabase.auth.onAuthStateChange((_event, session) => {
-			if (session?.user) {
-				setUser(session.user);
-				setLoading(false);
-			} else {
+		} = supabase.auth.onAuthStateChange((event, session) => {
+			// Sign-out: wipe all domain data, nothing else to do.
+			if (event === "SIGNED_OUT") {
+				clearAllDomainStores();
+				return;
+			}
+
+			// Guest → logged-in: drop demo data before setting the real user.
+			const isGuestToUser =
+				event === "SIGNED_IN" && session?.user && !useAuthStore.getState().user;
+			if (isGuestToUser) {
 				clearAllDomainStores();
 			}
+
+			// Sync auth state (runs for SIGNED_IN, TOKEN_REFRESHED, INITIAL_SESSION).
+			setUser(session?.user ?? null);
+			setLoading(false);
 		});
 
 		return () => {

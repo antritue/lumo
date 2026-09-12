@@ -184,7 +184,6 @@ describe("RentPaymentsList", () => {
 		});
 
 		it("does not render expand button when payment has no charges", async () => {
-			const user = userEvent.setup();
 			renderWithProviders(
 				<RentPaymentsList payments={mockPayments} {...defaultProps} />,
 			);

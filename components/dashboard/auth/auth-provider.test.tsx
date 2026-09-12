@@ -22,19 +22,42 @@ vi.mock("./clear-domain-stores", () => ({
 	clearAllDomainStores: vi.fn(),
 }));
 
-describe("AuthProvider", () => {
-	it("initializes auth state on mount", async () => {
-		const mockUser = { id: "123", email: "test@example.com" } as User;
-		vi.mocked(supabase.auth.getSession).mockResolvedValue({
-			data: { session: { user: mockUser } as Session },
-			error: null,
-		});
+let authCallback:
+	| ((event: AuthChangeEvent, session: Session | null) => void)
+	| undefined;
 
-		renderWithProviders(
-			<AuthProvider>
-				<div>Child</div>
-			</AuthProvider>,
-		);
+function mockAuthStateChange() {
+	vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((cb) => {
+		authCallback = cb;
+		return {
+			data: {
+				subscription: {
+					id: "test-subscription",
+					callback: cb,
+					unsubscribe: vi.fn(),
+				},
+			},
+		};
+	});
+}
+
+function render(session: Session | null = null) {
+	vi.mocked(supabase.auth.getSession).mockResolvedValue({
+		data: { session } as { session: Session },
+		error: null,
+	});
+
+	return renderWithProviders(
+		<AuthProvider>
+			<div>Child</div>
+		</AuthProvider>,
+	);
+}
+
+describe("AuthProvider", () => {
+	it("initializes auth state from session on mount", async () => {
+		const mockUser = { id: "123", email: "test@example.com" } as User;
+		render({ user: mockUser } as Session);
 
 		await waitFor(() => {
 			expect(useAuthStore.getState().user).toEqual(mockUser);
@@ -42,75 +65,65 @@ describe("AuthProvider", () => {
 		});
 	});
 
-	it("updates user state when onAuthStateChange fires", async () => {
-		const mockUnsubscribe = vi.fn();
-		let authCallback:
-			| ((event: AuthChangeEvent, session: Session | null) => void)
-			| undefined;
-
-		vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((cb) => {
-			authCallback = cb;
-			return {
-				data: {
-					subscription: {
-						id: "test-subscription",
-						callback: cb,
-						unsubscribe: mockUnsubscribe,
-					},
-				},
-			};
-		});
-
-		vi.mocked(supabase.auth.getSession).mockResolvedValue({
-			data: { session: null },
-			error: null,
-		});
-
-		renderWithProviders(
-			<AuthProvider>
-				<div>Child</div>
-			</AuthProvider>,
-		);
-
-		const updatedUser = { id: "456", email: "new@example.com" } as User;
+	it("sets loading false even without a session", async () => {
+		render(null);
 
 		await waitFor(() => {
-			authCallback?.("SIGNED_IN", { user: updatedUser } as Session);
-			expect(useAuthStore.getState().user).toEqual(updatedUser);
+			expect(useAuthStore.getState().user).toBeNull();
+			expect(useAuthStore.getState().loading).toBe(false);
 		});
 	});
 
-	it("calls clearAllDomainStores on SIGNED_OUT", async () => {
-		let authCallback:
-			| ((event: AuthChangeEvent, session: Session | null) => void)
-			| undefined;
+	describe("onAuthStateChange", () => {
+		it("clears stores on SIGNED_OUT", async () => {
+			mockAuthStateChange();
+			render();
 
-		vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((cb) => {
-			authCallback = cb;
-			return {
-				data: {
-					subscription: {
-						id: "test-subscription",
-						callback: cb,
-						unsubscribe: vi.fn(),
-					},
-				},
-			};
+			authCallback?.("SIGNED_OUT", null);
+
+			expect(clearAllDomainStores).toHaveBeenCalledTimes(1);
+			expect(useAuthStore.getState().user).toBeNull();
 		});
 
-		vi.mocked(supabase.auth.getSession).mockResolvedValue({
-			data: { session: null },
-			error: null,
+		it("clears guest data on guest → user transition", async () => {
+			mockAuthStateChange();
+			render();
+
+			const mockUser = { id: "123" } as User;
+			authCallback?.("SIGNED_IN", { user: mockUser } as Session);
+
+			expect(clearAllDomainStores).toHaveBeenCalledTimes(1);
+			await waitFor(() => {
+				expect(useAuthStore.getState().user).toEqual(mockUser);
+			});
 		});
 
-		renderWithProviders(
-			<AuthProvider>
-				<div>Child</div>
-			</AuthProvider>,
-		);
+		it("does not clear stores on token refresh", async () => {
+			mockAuthStateChange();
+			const existingUser = { id: "123" } as User;
+			render({ user: existingUser } as Session);
 
-		authCallback?.("SIGNED_OUT", null);
+			await waitFor(() => {
+				expect(useAuthStore.getState().user).toEqual(existingUser);
+			});
+			vi.mocked(clearAllDomainStores).mockClear();
 
-		expect(clearAllDomainStores).toHaveBeenCalledTimes(1);
+			authCallback?.("SIGNED_IN", { user: existingUser } as Session);
+
+			expect(clearAllDomainStores).not.toHaveBeenCalled();
+		});
+
+		it("sets user on INITIAL_SESSION", async () => {
+			mockAuthStateChange();
+			render();
+
+			const mockUser = { id: "123" } as User;
+			authCallback?.("INITIAL_SESSION", { user: mockUser } as Session);
+
+			await waitFor(() => {
+				expect(useAuthStore.getState().user).toEqual(mockUser);
+				expect(useAuthStore.getState().loading).toBe(false);
+			});
+		});
 	});
 });

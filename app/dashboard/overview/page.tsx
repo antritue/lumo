@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useAuthStore } from "@/components/dashboard/auth/store";
 import { OverviewEmptyState } from "@/components/dashboard/overview/empty-state";
 import { OverviewSkeleton } from "@/components/dashboard/overview/overview-skeleton";
 import { PropertyGroup } from "@/components/dashboard/overview/property-group";
@@ -32,9 +33,15 @@ export default function OverviewPage() {
 
 	const [period, setPeriod] = useState(defaultPeriod);
 
+	// Stable id: same-account user objects must not refetch.
+	const userId = useAuthStore((state) => state.user?.id ?? null);
+	const authLoading = useAuthStore((state) => state.loading);
+
 	useEffect(() => {
-		fetchOverview(period);
-	}, [period, fetchOverview]);
+		if (authLoading) return;
+		void userId;
+		fetchOverview(period, true);
+	}, [period, fetchOverview, userId, authLoading]);
 
 	let content: React.JSX.Element;
 	if (isOverviewFetchFailed && !isOverviewLoading) {

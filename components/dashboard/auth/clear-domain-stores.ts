@@ -1,3 +1,5 @@
+import { useBillingStore } from "@/components/dashboard/billing/store";
+import { useOverviewStore } from "@/components/dashboard/overview/store";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
 import { usePropertiesStore } from "@/components/dashboard/properties/store";
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
@@ -6,12 +8,24 @@ import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { useSettingsStore } from "@/components/dashboard/settings/store";
 import { useAuthStore } from "./store";
 
+type ClearableStore = {
+	getState: () => { clearStore: () => void };
+};
+
+const domainStores: ClearableStore[] = [
+	useAuthStore,
+	usePropertiesStore,
+	usePropertyServicesStore,
+	useRoomsStore,
+	useRoomServicesStore,
+	useRentPaymentsStore,
+	useOverviewStore,
+	useBillingStore,
+	useSettingsStore,
+];
+
 export function clearAllDomainStores() {
-	useAuthStore.getState().clearStore();
-	usePropertiesStore.getState().clearStore();
-	usePropertyServicesStore.getState().clearStore();
-	useRoomsStore.getState().clearStore();
-	useRoomServicesStore.getState().clearStore();
-	useRentPaymentsStore.getState().clearStore();
-	useSettingsStore.getState().clearStore();
+	for (const store of domainStores) {
+		store.getState().clearStore();
+	}
 }
