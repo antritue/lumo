@@ -1,6 +1,8 @@
 import type { User } from "@supabase/supabase-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
+import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { usePropertiesStore } from "./store";
 import type { Property } from "./types";
 
@@ -34,6 +36,11 @@ describe("PropertiesStore", () => {
 			isPropertiesLoading: false,
 			hasPropertiesFetched: false,
 			isPropertiesFetchFailed: false,
+		});
+		useRoomsStore.setState({ rooms: [] });
+		useRentPaymentsStore.setState({
+			rentPayments: [],
+			serviceChargesByPaymentId: {},
 		});
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
@@ -253,12 +260,53 @@ describe("PropertiesStore", () => {
 					mockProperty({ id: "2", userId: "user-1", name: "Delete" }),
 				],
 			});
+			useRoomsStore.setState({
+				rooms: [
+					{
+						id: "room-1",
+						propertyId: "1",
+						name: "Room A",
+						monthlyRent: 100,
+						notes: null,
+					},
+					{
+						id: "room-2",
+						propertyId: "2",
+						name: "Room B",
+						monthlyRent: 200,
+						notes: null,
+					},
+				],
+			});
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					{
+						id: "pay-1",
+						roomId: "room-1",
+						period: "2026-09",
+						rentAmount: 100,
+						status: "pending",
+					},
+					{
+						id: "pay-2",
+						roomId: "room-2",
+						period: "2026-09",
+						rentAmount: 200,
+						status: "pending",
+					},
+				],
+				serviceChargesByPaymentId: {},
+			});
 
 			await usePropertiesStore.getState().deleteProperty("2");
 
 			const { properties } = usePropertiesStore.getState();
 			expect(properties).toHaveLength(1);
 			expect(properties[0].name).toBe("Keep");
+			expect(useRoomsStore.getState().rooms).toHaveLength(1);
+			expect(useRoomsStore.getState().rooms[0].id).toBe("room-1");
+			expect(useRentPaymentsStore.getState().rentPayments).toHaveLength(1);
+			expect(useRentPaymentsStore.getState().rentPayments[0].id).toBe("pay-1");
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 

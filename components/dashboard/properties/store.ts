@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
+import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import type { Property } from "./types";
 
 interface PropertiesState {
@@ -150,8 +152,21 @@ export const usePropertiesStore = create<PropertiesState>()(
 					}
 				}
 
+				const propertyRoomIds = useRoomsStore
+					.getState()
+					.rooms.filter((room) => room.propertyId === id)
+					.map((room) => room.id);
+
 				set((state) => ({
 					properties: state.properties.filter((property) => property.id !== id),
+				}));
+				useRoomsStore.setState((state) => ({
+					rooms: state.rooms.filter((room) => room.propertyId !== id),
+				}));
+				useRentPaymentsStore.setState((state) => ({
+					rentPayments: state.rentPayments.filter(
+						(payment) => !propertyRoomIds.includes(payment.roomId),
+					),
 				}));
 			},
 
