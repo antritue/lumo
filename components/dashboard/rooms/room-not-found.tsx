@@ -2,11 +2,20 @@
 
 import { ArrowLeft, DoorOpen } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 export function RoomNotFound() {
 	const t = useTranslations("app");
+	const searchParams = useSearchParams();
+	const from = searchParams.get("from");
+	const backHref =
+		from === "overview" ? "/dashboard/overview" : "/dashboard/properties";
+	const backLabel =
+		from === "overview"
+			? t("rooms.backToOverview")
+			: t("rooms.backToProperties");
 
 	return (
 		<div className="max-w-4xl mx-auto py-8 px-4">
@@ -21,9 +30,9 @@ export function RoomNotFound() {
 					{t("rooms.notFoundMessage")}
 				</p>
 				<Button asChild size="lg">
-					<Link href="/dashboard/properties">
+					<Link href={backHref}>
 						<ArrowLeft className="mr-2 h-4 w-4" />
-						{t("properties.backToProperties")}
+						{backLabel}
 					</Link>
 				</Button>
 			</div>

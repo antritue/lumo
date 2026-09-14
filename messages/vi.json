@@ -359,7 +359,8 @@
 			"deleteTitle": "Xóa phòng?",
 			"deleteMessage": "Phòng \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
 			"deleteConfirm": "Xóa phòng",
-			"backToProperties": "Quay lại",
+			"backToProperties": "Quay lại nhà cho thuê",
+			"backToOverview": "Quay lại tổng quan",
 			"notFound": "Không tìm thấy phòng",
 			"notFoundMessage": "Phòng không tồn tại hoặc đã bị xóa",
 			"details": {

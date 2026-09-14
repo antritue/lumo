@@ -127,7 +127,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 									className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-card border border-border"
 								>
 									<Link
-										href={`/dashboard/rooms/${room.id}`}
+										href={`/dashboard/rooms/${room.id}?from=properties`}
 										className="flex items-center gap-3 flex-1 min-w-0 rounded-lg -mx-1.5 -my-1.5 px-1.5 py-1.5 hover:bg-muted/50 transition-colors"
 									>
 										<div className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">

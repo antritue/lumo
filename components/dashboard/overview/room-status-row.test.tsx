@@ -108,7 +108,7 @@ describe("RoomStatusRow", () => {
 
 		expect(screen.getByRole("link", { name: /room 101/i })).toHaveAttribute(
 			"href",
-			"/dashboard/rooms/room-1",
+			"/dashboard/rooms/room-1?from=overview",
 		);
 	});
 });

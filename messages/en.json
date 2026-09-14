@@ -385,6 +385,7 @@
 			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone",
 			"deleteConfirm": "Delete room",
 			"backToProperties": "Back to properties",
+			"backToOverview": "Back to overview",
 			"notFound": "Room not found",
 			"notFoundMessage": "This room doesn't exist or may have been deleted",
 			"details": {

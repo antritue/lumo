@@ -9,6 +9,7 @@ import RoomDetailPage from "./page";
 
 vi.mock("next/navigation", () => ({
 	useRouter: vi.fn(() => ({ push: vi.fn() })),
+	useSearchParams: () => new URLSearchParams(),
 }));
 
 // Mock React's use hook

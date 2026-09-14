@@ -2,6 +2,7 @@
 
 import { ChevronRight, DoorOpen, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { Room } from "./types";
 
@@ -19,15 +20,23 @@ export function RoomDetailHeader({
 	const t = useTranslations("app");
 	const locale = useLocale();
 	const currency = locale === "vi" ? "VND" : "USD";
+	const searchParams = useSearchParams();
+	const from = searchParams.get("from");
+	const backHref =
+		from === "overview" ? "/dashboard/overview" : "/dashboard/properties";
+	const backLabel =
+		from === "overview"
+			? t("rooms.backToOverview")
+			: t("rooms.backToProperties");
 
 	return (
 		<div className="space-y-6">
 			<Link
-				href="/dashboard/properties"
+				href={backHref}
 				className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
 			>
 				<ChevronRight className="h-4 w-4 rotate-180" />
-				{t("properties.backToProperties")}
+				{backLabel}
 			</Link>
 
 			<div className="flex items-start justify-between gap-4">
