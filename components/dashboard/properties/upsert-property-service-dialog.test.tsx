@@ -43,7 +43,10 @@ describe("UpsertPropertyServiceDialog", () => {
 			await user.click(within(dialog).getByRole("radio", { name: /usage/i }));
 
 			expect(
-				within(dialog).getByRole("textbox", { name: /unit/i }),
+				within(dialog).getByRole("textbox", { name: /unit price/i }),
+			).toHaveValue("");
+			expect(
+				within(dialog).getByRole("textbox", { name: /^unit \(optional\)/i }),
 			).toHaveValue("");
 		});
 

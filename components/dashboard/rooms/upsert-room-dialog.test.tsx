@@ -39,8 +39,8 @@ describe("UpsertRoomDialog", () => {
 				within(dialog).getByRole("textbox", { name: /room name/i }),
 			).toHaveValue("");
 			expect(
-				within(dialog).getByRole("spinbutton", { name: /monthly rent/i }),
-			).toHaveValue(null);
+				within(dialog).getByRole("textbox", { name: /monthly rent/i }),
+			).toHaveValue("");
 			expect(
 				within(dialog).getByRole("textbox", { name: /notes/i }),
 			).toHaveValue("");
@@ -92,7 +92,7 @@ describe("UpsertRoomDialog", () => {
 
 			const dialog = screen.getByRole("dialog");
 			const input = within(dialog).getByRole("textbox", { name: /room name/i });
-			const rentInput = within(dialog).getByRole("spinbutton", {
+			const rentInput = within(dialog).getByRole("textbox", {
 				name: /monthly rent/i,
 			});
 			const notesInput = within(dialog).getByRole("textbox", {
@@ -111,6 +111,32 @@ describe("UpsertRoomDialog", () => {
 				750,
 				"Second floor",
 			);
+		});
+
+		it("formats large rent amounts with commas but saves raw number", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(
+				<UpsertRoomDialog
+					mode="add"
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onSave={mockOnSave}
+				/>,
+			);
+
+			const dialog = screen.getByRole("dialog");
+			const input = within(dialog).getByRole("textbox", { name: /room name/i });
+			const rentInput = within(dialog).getByRole("textbox", {
+				name: /monthly rent/i,
+			});
+			const form = dialog.querySelector("form") as HTMLFormElement;
+
+			await user.type(input, "Room 102");
+			await user.type(rentInput, "5000000");
+			expect(rentInput).toHaveValue("5,000,000");
+			fireEvent.submit(form);
+
+			expect(mockOnSave).toHaveBeenCalledWith(null, "Room 102", 5000000, null);
 		});
 
 		it("calls onSave with null rent and notes when optional fields are empty", async () => {
@@ -227,8 +253,8 @@ describe("UpsertRoomDialog", () => {
 				within(dialog).getByRole("textbox", { name: /room name/i }),
 			).toHaveValue("Room 101");
 			expect(
-				within(dialog).getByRole("spinbutton", { name: /monthly rent/i }),
-			).toHaveValue(500);
+				within(dialog).getByRole("textbox", { name: /monthly rent/i }),
+			).toHaveValue("500");
 			expect(
 				within(dialog).getByRole("textbox", { name: /notes/i }),
 			).toHaveValue("Corner unit");
@@ -277,7 +303,7 @@ describe("UpsertRoomDialog", () => {
 
 			const dialog = screen.getByRole("dialog");
 			const input = within(dialog).getByRole("textbox", { name: /room name/i });
-			const rentInput = within(dialog).getByRole("spinbutton", {
+			const rentInput = within(dialog).getByRole("textbox", {
 				name: /monthly rent/i,
 			});
 			const notesInput = within(dialog).getByRole("textbox", {
@@ -313,7 +339,7 @@ describe("UpsertRoomDialog", () => {
 
 			const dialog = screen.getByRole("dialog");
 			const input = within(dialog).getByRole("textbox", { name: /room name/i });
-			const rentInput = within(dialog).getByRole("spinbutton", {
+			const rentInput = within(dialog).getByRole("textbox", {
 				name: /monthly rent/i,
 			});
 			const form = dialog.querySelector("form") as HTMLFormElement;

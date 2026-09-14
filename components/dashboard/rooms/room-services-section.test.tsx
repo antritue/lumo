@@ -349,7 +349,7 @@ describe("RoomServicesSection", () => {
 
 			await user.click(screen.getAllByText("Electricity")[0]);
 
-			expect(screen.getByRole("spinbutton")).toBeInTheDocument();
+			expect(screen.getByRole("textbox")).toBeInTheDocument();
 		});
 
 		it("shows property default in popover for overridden services", async () => {
@@ -427,7 +427,7 @@ describe("RoomServicesSection", () => {
 
 			await user.click(screen.getByText("Electricity"));
 
-			const input = screen.getByRole("spinbutton");
+			const input = screen.getByRole("textbox");
 			await user.clear(input);
 			await user.type(input, "75");
 
@@ -459,7 +459,7 @@ describe("RoomServicesSection", () => {
 
 			await user.click(screen.getByText("Electricity"));
 
-			const input = screen.getByRole("spinbutton");
+			const input = screen.getByRole("textbox");
 			await user.clear(input);
 			await user.type(input, "75{Enter}");
 

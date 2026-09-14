@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { type SubmitEvent, useEffect, useState } from "react";
+import { AmountInput } from "@/components/shared/amount-input";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -188,19 +189,16 @@ export function UpsertPropertyServiceDialog({
 									{pricingType === "flat" ? tf("flatAmount") : tf("unitPrice")}
 								</label>
 								<div className="relative">
-									<Input
+									<AmountInput
 										id="amount"
-										type="number"
 										value={amount}
-										onChange={(e) => setAmount(e.target.value)}
+										onChange={setAmount}
 										placeholder={
 											pricingType === "flat"
 												? t("flatAmountPlaceholder")
 												: t("unitPricePlaceholder")
 										}
 										className="text-base h-12 pr-16 mt-2"
-										min="0"
-										step="0.01"
 									/>
 									<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
 										{currency}

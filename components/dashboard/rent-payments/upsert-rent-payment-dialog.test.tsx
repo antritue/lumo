@@ -127,11 +127,6 @@ describe("UpsertRentPaymentDialog", () => {
 			await user.type(amountInput, "0");
 			expect(saveButton).toBeDisabled();
 
-			// Negative amount
-			await user.clear(amountInput);
-			await user.type(amountInput, "-100");
-			expect(saveButton).toBeDisabled();
-
 			// Valid amount
 			await user.clear(amountInput);
 			await user.type(amountInput, "1200");
@@ -488,7 +483,7 @@ describe("UpsertRentPaymentDialog", () => {
 
 				const dialog = screen.getByRole("dialog");
 				const amountInput = within(dialog).getByLabelText(/rent/i);
-				expect(amountInput).toHaveValue(1000);
+				expect(amountInput).toHaveValue("1,000");
 
 				await user.click(within(dialog).getByRole("button", { name: /save/i }));
 
