@@ -1,7 +1,11 @@
 import { screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
 import { RoomNotFound } from "./room-not-found";
+
+vi.mock("next/navigation", () => ({
+	useSearchParams: () => new URLSearchParams(),
+}));
 
 describe("RoomNotFound", () => {
 	it("displays not found message and back button", () => {

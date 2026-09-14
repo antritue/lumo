@@ -176,7 +176,7 @@
 		},
 		"authBanner": {
 			"title": "Bạn chưa đăng nhập",
-			"message": "Đăng nhập để lưu dữ liệu của bạn trên các thiết bị",
+			"message": "Đây là dữ liệu demo để bạn trải nghiệm. Dữ liệu thay đổi sẽ được reset khi tải lại trang. Đăng nhập để lưu lại dữ liệu",
 			"close": "Đóng"
 		},
 		"sidebar": {
@@ -359,7 +359,8 @@
 			"deleteTitle": "Xóa phòng?",
 			"deleteMessage": "Phòng \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
 			"deleteConfirm": "Xóa phòng",
-			"backToProperties": "Quay lại",
+			"backToProperties": "Quay lại nhà cho thuê",
+			"backToOverview": "Quay lại tổng quan",
 			"notFound": "Không tìm thấy phòng",
 			"notFoundMessage": "Phòng không tồn tại hoặc đã bị xóa",
 			"details": {

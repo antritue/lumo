@@ -5,6 +5,10 @@ import { renderWithProviders } from "@/test/render";
 import { RoomDetailHeader } from "./room-detail-header";
 import type { Room } from "./types";
 
+vi.mock("next/navigation", () => ({
+	useSearchParams: () => new URLSearchParams(),
+}));
+
 describe("RoomDetailHeader", () => {
 	const mockRoom: Room = {
 		id: "1",
