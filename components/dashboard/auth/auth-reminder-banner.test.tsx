@@ -19,11 +19,9 @@ describe("AuthReminderBanner", () => {
 		renderWithProviders(<AuthReminderBanner />);
 
 		expect(
-			screen.getByRole("heading", { name: /you’re not signed in/i }),
+			screen.getByRole("heading", { name: /you're not signed in/i }),
 		).toBeInTheDocument();
-		expect(
-			screen.getByText(/sign in to save your data across devices/i),
-		).toBeInTheDocument();
+		expect(screen.getByText(/mock data/i)).toBeInTheDocument();
 	});
 
 	it("does not render when user is authenticated", () => {

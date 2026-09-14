@@ -159,8 +159,8 @@
 			"inDevelopment": "This feature is coming soon"
 		},
 		"authBanner": {
-			"title": "You’re not signed in",
-			"message": "Sign in to save your data across devices",
+			"title": "You're not signed in",
+			"message": "You're viewing mock data. Feel free to explore, but nothing will be saved. Sign in to keep your real data",
 			"close": "Dismiss"
 		},
 		"sidebar": {
