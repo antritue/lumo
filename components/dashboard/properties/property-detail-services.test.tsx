@@ -253,10 +253,10 @@ describe("PropertyDetailServices", () => {
 			const dialog = screen.getByRole("dialog");
 			expect(dialog).toBeInTheDocument();
 
-			const amountInput = within(dialog).getByRole("spinbutton", {
+			const amountInput = within(dialog).getByRole("textbox", {
 				name: /unit price/i,
 			});
-			expect(amountInput).toHaveValue(200);
+			expect(amountInput).toHaveValue("200");
 		});
 
 		it("opens delete dialog on X button click", async () => {

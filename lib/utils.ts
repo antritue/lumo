@@ -6,7 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number, locale: string): string {
-	return new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
+	// Always use en-US grouping: comma for thousands, dot for decimals
+	// e.g. 5,000 or 5,000,000 (even for vi locale, which would otherwise use dots)
+	return new Intl.NumberFormat("en-US", {
 		style: "currency",
 		currency: locale === "vi" ? "VND" : "USD",
 		minimumFractionDigits: 0,
@@ -31,6 +33,31 @@ export function formatServicePrice(
 		return `${formatCurrency(service.unitPrice, locale)}/${service.unitLabel ?? defaultUnit}`;
 	}
 	return "";
+}
+
+export function formatAmountInputDisplay(rawValue: string): string {
+	if (rawValue === "") return "";
+	const withoutCommas = rawValue.replace(/,/g, "");
+	if (withoutCommas === "" || withoutCommas === ".") return withoutCommas;
+	const [intPart, ...decimalParts] = withoutCommas.split(".");
+	const formattedInt = Number(intPart === "" ? "0" : intPart).toLocaleString(
+		"en-US",
+	);
+	const hasTrailingDot =
+		withoutCommas.endsWith(".") && decimalParts.length === 1;
+	if (decimalParts.length === 0) return formattedInt;
+	if (hasTrailingDot) return `${formattedInt}.`;
+	return `${formattedInt}.${decimalParts.join("")}`;
+}
+
+export function parseAmountInputValue(displayValue: string): string {
+	// Strip commas and any char that isn't a digit or dot, drop minus sign
+	const cleaned = displayValue.replace(/,/g, "").replace(/[^0-9.]/g, "");
+	if (cleaned === "") return "";
+	// Keep only the first dot as decimal separator, max two decimal digits
+	const [intPart, ...rest] = cleaned.split(".");
+	if (rest.length === 0) return intPart;
+	return `${intPart}.${rest.join("").slice(0, 2)}`;
 }
 
 function toCamelCase(str: string): string {

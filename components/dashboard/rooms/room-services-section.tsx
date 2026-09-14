@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
 import type { PropertyService } from "@/components/dashboard/properties/types";
+import { AmountInput } from "@/components/shared/amount-input";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
@@ -314,17 +315,14 @@ export function RoomServicesSection({
 													? ts("flatAmount")
 													: ts("unitPrice")}
 											</label>
-											<input
+											<AmountInput
 												id={`edit-amount-${service.propertyServiceId}`}
-												type="number"
 												value={editAmount}
-												onChange={(e) => setEditAmount(e.target.value)}
+												onChange={setEditAmount}
 												onKeyDown={(e) => {
 													if (e.key === "Enter") handleSaveEdit();
 												}}
-												className="w-full h-8 px-2 text-sm rounded-md border border-input bg-background"
-												min="0"
-												step="0.01"
+												className="h-8 px-2 text-sm"
 											/>
 										</div>
 										<div className="flex gap-2">

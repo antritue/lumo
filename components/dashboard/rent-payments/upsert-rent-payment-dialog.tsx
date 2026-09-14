@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { type SubmitEvent, useEffect, useMemo, useState } from "react";
+import { AmountInput } from "@/components/shared/amount-input";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +13,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { MonthPicker } from "./month-picker";
 import type { PaymentRecord, PaymentStatus, ServiceCharge } from "./types";
 
@@ -38,7 +38,8 @@ interface UpsertRentPaymentDialogProps {
 }
 
 function formatCurrencyValue(value: number, locale: string): string {
-	return new Intl.NumberFormat(locale, {
+	// Always use en-US grouping: comma for thousands, dot for decimals
+	return new Intl.NumberFormat("en-US", {
 		style: "currency",
 		currency: locale === "vi" ? "VND" : "USD",
 		minimumFractionDigits: 0,
@@ -228,13 +229,10 @@ export function UpsertRentPaymentDialog({
 									{t("rent")}
 								</label>
 								<div className="relative">
-									<Input
+									<AmountInput
 										id="amount"
-										type="number"
-										step="0.01"
-										min="0"
 										value={rentAmount}
-										onChange={(e) => setRentAmount(e.target.value)}
+										onChange={setRentAmount}
 										className="text-base h-12 pr-16 mt-2"
 										required
 									/>
@@ -277,15 +275,11 @@ export function UpsertRentPaymentDialog({
 												</div>
 												{charge.pricingType === "flat" ? (
 													<div className="relative w-48 shrink-0">
-														<Input
-															type="number"
-															step="0.01"
-															min="0"
-															value={charge.flatAmount ?? ""}
-															onChange={(e) =>
-																handleChargeFlatChange(index, e.target.value)
-															}
+														<AmountInput
+															value={charge.flatAmount?.toString() ?? ""}
+															onChange={(v) => handleChargeFlatChange(index, v)}
 															className="text-sm h-9 pr-12 text-right"
+															aria-label={`${charge.serviceName} flat amount`}
 														/>
 														<span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
 															{currency}
@@ -293,16 +287,14 @@ export function UpsertRentPaymentDialog({
 													</div>
 												) : (
 													<div className="flex items-center gap-2 w-48 shrink-0">
-														<Input
-															type="number"
-															step="0.01"
-															min="0"
-															value={charge.usage ?? ""}
-															onChange={(e) =>
-																handleChargeUsageChange(index, e.target.value)
+														<AmountInput
+															value={charge.usage?.toString() ?? ""}
+															onChange={(v) =>
+																handleChargeUsageChange(index, v)
 															}
 															placeholder={charge.unitLabel ?? t("unit")}
 															className="flex-1 min-w-0 text-sm h-9 text-right"
+															aria-label={`${charge.serviceName} usage`}
 														/>
 														<span className="text-sm font-medium whitespace-nowrap">
 															{formatCurrencyValue(charge.total, locale)}

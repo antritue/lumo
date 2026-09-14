@@ -48,7 +48,7 @@ export function RoomDetailHeader({
 						<h2 className="text-xl font-semibold truncate">{room.name}</h2>
 						{room.monthlyRent && (
 							<p className="text-sm text-muted-foreground mt-0.5">
-								{new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
+								{new Intl.NumberFormat("en-US", {
 									style: "currency",
 									currency,
 									minimumFractionDigits: 0,

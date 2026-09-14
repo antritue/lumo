@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { type SubmitEvent, useEffect, useState } from "react";
+import { AmountInput } from "@/components/shared/amount-input";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -137,14 +138,11 @@ export function UpsertRoomDialog({
 									</span>
 								</label>
 								<div className="relative">
-									<Input
+									<AmountInput
 										id="monthlyRent"
-										type="number"
 										value={monthlyRent}
-										onChange={(e) => setMonthlyRent(e.target.value)}
+										onChange={setMonthlyRent}
 										className="text-base h-12 pr-16 mt-2"
-										min="0"
-										step="0.01"
 									/>
 									<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
 										{currency}
