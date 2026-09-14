@@ -45,7 +45,7 @@
 		"@types/node": "24",
 		"@types/react": "19",
 		"@types/react-dom": "19",
-		"happy-dom": "20.14.0",
+		"happy-dom": "20.14.3",
 		"husky": "9.1.7",
 		"supabase": "2.117.0",
 		"tailwindcss": "4",
