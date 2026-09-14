@@ -493,6 +493,106 @@ describe("UpsertRentPaymentDialog", () => {
 					"payment-1",
 				);
 			});
+
+			it("shows filled progress with pending style when partially filled", () => {
+				const partialCharges: ServiceCharge[] = [
+					{
+						serviceId: "svc-1",
+						serviceName: "Electricity",
+						pricingType: "variable",
+						unitLabel: "kWh",
+						unitPrice: 0.15,
+						flatAmount: null,
+						usage: null,
+						total: 0,
+					},
+					{
+						serviceId: "svc-2",
+						serviceName: "Water",
+						pricingType: "flat",
+						unitLabel: null,
+						unitPrice: null,
+						flatAmount: 50,
+						usage: null,
+						total: 50,
+					},
+				];
+				renderWithProviders(
+					<UpsertRentPaymentDialog
+						mode="add"
+						open={true}
+						onOpenChange={mockOnOpenChange}
+						onSave={mockOnSave}
+						initialServiceCharges={partialCharges}
+					/>,
+				);
+
+				const badge = screen.getByText("1/2");
+				expect(badge).toBeInTheDocument();
+				expect(badge.className).toContain("bg-amber-500/10");
+				expect(badge.className).toContain("text-amber-600");
+			});
+
+			it("shows filled progress with complete style when all filled", () => {
+				renderWithProviders(
+					<UpsertRentPaymentDialog
+						mode="add"
+						open={true}
+						onOpenChange={mockOnOpenChange}
+						onSave={mockOnSave}
+						initialServiceCharges={mockServiceCharges}
+					/>,
+				);
+
+				const badge = screen.getByText("2/2");
+				expect(badge).toBeInTheDocument();
+				expect(badge.className).toContain("bg-green-500/10");
+				expect(badge.className).toContain("text-green-600");
+			});
+
+			it("updates progress from partial to complete when usage is filled", async () => {
+				const user = userEvent.setup();
+				const partialCharges: ServiceCharge[] = [
+					{
+						serviceId: "svc-1",
+						serviceName: "Electricity",
+						pricingType: "variable",
+						unitLabel: "kWh",
+						unitPrice: 0.15,
+						flatAmount: null,
+						usage: null,
+						total: 0,
+					},
+					{
+						serviceId: "svc-2",
+						serviceName: "Water",
+						pricingType: "flat",
+						unitLabel: null,
+						unitPrice: null,
+						flatAmount: 50,
+						usage: null,
+						total: 50,
+					},
+				];
+				renderWithProviders(
+					<UpsertRentPaymentDialog
+						mode="add"
+						open={true}
+						onOpenChange={mockOnOpenChange}
+						onSave={mockOnSave}
+						initialServiceCharges={partialCharges}
+					/>,
+				);
+
+				expect(screen.getByText("1/2")).toBeInTheDocument();
+
+				const dialog = screen.getByRole("dialog");
+				const usageInput = within(dialog).getByLabelText("Electricity usage");
+				await user.type(usageInput, "100");
+
+				expect(screen.getByText("2/2")).toBeInTheDocument();
+				expect(screen.getByText("2/2").className).toContain("bg-green-500/10");
+			});
 		});
 	});
 });
