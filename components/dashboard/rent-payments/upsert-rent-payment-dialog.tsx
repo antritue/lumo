@@ -13,6 +13,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import { MonthPicker } from "./month-picker";
 import type { PaymentRecord, PaymentStatus, ServiceCharge } from "./types";
 
@@ -55,6 +56,12 @@ function calculateChargeTotal(charge: ServiceCharge): number {
 		return charge.flatAmount ?? 0;
 	}
 	return (charge.usage ?? 0) * (charge.unitPrice ?? 0);
+}
+
+function isChargeFilled(charge: ServiceCharge): boolean {
+	const value =
+		charge.pricingType === "flat" ? charge.flatAmount : charge.usage;
+	return value != null && !Number.isNaN(value);
 }
 
 export function UpsertRentPaymentDialog({
@@ -126,6 +133,14 @@ export function UpsertRentPaymentDialog({
 		() => calculateServiceChargesTotal(serviceCharges),
 		[serviceCharges],
 	);
+
+	const filledChargesCount = useMemo(
+		() => serviceCharges.filter(isChargeFilled).length,
+		[serviceCharges],
+	);
+
+	const areAllChargesFilled =
+		serviceCharges.length > 0 && filledChargesCount === serviceCharges.length;
 
 	const parsedRentAmount = Number.parseFloat(rentAmount);
 	const totalAmount = Number.isNaN(parsedRentAmount)
@@ -246,8 +261,15 @@ export function UpsertRentPaymentDialog({
 								<div className="space-y-3">
 									<div className="flex items-center gap-2">
 										<p className="text-sm font-medium">{t("serviceCharges")}</p>
-										<span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-											{serviceCharges.length}
+										<span
+											className={cn(
+												"inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
+												areAllChargesFilled
+													? "border-green-500/30 bg-green-500/10 text-green-600"
+													: "border-amber-500/30 bg-amber-500/10 text-amber-600",
+											)}
+										>
+											{filledChargesCount}/{serviceCharges.length}
 										</span>
 									</div>
 									<div className="rounded-xl border border-border divide-y divide-border">

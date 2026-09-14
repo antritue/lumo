@@ -277,7 +277,7 @@ describe("useRoomPayments", () => {
 					unitLabel: "kWh",
 					unitPrice: 0.15,
 					flatAmount: null,
-					usage: 0,
+					usage: null,
 					total: 0,
 				},
 				{

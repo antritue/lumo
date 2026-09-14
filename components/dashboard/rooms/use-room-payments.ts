@@ -20,7 +20,7 @@ function generateChargesFromServices(
 			unitLabel: s.unitLabel,
 			unitPrice: s.unitPrice,
 			flatAmount: s.pricingType === "flat" ? s.flatAmount : null,
-			usage: s.pricingType === "variable" ? 0 : null,
+			usage: null,
 			total: s.pricingType === "flat" ? (s.flatAmount ?? 0) : 0,
 		}));
 }
