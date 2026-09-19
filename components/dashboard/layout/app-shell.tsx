@@ -12,7 +12,7 @@ export function AppShell({ children }: AppShellProps) {
 		<div className="min-h-screen bg-background">
 			<AppHeader />
 			<AppSidebar />
-			<main className="pt-16 lg:pl-64">
+			<main className="pt-16 pb-12 lg:pl-64 lg:pb-0">
 				<div className="p-4 sm:p-6">
 					<AuthReminderBanner />
 					{children}
