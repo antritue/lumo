@@ -26,6 +26,7 @@ export default defineConfig({
 						"app/api/**/*.test.ts",
 						"components/**/*.test.ts",
 						"lib/**/*.test.ts",
+						"remotion/**/*.test.ts",
 					],
 					exclude: ["**/use-auth.test.ts"],
 				},
