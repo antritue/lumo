@@ -7,3 +7,18 @@ updates:
       time: "01:00"
       timezone: "UTC"
     open-pull-requests-limit: 10
+    groups:
+      remotion:
+        patterns:
+          - "remotion"
+          - "@remotion/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      radix:
+        patterns:
+          - "@radix-ui/react-dialog"
+          - "@radix-ui/react-popover"

@@ -14,7 +14,9 @@
 		"lint:fix": "biome check --write",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"prepare": "husky"
+		"prepare": "husky",
+		"remotion:studio": "remotion studio remotion/index.ts",
+		"remotion:render": "remotion render remotion/index.ts Promo public/promo.mp4 --codec h264 --audio-codec aac --overwrite && npx remotion still remotion/index.ts Promo public/promo-thumb.jpg --frame 0 --overwrite"
 	},
 	"dependencies": {
 		"@polar-sh/nextjs": "0.9.6",
@@ -38,6 +40,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
+		"@remotion/cli": "4.0.523",
+		"@remotion/google-fonts": "4.0.523",
 		"@tailwindcss/postcss": "4",
 		"@testing-library/jest-dom": "7.0.1",
 		"@testing-library/react": "16.3.3",
@@ -45,12 +49,13 @@
 		"@types/node": "24",
 		"@types/react": "19",
 		"@types/react-dom": "19",
+		"fallow": "3.27.0",
 		"happy-dom": "20.14.5",
 		"husky": "9.1.7",
 		"supabase": "2.117.0",
 		"tailwindcss": "4",
+		"remotion": "4.0.523",
 		"typescript": "6",
-		"fallow": "3.27.0",
 		"vitest": "5.0.1"
 	}
 }

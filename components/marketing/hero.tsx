@@ -1,7 +1,6 @@
 import { ArrowRight, Sun } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { PreviewCarousel } from "@/components/marketing/islands/preview-carousel";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 
@@ -46,9 +45,17 @@ export async function Hero() {
 					</Link>
 				</div>
 
-				{/* Preview UI */}
-				<div className="mt-16 mx-auto w-full rounded-2xl bg-white border border-border shadow-soft-lg p-2 sm:p-4 animate-in fade-in zoom-in duration-1000 delay-500">
-					<PreviewCarousel />
+				{/* Product promo video */}
+				<div className="mt-16 mx-auto w-full overflow-hidden rounded-2xl bg-white border border-border shadow-soft-lg animate-in fade-in zoom-in duration-1000 delay-500">
+					{/* biome-ignore lint/a11y/useMediaCaption: video has burned-in captions, external track overlaps them */}
+					<video
+						className="aspect-video w-full"
+						controls
+						playsInline
+						preload="metadata"
+						poster="/promo-thumb.jpg"
+						src="/promo.mp4"
+					/>
 				</div>
 			</div>
 		</Section>
