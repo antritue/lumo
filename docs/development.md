@@ -22,6 +22,7 @@ We use a modern, type-safe stack designed for stability and developer experience
 -   **Linting/Formatting**: [Biome](https://biomejs.dev) - Fast, all-in-one linter and formatter (replaces ESLint/Prettier).
 -   **Dead Code**: [Fallow](https://www.npmjs.com/package/fallow) - Fast, Rust-native dead code analysis tool.
 -   **Email**: [Resend](https://resend.com) - Transactional email for owner notifications.
+-   **Video**: [Remotion](https://remotion.dev) - Programmatic promo video for the marketing hero. See [remotion.md](./remotion.md).
 -   **Testing**: [Vitest](https://vitest.dev) - Unit and integration testing.
 
 ---
@@ -43,7 +44,8 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 │       └── [feature]/    # Feature-based folders (e.g., properties/, rooms/)
 ├── lib/                  # Shared Utilities
 ├── messages/             # Localization JSON files
-└── public/               # Static assets
+├── remotion/             # Promo video source (Remotion)
+└── public/               # Static assets (Next.js)
 ```
 
 ---
@@ -118,6 +120,8 @@ We use a multi-project setup to balance development speed with production data s
 -   `npm run lint:fix`: Auto-fix linting/formatting issues.
 -   `npm test`: Run tests with Vitest.
 -   `npx fallow dead-code`: Run dead code analysis.
+-   `npm run remotion:studio`: Preview promo video in Remotion Studio.
+-   `npm run remotion:render`: Render promo video to `public/promo.mp4`.
 
 ---
 

@@ -168,6 +168,7 @@ All pricing and thresholds are working hypotheses until validated by real usage.
 | Database/Auth | Supabase (Postgres + Google OAuth) |
 | i18n | next-intl |
 | Email | Resend |
+| Video | Remotion |
 | Icons | lucide-react |
 | Linting | Biome |
 | Testing | Vitest + Testing Library |

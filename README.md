@@ -43,6 +43,7 @@ Navigate to [http://localhost:3000](http://localhost:3000).
 *   **Validation**: Zod
 *   **Internationalization**: next-intl
 *   **Email**: Resend
+*   **Video**: Remotion
 *   **Testing**: Vitest
 *   **Linting**: Biome
 *   **Dead Code Analysis**: Fallow
