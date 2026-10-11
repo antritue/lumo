@@ -54,23 +54,27 @@ export function PropertyDetail({
 				className,
 			)}
 		>
-			<div className="flex items-start justify-between gap-4">
-				<div className="flex items-center gap-4 min-w-0">
+			<div className="flex items-start justify-between gap-2 sm:gap-4">
+				<div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
 					{onBack && (
 						<button
 							type="button"
 							onClick={onBack}
-							className="lg:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-muted transition-colors shrink-0"
+							className="hidden sm:flex items-center justify-center h-10 w-10 rounded-full hover:bg-muted shrink-0"
 							aria-label={t("properties.backToProperties")}
 						>
 							<ChevronRight className="h-5 w-5 rotate-180" />
 						</button>
 					)}
-					<div className="flex items-center justify-center rounded-xl bg-secondary p-3 shrink-0">
-						<Home className="h-6 w-6 text-muted-foreground" />
+
+					<div className="flex items-center justify-center rounded-xl bg-secondary p-2 sm:p-3 shrink-0">
+						<Home className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
 					</div>
-					<div className="min-w-0">
-						<h2 className="text-xl font-semibold truncate">{property.name}</h2>
+
+					<div className="min-w-0 flex-1">
+						<h2 className="text-md sm:text-xl font-semibold">
+							{property.name}
+						</h2>
 						<p className="text-sm text-muted-foreground mt-0.5">
 							{t("rooms.count", { count: roomCount })}
 							{" · "}
@@ -79,11 +83,11 @@ export function PropertyDetail({
 					</div>
 				</div>
 
-				<div className="flex items-center gap-1 shrink-0">
+				<div className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 shrink-0">
 					<button
 						type="button"
 						onClick={() => onEdit(property)}
-						className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-muted transition-colors cursor-pointer"
+						className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-full hover:bg-muted shrink-0"
 						aria-label={t("properties.edit")}
 					>
 						<Pencil className="h-4 w-4 text-muted-foreground" />
@@ -91,7 +95,7 @@ export function PropertyDetail({
 					<button
 						type="button"
 						onClick={() => onDelete(property)}
-						className="flex items-center justify-center h-9 w-9 rounded-full hover:bg-muted transition-colors cursor-pointer"
+						className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-full hover:bg-muted shrink-0"
 						aria-label={t("properties.delete")}
 					>
 						<Trash2 className="h-4 w-4 text-destructive" />
