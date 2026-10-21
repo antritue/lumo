@@ -60,7 +60,7 @@ describe("webhook handlers", () => {
 		});
 		mockUpsert.mockResolvedValue({ error: null });
 		mockListSubscriptions.mockResolvedValue({
-			result: { items: [] },
+			items: [],
 		});
 	});
 
@@ -70,7 +70,7 @@ describe("webhook handlers", () => {
 			customer: { id: "cust-1", external_id: "user-1" },
 			product_id: "prod-monthly",
 			status: "active",
-			current_period_end: "2030-01-01T00:00:00Z",
+			current_period_end: "2030-01-01T00:00:00.000Z",
 			...overrides,
 		});
 
@@ -84,7 +84,7 @@ describe("webhook handlers", () => {
 					polar_customer_id: "cust-1",
 					tier: "monthly",
 					status: "active",
-					current_period_end: "2030-01-01T00:00:00Z",
+					current_period_end: "2030-01-01T00:00:00.000Z",
 				},
 				{ onConflict: "user_id" },
 			);
@@ -209,27 +209,21 @@ describe("webhook handlers", () => {
 
 		it("immediately revokes active subscriptions after a lifetime purchase", async () => {
 			mockListSubscriptions.mockResolvedValue({
-				result: {
-					items: [
-						{ id: "sub-active", status: "active" },
-						{ id: "sub-trialing", status: "trialing" },
-					],
-				},
+				items: [
+					{ id: "sub-active", status: "active" },
+					{ id: "sub-trialing", status: "trialing" },
+				],
 			});
 
 			await handleOrderPaid(order());
 
 			expect(mockListSubscriptions).toHaveBeenCalledWith({
-				customerId: "cust-1",
+				customer_id: "cust-1",
 				status: ["active", "trialing"],
 			});
 			expect(mockRevokeSubscription).toHaveBeenCalledTimes(2);
-			expect(mockRevokeSubscription).toHaveBeenCalledWith({
-				id: "sub-active",
-			});
-			expect(mockRevokeSubscription).toHaveBeenCalledWith({
-				id: "sub-trialing",
-			});
+			expect(mockRevokeSubscription).toHaveBeenCalledWith("sub-active");
+			expect(mockRevokeSubscription).toHaveBeenCalledWith("sub-trialing");
 		});
 
 		it("still grants lifetime when subscription cancellation fails", async () => {

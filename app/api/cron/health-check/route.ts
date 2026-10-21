@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export async function GET(request: Request) {
+	// Vercel automatically sends CRON_SECRET as an `Authorization: Bearer <secret>` header when invoking this cron job
+	// https://vercel.com/docs/cron-jobs/manage-cron-jobs#securing-cron-jobs
 	const authHeader = request.headers.get("authorization");
 	if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

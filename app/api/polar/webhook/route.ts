@@ -1,5 +1,4 @@
 import { Webhooks } from "@polar-sh/nextjs";
-import { SubscriptionStatus } from "@polar-sh/sdk/models/components/subscriptionstatus";
 import { DATABASE_TABLES } from "@/lib/constants";
 import type { EntitlementStatus, EntitlementTier } from "@/lib/entitlement";
 import { polar, tierFromProductId } from "@/lib/polar";
@@ -76,14 +75,12 @@ async function getEntitlement(userId: string): Promise<{
 async function cancelActiveSubscriptions(polarCustomerId: string) {
 	try {
 		const subs = await polar.subscriptions.list({
-			customerId: polarCustomerId,
+			customer_id: polarCustomerId,
 			status: ["active", "trialing"],
 		});
 
 		await Promise.all(
-			subs.result.items.map((sub) =>
-				polar.subscriptions.revoke({ id: sub.id }),
-			),
+			subs.items.map((sub) => polar.subscriptions.revoke(sub.id)),
 		);
 	} catch (error) {
 		console.error(
@@ -112,10 +109,9 @@ export async function handleSubscription(subscription: SubscriptionData) {
 	}
 
 	const status: EntitlementStatus =
-		subscription.status === SubscriptionStatus.Canceled
+		subscription.status === "canceled"
 			? "canceled"
-			: subscription.status === SubscriptionStatus.Active ||
-					subscription.status === SubscriptionStatus.Trialing
+			: subscription.status === "active" || subscription.status === "trialing"
 				? "active"
 				: "revoked";
 
@@ -124,7 +120,7 @@ export async function handleSubscription(subscription: SubscriptionData) {
 		polarCustomerId: subscription.customer.id,
 		tier,
 		status,
-		currentPeriodEnd: subscription.current_period_end,
+		currentPeriodEnd: new Date(subscription.current_period_end).toISOString(),
 	});
 }
 
