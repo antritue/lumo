@@ -67,10 +67,10 @@ describe("webhook handlers", () => {
 	describe("handleSubscription", () => {
 		const subscription = (overrides: Record<string, unknown> = {}) => ({
 			id: "sub-1",
-			customer: { id: "cust-1", externalId: "user-1" },
-			productId: "prod-monthly",
+			customer: { id: "cust-1", external_id: "user-1" },
+			product_id: "prod-monthly",
 			status: "active",
-			currentPeriodEnd: new Date("2030-01-01T00:00:00Z"),
+			current_period_end: "2030-01-01T00:00:00Z",
 			...overrides,
 		});
 
@@ -84,14 +84,14 @@ describe("webhook handlers", () => {
 					polar_customer_id: "cust-1",
 					tier: "monthly",
 					status: "active",
-					current_period_end: "2030-01-01T00:00:00.000Z",
+					current_period_end: "2030-01-01T00:00:00Z",
 				},
 				{ onConflict: "user_id" },
 			);
 		});
 
 		it("upserts a yearly entitlement", async () => {
-			await handleSubscription(subscription({ productId: "prod-yearly" }));
+			await handleSubscription(subscription({ product_id: "prod-yearly" }));
 
 			expect(mockUpsert).toHaveBeenCalledWith(
 				expect.objectContaining({ tier: "yearly" }),
@@ -100,7 +100,7 @@ describe("webhook handlers", () => {
 		});
 
 		it("does not upsert for a lifetime product subscription", async () => {
-			await handleSubscription(subscription({ productId: "prod-lifetime" }));
+			await handleSubscription(subscription({ product_id: "prod-lifetime" }));
 
 			expect(mockUpsert).not.toHaveBeenCalled();
 		});
@@ -125,7 +125,7 @@ describe("webhook handlers", () => {
 
 		it("does not upsert when the customer has no external id", async () => {
 			await handleSubscription(
-				subscription({ customer: { id: "cust-1", externalId: null } }),
+				subscription({ customer: { id: "cust-1", external_id: null } }),
 			);
 
 			expect(mockUpsert).not.toHaveBeenCalled();
@@ -154,7 +154,7 @@ describe("webhook handlers", () => {
 		});
 
 		it("does not upsert for an unknown product", async () => {
-			await handleSubscription(subscription({ productId: "prod-unknown" }));
+			await handleSubscription(subscription({ product_id: "prod-unknown" }));
 
 			expect(mockUpsert).not.toHaveBeenCalled();
 		});
@@ -171,8 +171,8 @@ describe("webhook handlers", () => {
 	describe("handleOrderPaid", () => {
 		const order = (overrides: Record<string, unknown> = {}) => ({
 			id: "order-1",
-			customer: { id: "cust-1", externalId: "user-1" },
-			productId: "prod-lifetime",
+			customer: { id: "cust-1", external_id: "user-1" },
+			product_id: "prod-lifetime",
 			...overrides,
 		});
 
@@ -192,14 +192,14 @@ describe("webhook handlers", () => {
 		});
 
 		it("does not grant lifetime for a recurring subscription order", async () => {
-			await handleOrderPaid(order({ productId: "prod-monthly" }));
+			await handleOrderPaid(order({ product_id: "prod-monthly" }));
 
 			expect(mockUpsert).not.toHaveBeenCalled();
 		});
 
 		it("does not grant lifetime when the customer has no external id", async () => {
 			await handleOrderPaid(
-				order({ customer: { id: "cust-1", externalId: null } }),
+				order({ customer: { id: "cust-1", external_id: null } }),
 			);
 
 			expect(mockUpsert).not.toHaveBeenCalled();
@@ -252,8 +252,8 @@ describe("webhook handlers", () => {
 		it("revokes a lifetime entitlement", async () => {
 			await handleOrderRefunded({
 				id: "order-1",
-				customer: { id: "cust-1", externalId: "user-1" },
-				productId: "prod-lifetime",
+				customer: { id: "cust-1", external_id: "user-1" },
+				product_id: "prod-lifetime",
 			});
 
 			expect(mockUpsert).toHaveBeenCalledWith(
@@ -265,8 +265,8 @@ describe("webhook handlers", () => {
 		it("ignores refunds for non-lifetime products", async () => {
 			await handleOrderRefunded({
 				id: "order-1",
-				customer: { id: "cust-1", externalId: "user-1" },
-				productId: "prod-yearly",
+				customer: { id: "cust-1", external_id: "user-1" },
+				product_id: "prod-yearly",
 			});
 
 			expect(mockUpsert).not.toHaveBeenCalled();
