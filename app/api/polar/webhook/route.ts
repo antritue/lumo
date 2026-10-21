@@ -7,21 +7,21 @@ import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 
 interface PolarCustomer {
 	id: string;
-	externalId?: string | null;
+	external_id?: string | null;
 }
 
 interface SubscriptionData {
 	id: string;
 	customer: PolarCustomer;
-	productId: string;
+	product_id: string;
 	status: string;
-	currentPeriodEnd: Date;
+	current_period_end: string;
 }
 
 interface OrderData {
 	id: string;
 	customer: PolarCustomer;
-	productId: string | null;
+	product_id: string | null;
 }
 
 async function upsertEntitlement(params: {
@@ -94,12 +94,12 @@ async function cancelActiveSubscriptions(polarCustomerId: string) {
 }
 
 export async function handleSubscription(subscription: SubscriptionData) {
-	const userId = subscription.customer.externalId;
+	const userId = subscription.customer.external_id;
 	if (!userId) {
 		return;
 	}
 
-	const tier = tierFromProductId(subscription.productId);
+	const tier = tierFromProductId(subscription.product_id);
 	if (!tier || tier === "lifetime") {
 		return;
 	}
@@ -124,7 +124,7 @@ export async function handleSubscription(subscription: SubscriptionData) {
 		polarCustomerId: subscription.customer.id,
 		tier,
 		status,
-		currentPeriodEnd: subscription.currentPeriodEnd.toISOString(),
+		currentPeriodEnd: subscription.current_period_end,
 	});
 }
 
@@ -137,14 +137,14 @@ async function applyLifetimeOrder(
 	order: OrderData,
 	status: EntitlementStatus,
 ): Promise<boolean> {
-	const userId = order.customer.externalId;
+	const userId = order.customer.external_id;
 	if (!userId) {
 		return false;
 	}
 
 	// Only one-time (lifetime) orders grant an entitlement here;
 	// subscription renewals are handled by handleSubscription.
-	if (tierFromProductId(order.productId ?? "") !== "lifetime") {
+	if (tierFromProductId(order.product_id ?? "") !== "lifetime") {
 		return false;
 	}
 
