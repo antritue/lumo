@@ -63,9 +63,9 @@ describe("POST /api/billing/checkout", () => {
 		expect(data).toEqual({ url: "https://checkout.polar.sh/x" });
 		expect(mockCreateCheckout).toHaveBeenCalledWith({
 			products: ["prod-monthly"],
-			externalCustomerId: "test-user-id",
-			customerEmail: "a@b.com",
-			successUrl: expect.stringContaining("/dashboard/settings?checkout="),
+			external_customer_id: "test-user-id",
+			customer_email: "a@b.com",
+			success_url: expect.stringContaining("/dashboard/settings?checkout="),
 		});
 	});
 

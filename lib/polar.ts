@@ -1,4 +1,4 @@
-import { Polar } from "@polar-sh/sdk";
+import { createPolar } from "@polar-sh/sdk/2026-10";
 
 const accessToken = process.env.POLAR_ACCESS_TOKEN;
 
@@ -6,13 +6,13 @@ if (!accessToken) {
 	throw new Error("Polar access token is missing.");
 }
 
-const server =
+const environment =
 	process.env.POLAR_SERVER === "production" ? "production" : "sandbox";
 
 // Polar client for server-side use only — never exposed to the browser.
-export const polar = new Polar({
+export const polar = createPolar({
 	accessToken,
-	server,
+	environment,
 });
 
 const POLAR_PRODUCT_IDS = {

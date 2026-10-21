@@ -35,9 +35,9 @@ export async function createCheckout(request: NextRequest) {
 
 		const checkout = await polar.checkouts.create({
 			products: [getPolarProductId(tier)],
-			externalCustomerId: user.id,
-			customerEmail: user.email,
-			successUrl,
+			external_customer_id: user.id,
+			customer_email: user.email,
+			success_url: successUrl,
 		});
 
 		return NextResponse.json({ url: checkout.url }, { status: 200 });

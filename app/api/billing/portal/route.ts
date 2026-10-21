@@ -1,4 +1,4 @@
-import { ResourceNotFound } from "@polar-sh/sdk/models/errors/resourcenotfound";
+import { errors } from "@polar-sh/sdk/2026-10";
 import { type NextRequest, NextResponse } from "next/server";
 import { polar } from "@/lib/polar";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
@@ -8,12 +8,10 @@ async function resolveCustomerId(user: {
 	email?: string | null;
 }): Promise<string | null> {
 	try {
-		const customer = await polar.customers.getExternal({
-			externalId: user.id,
-		});
+		const customer = await polar.customers.getExternal(user.id);
 		return customer.id;
 	} catch (err) {
-		if (!(err instanceof ResourceNotFound)) {
+		if (!(err instanceof errors.ResourceNotFound)) {
 			throw err;
 		}
 		// Fall back to email lookup for customers created outside the app
@@ -25,7 +23,7 @@ async function resolveCustomerId(user: {
 	}
 
 	const customers = await polar.customers.list({ email: user.email, limit: 1 });
-	return customers.result.items[0]?.id ?? null;
+	return customers.items[0]?.id ?? null;
 }
 
 export async function createCustomerPortal(request: NextRequest) {
@@ -52,12 +50,12 @@ export async function createCustomerPortal(request: NextRequest) {
 		const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
 		const returnUrl = new URL("/dashboard/settings", baseUrl).toString();
 
-		const { customerPortalUrl } = await polar.customerSessions.create({
-			customerId,
-			returnUrl,
+		const { customer_portal_url } = await polar.customerSessions.create({
+			customer_id: customerId,
+			return_url: returnUrl,
 		});
 
-		return NextResponse.json({ url: customerPortalUrl }, { status: 200 });
+		return NextResponse.json({ url: customer_portal_url }, { status: 200 });
 	} catch (err) {
 		console.error("Customer Portal API Error:", err);
 		return NextResponse.json(

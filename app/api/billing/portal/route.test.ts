@@ -1,17 +1,13 @@
-import { ResourceNotFound } from "@polar-sh/sdk/models/errors/resourcenotfound";
+import { errors } from "@polar-sh/sdk/2026-10";
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createCustomerPortal } from "./route";
 
 const notFound = () =>
-	new ResourceNotFound(
-		{ error: "ResourceNotFound", detail: "Customer does not exist" },
-		{
-			request: new Request("http://localhost"),
-			response: new Response(),
-			body: "{}",
-		},
-	);
+	new errors.ResourceNotFound(404, {
+		error: "ResourceNotFound",
+		detail: "Customer does not exist",
+	});
 
 const mockGetUser = vi.fn();
 const mockGetExternal = vi.fn();
@@ -68,7 +64,7 @@ describe("GET /api/billing/portal", () => {
 		mockAuthenticatedUser();
 		mockGetExternal.mockResolvedValue({ id: "cust-1" });
 		mockCreateCustomerSession.mockResolvedValue({
-			customerPortalUrl: "https://sandbox.polar.sh/lumotest/portal?token=x",
+			customer_portal_url: "https://sandbox.polar.sh/lumotest/portal?token=x",
 		});
 
 		const res = await createCustomerPortal(createRequest());
@@ -78,13 +74,11 @@ describe("GET /api/billing/portal", () => {
 		expect(data).toEqual({
 			url: "https://sandbox.polar.sh/lumotest/portal?token=x",
 		});
-		expect(mockGetExternal).toHaveBeenCalledWith({
-			externalId: "test-user-id",
-		});
+		expect(mockGetExternal).toHaveBeenCalledWith("test-user-id");
 		expect(mockListCustomers).not.toHaveBeenCalled();
 		expect(mockCreateCustomerSession).toHaveBeenCalledWith({
-			customerId: "cust-1",
-			returnUrl: "http://localhost:3000/dashboard/settings",
+			customer_id: "cust-1",
+			return_url: "http://localhost:3000/dashboard/settings",
 		});
 	});
 
@@ -92,10 +86,10 @@ describe("GET /api/billing/portal", () => {
 		mockAuthenticatedUser();
 		mockGetExternal.mockRejectedValue(notFound());
 		mockListCustomers.mockResolvedValue({
-			result: { items: [{ id: "cust-by-email" }] },
+			items: [{ id: "cust-by-email" }],
 		});
 		mockCreateCustomerSession.mockResolvedValue({
-			customerPortalUrl: "https://sandbox.polar.sh/lumotest/portal?token=x",
+			customer_portal_url: "https://sandbox.polar.sh/lumotest/portal?token=x",
 		});
 
 		const res = await createCustomerPortal(createRequest());
@@ -110,8 +104,8 @@ describe("GET /api/billing/portal", () => {
 			limit: 1,
 		});
 		expect(mockCreateCustomerSession).toHaveBeenCalledWith({
-			customerId: "cust-by-email",
-			returnUrl: "http://localhost:3000/dashboard/settings",
+			customer_id: "cust-by-email",
+			return_url: "http://localhost:3000/dashboard/settings",
 		});
 	});
 
@@ -119,7 +113,7 @@ describe("GET /api/billing/portal", () => {
 		mockAuthenticatedUser();
 		mockGetExternal.mockRejectedValue(notFound());
 		mockListCustomers.mockResolvedValue({
-			result: { items: [] },
+			items: [],
 		});
 
 		const res = await createCustomerPortal(createRequest());
@@ -135,14 +129,14 @@ describe("GET /api/billing/portal", () => {
 		mockAuthenticatedUser();
 		mockGetExternal.mockResolvedValue({ id: "cust-1" });
 		mockCreateCustomerSession.mockResolvedValue({
-			customerPortalUrl: "https://sandbox.polar.sh/lumotest/portal?token=x",
+			customer_portal_url: "https://sandbox.polar.sh/lumotest/portal?token=x",
 		});
 
 		const res = await createCustomerPortal(createRequest());
 
 		expect(mockCreateCustomerSession).toHaveBeenCalledWith({
-			customerId: "cust-1",
-			returnUrl: "https://lumo.example.com/dashboard/settings",
+			customer_id: "cust-1",
+			return_url: "https://lumo.example.com/dashboard/settings",
 		});
 		expect(res.status).toBe(200);
 	});
