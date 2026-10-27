@@ -49,7 +49,7 @@
 		"@types/node": "24",
 		"@types/react": "19",
 		"@types/react-dom": "19",
-		"fallow": "3.34.1",
+		"fallow": "3.35.0",
 		"happy-dom": "21.0.4",
 		"husky": "9.1.7",
 		"supabase": "2.122.0",
