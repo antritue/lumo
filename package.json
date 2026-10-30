@@ -39,7 +39,7 @@
 		"zustand": "5.0.16"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.15",
+		"@biomejs/biome": "2.6.3",
 		"@remotion/cli": "4.0.539",
 		"@remotion/google-fonts": "4.0.539",
 		"@tailwindcss/postcss": "4",
