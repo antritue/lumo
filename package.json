@@ -56,6 +56,6 @@
 		"tailwindcss": "4",
 		"remotion": "4.0.540",
 		"typescript": "6",
-		"vitest": "5.0.5"
+		"vitest": "5.1.0"
 	}
 }
