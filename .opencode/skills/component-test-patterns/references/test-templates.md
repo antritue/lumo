@@ -8,47 +8,50 @@ Replace `Service`, `mockService`, `/api/services`, and `createService("WiFi")` w
 
 ```typescript
 describe("create<Feature>", () => {
-  it("creates locally when unauthenticated", async () => {
-    await use<Feature>Store.getState().create<Feature>("New Item");
+	it("creates locally when unauthenticated", async () => {
+		(await use) < Feature > Store.getState().create<Feature>("New Item");
 
-    const { items } = use<Feature>Store.getState();
-    expect(items).toHaveLength(1);
-    expect(items[0]).toEqual(mockItem({ name: "New Item" }));
-    expect(mockFetch).not.toHaveBeenCalled();
-  });
+		const { items } = use < Feature > Store.getState();
+		expect(items).toHaveLength(1);
+		expect(items[0]).toEqual(mockItem({ name: "New Item" }));
+		expect(mockFetch).not.toHaveBeenCalled();
+	});
 
-  it("calls API when authenticated", async () => {
-    authenticate();
+	it("calls API when authenticated", async () => {
+		authenticate();
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockItem({ id: "server-id", name: "New Item", userId: "user-123" }),
-    });
+		mockFetch.mockResolvedValueOnce({
+			ok: true,
+			json: async () =>
+				mockItem({ id: "server-id", name: "New Item", userId: "user-123" }),
+		});
 
-    await use<Feature>Store.getState().create<Feature>("New Item");
+		(await use) < Feature > Store.getState().create<Feature>("New Item");
 
-    const { items } = use<Feature>Store.getState();
-    expect(items).toHaveLength(1);
-    expect(items[0]).toEqual(mockItem({ id: "server-id", name: "New Item", userId: "user-123" }));
-    expect(mockFetch).toHaveBeenCalledWith(
-      "/api/<feature>",
-      expect.objectContaining({ method: "POST" }),
-    );
-  });
+		const { items } = use < Feature > Store.getState();
+		expect(items).toHaveLength(1);
+		expect(items[0]).toEqual(
+			mockItem({ id: "server-id", name: "New Item", userId: "user-123" }),
+		);
+		expect(mockFetch).toHaveBeenCalledWith(
+			"/api/<feature>",
+			expect.objectContaining({ method: "POST" }),
+		);
+	});
 
-  it("handles API error gracefully", async () => {
-    authenticate();
-    mockFetch.mockResolvedValueOnce({ ok: false });
-    const consoleSpy = mockErrorConsole();
+	it("handles API error gracefully", async () => {
+		authenticate();
+		mockFetch.mockResolvedValueOnce({ ok: false });
+		const consoleSpy = mockErrorConsole();
 
-    await expect(
-      use<Feature>Store.getState().create<Feature>("New Item"),
-    ).rejects.toThrow("Failed to create <feature>");
+		await expect(
+			use < Feature > Store.getState().create<Feature>("New Item"),
+		).rejects.toThrow("Failed to create <feature>");
 
-    const { items } = use<Feature>Store.getState();
-    expect(items).toHaveLength(0);
-    consoleSpy.mockRestore();
-  });
+		const { items } = use < Feature > Store.getState();
+		expect(items).toHaveLength(0);
+		consoleSpy.mockRestore();
+	});
 });
 ```
 

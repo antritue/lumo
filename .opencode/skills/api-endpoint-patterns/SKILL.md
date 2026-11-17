@@ -1,11 +1,12 @@
 ---
+
 name: api-endpoint-patterns
 description: >
-  Use this skill when creating new API endpoints or modifying existing ones
-  under app/api/ — route handlers, Zod validation, Supabase DB migrations with
-  RLS, co-located unit tests, and OpenAPI docs. Applies even if the user doesn't
-  say "route," "API," or "endpoint." Covers Next.js 15+ Promise<params>,
-  Supabase chain-mocking, and the exact order of work.
+Use this skill when creating new API endpoints or modifying existing ones
+under app/api/ — route handlers, Zod validation, Supabase DB migrations with
+RLS, co-located unit tests, and OpenAPI docs. Applies even if the user doesn't
+say "route," "API," or "endpoint." Covers Next.js 15+ Promise<params>,
+Supabase chain-mocking, and the exact order of work.
 ---
 
 # API Endpoint Patterns
@@ -93,6 +94,7 @@ app/api/<feature>/
 **Load `references/handler-templates.md` for the full handler code (list, create, update, delete).**
 
 Key structure per handler:
+
 1. Create Supabase server client
 2. Check auth (`supabase.auth.getUser()`)
 3. Validate input with Zod (POST/PATCH)
@@ -101,16 +103,16 @@ Key structure per handler:
 
 ## Response Status Codes
 
-| Code | When |
-|------|------|
-| 200 | Successful GET, PATCH |
-| 201 | Successful POST |
-| 204 | Successful DELETE (no body) |
-| 400 | Zod validation failure — `z.treeifyError(validation.error)` |
-| 401 | `authError \|\| !user` |
-| 404 | Row not found (`count === 0` or `PGRST116`) |
-| 409 | Unique constraint violation (error code `23505`) |
-| 500 | Caught exception — generic message |
+| Code | When                                                        |
+| ---- | ----------------------------------------------------------- |
+| 200  | Successful GET, PATCH                                       |
+| 201  | Successful POST                                             |
+| 204  | Successful DELETE (no body)                                 |
+| 400  | Zod validation failure — `z.treeifyError(validation.error)` |
+| 401  | `authError \|\| !user`                                      |
+| 404  | Row not found (`count === 0` or `PGRST116`)                 |
+| 409  | Unique constraint violation (error code `23505`)            |
+| 500  | Caught exception — generic message                          |
 
 ## Unit Tests
 

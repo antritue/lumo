@@ -5,9 +5,11 @@
 **Lumo** is a simple, calm, and trustworthy tool that gives independent landlords clear, reliable answers about rent payments — without spreadsheets, notebooks, or constant double-checking.
 
 Lumo solves one problem well:
+
 > Whenever you need to know who has paid and who hasn't, you get a clear, reliable answer instantly.
 
 The product is intentionally minimal, built for landlords who:
+
 - Manage 8–25 rooms across one or more properties
 - Still track rent with Excel, paper, or memory
 - Want clarity, not complexity
@@ -19,11 +21,13 @@ The product is intentionally minimal, built for landlords who:
 ### Who Lumo is For
 
 Independent landlords who:
+
 - Manage **~8–25 rooms** (the range where manual tracking breaks down)
 - Own or personally manage one or more properties with multiple rooms
 - Track rent status personally (not delegating to teams)
 
 This includes:
+
 - Landlords managing their own properties
 - Solo property managers who personally track rent
 
@@ -35,6 +39,7 @@ This includes:
 - Anyone needing tenant CRM, maintenance ticketing, or full accounting
 
 ### Early Survey Data (4 responses, Jan 2026)
+
 - Landlords with **more rooms** show greater interest and willingness to pay
 - Landlords with **fewer rooms** can manage with simpler tools
 - Sweet spot appears to be 8–25 rooms; needs more validation
@@ -48,6 +53,7 @@ This includes:
 The problem Lumo solves is **lack of clarity at payment review moments**.
 
 When landlords need to check rent status, they face:
+
 - **Confusion:** "Did they actually pay, or did I miss it?"
 - **Manual Work:** Checking bank statements, messages, notebooks, spreadsheets
 - **Mental Load:** Remembering who paid, who's late, who always forgets
@@ -126,6 +132,7 @@ If a feature adds complexity without removing confusion, it does not belong in L
 > Working hypothesis based on early survey data (4 responses, Jan 2026). Subject to change with more validation.
 
 Four tiers, gated by room count:
+
 - **Free** — Up to 5 rooms. All core features, no time limit, no card required.
 - **Monthly** — $5/month, unlimited rooms, cancel anytime.
 - **Yearly** — $48/year (only $4/mo), unlimited rooms.
@@ -142,11 +149,13 @@ Four tiers, gated by room count:
 ## 7. Monetization Direction
 
 ### Payment Model
+
 - **Free tier**: up to 5 rooms, no card required
 - **Paid tiers**: $5/month, $48/year, or $79 one-time — each unlocks unlimited rooms
 - Processed by Polar (checkout, webhooks, customer portal)
 
 ### Upgrade Trigger
+
 - Happens when user tries to create 6th room (server-enforced with a 403)
 - The "+" button opens a calm upgrade dialog instead of the add-room dialog
 - Clear value statement: "Upgrade for unlimited rooms"
@@ -158,20 +167,20 @@ All pricing and thresholds are working hypotheses until validated by real usage.
 
 ## 8. Tech Stack
 
-| Category | Technology |
-|---|---|
-| Framework | Next.js (App Router) |
-| Language | TypeScript (strict) |
-| Styling | Tailwind CSS + shadcn/ui (Radix primitives) |
-| State | Zustand with devtools |
-| Validation | Zod |
-| Database/Auth | Supabase (Postgres + Google OAuth) |
-| i18n | next-intl |
-| Email | Resend |
-| Video | Remotion |
-| Icons | lucide-react |
-| Linting | Biome |
-| Testing | Vitest + Testing Library |
+| Category      | Technology                                  |
+| ------------- | ------------------------------------------- |
+| Framework     | Next.js (App Router)                        |
+| Language      | TypeScript (strict)                         |
+| Styling       | Tailwind CSS + shadcn/ui (Radix primitives) |
+| State         | Zustand with devtools                       |
+| Validation    | Zod                                         |
+| Database/Auth | Supabase (Postgres + Google OAuth)          |
+| i18n          | next-intl                                   |
+| Email         | Resend                                      |
+| Video         | Remotion                                    |
+| Icons         | lucide-react                                |
+| Linting       | Biome                                       |
+| Testing       | Vitest + Testing Library                    |
 
 ---
 
@@ -199,17 +208,20 @@ owner with writes performed via the service-role client (Polar webhooks).
 Lumo speaks like a calm, reliable friend — not a sales pitch.
 
 **Voice:**
+
 - Calm
 - Respectful
 - Grounded
 
 **Language Rules:**
+
 - No tech jargon or SaaS buzzwords
 - No urgency language ("Act now!", "Limited time!")
 - Prefer everyday wording ("rent" not "receivables")
 - Speak **with** users, not **at** them
 
 **Example tone:**
+
 - Good: "See who's paid this month"
 - Bad: "Maximize your rental revenue with our powerful dashboard"
 
@@ -226,6 +238,7 @@ Lumo speaks like a calm, reliable friend — not a sales pitch.
 - Inline service activation (one-click shelf buttons) instead of dialog flows where possible
 
 Design should feel:
+
 > "I can trust this and understand it at a glance."
 
 ---
@@ -247,16 +260,19 @@ Be explicit about what we are not building:
 Lumo is successful when:
 
 **Functional Success:**
+
 - Users can answer "Who has paid?" instantly, without double-checking
 - Users stop using Excel, paper, or bank statement searches
 - Users trust Lumo as their source of truth
 
 **Emotional Success:**
+
 - Users feel **confident** when following up on late payments
 - Users feel **calm** during payment review (no stress or second-guessing)
 - Users feel **relieved** they don't have to remember or cross-check
 
 **Word-of-Mouth Success:**
+
 - Users describe Lumo as "simple and clear"
 - Users recommend it to other landlords unprompted
 
