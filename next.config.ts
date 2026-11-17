@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./i18n.ts");
 
 const nextConfig: NextConfig = {
-	/* config options here */
+	serverExternalPackages: ["@polar-sh/sdk"],
 };
 
 export default withNextIntl(nextConfig);
