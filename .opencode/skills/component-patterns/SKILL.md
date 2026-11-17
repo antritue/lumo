@@ -1,11 +1,12 @@
 ---
+
 name: component-patterns
 description: >
-  Use this skill when creating new dashboard components, pages, stores, dialogs,
-  or item cards under components/dashboard/ or app/dashboard/ — even if the user
-  doesn't explicitly say "Zustand" or "component." Covers the Zustand three-flag
-  loading pattern, page state machine (4 branches, single return), upsert/delete
-  dialog pattern, inline vs kebab action conventions, and directory structure.
+Use this skill when creating new dashboard components, pages, stores, dialogs,
+or item cards under components/dashboard/ or app/dashboard/ — even if the user
+doesn't explicitly say "Zustand" or "component." Covers the Zustand three-flag
+loading pattern, page state machine (4 branches, single return), upsert/delete
+dialog pattern, inline vs kebab action conventions, and directory structure.
 ---
 
 # Component Patterns
@@ -37,11 +38,11 @@ Plain interfaces. IDs are `string`. Use union types for enums. Optional fields w
 
 ```typescript
 export interface Item {
-  id: string;
-  userId: string;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
+	id: string;
+	userId: string;
+	name: string;
+	createdAt?: string;
+	updatedAt?: string;
 }
 ```
 
@@ -68,11 +69,13 @@ The list component manages all CRUD dialog state (isAdding, editingItem, deletin
 A self-contained card. Action buttons follow one of two patterns:
 
 **A) Inline action buttons** — for items where all interaction happens on the card (e.g. services):
+
 - `<Button variant="ghost" size="icon">` with `Pencil`/`Trash2` icons
 - Callbacks use `e.stopPropagation(); e.preventDefault()`
 - Wrap in `<div className="flex items-center gap-2 shrink-0">`
 
 **B) Kebab menu** — for items that link to detail pages (e.g. rooms, rent payments):
+
 - `<Popover>` with `<PopoverTrigger>` + `<PopoverContent align="end" className="w-36 p-1.5">`
 - Trigger: `<button>` with `<MoreHorizontal className="h-4 w-4" />`, 7x7 rounded-md, hover:bg-muted
 - `onClick={(e) => e.stopPropagation()}` on trigger to avoid parent link handlers

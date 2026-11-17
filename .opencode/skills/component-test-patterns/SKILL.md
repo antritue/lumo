@@ -1,11 +1,12 @@
 ---
+
 name: component-test-patterns
 description: >
-  Use this skill when writing or fixing unit tests for dashboard components —
-  stores, dialogs, lists, pages, item cards, and empty states. Applies even if
-  the user doesn't explicitly mention "test" or "vitest." Covers auth-branching
-  store patterns (unauth local vs auth API), Radix Dialog form submission
-  quirks, deferred promises for loading states, and the 4-state page machine.
+Use this skill when writing or fixing unit tests for dashboard components —
+stores, dialogs, lists, pages, item cards, and empty states. Applies even if
+the user doesn't explicitly mention "test" or "vitest." Covers auth-branching
+store patterns (unauth local vs auth API), Radix Dialog form submission
+quirks, deferred promises for loading states, and the 4-state page machine.
 ---
 
 # Component Test Patterns
@@ -33,16 +34,30 @@ app/dashboard/<feature>/
 
 ```typescript
 describe("<Feature>Dialog", () => {
-  describe("Display", () => { /* rendering assertions */ });
-  describe("Interactions", () => { /* click/submit flows */ });
+	describe("Display", () => {
+		/* rendering assertions */
+	});
+	describe("Interactions", () => {
+		/* click/submit flows */
+	});
 });
 
 describe("<Feature>Store", () => {
-  describe("fetch<Feature>s", () => { /* ... */ });
-  describe("create<Feature>", () => { /* ... */ });
-  describe("update<Feature>", () => { /* ... */ });
-  describe("delete<Feature>", () => { /* ... */ });
-  describe("clearStore", () => { /* ... */ });
+	describe("fetch<Feature>s", () => {
+		/* ... */
+	});
+	describe("create<Feature>", () => {
+		/* ... */
+	});
+	describe("update<Feature>", () => {
+		/* ... */
+	});
+	describe("delete<Feature>", () => {
+		/* ... */
+	});
+	describe("clearStore", () => {
+		/* ... */
+	});
 });
 ```
 
@@ -67,11 +82,14 @@ await user.type(input, "Some text");
 
 ```typescript
 beforeEach(() => {
-  use<Feature>Store.setState({
-    items: [], isItemsLoading: false, hasItemsFetched: false, isItemsFetchFailed: false,
-  });
-  useAuthStore.setState({ user: null });
-  vi.restoreAllMocks();
+	useFeatureStore.setState({
+		items: [],
+		isItemsLoading: false,
+		hasItemsFetched: false,
+		isItemsFetchFailed: false,
+	});
+	useAuthStore.setState({ user: null });
+	vi.restoreAllMocks();
 });
 ```
 
@@ -79,7 +97,10 @@ beforeEach(() => {
 
 ```typescript
 const mockItem = (overrides: Partial<Item> = {}): Item => ({
-  id: "test-uuid", userId: "", name: "Default", ...overrides,
+	id: "test-uuid",
+	userId: "",
+	name: "Default",
+	...overrides,
 });
 ```
 
@@ -89,7 +110,7 @@ Mock at the top of store tests:
 
 ```typescript
 Object.defineProperty(global, "crypto", {
-  value: { randomUUID: () => "test-uuid" },
+	value: { randomUUID: () => "test-uuid" },
 });
 ```
 
@@ -98,9 +119,12 @@ Object.defineProperty(global, "crypto", {
 ```typescript
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
-beforeEach(() => { mockFetch.mockReset(); });
+beforeEach(() => {
+	mockFetch.mockReset();
+});
 mockFetch.mockResolvedValueOnce({
-  ok: true, json: async () => mockItem({ id: "server-id", name: "Created" }),
+	ok: true,
+	json: async () => mockItem({ id: "server-id", name: "Created" }),
 });
 ```
 
@@ -108,7 +132,7 @@ mockFetch.mockResolvedValueOnce({
 
 ```typescript
 const authenticate = () => {
-  useAuthStore.setState({ user: { id: "user-123" } as User });
+	useAuthStore.setState({ user: { id: "user-123" } as User });
 };
 ```
 
@@ -116,7 +140,7 @@ const authenticate = () => {
 
 ```typescript
 const mockErrorConsole = () =>
-  vi.spyOn(console, "error").mockImplementation(() => {});
+	vi.spyOn(console, "error").mockImplementation(() => {});
 ```
 
 ### Deferred promise for loading states
@@ -160,7 +184,9 @@ Every store operation has two auth branches (unauth → local state, auth → AP
 Use `fireEvent.submit(form)` (not `user.click(button)`) inside Radix Dialog forms:
 
 ```typescript
-const form = within(dialog).getByRole("button", { name: /save/i }).closest("form");
+const form = within(dialog)
+	.getByRole("button", { name: /save/i })
+	.closest("form");
 expect(form).not.toBeNull();
 fireEvent.submit(form as HTMLFormElement);
 await new Promise((resolve) => setTimeout(resolve, 0));
@@ -188,7 +214,8 @@ Don't test basic rendering (e.g. "displays item name") — the expand interactio
 Scope hint queries to the hint buttons container to avoid false matches:
 
 ```typescript
-const hintButtons = screen.getByText(/quick add/i).nextElementSibling as HTMLElement | null;
+const hintButtons = screen.getByText(/quick add/i)
+	.nextElementSibling as HTMLElement | null;
 expect(within(hintButtons!).queryByText("HintItem")).not.toBeInTheDocument();
 ```
 
@@ -207,12 +234,12 @@ Test only integration — do not duplicate dialog-internal tests (validation, di
 
 Set store flags directly (no API calls needed). Each if/else branch maps to a describe block:
 
-| Branch | Store setup |
-|--------|-------------|
-| Fetch failed | `isItemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
-| Loading | `isItemsLoading: true`, `hasItemsFetched: true` |
-| Empty (no items) | `hasItemsFetched: true`, `items: []` |
-| Item list | `items: [mockItem(), ...]`, `hasItemsFetched: true` |
+| Branch           | Store setup                                                                  |
+| ---------------- | ---------------------------------------------------------------------------- |
+| Fetch failed     | `isItemsFetchFailed: true`, `isItemsLoading: false`, `hasItemsFetched: true` |
+| Loading          | `isItemsLoading: true`, `hasItemsFetched: true`                              |
+| Empty (no items) | `hasItemsFetched: true`, `items: []`                                         |
+| Item list        | `items: [mockItem(), ...]`, `hasItemsFetched: true`                          |
 
 Set `hasItemsFetched: true` to prevent the mount effect from calling `fetchItems()`. For per-ID dedup stores (no `hasItemsFetched` flag), mock the fetch action:
 
@@ -227,14 +254,14 @@ Every test verifies the page title (`h1` with `listTitle` key) is visible across
 
 ## What to test vs what to skip
 
-| Level | Test | Skip |
-|-------|------|------|
-| **Dialog** | Display modes, validation (disabled/enabled), save with defaults, save with variants, error handling, cancel | — |
-| **List** | Integration: opens dialog, hint items shown/hidden, hint button loading state, closing on cancel | Dialog-internal validation, submit mechanics |
-| **Empty state** | Integration: opens dialog, creates item on submit, hint button loading state | Dialog-internal validation, button disabled/enabled |
-| **Page** | All 4 machine states: loading, empty, list, error | — |
-| **Item** | Expand/collapse, action button callbacks, kebab menu callbacks, variant renderings | Basic name rendering |
-| **Store** | Auth branches (unauth + auth), error handling, dedup, variant inputs, reset | — |
+| Level           | Test                                                                                                         | Skip                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| **Dialog**      | Display modes, validation (disabled/enabled), save with defaults, save with variants, error handling, cancel | —                                                   |
+| **List**        | Integration: opens dialog, hint items shown/hidden, hint button loading state, closing on cancel             | Dialog-internal validation, submit mechanics        |
+| **Empty state** | Integration: opens dialog, creates item on submit, hint button loading state                                 | Dialog-internal validation, button disabled/enabled |
+| **Page**        | All 4 machine states: loading, empty, list, error                                                            | —                                                   |
+| **Item**        | Expand/collapse, action button callbacks, kebab menu callbacks, variant renderings                           | Basic name rendering                                |
+| **Store**       | Auth branches (unauth + auth), error handling, dedup, variant inputs, reset                                  | —                                                   |
 
 ## Common mistakes
 

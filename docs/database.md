@@ -4,7 +4,7 @@ This document outlines the database structure and relationships within Lumo.
 
 ## Entity Relationship Diagram
 
-*Edit this diagram in the [Mermaid Live Editor](https://mermaid.live)*
+_Edit this diagram in the [Mermaid Live Editor](https://mermaid.live)_
 
 ```mermaid
 erDiagram
@@ -91,39 +91,39 @@ erDiagram
 
 Stores information about properties managed by landlords.
 
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `name` | `text` | The display name of the property. |
+| Key  | Column    | Type   | Description                                |
+| :--- | :-------- | :----- | :----------------------------------------- |
+| `PK` | `id`      | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
+| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`.           |
+|      | `name`    | `text` | The display name of the property.          |
 
 ### `rooms`
 
 Stores information about rooms within properties.
 
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `property_id` | `uuid` | Foreign Key to `properties(id)`. Cascades on delete. |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `name` | `text` | The display name of the room. |
-| | `monthly_rent` | `numeric` | Optional monthly rent amount for the room. |
-| | `notes` | `text` | Optional additional notes about the room. |
+| Key  | Column         | Type      | Description                                          |
+| :--- | :------------- | :-------- | :--------------------------------------------------- |
+| `PK` | `id`           | `uuid`    | Primary Key (Default: `gen_random_uuid()`)           |
+| `FK` | `property_id`  | `uuid`    | Foreign Key to `properties(id)`. Cascades on delete. |
+| `FK` | `user_id`      | `uuid`    | Foreign Key to `auth.users(id)`.                     |
+|      | `name`         | `text`    | The display name of the room.                        |
+|      | `monthly_rent` | `numeric` | Optional monthly rent amount for the room.           |
+|      | `notes`        | `text`    | Optional additional notes about the room.            |
 
 ### `property_services`
 
 Stores property-level service configurations (the master catalog). Each row defines a service assigned to a property with its own name, pricing type, and amount. Rooms inherit these services by default; room-level rows in `room_service_overrides` only exist when a room deviates from the property default.
 
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `property_id` | `uuid` | Foreign Key to `properties(id)`. Cascades on delete. |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `service_name` | `text` | The display name of the service (e.g. "Electricity"). |
-| | `pricing_type` | `text` | `'flat'` or `'variable'`. |
-| | `unit_label` | `text` | Optional unit label for variable pricing (e.g. "kWh", "m³"). |
-| | `flat_amount` | `numeric` | Optional flat monthly fee. |
-| | `unit_price` | `numeric` | Optional price per unit for variable services. |
+| Key  | Column         | Type      | Description                                                  |
+| :--- | :------------- | :-------- | :----------------------------------------------------------- |
+| `PK` | `id`           | `uuid`    | Primary Key (Default: `gen_random_uuid()`)                   |
+| `FK` | `property_id`  | `uuid`    | Foreign Key to `properties(id)`. Cascades on delete.         |
+| `FK` | `user_id`      | `uuid`    | Foreign Key to `auth.users(id)`.                             |
+|      | `service_name` | `text`    | The display name of the service (e.g. "Electricity").        |
+|      | `pricing_type` | `text`    | `'flat'` or `'variable'`.                                    |
+|      | `unit_label`   | `text`    | Optional unit label for variable pricing (e.g. "kWh", "m³"). |
+|      | `flat_amount`  | `numeric` | Optional flat monthly fee.                                   |
+|      | `unit_price`   | `numeric` | Optional price per unit for variable services.               |
 
 Unique constraint on `(property_id, service_name)`.
 
@@ -131,15 +131,15 @@ Unique constraint on `(property_id, service_name)`.
 
 Stores room-level service overrides. Each row represents a deviation from the property default — either a custom price or a disabled service. If a room has no row for a given property service, it inherits the property default automatically. `service_id` is a foreign key to `property_services(id)` with `ON DELETE CASCADE`.
 
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `room_id` | `uuid` | Foreign Key to `rooms(id)`. Cascades on delete. |
-| `FK` | `service_id` | `uuid` | Foreign Key to `property_services(id)`. Cascades on delete. |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `is_enabled` | `boolean` | Whether this service is active for the room. Defaults to `true`. |
-| | `custom_flat_amount` | `numeric` | Optional custom flat amount override for this room. |
-| | `custom_unit_price` | `numeric` | Optional custom unit price override for this room. |
+| Key  | Column               | Type      | Description                                                      |
+| :--- | :------------------- | :-------- | :--------------------------------------------------------------- |
+| `PK` | `id`                 | `uuid`    | Primary Key (Default: `gen_random_uuid()`)                       |
+| `FK` | `room_id`            | `uuid`    | Foreign Key to `rooms(id)`. Cascades on delete.                  |
+| `FK` | `service_id`         | `uuid`    | Foreign Key to `property_services(id)`. Cascades on delete.      |
+| `FK` | `user_id`            | `uuid`    | Foreign Key to `auth.users(id)`.                                 |
+|      | `is_enabled`         | `boolean` | Whether this service is active for the room. Defaults to `true`. |
+|      | `custom_flat_amount` | `numeric` | Optional custom flat amount override for this room.              |
+|      | `custom_unit_price`  | `numeric` | Optional custom unit price override for this room.               |
 
 Unique constraint on `(room_id, service_id)`.
 
@@ -147,14 +147,14 @@ Unique constraint on `(room_id, service_id)`.
 
 Stores rent payment records for rooms.
 
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `room_id` | `uuid` | Foreign Key to `rooms(id)`. Cascades on delete. |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `period` | `text` | Payment period in `YYYY-MM` format. |
-| | `rent_amount` | `numeric` | The rent amount for this period. |
-| | `status` | `text` | `'pending'` or `'paid'`. |
+| Key  | Column        | Type      | Description                                     |
+| :--- | :------------ | :-------- | :---------------------------------------------- |
+| `PK` | `id`          | `uuid`    | Primary Key (Default: `gen_random_uuid()`)      |
+| `FK` | `room_id`     | `uuid`    | Foreign Key to `rooms(id)`. Cascades on delete. |
+| `FK` | `user_id`     | `uuid`    | Foreign Key to `auth.users(id)`.                |
+|      | `period`      | `text`    | Payment period in `YYYY-MM` format.             |
+|      | `rent_amount` | `numeric` | The rent amount for this period.                |
+|      | `status`      | `text`    | `'pending'` or `'paid'`.                        |
 
 Unique constraint on `(room_id, period)`.
 
@@ -162,32 +162,32 @@ Unique constraint on `(room_id, period)`.
 
 Stores service charge line items associated with a rent payment.
 
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `rent_payment_id` | `uuid` | Foreign Key to `rent_payments(id)`. Cascades on delete. |
-| | `service_id` | `text` | Text snapshot of the service reference at charge time (not a foreign key). |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. |
-| | `service_name` | `text` | The display name of the service. |
-| | `pricing_type` | `text` | `'flat'` or `'variable'`. |
-| | `unit_label` | `text` | Optional unit label for variable pricing (e.g. "kWh"). |
-| | `unit_price` | `numeric` | Optional price per unit. |
-| | `flat_amount` | `numeric` | Optional flat fee. |
-| | `usage` | `numeric` | Optional usage amount for variable pricing. |
-| | `total` | `numeric` | Computed total for this charge line. |
+| Key  | Column            | Type      | Description                                                                |
+| :--- | :---------------- | :-------- | :------------------------------------------------------------------------- |
+| `PK` | `id`              | `uuid`    | Primary Key (Default: `gen_random_uuid()`)                                 |
+| `FK` | `rent_payment_id` | `uuid`    | Foreign Key to `rent_payments(id)`. Cascades on delete.                    |
+|      | `service_id`      | `text`    | Text snapshot of the service reference at charge time (not a foreign key). |
+| `FK` | `user_id`         | `uuid`    | Foreign Key to `auth.users(id)`.                                           |
+|      | `service_name`    | `text`    | The display name of the service.                                           |
+|      | `pricing_type`    | `text`    | `'flat'` or `'variable'`.                                                  |
+|      | `unit_label`      | `text`    | Optional unit label for variable pricing (e.g. "kWh").                     |
+|      | `unit_price`      | `numeric` | Optional price per unit.                                                   |
+|      | `flat_amount`     | `numeric` | Optional flat fee.                                                         |
+|      | `usage`           | `numeric` | Optional usage amount for variable pricing.                                |
+|      | `total`           | `numeric` | Computed total for this charge line.                                       |
 
 ### `user_entitlements`
 
 Stores the paid plan entitlement for each user, written by Polar webhooks via the service-role client. It is the source of truth for room limits — the app reads this table to decide whether a user is on the free plan (max 5 rooms) or paid (unlimited rooms).
 
-| Key | Column | Type | Description |
-| :--- | :--- | :--- | :--- |
-| `PK` | `id` | `uuid` | Primary Key (Default: `gen_random_uuid()`) |
-| `FK` | `user_id` | `uuid` | Foreign Key to `auth.users(id)`. Unique. |
-| | `polar_customer_id` | `text` | The Polar customer ID linked to the user. |
-| | `tier` | `text` | `'monthly'`, `'yearly'`, or `'lifetime'`. |
-| | `status` | `text` | `'active'` (paid), `'canceled'` (keeps access until `current_period_end`), or `'revoked'` (immediate loss). |
-| | `current_period_end` | `timestamptz` | End of the current billing period; null for lifetime. |
+| Key  | Column               | Type          | Description                                                                                                 |
+| :--- | :------------------- | :------------ | :---------------------------------------------------------------------------------------------------------- |
+| `PK` | `id`                 | `uuid`        | Primary Key (Default: `gen_random_uuid()`)                                                                  |
+| `FK` | `user_id`            | `uuid`        | Foreign Key to `auth.users(id)`. Unique.                                                                    |
+|      | `polar_customer_id`  | `text`        | The Polar customer ID linked to the user.                                                                   |
+|      | `tier`               | `text`        | `'monthly'`, `'yearly'`, or `'lifetime'`.                                                                   |
+|      | `status`             | `text`        | `'active'` (paid), `'canceled'` (keeps access until `current_period_end`), or `'revoked'` (immediate loss). |
+|      | `current_period_end` | `timestamptz` | End of the current billing period; null for lifetime.                                                       |
 
 Unique constraint on `user_id`.
 

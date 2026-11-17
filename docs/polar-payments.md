@@ -6,7 +6,7 @@ Lumo uses **Polar** as its Merchant of Record for subscriptions and one-time pay
 
 ## The Checkout Flow
 
-*Edit this diagram in the [Mermaid Live Editor](https://mermaid.live)*
+_Edit this diagram in the [Mermaid Live Editor](https://mermaid.live)_
 
 ```mermaid
 sequenceDiagram
@@ -44,11 +44,11 @@ cheap (see below).
 - Existing rooms are **never deleted**; lapsed subscriptions only block **new** room creates.
 - The room cap is enforced for **signed-in users only** (local/offline users are unaffected).
 
-| Status | Meaning | Unlimited rooms? |
-|---|---|---|
-| `active` | Subscription paid and in force. | Yes |
+| Status     | Meaning                                                                          | Unlimited rooms?                |
+| ---------- | -------------------------------------------------------------------------------- | ------------------------------- |
+| `active`   | Subscription paid and in force.                                                  | Yes                             |
 | `canceled` | Canceled at end of billing period — keeps access to the period already paid for. | Yes, until `current_period_end` |
-| `revoked` | Access ends immediately — failed renewal, chargeback, or immediate cancel. | No |
+| `revoked`  | Access ends immediately — failed renewal, chargeback, or immediate cancel.       | No                              |
 
 `revoked` exists to distinguish a genuine cancellation (keep access until paid period ends) from an
 immediate loss of access (don't let them keep adding rooms for free).
@@ -73,11 +73,11 @@ values, never shared or copied across environments. Your app picks a set per env
 
 ### 2. Products (create 3, per environment)
 
-| Product | Type | Price |
-|---|---|---|
-| Monthly | recurring | $5 / month |
-| Yearly | recurring | $48 / year |
-| Lifetime | one-time | $79 |
+| Product  | Type      | Price      |
+| -------- | --------- | ---------- |
+| Monthly  | recurring | $5 / month |
+| Yearly   | recurring | $48 / year |
+| Lifetime | one-time  | $79        |
 
 There is **no free-tier product** in Polar. Free = no `user_entitlements` row = 5-room cap.
 Free tier exists purely in app logic. From each product, copy its ID →
@@ -100,9 +100,9 @@ Free tier exists purely in app logic. From each product, copy its ID →
 - URL: `https://lumo.homes/api/polar/webhook`. For local dev, run `polar listen http://localhost:3000/api/polar/webhook` — the full path is required, otherwise events hit the root route and are silently dropped (they return `200` without invoking the handler).
 - Events to select (**do not select everything**):
 
-| Group | Events |
-|---|---|
-| Order | `order.paid`, `order.refunded` |
+| Group        | Events                                                                                         |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| Order        | `order.paid`, `order.refunded`                                                                 |
 | Subscription | `subscription.active`, `subscription.canceled`, `subscription.revoked`, `subscription.updated` |
 
 - `subscription.updated` is the catch-all for `past_due`/`paused`/`resumed`/`cycled` — prevents a
@@ -115,6 +115,7 @@ Free tier exists purely in app logic. From each product, copy its ID →
 ### 5. Environment variables
 
 Ensure these vary between your environment:
+
 - **Local (`.env.local`)**: Uses your sandbox project values.
 - **Production (Vercel)**: Uses your production project values.
 
@@ -155,6 +156,7 @@ shared with sandbox. Steps:
 ## Key Behaviors
 
 ### Entitlement refresh
+
 Polar webhooks are the only writer to `user_entitlements`. `onOrderPaid` upserts a lifetime
 entitlement; `onSubscriptionActive`/`onSubscriptionUpdated` upsert tier + `current_period_end`;
 `onSubscriptionCanceled`/`onSubscriptionRevoked` mark the entitlement inactive. Upserts are
@@ -162,6 +164,7 @@ idempotent by `user_id`. The user is resolved via `customer.externalId` (= `user
 resolved by comparing `productId` against the `POLAR_PRODUCT_ID_*` env vars.
 
 ### Plan switching & lifetime crossover
+
 When a lifetime order lands, `handleOrderPaid` (`app/api/polar/webhook/route.ts`) upserts the
 lifetime entitlement and then **revokes the customer's active subscriptions immediately**
 (`cancelActiveSubscriptions`) so no further recurring charge is made. `handleSubscription` also
@@ -170,12 +173,14 @@ lifetime user back to a recurring tier. Whether Polar prorates or refunds any un
 switch/crossover has **not been verified yet** — do not publish FAQ copy on it until confirmed.
 
 ### Customer portal
+
 The settings page offers a customer portal (manage payment method, invoices, cancel/reactivate) via
 `GET /api/billing/portal`, which opens the existing customer's Polar management dashboard. Checkout
 (`POST /api/billing/checkout`) and portal both return a Polar URL and use the same redirect pattern,
 but point at different Polar surfaces: checkout = pay, portal = manage.
 
 ### Where checkout is initiated
+
 - **Settings billing card** (`components/dashboard/settings/billing-card.tsx`) — current plan,
   room usage, "Manage subscription" (portal), "Buy Lifetime".
 - **Upgrade dialog** (`components/dashboard/billing/upgrade-dialog.tsx`) — shown when a free user
@@ -188,6 +193,7 @@ but point at different Polar surfaces: checkout = pay, portal = manage.
 ## Structure
 
 All billing logic is colocated by concern:
+
 - `lib/polar.ts` — Polar SDK client (server-side only) + `getPolarProductId(tier)` /
   `tierFromProductId(productId)`.
 - `lib/entitlement.ts` — `isPaid(userId)`, `getRoomLimit(userId)`.
@@ -210,14 +216,14 @@ the app only reads `isPaid(userId)` / `getRoomLimit(userId)`.
 
 ### Code changes (small, contained)
 
-| Piece | Polar | Stripe |
-|---|---|---|
-| SDK + client | `lib/polar.ts` | `lib/stripe.ts` |
-| Checkout | `billing/checkout` → Polar SDK | Stripe Checkout Session (`mode: subscription` for monthly/yearly, `mode: payment` for lifetime) |
-| Manage portal | `billing/portal` → Polar session | Stripe Billing Portal |
+| Piece         | Polar                                         | Stripe                                                                                                                                 |
+| ------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| SDK + client  | `lib/polar.ts`                                | `lib/stripe.ts`                                                                                                                        |
+| Checkout      | `billing/checkout` → Polar SDK                | Stripe Checkout Session (`mode: subscription` for monthly/yearly, `mode: payment` for lifetime)                                        |
+| Manage portal | `billing/portal` → Polar session              | Stripe Billing Portal                                                                                                                  |
 | Webhook route | Polar events (`order.paid`, `subscription.*`) | Stripe events (`checkout.session.completed`, `customer.subscription.updated/deleted`) — different names/payload/signature verification |
-| Env vars | `POLAR_*` | `STRIPE_*` price IDs |
-| Tier mapping | product IDs | price IDs |
+| Env vars      | `POLAR_*`                                     | `STRIPE_*` price IDs                                                                                                                   |
+| Tier mapping  | product IDs                                   | price IDs                                                                                                                              |
 
 Roughly 3 route files rewritten + SDK swap. A day or two.
 

@@ -8,13 +8,13 @@ Load this file when adding nav entries or translations for a new feature.
 import { Blocks } from "lucide-react";
 
 export const navItems = [
-  // existing items...
-  {
-    href: "/dashboard/<feature>",
-    icon: Blocks,
-    labelKey: "<feature>",
-    activeMatch: ["/dashboard/<feature>"],
-  },
+	// existing items...
+	{
+		href: "/dashboard/<feature>",
+		icon: Blocks,
+		labelKey: "<feature>",
+		activeMatch: ["/dashboard/<feature>"],
+	},
 ];
 ```
 

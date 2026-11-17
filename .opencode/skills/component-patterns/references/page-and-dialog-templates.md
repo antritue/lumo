@@ -98,15 +98,16 @@ Sub-sections are self-contained: own store, own dialog state, own fetch effect g
 
 ```typescript
 interface UpsertDialogProps {
-  mode: "add" | "edit";
-  item?: Item;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSave: (id: string | null, /* fields */) => Promise<void>;
+	mode: "add" | "edit";
+	item?: Item;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	onSave: (id: string | null /* fields */) => Promise<void>;
 }
 ```
 
 Key patterns:
+
 - `useEffect` resets form when `open` changes — pre-fills from `item` (edit) or clears (add)
 - Submitting state replaces form content with `<Loader2>` spinner
 - Title: `const title = mode === "edit" ? t("editTitle") : t("addButton")`
@@ -117,10 +118,10 @@ Key patterns:
 
 ```typescript
 interface DeleteDialogProps {
-  item: Item | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onDelete: (id: string) => Promise<void>;
+	item: Item | null;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	onDelete: (id: string) => Promise<void>;
 }
 ```
 

@@ -10,8 +10,8 @@ Lumo is a simple, calm, and reliable tool designed to help landlords manage rent
 
 The project documentation is split into two main guides:
 
-*   **[Product Overview](./docs/product.md)**: Understand the "Why" behind Lumo - target audience, core problems we solve, principles, and roadmap.
-*   **[Development Guide](./docs/development.md)**: Understand the "How" - tech stack, project structure, setup instructions, and coding conventions.
+-   **[Product Overview](./docs/product.md)**: Understand the "Why" behind Lumo - target audience, core problems we solve, principles, and roadmap.
+-   **[Development Guide](./docs/development.md)**: Understand the "How" - tech stack, project structure, setup instructions, and coding conventions.
 
 ---
 
@@ -20,10 +20,12 @@ The project documentation is split into two main guides:
 If you just want to get the app running locally:
 
 ### Prerequisites
+
 - Node.js 24.x
 - Supabase Project (URL and Anon Key)
 
 ### Setup
+
 1. `npm install`
 2. Create `.env.local` (refer to `development.md` for required variables)
 3. `npm run dev`
@@ -34,16 +36,16 @@ Navigate to [http://localhost:3000](http://localhost:3000).
 
 ## 🛠️ Tech Stack
 
-*   **Framework**: Next.js 16
-*   **Language**: TypeScript 5 (strict mode)
-*   **Database**: Supabase
-*   **Styling**: Tailwind CSS 4
-*   **UI Primitives**: shadcn/ui & Radix UI
-*   **State Management**: Zustand
-*   **Validation**: Zod
-*   **Internationalization**: next-intl
-*   **Email**: Resend
-*   **Video**: Remotion
-*   **Testing**: Vitest
-*   **Linting**: Biome
-*   **Dead Code Analysis**: Fallow
+-   **Framework**: Next.js 16
+-   **Language**: TypeScript 5 (strict mode)
+-   **Database**: Supabase
+-   **Styling**: Tailwind CSS 4
+-   **UI Primitives**: shadcn/ui & Radix UI
+-   **State Management**: Zustand
+-   **Validation**: Zod
+-   **Internationalization**: next-intl
+-   **Email**: Resend
+-   **Video**: Remotion
+-   **Testing**: Vitest
+-   **Linting**: Biome
+-   **Dead Code Analysis**: Fallow

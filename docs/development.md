@@ -69,18 +69,21 @@ We use a multi-project setup to balance development speed with production data s
 ## Local Development
 
 ### Prerequisites
+
 -   Node.js 24.x (Check `package.json` engines)
 -   npm (comes with Node)
 
 ### Setup
 
 1.  **Install Dependencies**
+
     ```bash
     npm install
     ```
 
 2.  **Environment Setup**
     Create a `.env.local` file in the root. You will need Supabase, Resend, and Polar credentials.
+
     ```
     NEXT_PUBLIC_SUPABASE_URL=your_project_url
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_anon_key
@@ -95,21 +98,26 @@ We use a multi-project setup to balance development speed with production data s
     POLAR_PRODUCT_ID_LIFETIME=your_lifetime_product_id
     NEXT_PUBLIC_APP_URL=http://localhost:3000
     ```
+
     Get your Resend API key from the [Resend dashboard](https://resend.com) under **API Keys**.
     Polar values come from the Polar dashboard: access token from **Settings → API Keys**, webhook secret from **Settings → Webhooks**, product IDs from each product. Use **sandbox** values locally and **production** values in production (`POLAR_SERVER` switches the SDK). Sandbox test card: `4242 4242 4242 4242`. Full setup in [the payments plan](./polar-payments.md).
 
     **Local webhooks:** Polar can't reach `localhost`. Tunnel with the Polar CLI:
+
     ```bash
     polar listen http://localhost:3000/api/polar/webhook
     ```
+
     The URL **must include the full path** — without it, events hit the root route, which returns `200` without invoking the handler and the DB never updates.
 
     **Production webhooks:** endpoint at `https://www.lumo.homes/api/polar/webhook` in the **production** dashboard, with production env vars on the host (`POLAR_SERVER=production`, `POLAR_ACCESS_TOKEN`, `POLAR_WEBHOOK_SECRET`, `POLAR_PRODUCT_ID_*`). Full checklist in [the payments plan](./polar-payments.md#production-deployment-checklist).
 
 3.  **Run Development Server**
+
     ```bash
     npm run dev
     ```
+
     Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ### Common Commands
@@ -143,6 +151,7 @@ We use **Zustand** for domain state (properties, rooms, rent data, and auth). St
 -   **Database Schema**: Documented in [database.md](./database.md). Relationship between users and properties is managed via foreign keys and secured with RLS.
 -   **API Reference**: OpenAPI 3.1 spec available in [openapi.yaml](./openapi.yaml). Import into [Swagger Editor](https://editor.swagger.io/) or Postman to view/test.
 -   **Store Access**: Components use hooks directly—no prop drilling.
+
     ```typescript
     const properties = usePropertiesStore((state) => state.properties);
     ```
@@ -171,6 +180,7 @@ We strictly use **Biome** for both linting and formatting, and **Fallow** for de
 -   **Dead Code**: Run `npx fallow dead-code` locally to find unused files and exports.
 
 **Common Pitfalls**:
+
 -   Do **not** use `console.log` in production code.
 -   Do **not** ignore lint errors without a very good reason (and a comment).
 
@@ -209,11 +219,13 @@ We use **Vitest** with Testing Library. Tests are co-located with components (`c
 -   **Organization**: Group tests with nested `describe` blocks for 10+ tests or 3+ feature areas
 
 **What to Test**:
+
 -   ✅ User-visible behavior and workflows
 -   ✅ Validation rules and error states
 -   ✅ Store operations
 
 **What NOT to Test**:
+
 -   ❌ Implementation details
 -   ❌ Third-party internals
 -   ❌ Redundant scenarios
@@ -232,11 +244,13 @@ The project is built to deploy on Vercel (or any Next.js compatible host).
 ## Conventions & Guardrails
 
 ### Naming
+
 -   **Files/Folders**: `kebab-case` (e.g., `save-button.tsx`, `user-profile/`).
 -   **Components**: `PascalCase` (e.g., `SaveButton`).
 -   **Utilities**: `camelCase` (e.g., `formatDate`).
 
 ### Architecture
+
 -   **Colocation**: Keep related things close. Component only used in dashboard? Put it in `components/dashboard/`.
 -   **Feature-Based Organization**: Dashboard components organized by feature (`properties/`, `rooms/`). Each folder contains all UI and logic for that feature.
 -   **Component Hierarchy**:
@@ -249,6 +263,7 @@ The project is built to deploy on Vercel (or any Next.js compatible host).
 -   **Name by Intent**: Describe what it does, not how (`EmptyState` not `IconWithForm`).
 
 ### What NOT to do
+
 -   ❌ Don't add heavy libraries (e.g., lodash, moment) without discussion.
 -   ❌ Don't bypass the linter. Fix the code.
 -   ❌ Don't hardcode text facing users. Always use `messages/` translations.

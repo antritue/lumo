@@ -36,42 +36,42 @@ Use `type: ["number", "null"]` instead of `type: number` + `nullable: true` (Ope
 ## Paths
 
 ```yaml
-  /api/<feature>:
-    get:
-      summary: List <feature>s
-      operationId: list<Feature>s
-      tags:
-        - <Feature>
-      responses:
-        "200":
-          description: List of <feature>s
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/<Feature>"
-
-    post:
-      summary: Create <feature>
-      operationId: create<Feature>
-      tags:
-        - <Feature>
-      requestBody:
-        required: true
+/api/<feature>:
+  get:
+    summary: List <feature>s
+    operationId: list<Feature>s
+    tags:
+      - <Feature>
+    responses:
+      "200":
+        description: List of <feature>s
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/<Feature>Input"
-      responses:
-        "201":
-          description: <Feature> created
-          content:
-            application/json:
-              schema:
+              type: array
+              items:
                 $ref: "#/components/schemas/<Feature>"
-        # ... 400, 401, 500
 
-  /api/<feature>/{id}:
-    # ... parameters, patch, delete
+  post:
+    summary: Create <feature>
+    operationId: create<Feature>
+    tags:
+      - <Feature>
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/<Feature>Input"
+    responses:
+      "201":
+        description: <Feature> created
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/<Feature>"
+      # ... 400, 401, 500
+
+/api/<feature>/{id}:
+  # ... parameters, patch, delete
 ```
