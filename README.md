@@ -21,7 +21,7 @@ If you just want to get the app running locally:
 
 ### Prerequisites
 
-- Node.js 24.x
+- Node.js 26.x
 - Supabase Project (URL and Anon Key)
 
 ### Setup

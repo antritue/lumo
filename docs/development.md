@@ -70,7 +70,7 @@ We use a multi-project setup to balance development speed with production data s
 
 ### Prerequisites
 
--   Node.js 24.x (Check `package.json` engines)
+-   Node.js 26.x (Check `package.json` engines)
 -   npm (comes with Node)
 
 ### Setup
