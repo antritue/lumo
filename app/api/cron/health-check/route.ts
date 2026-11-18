@@ -11,7 +11,11 @@ export async function GET(request: Request) {
 
 	try {
 		const supabase = createSupabaseAdminClient();
-		const { error } = await supabase.from("properties").select("id").limit(1);
+		// Insert rather than read: Supabase's pause heuristic counts user activity,
+		// and each row is a durable record of a run that actually happened.
+		const { error } = await supabase
+			.from("cron_pings")
+			.insert({ source: "vercel-cron" });
 
 		if (error) throw error;
 
