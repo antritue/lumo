@@ -1,7 +1,11 @@
 import { Construction } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-export function DevelopmentBanner() {
+interface DevelopmentBannerProps {
+	enabled?: boolean;
+}
+
+export function DevelopmentBanner({ enabled = false }: DevelopmentBannerProps) {
 	const t = useTranslations("app.development");
 
 	return (
@@ -11,13 +15,13 @@ export function DevelopmentBanner() {
 			</div>
 			<div>
 				<div className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800 mb-2">
-					{t("devBadge")}
+					{enabled ? t("enabledBadge") : t("devBadge")}
 				</div>
 				<h2 className="text-lg font-semibold text-amber-900 mb-1">
-					{t("title")}
+					{enabled ? t("enabledTitle") : t("title")}
 				</h2>
 				<p className="text-amber-700 text-sm leading-relaxed">
-					{t("inDevelopment")}
+					{enabled ? t("enabledDescription") : t("inDevelopment")}
 				</p>
 			</div>
 		</div>
