@@ -15,6 +15,12 @@ components:
       in: cookie
       name: sb-access-token
       description: Supabase session cookie
+    cronSecretAuth:
+      type: http
+      scheme: bearer
+      description: >
+        CRON_SECRET value Vercel sends as `Authorization: Bearer <secret>`
+        when invoking scheduled cron paths. Not a user session.
 
   schemas:
     Error:
@@ -611,6 +617,19 @@ components:
           description: Polar customer portal URL to redirect the user to.
       required:
         - url
+
+    CronPingResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ok]
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - status
+        - timestamp
 
   responses:
     Unauthorized:
@@ -1646,5 +1665,33 @@ paths:
                     type: boolean
         "400":
           description: Invalid signature or payload
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /api/cron/health-check:
+    get:
+      summary: Cron keep-alive ping
+      description: >
+        Invoked by Vercel Cron (GET only — Vercel never sends POST to cron paths).
+        Authenticates with `Authorization: Bearer $CRON_SECRET`, then inserts a row
+        into `cron_pings` so the write counts as user activity (Supabase pauses free
+        projects after inactivity) and leaves a durable run record.
+      operationId: cronHealthCheck
+      tags:
+        - Cron
+      security:
+        - cronSecretAuth: []
+      responses:
+        "200":
+          description: Ping recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CronPingResponse"
+              example:
+                status: ok
+                timestamp: "2026-11-18T03:00:00.000Z"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "500":
           $ref: "#/components/responses/InternalServerError"
