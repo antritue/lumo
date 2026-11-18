@@ -57,7 +57,7 @@ describe("buildDemoSeedEn", () => {
 			(s) => s.id === "demo-svc-elec-a",
 		);
 		expect(elec?.serviceName).toBe("Electricity");
-		expect(elec?.unitPrice).toBe(3500);
+		expect(elec?.unitPrice).toBe(2500);
 	});
 
 	it("has 2 paid and 2 pending payments with one room unrecorded", () => {
@@ -165,7 +165,7 @@ describe("buildDemoSeedVi", () => {
 			(s) => s.id === "demo-svc-elec-a",
 		);
 		expect(elec?.serviceName).toBe("Điện");
-		expect(elec?.unitPrice).toBe(3500);
+		expect(elec?.unitPrice).toBe(2500);
 	});
 
 	it("mirrors EN topology with the same IDs and payment mix", () => {

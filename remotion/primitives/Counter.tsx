@@ -19,5 +19,5 @@ export function Counter({
 			extrapolateRight: "clamp",
 		}),
 	);
-	return <span>{formatCurrency(value, "en")}</span>;
+	return <span>{formatCurrency(value)}</span>;
 }
