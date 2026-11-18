@@ -2,7 +2,7 @@
 
 import { DoorOpen, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { ErrorState } from "@/components/shared/error-state";
 import {
@@ -25,7 +25,6 @@ interface PropertyDetailRoomsProps {
 export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 	const rt = useTranslations("app.rooms");
 	const t = useTranslations("app.properties");
-	const locale = useLocale();
 	const rooms = useRoomsStore((state) => state.rooms);
 	const isRoomsLoading = useRoomsStore((state) => state.isRoomsLoading);
 	const isRoomsFetchFailed = useRoomsStore((state) => state.isRoomsFetchFailed);
@@ -140,7 +139,7 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 										</div>
 										{room.monthlyRent ? (
 											<p className="text-sm font-semibold text-foreground">
-												{formatCurrency(room.monthlyRent, locale)}
+												{formatCurrency(room.monthlyRent)}
 											</p>
 										) : (
 											<p className="text-sm text-muted-foreground">—</p>

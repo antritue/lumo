@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { type SubmitEvent, useEffect, useState } from "react";
 import { AmountInput } from "@/components/shared/amount-input";
 import { ErrorDialog } from "@/components/shared/error-dialog";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { CURRENCY_CODE } from "@/lib/constants";
 import type { Room } from "./types";
 
 interface UpsertRoomDialogProps {
@@ -38,8 +39,6 @@ export function UpsertRoomDialog({
 	onSave,
 }: UpsertRoomDialogProps) {
 	const t = useTranslations("app.rooms");
-	const locale = useLocale();
-	const currency = locale === "vi" ? "VND" : "USD";
 
 	const [roomName, setRoomName] = useState("");
 	const [monthlyRent, setMonthlyRent] = useState("");
@@ -145,7 +144,7 @@ export function UpsertRoomDialog({
 										className="text-base h-12 pr-16 mt-2"
 									/>
 									<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
-										{currency}
+										{CURRENCY_CODE}
 									</span>
 								</div>
 							</div>

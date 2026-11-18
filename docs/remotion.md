@@ -26,10 +26,10 @@ Audio lives in `remotion/public/` — excluded from the Next.js build (not serve
 
 Rendered output lives in Next's `public/` and is served to users:
 
-| File                     | Purpose                  |
-| ------------------------ | ------------------------ |
-| `public/promo.mp4`       | Final video (h264 + aac) |
-| `public/promo-thumb.jpg` | Poster frame (frame 0)   |
+| File                     | Purpose                           |
+| ------------------------ | --------------------------------- |
+| `public/promo.mp4`       | Final video (h264 + aac)          |
+| `public/promo-thumb.jpg` | Poster frame (board after update) |
 
 ---
 

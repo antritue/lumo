@@ -155,7 +155,7 @@ export function PropertyDetailServices({
 	};
 
 	const formatPrice = (service: PropertyService): string =>
-		formatServicePrice(service, locale, ts("perMonth"), ts("unit"));
+		formatServicePrice(service, ts("perMonth"), ts("unit"));
 
 	return (
 		<div className="space-y-4">

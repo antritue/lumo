@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { type SubmitEvent, useEffect, useMemo, useState } from "react";
 import { AmountInput } from "@/components/shared/amount-input";
 import { ErrorDialog } from "@/components/shared/error-dialog";
@@ -13,7 +13,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+import { CURRENCY_CODE } from "@/lib/constants";
+import { cn, formatCurrency } from "@/lib/utils";
 import { MonthPicker } from "./month-picker";
 import type { PaymentRecord, PaymentStatus, ServiceCharge } from "./types";
 
@@ -36,15 +37,6 @@ interface UpsertRentPaymentDialogProps {
 		charges: ServiceCharge[],
 		paymentId: string,
 	) => Promise<void>;
-}
-
-function formatCurrencyValue(value: number, locale: string): string {
-	// Always use en-US grouping: comma for thousands, dot for decimals
-	return new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency: locale === "vi" ? "VND" : "USD",
-		minimumFractionDigits: 0,
-	}).format(value);
 }
 
 function calculateServiceChargesTotal(charges: ServiceCharge[]): number {
@@ -76,8 +68,6 @@ export function UpsertRentPaymentDialog({
 	onSaveServiceCharges,
 }: UpsertRentPaymentDialogProps) {
 	const t = useTranslations("app.rentPayments");
-	const locale = useLocale();
-	const currency = locale === "vi" ? "VND" : "USD";
 
 	const currentMonth = new Date().toISOString().slice(0, 7);
 
@@ -252,7 +242,7 @@ export function UpsertRentPaymentDialog({
 										required
 									/>
 									<span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
-										{currency}
+										{CURRENCY_CODE}
 									</span>
 								</div>
 							</div>
@@ -288,7 +278,7 @@ export function UpsertRentPaymentDialog({
 														</p>
 													) : charge.unitPrice != null ? (
 														<p className="text-xs text-muted-foreground">
-															{formatCurrencyValue(charge.unitPrice, locale)}
+															{formatCurrency(charge.unitPrice)}
 															{charge.unitLabel
 																? `/${charge.unitLabel}`
 																: `/${t("unit")}`}
@@ -304,7 +294,7 @@ export function UpsertRentPaymentDialog({
 															aria-label={`${charge.serviceName} flat amount`}
 														/>
 														<span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-															{currency}
+															{CURRENCY_CODE}
 														</span>
 													</div>
 												) : (
@@ -319,7 +309,7 @@ export function UpsertRentPaymentDialog({
 															aria-label={`${charge.serviceName} usage`}
 														/>
 														<span className="text-sm font-medium whitespace-nowrap">
-															{formatCurrencyValue(charge.total, locale)}
+															{formatCurrency(charge.total)}
 														</span>
 													</div>
 												)}
@@ -334,9 +324,8 @@ export function UpsertRentPaymentDialog({
 									<div className="flex items-center justify-between text-sm">
 										<span className="text-muted-foreground">{t("rent")}</span>
 										<span>
-											{formatCurrencyValue(
+											{formatCurrency(
 												Number.isNaN(parsedRentAmount) ? 0 : parsedRentAmount,
-												locale,
 											)}
 										</span>
 									</div>
@@ -344,16 +333,14 @@ export function UpsertRentPaymentDialog({
 										<span className="text-muted-foreground">
 											{t("serviceCharges")}
 										</span>
-										<span>
-											{formatCurrencyValue(serviceChargesTotal, locale)}
-										</span>
+										<span>{formatCurrency(serviceChargesTotal)}</span>
 									</div>
 									<div className="flex items-center justify-between border-t border-border pt-2">
 										<span className="text-sm font-semibold">
 											{t("totalWithServices")}
 										</span>
 										<span className="text-base font-bold text-primary">
-											{formatCurrencyValue(totalAmount, locale)}
+											{formatCurrency(totalAmount)}
 										</span>
 									</div>
 								</div>

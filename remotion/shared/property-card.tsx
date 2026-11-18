@@ -177,16 +177,13 @@ function NotRecordedPill(): React.ReactElement {
 export function RoomRow({
 	room,
 	statusOverride,
-	amountOverride,
 }: {
 	room: OverviewRoom;
 	statusOverride?: "paid" | "pending";
-	amountOverride?: number;
 }): React.ReactElement {
 	const status = statusOverride ?? room.payment?.status ?? "none";
 	const paid = room.payment !== null || statusOverride !== undefined;
-	const amount =
-		amountOverride ?? (paid ? room.total : (room.monthlyRent ?? 0));
+	const amount = paid ? room.total : (room.monthlyRent ?? 0);
 	return (
 		<div
 			style={{
@@ -238,7 +235,7 @@ export function RoomRow({
 					flexShrink: 0,
 				}}
 			>
-				{formatCurrency(amount, "en")}
+				{formatCurrency(amount)}
 			</span>
 		</div>
 	);

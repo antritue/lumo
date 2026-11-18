@@ -50,6 +50,21 @@ describe("UpsertPropertyServiceDialog", () => {
 			).toHaveValue("");
 		});
 
+		it("shows VND as the service currency", () => {
+			renderWithProviders(
+				<UpsertPropertyServiceDialog
+					mode="add"
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onSave={mockOnSave}
+				/>,
+			);
+
+			expect(
+				within(screen.getByRole("dialog")).getByText("VND"),
+			).toBeInTheDocument();
+		});
+
 		it("hides unit label when pricing is flat", () => {
 			renderWithProviders(
 				<UpsertPropertyServiceDialog

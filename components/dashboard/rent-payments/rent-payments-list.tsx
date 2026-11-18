@@ -8,7 +8,7 @@ import {
 	Receipt,
 	Trash2,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
 	Popover,
@@ -37,7 +37,6 @@ export function RentPaymentsList({
 	serviceChargesByPeriod = {},
 }: RentPaymentsListProps) {
 	const t = useTranslations("app.rentPayments");
-	const locale = useLocale();
 	const [expandedId, setExpandedId] = useState<string | null>(null);
 
 	if (payments.length === 0) {
@@ -116,7 +115,7 @@ export function RentPaymentsList({
 							<div className="flex-1" />
 							<div className="text-right shrink-0">
 								<p className="text-sm font-semibold text-foreground">
-									{formatCurrency(payment.rentAmount + serviceTotal, locale)}
+									{formatCurrency(payment.rentAmount + serviceTotal)}
 								</p>
 								{serviceTotal > 0 && (
 									<p className="text-xs text-muted-foreground">
@@ -169,7 +168,7 @@ export function RentPaymentsList({
 									<div className="flex items-center justify-between text-sm">
 										<span className="text-muted-foreground">{t("rent")}</span>
 										<span className="font-medium">
-											{formatCurrency(payment.rentAmount, locale)}
+											{formatCurrency(payment.rentAmount)}
 										</span>
 									</div>
 									{charges.map((charge) => (
@@ -183,12 +182,12 @@ export function RentPaymentsList({
 													charge.usage != null && (
 														<span className="text-xs text-muted-foreground ml-1">
 															({charge.usage} {charge.unitLabel ?? ""} ×{" "}
-															{formatCurrency(charge.unitPrice ?? 0, locale)})
+															{formatCurrency(charge.unitPrice ?? 0)})
 														</span>
 													)}
 											</span>
 											<span className="font-medium">
-												{formatCurrency(charge.total, locale)}
+												{formatCurrency(charge.total)}
 											</span>
 										</div>
 									))}

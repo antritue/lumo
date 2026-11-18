@@ -2,7 +2,6 @@
 
 import { DoorOpen } from "lucide-react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
 import { formatCurrency } from "@/lib/utils";
 import { NotRecordedBadge, StatusBadge } from "./status-badge";
 import type { OverviewRoom } from "./types";
@@ -12,7 +11,6 @@ interface RoomStatusRowProps {
 }
 
 export function RoomStatusRow({ room }: RoomStatusRowProps) {
-	const locale = useLocale();
 	const payment = room.payment;
 
 	return (
@@ -27,10 +25,7 @@ export function RoomStatusRow({ room }: RoomStatusRowProps) {
 				{payment ? <StatusBadge payment={payment} /> : <NotRecordedBadge />}
 				<div className="flex-1" />
 				<p className="text-sm font-semibold text-foreground shrink-0">
-					{formatCurrency(
-						payment ? room.total : (room.monthlyRent ?? 0),
-						locale,
-					)}
+					{formatCurrency(payment ? room.total : (room.monthlyRent ?? 0))}
 				</p>
 			</div>
 		</Link>

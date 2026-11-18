@@ -19,12 +19,6 @@ import {
 	snapshot,
 } from "../shared/property-card";
 
-const SHOWN_CHARGE_IDS = [
-	"demo-svc-elec-a",
-	"demo-svc-water-a",
-	"demo-svc-clean-a",
-];
-
 function formatPeriod(period: string): string {
 	const [year, month] = period.split("-");
 	return `${month}-${year}`;
@@ -54,11 +48,13 @@ export function PaymentRecords(): React.ReactElement {
 		extrapolateRight: "clamp",
 	});
 	const room =
-		snapshot.rooms.find((r) => r.charges.length > 0) ?? snapshot.rooms[0];
+		snapshot.rooms.find(
+			(r) => r.payment?.status === "pending" && r.charges.length > 0,
+		) ??
+		snapshot.rooms.find((r) => r.charges.length > 0) ??
+		snapshot.rooms[0];
 	const rent = room.payment?.rentAmount ?? room.monthlyRent ?? 0;
-	const charges = room.charges.filter((c) =>
-		SHOWN_CHARGE_IDS.includes(c.serviceId),
-	);
+	const charges = room.charges;
 	const serviceTotal = charges.reduce((sum, c) => sum + c.total, 0);
 	const currentTotal = rent + serviceTotal;
 	const lastPeriod = prevPeriod(snapshot.period);
@@ -132,7 +128,7 @@ export function PaymentRecords(): React.ReactElement {
 								>
 									{formatPeriod(snapshot.period)}
 								</span>
-								<StatusPill status="pending" />
+								<StatusPill status="paid" />
 								<div style={{ flex: 1 }} />
 								<div style={{ textAlign: "right", flexShrink: 0 }}>
 									<p
@@ -144,7 +140,7 @@ export function PaymentRecords(): React.ReactElement {
 											margin: 0,
 										}}
 									>
-										{formatCurrency(currentTotal, "en")}
+										{formatCurrency(currentTotal)}
 									</p>
 									<p
 										style={{
@@ -183,7 +179,7 @@ export function PaymentRecords(): React.ReactElement {
 									<span style={{ color: MUTED_FG }}>Rent</span>
 									<span style={{ flex: 1 }} />
 									<span style={{ fontWeight: 600 }}>
-										{formatCurrency(rent, "en")}
+										{formatCurrency(rent)}
 									</span>
 								</div>
 							</PopIn>
@@ -203,13 +199,13 @@ export function PaymentRecords(): React.ReactElement {
 												<span style={{ fontSize: 30 }}>
 													{" "}
 													({c.usage} {c.unitLabel ?? ""} ×{" "}
-													{formatCurrency(c.unitPrice ?? 0, "en")})
+													{formatCurrency(c.unitPrice ?? 0)})
 												</span>
 											)}
 										</span>
 										<span style={{ flex: 1 }} />
 										<span style={{ fontWeight: 600 }}>
-											{formatCurrency(c.total, "en")}
+											{formatCurrency(c.total)}
 										</span>
 									</div>
 								</PopIn>
@@ -252,7 +248,7 @@ export function PaymentRecords(): React.ReactElement {
 									flexShrink: 0,
 								}}
 							>
-								{formatCurrency(rent, "en")}
+								{formatCurrency(currentTotal)}
 							</span>
 						</div>
 					</PopIn>

@@ -1041,7 +1041,7 @@ paths:
             example:
               roomId: 550e8400-e29b-41d4-a716-446655440000
               period: "2026-03"
-              amount: 500
+              rentAmount: 3500000
       responses:
         "201":
           description: Payment record created
@@ -1102,7 +1102,7 @@ paths:
               $ref: "#/components/schemas/RentPaymentUpdateInput"
             example:
               period: "2026-04"
-              amount: 600
+              rentAmount: 3800000
               status: paid
       responses:
         "200":
@@ -1118,7 +1118,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
               example:
-                error: "totalAmount: Total amount must be positive"
+                error: "rentAmount: Rent amount must be positive"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":

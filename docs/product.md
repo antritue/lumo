@@ -106,7 +106,7 @@ If a feature adds complexity without removing confusion, it does not belong in L
 
 ### Internationalization
 
-- **English and Vietnamese.** Locale switching in header and footer. Server-side locale cookie persistence. All UI text and currency formatting localized.
+- **English and Vietnamese UI.** Locale switching in header and footer. Server-side locale cookie persistence. All UI text is localized. Currency is always displayed in VND, independent of locale.
 
 ### Marketing & Public Pages
 
@@ -285,7 +285,7 @@ Extensions to consider **only after** core workflow is proven and loved:
 - First-run onboarding (P0)
 - Tenant management
 - Payment reminder notifications
-- Currency setting per property (P3)
+- Multi-currency support (deferred; ADR-0012 makes VND the only app currency)
 
 **Critical rule:** No extension should compromise simplicity or add mental load.
 

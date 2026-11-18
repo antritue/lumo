@@ -1,7 +1,7 @@
 "use client";
 
 import { Info, Loader2, RotateCcw } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { usePropertyServicesStore } from "@/components/dashboard/properties/property-services-store";
 import type { PropertyService } from "@/components/dashboard/properties/types";
@@ -31,7 +31,6 @@ export function RoomServicesSection({
 }: RoomServicesSectionProps) {
 	const t = useTranslations("app.roomServices");
 	const ts = useTranslations("app.serviceForm");
-	const locale = useLocale();
 
 	const roomServices = useRoomServicesStore(
 		(state) => state.roomServicesByRoomId[roomId] ?? EMPTY_EFFECTIVE_SERVICES,
@@ -123,19 +122,14 @@ export function RoomServicesSection({
 	};
 
 	const formatAmount = (service: EffectiveRoomService): string =>
-		formatServicePrice(service, locale, ts("perMonth"), ts("unit"));
+		formatServicePrice(service, ts("perMonth"), ts("unit"));
 
 	const formatDefaultAmount = (service: EffectiveRoomService): string => {
 		const propertyService = propertyServices.find(
 			(ps) => ps.id === service.propertyServiceId,
 		);
 		if (!propertyService) return "";
-		return formatServicePrice(
-			propertyService,
-			locale,
-			ts("perMonth"),
-			ts("unit"),
-		);
+		return formatServicePrice(propertyService, ts("perMonth"), ts("unit"));
 	};
 
 	return (

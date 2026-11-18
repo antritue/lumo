@@ -1,9 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
 	formatAmountInputDisplay,
+	formatCurrency,
 	formatServicePrice,
 	parseAmountInputValue,
 } from "./utils";
+
+describe("formatCurrency", () => {
+	it("always formats amounts in VND", () => {
+		expect(formatCurrency(5_000_000)).toBe("₫5,000,000");
+		expect(formatCurrency(0)).toBe("₫0");
+	});
+});
 
 describe("formatServicePrice", () => {
 	it("formats flat pricing with per-month suffix", () => {
@@ -11,15 +19,14 @@ describe("formatServicePrice", () => {
 			formatServicePrice(
 				{
 					pricingType: "flat",
-					flatAmount: 50,
+					flatAmount: 50_000,
 					unitPrice: null,
 					unitLabel: null,
 				},
-				"en",
 				"/month",
 				"unit",
 			),
-		).toBe("$50/month");
+		).toBe("₫50,000/month");
 	});
 
 	it("formats variable pricing with unit label", () => {
@@ -28,14 +35,13 @@ describe("formatServicePrice", () => {
 				{
 					pricingType: "variable",
 					flatAmount: null,
-					unitPrice: 0.15,
+					unitPrice: 3_500,
 					unitLabel: "kWh",
 				},
-				"en",
 				"/month",
 				"unit",
 			),
-		).toBe("$0.15/kWh");
+		).toBe("₫3,500/kWh");
 	});
 
 	it("falls back to default unit when unit label is missing", () => {
@@ -44,14 +50,13 @@ describe("formatServicePrice", () => {
 				{
 					pricingType: "variable",
 					flatAmount: null,
-					unitPrice: 10,
+					unitPrice: 10_000,
 					unitLabel: null,
 				},
-				"en",
 				"/month",
 				"unit",
 			),
-		).toBe("$10/unit");
+		).toBe("₫10,000/unit");
 	});
 
 	it("returns empty string when price is not set", () => {
@@ -63,28 +68,25 @@ describe("formatServicePrice", () => {
 					unitPrice: null,
 					unitLabel: null,
 				},
-				"en",
 				"/month",
 				"unit",
 			),
 		).toBe("");
 	});
 
-	it("formats with VND currency for Vietnamese locale", () => {
+	it("never formats prices in USD", () => {
 		const result = formatServicePrice(
 			{
 				pricingType: "flat",
-				flatAmount: 100000,
+				flatAmount: 100_000,
 				unitPrice: null,
 				unitLabel: null,
 			},
-			"vi",
 			"/tháng",
 			"đơn vị",
 		);
 
-		expect(result).toContain("/tháng");
-		expect(result).not.toContain("$");
+		expect(result).toBe("₫100,000/tháng");
 	});
 });
 

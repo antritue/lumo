@@ -391,9 +391,9 @@ describe("UpsertRentPaymentDialog", () => {
 					/>,
 				);
 
-				expect(screen.getByText("$1,000")).toBeInTheDocument();
-				expect(screen.getByText("$125")).toBeInTheDocument();
-				expect(screen.getByText("$1,125")).toBeInTheDocument();
+				expect(screen.getByText("₫1,000")).toBeInTheDocument();
+				expect(screen.getByText("₫125")).toBeInTheDocument();
+				expect(screen.getByText("₫1,125")).toBeInTheDocument();
 			});
 
 			it("updates total when flat charge is modified and calls onSaveServiceCharges with updated total", async () => {

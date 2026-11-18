@@ -90,7 +90,7 @@ describe("PropertyDetailServices", () => {
 						mockPropertyService({
 							serviceName: "WiFi",
 							pricingType: "flat",
-							flatAmount: 50,
+							flatAmount: 50_000,
 							unitPrice: null,
 							unitLabel: null,
 						}),
@@ -101,7 +101,7 @@ describe("PropertyDetailServices", () => {
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
 			expect(screen.getByText("WiFi")).toBeInTheDocument();
-			expect(screen.getByText(/\$50\/month/i)).toBeInTheDocument();
+			expect(screen.getByText(/₫50,000\/month/i)).toBeInTheDocument();
 		});
 
 		it("shows unit price below service name", () => {
@@ -112,7 +112,7 @@ describe("PropertyDetailServices", () => {
 							serviceName: "Electricity",
 							pricingType: "variable",
 							flatAmount: null,
-							unitPrice: 0.15,
+							unitPrice: 3_500,
 							unitLabel: "kWh",
 						}),
 					],
@@ -122,7 +122,7 @@ describe("PropertyDetailServices", () => {
 			renderWithProviders(<PropertyDetailServices propertyId="prop-1" />);
 
 			expect(screen.getByText("Electricity")).toBeInTheDocument();
-			expect(screen.getByText(/\$0\.15\/kWh/i)).toBeInTheDocument();
+			expect(screen.getByText(/₫3,500\/kWh/i)).toBeInTheDocument();
 		});
 
 		it("shows service count", () => {

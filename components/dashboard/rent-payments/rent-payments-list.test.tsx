@@ -59,10 +59,10 @@ describe("RentPaymentsList", () => {
 			);
 
 			expect(screen.getByText("01-2026")).toBeInTheDocument();
-			expect(screen.getByText("$5,000,000")).toBeInTheDocument();
+			expect(screen.getByText("₫5,000,000")).toBeInTheDocument();
 			expect(screen.getByText("Pending")).toBeInTheDocument();
 			expect(screen.getByText("12-2025")).toBeInTheDocument();
-			expect(screen.getByText("$4,500,000")).toBeInTheDocument();
+			expect(screen.getByText("₫4,500,000")).toBeInTheDocument();
 			expect(screen.getByText("Paid")).toBeInTheDocument();
 		});
 		it("shows no action buttons when no handlers provided", () => {
@@ -100,7 +100,7 @@ describe("RentPaymentsList", () => {
 				/>,
 			);
 
-			expect(screen.getByText("$5,000,075")).toBeInTheDocument();
+			expect(screen.getByText("₫5,000,075")).toBeInTheDocument();
 			expect(screen.getByText("inc. services")).toBeInTheDocument();
 		});
 
@@ -109,7 +109,7 @@ describe("RentPaymentsList", () => {
 				<RentPaymentsList payments={mockPayments} {...defaultProps} />,
 			);
 
-			expect(screen.getByText("$5,000,000")).toBeInTheDocument();
+			expect(screen.getByText("₫5,000,000")).toBeInTheDocument();
 			expect(screen.queryByText("inc. services")).not.toBeInTheDocument();
 		});
 	});
@@ -162,8 +162,8 @@ describe("RentPaymentsList", () => {
 			await user.click(screen.getByRole("button", { name: /01-2026/i }));
 
 			expect(screen.getByText("Electricity")).toBeInTheDocument();
-			expect(screen.getByText("$75")).toBeInTheDocument();
-			expect(screen.getByText(/500 kWh.*\$0/)).toBeInTheDocument();
+			expect(screen.getByText("₫75")).toBeInTheDocument();
+			expect(screen.getByText(/500 kWh.*₫0/)).toBeInTheDocument();
 		});
 
 		it("collapses expanded payment when clicked again", async () => {

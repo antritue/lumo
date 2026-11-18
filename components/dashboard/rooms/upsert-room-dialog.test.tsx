@@ -10,7 +10,7 @@ describe("UpsertRoomDialog", () => {
 		id: "room-1",
 		propertyId: "prop-1",
 		name: "Room 101",
-		monthlyRent: 500,
+		monthlyRent: 3_200_000,
 		notes: "Corner unit",
 	};
 	const mockOnOpenChange = vi.fn();
@@ -49,6 +49,21 @@ describe("UpsertRoomDialog", () => {
 			).toBeInTheDocument();
 			expect(
 				within(dialog).getByRole("button", { name: /cancel/i }),
+			).toBeInTheDocument();
+		});
+
+		it("shows VND as the rent currency", () => {
+			renderWithProviders(
+				<UpsertRoomDialog
+					mode="add"
+					open={true}
+					onOpenChange={mockOnOpenChange}
+					onSave={mockOnSave}
+				/>,
+			);
+
+			expect(
+				within(screen.getByRole("dialog")).getByText("VND"),
 			).toBeInTheDocument();
 		});
 
@@ -254,7 +269,7 @@ describe("UpsertRoomDialog", () => {
 			).toHaveValue("Room 101");
 			expect(
 				within(dialog).getByRole("textbox", { name: /monthly rent/i }),
-			).toHaveValue("500");
+			).toHaveValue("3,200,000");
 			expect(
 				within(dialog).getByRole("textbox", { name: /notes/i }),
 			).toHaveValue("Corner unit");

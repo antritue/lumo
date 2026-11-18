@@ -10,7 +10,7 @@ const mockOverviewRoom = (
 	id: "room-1",
 	propertyId: "prop-1",
 	name: "Room 101",
-	monthlyRent: 800,
+	monthlyRent: 3_200_000,
 	payment: null,
 	charges: [],
 	total: 0,
@@ -22,7 +22,7 @@ describe("RoomStatusRow", () => {
 		renderWithProviders(<RoomStatusRow room={mockOverviewRoom()} />);
 
 		expect(screen.getByText("Room 101")).toBeInTheDocument();
-		expect(screen.getByText("$800")).toBeInTheDocument();
+		expect(screen.getByText("₫3,200,000")).toBeInTheDocument();
 	});
 
 	it("shows the payment total including charges when a payment exists", () => {
@@ -33,7 +33,7 @@ describe("RoomStatusRow", () => {
 						id: "pay-1",
 						roomId: "room-1",
 						period: "2026-08",
-						rentAmount: 2000,
+						rentAmount: 2_000_000,
 						status: "paid",
 					},
 					charges: [
@@ -41,16 +41,16 @@ describe("RoomStatusRow", () => {
 							serviceId: "svc-1",
 							serviceName: "Internet",
 							pricingType: "flat",
-							total: 140,
+							total: 140_000,
 						},
 					],
-					total: 2140,
+					total: 2_140_000,
 				})}
 			/>,
 		);
 
-		expect(screen.getByText("$2,140")).toBeInTheDocument();
-		expect(screen.queryByText("$2,000")).not.toBeInTheDocument();
+		expect(screen.getByText("₫2,140,000")).toBeInTheDocument();
+		expect(screen.queryByText("₫2,000,000")).not.toBeInTheDocument();
 	});
 
 	it("renders a paid badge", () => {
@@ -61,7 +61,7 @@ describe("RoomStatusRow", () => {
 						id: "pay-1",
 						roomId: "room-1",
 						period: "2026-08",
-						rentAmount: 800,
+						rentAmount: 3_200_000,
 						status: "paid",
 					},
 				})}
@@ -79,7 +79,7 @@ describe("RoomStatusRow", () => {
 						id: "pay-1",
 						roomId: "room-1",
 						period: "2026-08",
-						rentAmount: 800,
+						rentAmount: 3_200_000,
 						status: "pending",
 					},
 				})}

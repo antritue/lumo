@@ -16,14 +16,6 @@ import {
 
 // Local 180 = master 330 (snare). Cursor, flip, ring, and counter coincide here.
 const CLICK_AT = 180;
-// Round display figures for Scene 2 only (easy to follow on screen).
-// Math closes: 240 collected, +260 on flip = 500. Room 103 shows monthly rent.
-const DISPLAY_AMOUNTS: Record<string, number> = {
-	"demo-room-101": 240,
-	"demo-room-102": 260,
-};
-const DISPLAY_COLLECTED = 240;
-const DISPLAY_FLIP_ADD = 260;
 // Pill center of the pending room row (tuned against scene stills).
 const PILL_X = 570;
 const PILL_Y = 660;
@@ -36,7 +28,11 @@ export function BoardMini(): React.ReactElement {
 	const property = selectPromoProperty(snapshot);
 	const rooms = property.rooms.slice(0, 3);
 	const pendingRoom =
-		rooms.find((r) => r.payment?.status === "pending") ?? rooms[0];
+		rooms.find((r) => r.payment?.status === "pending") ?? null;
+	const collected = property.rooms
+		.filter((r) => r.payment?.status === "paid")
+		.reduce((sum, room) => sum + room.total, 0);
+	const collectedAfterFlip = collected + (pendingRoom ? pendingRoom.total : 0);
 	const flipped = frame >= CLICK_AT;
 	const cursorX = interpolate(frame, [110, CLICK_AT], [2100, PILL_X], {
 		extrapolateLeft: "clamp",
@@ -81,18 +77,18 @@ export function BoardMini(): React.ReactElement {
 				<PageHeader title="Rent Overview" period={snapshot.period} />
 				<PropertyCard
 					name={property.name}
-					paidCount={property.paidCount + (flipped ? 1 : 0)}
+					paidCount={property.paidCount + (flipped && pendingRoom ? 1 : 0)}
 					totalRooms={property.rooms.length}
 					collected={
 						flipped ? (
 							<Counter
-								from={DISPLAY_COLLECTED}
-								to={DISPLAY_COLLECTED + DISPLAY_FLIP_ADD}
+								from={collected}
+								to={collectedAfterFlip}
 								startFrame={CLICK_AT}
 								duration={30}
 							/>
 						) : (
-							formatCurrency(DISPLAY_COLLECTED, "en")
+							formatCurrency(collected)
 						)
 					}
 				>
@@ -103,7 +99,6 @@ export function BoardMini(): React.ReactElement {
 								statusOverride={
 									flipped && room.id === pendingRoom?.id ? "paid" : undefined
 								}
-								amountOverride={DISPLAY_AMOUNTS[room.id]}
 							/>
 						</PopIn>
 					))}
