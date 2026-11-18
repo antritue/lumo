@@ -153,7 +153,10 @@
 		"development": {
 			"devBadge": "Coming Soon",
 			"title": "Work in Progress",
-			"inDevelopment": "This feature is coming soon"
+			"inDevelopment": "This feature is coming soon",
+			"enabledBadge": "Feature Enabled",
+			"enabledTitle": "Tenant feature enabled",
+			"enabledDescription": "This page is unlocked because ?feature=tenant is in the URL"
 		},
 		"authBanner": {
 			"title": "You're not signed in",

@@ -169,7 +169,10 @@
 		"development": {
 			"devBadge": "Sắp ra mắt",
 			"title": "Đang phát triển",
-			"inDevelopment": "Tính năng này sắp ra mắt"
+			"inDevelopment": "Tính năng này sắp ra mắt",
+			"enabledBadge": "Đã bật tính năng",
+			"enabledTitle": "Đã bật tính năng người thuê",
+			"enabledDescription": "Trang này đã được mở khóa vì ?feature=tenant có trong URL"
 		},
 		"authBanner": {
 			"title": "Bạn chưa đăng nhập",
