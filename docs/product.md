@@ -285,7 +285,7 @@ Extensions to consider **only after** core workflow is proven and loved:
 - First-run onboarding (P0)
 - Tenant management
 - Payment reminder notifications
-- Currency setting per property (P3)
+- Multi-currency support (deferred; ADR-0012 makes VND the only app currency)
 
 **Critical rule:** No extension should compromise simplicity or add mental load.
 

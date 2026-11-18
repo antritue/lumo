@@ -86,8 +86,7 @@ describe("formatServicePrice", () => {
 			"đơn vị",
 		);
 
-		expect(result).toContain("/tháng");
-		expect(result).not.toContain("$");
+		expect(result).toBe("₫100,000/tháng");
 	});
 });
 

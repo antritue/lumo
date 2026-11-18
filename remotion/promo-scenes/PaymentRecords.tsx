@@ -128,7 +128,7 @@ export function PaymentRecords(): React.ReactElement {
 								>
 									{formatPeriod(snapshot.period)}
 								</span>
-								<StatusPill status={room.payment?.status ?? "pending"} />
+								<StatusPill status="paid" />
 								<div style={{ flex: 1 }} />
 								<div style={{ textAlign: "right", flexShrink: 0 }}>
 									<p

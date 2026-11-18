@@ -3,7 +3,7 @@
 - **Status:** Accepted (supersedes currency portion of ADR-0005)
 - **Date:** 2026-11-18
 - **Deciders:** Product + engineering
-- **Commits/PRs:** Pending
+- **Commits/PRs:** d7c4477, 3b493d7
 
 ## Context
 
