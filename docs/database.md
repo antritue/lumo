@@ -83,6 +83,11 @@ erDiagram
         text status
         timestamptz current_period_end
     }
+    cron_pings {
+        uuid id PK
+        text source
+        timestamptz created_at
+    }
 ```
 
 ## Tables
@@ -190,6 +195,18 @@ Stores the paid plan entitlement for each user, written by Polar webhooks via th
 |      | `current_period_end` | `timestamptz` | End of the current billing period; null for lifetime.                                                       |
 
 Unique constraint on `user_id`.
+
+### `cron_pings`
+
+Append-only log of cron keep-alive pings. Each `GET /api/cron/health-check` invocation (Vercel cron, daily at 03:00 UTC — Vercel only ever sends GET to cron paths) inserts a row via the service-role client, so the ping is a real database write — Supabase pauses free projects based on user activity — and every run leaves a durable record (Vercel keeps no cron run history on Hobby).
+
+| Key  | Column       | Type          | Description                                    |
+| :--- | :----------- | :------------ | :--------------------------------------------- |
+| `PK` | `id`         | `uuid`        | Primary Key (Default: `gen_random_uuid()`)     |
+|      | `source`     | `text`        | Ping origin. Defaults to `'vercel-cron'`.      |
+|      | `created_at` | `timestamptz` | When the ping was recorded (Default: `now()`). |
+
+Index on `created_at DESC`. RLS is enabled with no policies — only the service-role client writes or reads it; it is never exposed to users.
 
 ### Account Deletion
 

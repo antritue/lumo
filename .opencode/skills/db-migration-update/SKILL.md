@@ -22,13 +22,13 @@ Replace `20260620000000` with your migration's timestamp.
 ### 1. Drop the affected table(s) on the linked remote DB
 
 ```bash
-npx supabase db query --linked "drop table if exists <table_name> cascade;"
+npx supabase db query --remote "drop table if exists <table_name> cascade;"
 ```
 
 ### 2. Mark the migration as reverted
 
 ```bash
-npx supabase migration repair --status reverted <timestamp>
+npx supabase migration repair --remote --status reverted <timestamp>
 ```
 
 ### 3. Rewrite the migration file
@@ -38,12 +38,13 @@ Clean up the `.sql` file to be a fresh `create table` with all fixes applied. Re
 ### 4. Push the migration
 
 ```bash
-npx supabase db push
+npx supabase db push --remote
 ```
 
 ## Gotchas
 
 - **PG < 15**: `create policy if not exists` is not supported. Always use `drop policy if exists` before `create policy` if you need idempotency. Better yet, just write a clean `create policy` since the table is being dropped first.
-- **Use `npx supabase db query --linked`** — not `db execute`. The latter is not a valid command.
+- **Use `npx supabase db query --remote`** — not `db execute`. The latter is not a valid command.
+- **CLI v3 defaults to local**: `db push`, `db query`, `db dump`, and `migration repair` all target the local stack unless you pass `--remote`. The old `--linked` flag was removed.
 - **Cascade matters**: Use `cascade` on the DROP to avoid FK constraint errors during teardown.
-- **Verify**: After push, run `npx supabase db dump --linked --schema public` (or check in Supabase dashboard) to confirm the schema is correct.
+- **Verify**: After push, run `npx supabase db dump --remote --schema public` (or check in Supabase dashboard) to confirm the schema is correct.

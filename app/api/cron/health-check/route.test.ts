@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GET } from "./route";
 
-const mockLimit = vi.fn();
-const mockSelect = vi.fn();
+const mockInsert = vi.fn();
 const mockFrom = vi.fn();
 
 vi.mock("@/lib/supabase-admin", () => ({
@@ -15,9 +14,8 @@ describe("GET /api/cron/health-check", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.stubEnv("CRON_SECRET", "test-secret");
-		mockFrom.mockReturnValue({ select: mockSelect });
-		mockSelect.mockReturnValue({ limit: mockLimit });
-		mockLimit.mockResolvedValue({ error: null });
+		mockFrom.mockReturnValue({ insert: mockInsert });
+		mockInsert.mockResolvedValue({ error: null });
 	});
 
 	it("returns 401 when authorization header is missing", async () => {
@@ -27,6 +25,7 @@ describe("GET /api/cron/health-check", () => {
 		expect(res.status).toBe(401);
 		const data = await res.json();
 		expect(data.error).toBe("Unauthorized");
+		expect(mockFrom).not.toHaveBeenCalled();
 	});
 
 	it("returns 401 when CRON_SECRET does not match", async () => {
@@ -36,9 +35,10 @@ describe("GET /api/cron/health-check", () => {
 		const res = await GET(req);
 
 		expect(res.status).toBe(401);
+		expect(mockFrom).not.toHaveBeenCalled();
 	});
 
-	it("returns 200 with status ok on successful ping", async () => {
+	it("returns 200 and records a heartbeat row on successful ping", async () => {
 		const req = new Request("http://localhost:3000/api/cron/health-check", {
 			headers: { authorization: "Bearer test-secret" },
 		});
@@ -48,13 +48,12 @@ describe("GET /api/cron/health-check", () => {
 		expect(res.status).toBe(200);
 		expect(data.status).toBe("ok");
 		expect(data.timestamp).toBeDefined();
-		expect(mockFrom).toHaveBeenCalledWith("properties");
-		expect(mockSelect).toHaveBeenCalledWith("id");
-		expect(mockLimit).toHaveBeenCalledWith(1);
+		expect(mockFrom).toHaveBeenCalledWith("cron_pings");
+		expect(mockInsert).toHaveBeenCalledWith({ source: "vercel-cron" });
 	});
 
-	it("returns 500 when database query fails", async () => {
-		mockLimit.mockResolvedValue({ error: new Error("DB connection failed") });
+	it("returns 500 when the heartbeat insert fails", async () => {
+		mockInsert.mockResolvedValue({ error: new Error("DB connection failed") });
 
 		const req = new Request("http://localhost:3000/api/cron/health-check", {
 			headers: { authorization: "Bearer test-secret" },

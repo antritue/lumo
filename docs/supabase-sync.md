@@ -31,15 +31,15 @@ For each environment (Prod or Test), follow these two steps:
    This will apply all migrations in your local folder to that project.
 
    ```bash
-   npx supabase db push
+   npx supabase db push --remote
    ```
 
 ## 3. Recommended Workflow
 
 1. Make changes to local migration files.
-2. **Push to Test**: Run `db push` against your Test project ID.
+2. **Push to Test**: Run `db push --remote` against your Test project ID.
 3. **Verify**: Test your app.
-4. **Push to Prod**: Run `db push` against your Prod project ID.
+4. **Push to Prod**: Run `db push --remote` against your Prod project ID.
 
 > [!TIP]
 > You only need to `link` once for each environment when you switch. The CLI remembers the reference.
