@@ -238,7 +238,7 @@ export function RoomRow({
 					flexShrink: 0,
 				}}
 			>
-				{formatCurrency(amount, "en")}
+				{formatCurrency(amount)}
 			</span>
 		</div>
 	);

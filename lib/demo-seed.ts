@@ -89,27 +89,6 @@ const EN_TEXTS: SeedTexts = {
 	m3: "m³",
 };
 
-const EN_AMOUNTS: SeedAmounts = {
-	rents: [180, 200, 250, 290, 320],
-	elecUnitA: 0.15,
-	waterUnitA: 1.2,
-	netFlatA: 10,
-	cleanFlatA: 5,
-	parkFlatA: 12,
-	elecUnitB: 0.16,
-	waterUnitB: 1.3,
-	netFlatB: 12,
-	cleanFlatB: 6,
-	pay101ElecUsage: 120,
-	pay101WaterUsage: 10,
-	pay102ElecUsage: 95,
-	pay102WaterUsage: 8,
-	pay201ElecUsage: 140,
-	pay201WaterUsage: 12,
-	pay202ElecUsage: 100,
-	pay202WaterUsage: 9,
-};
-
 const VI_TEXTS: SeedTexts = {
 	propAName: "Nhà trọ Sunshine – Nguyễn Huệ",
 	propBName: "Căn hộ mini Phú Nhuận",
@@ -130,7 +109,7 @@ const VI_TEXTS: SeedTexts = {
 	m3: "m³",
 };
 
-const VI_AMOUNTS: SeedAmounts = {
+const VND_AMOUNTS: SeedAmounts = {
 	rents: [3200000, 3500000, 4200000, 5000000, 5500000],
 	elecUnitA: 3500,
 	waterUnitA: 25000,
@@ -474,11 +453,11 @@ function buildTopology(period: string, t: SeedTexts, a: SeedAmounts): DemoSeed {
 }
 
 export function buildDemoSeedEn(period: string): DemoSeed {
-	return buildTopology(period, EN_TEXTS, EN_AMOUNTS);
+	return buildTopology(period, EN_TEXTS, VND_AMOUNTS);
 }
 
 export function buildDemoSeedVi(period: string): DemoSeed {
-	return buildTopology(period, VI_TEXTS, VI_AMOUNTS);
+	return buildTopology(period, VI_TEXTS, VND_AMOUNTS);
 }
 
 export function buildDemoSeed(period: string, locale: Locale = "en"): DemoSeed {

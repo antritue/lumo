@@ -3,7 +3,8 @@
 import { ChevronRight, DoorOpen, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/utils";
 import type { Room } from "./types";
 
 interface RoomDetailHeaderProps {
@@ -18,8 +19,6 @@ export function RoomDetailHeader({
 	onDelete,
 }: RoomDetailHeaderProps) {
 	const t = useTranslations("app");
-	const locale = useLocale();
-	const currency = locale === "vi" ? "VND" : "USD";
 	const searchParams = useSearchParams();
 	const from = searchParams.get("from");
 	const backHref =
@@ -48,11 +47,7 @@ export function RoomDetailHeader({
 						<h2 className="text-xl font-semibold truncate">{room.name}</h2>
 						{room.monthlyRent && (
 							<p className="text-sm text-muted-foreground mt-0.5">
-								{new Intl.NumberFormat("en-US", {
-									style: "currency",
-									currency,
-									minimumFractionDigits: 0,
-								}).format(room.monthlyRent)}
+								{formatCurrency(room.monthlyRent)}
 							</p>
 						)}
 					</div>

@@ -1,16 +1,17 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { CURRENCY_CODE } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number, locale: string): string {
-	// Always use en-US grouping: comma for thousands, dot for decimals
-	// e.g. 5,000 or 5,000,000 (even for vi locale, which would otherwise use dots)
+export function formatCurrency(amount: number): string {
+	// Always display VND with en-US grouping: comma for thousands.
+	// e.g. ₫5,000 or ₫5,000,000 (even though vi locale would use dots)
 	return new Intl.NumberFormat("en-US", {
 		style: "currency",
-		currency: locale === "vi" ? "VND" : "USD",
+		currency: CURRENCY_CODE,
 		minimumFractionDigits: 0,
 	}).format(amount);
 }
@@ -22,15 +23,14 @@ export function formatServicePrice(
 		unitPrice: number | null;
 		unitLabel: string | null;
 	},
-	locale: string,
 	perMonth: string,
 	defaultUnit: string,
 ): string {
 	if (service.pricingType === "flat" && service.flatAmount != null) {
-		return `${formatCurrency(service.flatAmount, locale)}${perMonth}`;
+		return `${formatCurrency(service.flatAmount)}${perMonth}`;
 	}
 	if (service.pricingType === "variable" && service.unitPrice != null) {
-		return `${formatCurrency(service.unitPrice, locale)}/${service.unitLabel ?? defaultUnit}`;
+		return `${formatCurrency(service.unitPrice)}/${service.unitLabel ?? defaultUnit}`;
 	}
 	return "";
 }

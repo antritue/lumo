@@ -40,7 +40,7 @@ describe("getCurrentPeriod", () => {
 });
 
 describe("buildDemoSeedEn", () => {
-	it("builds English seed with USD-scale amounts", () => {
+	it("builds English seed with VND amounts", () => {
 		const seed = buildDemoSeedEn(PERIOD);
 
 		expect(seed.period).toBe(PERIOD);
@@ -49,17 +49,15 @@ describe("buildDemoSeedEn", () => {
 		expect(seed.rooms).toHaveLength(5);
 		expect(seed.rooms[0].name).toBe("Room 101");
 
-		// USD-scale rents
 		for (const room of seed.rooms) {
-			expect(room.monthlyRent).toBeGreaterThanOrEqual(100);
-			expect(room.monthlyRent).toBeLessThanOrEqual(1000);
+			expect(room.monthlyRent).toBeGreaterThanOrEqual(1_000_000);
 		}
 
 		const elec = seed.propertyServicesByPropertyId["demo-prop-a"].find(
 			(s) => s.id === "demo-svc-elec-a",
 		);
 		expect(elec?.serviceName).toBe("Electricity");
-		expect(elec?.unitPrice).toBe(0.15);
+		expect(elec?.unitPrice).toBe(3500);
 	});
 
 	it("has 2 paid and 2 pending payments with one room unrecorded", () => {

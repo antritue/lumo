@@ -95,7 +95,7 @@ describe("RoomServicesSection", () => {
 					"room-1": [
 						mockEffectiveService({
 							pricingType: "flat",
-							flatAmount: 50,
+							flatAmount: 50_000,
 							unitPrice: null,
 						}),
 					],
@@ -115,7 +115,7 @@ describe("RoomServicesSection", () => {
 					"room-1": [
 						mockEffectiveService({
 							pricingType: "flat",
-							flatAmount: 50,
+							flatAmount: 50_000,
 							unitPrice: null,
 						}),
 					],
@@ -126,7 +126,7 @@ describe("RoomServicesSection", () => {
 				<RoomServicesSection roomId="room-1" propertyId="prop-1" />,
 			);
 
-			expect(screen.getByText(/\$50\/month/i)).toBeInTheDocument();
+			expect(screen.getByText(/₫50,000\/month/i)).toBeInTheDocument();
 		});
 
 		it("shows service count", () => {
@@ -334,7 +334,7 @@ describe("RoomServicesSection", () => {
 					"room-1": [
 						mockEffectiveService({
 							pricingType: "flat",
-							flatAmount: 50,
+							flatAmount: 50_000,
 							unitPrice: null,
 						}),
 					],
@@ -355,14 +355,14 @@ describe("RoomServicesSection", () => {
 		it("shows property default in popover for overridden services", async () => {
 			usePropertyServicesStore.setState({
 				propertyServicesByPropertyId: {
-					"prop-1": [mockPropertyService({ unitPrice: 0.1 })],
+					"prop-1": [mockPropertyService({ unitPrice: 3_000 })],
 				},
 			});
 			useRoomServicesStore.setState({
 				roomServicesByRoomId: {
 					"room-1": [
 						mockEffectiveService({
-							unitPrice: 0.15,
+							unitPrice: 3_500,
 							isOverridden: true,
 						}),
 					],
@@ -378,7 +378,7 @@ describe("RoomServicesSection", () => {
 			await user.click(screen.getByText("Electricity"));
 
 			expect(screen.getByText(/property default:/i)).toBeInTheDocument();
-			expect(screen.getByText(/\$0\.1\/kWh/i)).toBeInTheDocument();
+			expect(screen.getByText(/₫3,000\/kWh/i)).toBeInTheDocument();
 		});
 
 		it("hides property default in popover for inherited services", async () => {
@@ -411,7 +411,7 @@ describe("RoomServicesSection", () => {
 					"room-1": [
 						mockEffectiveService({
 							pricingType: "flat",
-							flatAmount: 50,
+							flatAmount: 50_000,
 							unitPrice: null,
 						}),
 					],
@@ -443,7 +443,7 @@ describe("RoomServicesSection", () => {
 					"room-1": [
 						mockEffectiveService({
 							pricingType: "flat",
-							flatAmount: 50,
+							flatAmount: 50_000,
 							unitPrice: null,
 						}),
 					],

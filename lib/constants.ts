@@ -10,6 +10,8 @@ export const DATABASE_TABLES = {
 
 export const FREE_ROOM_LIMIT = 5;
 
+export const CURRENCY_CODE = "VND";
+
 export const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
 
 export const locales = ["en", "vi"] as const;

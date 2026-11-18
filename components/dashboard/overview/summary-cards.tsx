@@ -6,7 +6,7 @@ import {
 	Clock,
 	type LucideIcon,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { cn, formatCurrency } from "@/lib/utils";
 import type { OverviewSummary } from "./types";
 
@@ -24,7 +24,6 @@ interface SummaryCardsProps {
 
 export function SummaryCards({ summary }: SummaryCardsProps) {
 	const t = useTranslations("app.overview");
-	const locale = useLocale();
 
 	const cards: {
 		id: CardId;
@@ -41,7 +40,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
 			iconClass: "text-green-500",
 			valueClass: "text-green-600",
 			label: t("cardCollected"),
-			value: formatCurrency(summary.collected, locale),
+			value: formatCurrency(summary.collected),
 			subtitle: t("collectedSubtitle", {
 				paid: summary.paidCount,
 				total: summary.totalRooms,
@@ -53,7 +52,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
 			iconClass: "text-amber-500",
 			valueClass: "text-amber-600",
 			label: t("cardPending"),
-			value: formatCurrency(summary.pending, locale),
+			value: formatCurrency(summary.pending),
 			subtitle: t("pendingSubtitle", { count: summary.pendingCount }),
 		},
 		{

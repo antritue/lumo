@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronRight, Home } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { RoomStatusRow } from "./room-status-row";
@@ -13,7 +13,6 @@ interface PropertyGroupProps {
 
 export function PropertyGroup({ property }: PropertyGroupProps) {
 	const t = useTranslations("app.overview");
-	const locale = useLocale();
 	const [isExpanded, setIsExpanded] = useState(true);
 
 	const toggleExpand = () => setIsExpanded((prev) => !prev);
@@ -75,7 +74,7 @@ export function PropertyGroup({ property }: PropertyGroupProps) {
 				<div className="flex-1" />
 				<div className="text-right shrink-0">
 					<p className="text-sm font-semibold text-foreground">
-						{formatCurrency(totalCollected, locale)}
+						{formatCurrency(totalCollected)}
 					</p>
 					<p className="text-xs text-muted-foreground">{t("collectedLabel")}</p>
 				</div>
