@@ -1,17 +1,19 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import type { Locale } from "@/lib/constants";
 import { formatCurrency } from "@/lib/utils";
 import { BG } from "../design-tokens";
 import { Counter } from "../primitives/Counter";
 import { Cursor } from "../primitives/Cursor";
 import { PopIn } from "../primitives/PopIn";
+import { getPromoCopy } from "../promo-copy";
 import { Caption } from "../shared/caption";
 import { easings } from "../shared/easings";
 import {
+	getSnapshot,
 	PageHeader,
 	PropertyCard,
 	RoomRow,
 	selectPromoProperty,
-	snapshot,
 } from "../shared/property-card";
 
 // Local 180 = master 330 (snare). Cursor, flip, ring, and counter coincide here.
@@ -20,8 +22,14 @@ const CLICK_AT = 180;
 const PILL_X = 570;
 const PILL_Y = 660;
 
-export function BoardMini(): React.ReactElement {
+export function BoardMini({
+	locale = "en",
+}: {
+	locale?: Locale;
+}): React.ReactElement {
 	const frame = useCurrentFrame();
+	const copy = getPromoCopy(locale);
+	const snapshot = getSnapshot(locale);
 	const scale = interpolate(frame, [0, 240], [1.08, 1.0], {
 		extrapolateRight: "clamp",
 	});
@@ -58,6 +66,11 @@ export function BoardMini(): React.ReactElement {
 		[1, 0.78, 0.92],
 		{ extrapolateLeft: "clamp", extrapolateRight: "clamp" },
 	);
+	const statusLabels = {
+		paid: copy.statusPaid,
+		pending: copy.statusPending,
+		notRecorded: copy.statusNotRecorded,
+	};
 	return (
 		<AbsoluteFill
 			style={{
@@ -74,11 +87,16 @@ export function BoardMini(): React.ReactElement {
 					gap: 40,
 				}}
 			>
-				<PageHeader title="Rent Overview" period={snapshot.period} />
+				<PageHeader title={copy.pageHeaderTitle} period={snapshot.period} />
 				<PropertyCard
 					name={property.name}
 					paidCount={property.paidCount + (flipped && pendingRoom ? 1 : 0)}
 					totalRooms={property.rooms.length}
+					paidCountLabel={copy.paidCount(
+						property.paidCount + (flipped && pendingRoom ? 1 : 0),
+						property.rooms.length,
+					)}
+					collectedLabel={copy.collected}
 					collected={
 						flipped ? (
 							<Counter
@@ -96,6 +114,7 @@ export function BoardMini(): React.ReactElement {
 						<PopIn key={room.id} startFrame={15 + i * 15}>
 							<RoomRow
 								room={room}
+								labels={statusLabels}
 								statusOverride={
 									flipped && room.id === pendingRoom?.id ? "paid" : undefined
 								}
@@ -122,16 +141,8 @@ export function BoardMini(): React.ReactElement {
 					}}
 				/>
 			)}
-			<Caption
-				text="See each room and its payment status at a glance"
-				showFrom={15}
-				showUntil={140}
-			/>
-			<Caption
-				text="Watch the board update as you record"
-				showFrom={150}
-				showUntil={258}
-			/>
+			<Caption text={copy.boardCaption1} showFrom={15} showUntil={140} />
+			<Caption text={copy.boardCaption2} showFrom={150} showUntil={258} />
 		</AbsoluteFill>
 	);
 }

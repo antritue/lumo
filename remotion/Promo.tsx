@@ -5,6 +5,7 @@ import {
 	Sequence,
 	staticFile,
 } from "remotion";
+import type { Locale } from "@/lib/constants";
 import { BoardMini } from "./promo-scenes/BoardMini";
 import { Finale } from "./promo-scenes/Finale";
 import { Pain } from "./promo-scenes/Pain";
@@ -26,7 +27,11 @@ export const VIDEO = {
 	// Sum: 150 + 270 + 180 + 90 = 690 (23s: Pain / Board 9s / Records 6s / Finale)
 } as const;
 
-export function Promo(): React.ReactElement {
+export function Promo({
+	locale = "en",
+}: {
+	locale?: Locale;
+}): React.ReactElement {
 	return (
 		<AbsoluteFill>
 			<Html5Audio
@@ -47,25 +52,25 @@ export function Promo(): React.ReactElement {
 				from={VIDEO.scene1Start}
 				durationInFrames={VIDEO.scene1Duration}
 			>
-				<Pain />
+				<Pain locale={locale} />
 			</Sequence>
 			<Sequence
 				from={VIDEO.scene2Start}
 				durationInFrames={VIDEO.scene2Duration}
 			>
-				<BoardMini />
+				<BoardMini locale={locale} />
 			</Sequence>
 			<Sequence
 				from={VIDEO.scene3Start}
 				durationInFrames={VIDEO.scene3Duration}
 			>
-				<PaymentRecords />
+				<PaymentRecords locale={locale} />
 			</Sequence>
 			<Sequence
 				from={VIDEO.scene4Start}
 				durationInFrames={VIDEO.scene4Duration}
 			>
-				<Finale />
+				<Finale locale={locale} />
 			</Sequence>
 		</AbsoluteFill>
 	);

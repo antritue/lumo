@@ -1,5 +1,7 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import type { Locale } from "@/lib/constants";
 import { BG, FONT_SANS } from "../design-tokens";
+import { getPromoCopy } from "../promo-copy";
 import { easings } from "../shared/easings";
 
 function blendCreamToPine(t: number): string {
@@ -9,8 +11,13 @@ function blendCreamToPine(t: number): string {
 	return `rgb(${mix(from[0], to[0])},${mix(from[1], to[1])},${mix(from[2], to[2])})`;
 }
 
-export function Finale(): React.ReactElement {
+export function Finale({
+	locale = "en",
+}: {
+	locale?: Locale;
+}): React.ReactElement {
 	const frame = useCurrentFrame();
+	const copy = getPromoCopy(locale);
 	const blend = interpolate(frame, [0, 15], [0, 1], {
 		extrapolateRight: "clamp",
 		easing: easings.soft,
@@ -72,7 +79,7 @@ export function Finale(): React.ReactElement {
 						whiteSpace: "nowrap",
 					}}
 				>
-					Track rent with clarity
+					{copy.finaleTitle}
 				</div>
 				<div
 					style={{
@@ -83,7 +90,7 @@ export function Finale(): React.ReactElement {
 						textAlign: "center",
 					}}
 				>
-					Try Lumo today
+					{copy.finaleSubtitle}
 				</div>
 			</div>
 		</AbsoluteFill>

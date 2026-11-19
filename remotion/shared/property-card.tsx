@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/constants";
 import { formatCurrency } from "@/lib/utils";
 import { computeOverviewSnapshot } from "../../components/dashboard/overview/compute-overview-snapshot";
 import type {
@@ -24,9 +25,9 @@ import {
 	SECONDARY,
 } from "../design-tokens";
 
-export const snapshot: OverviewSnapshot = (() => {
+function buildPromoSnapshot(locale: Locale): OverviewSnapshot {
 	const period = getCurrentPeriod();
-	const seed = buildDemoSeed(period, "en");
+	const seed = buildDemoSeed(period, locale);
 	return computeOverviewSnapshot(
 		seed.properties,
 		seed.rooms,
@@ -34,7 +35,18 @@ export const snapshot: OverviewSnapshot = (() => {
 		seed.serviceChargesByPaymentId,
 		seed.period,
 	);
-})();
+}
+
+const snapshots: Partial<Record<Locale, OverviewSnapshot>> = {};
+
+export function getSnapshot(locale: Locale = "en"): OverviewSnapshot {
+	let snap = snapshots[locale];
+	if (!snap) {
+		snap = buildPromoSnapshot(locale);
+		snapshots[locale] = snap;
+	}
+	return snap;
+}
 
 /** The property shown in the promo board scenes: first property with <=3 rooms. */
 export function selectPromoProperty(snapshot: {
@@ -131,8 +143,10 @@ function DoorIcon(): React.ReactElement {
 
 export function StatusPill({
 	status,
+	labels = { paid: "Paid", pending: "Pending" },
 }: {
 	status: "paid" | "pending";
+	labels?: { paid: string; pending: string };
 }): React.ReactElement {
 	const paid = status === "paid";
 	return (
@@ -149,12 +163,16 @@ export function StatusPill({
 				color: paid ? PAID : PENDING,
 			}}
 		>
-			{paid ? "Paid" : "Pending"}
+			{paid ? labels.paid : labels.pending}
 		</span>
 	);
 }
 
-function NotRecordedPill(): React.ReactElement {
+function NotRecordedPill({
+	label = "Not recorded",
+}: {
+	label?: string;
+}): React.ReactElement {
 	return (
 		<span
 			style={{
@@ -169,7 +187,7 @@ function NotRecordedPill(): React.ReactElement {
 				color: MUTED_FG,
 			}}
 		>
-			Not recorded
+			{label}
 		</span>
 	);
 }
@@ -177,13 +195,23 @@ function NotRecordedPill(): React.ReactElement {
 export function RoomRow({
 	room,
 	statusOverride,
+	labels,
 }: {
 	room: OverviewRoom;
 	statusOverride?: "paid" | "pending";
+	labels?: {
+		paid: string;
+		pending: string;
+		notRecorded: string;
+	};
 }): React.ReactElement {
 	const status = statusOverride ?? room.payment?.status ?? "none";
 	const paid = room.payment !== null || statusOverride !== undefined;
 	const amount = paid ? room.total : (room.monthlyRent ?? 0);
+	const statusLabels = {
+		paid: labels?.paid ?? "Paid",
+		pending: labels?.pending ?? "Pending",
+	};
 	return (
 		<div
 			style={{
@@ -221,9 +249,9 @@ export function RoomRow({
 				{room.name}
 			</span>
 			{status === "paid" || status === "pending" ? (
-				<StatusPill status={status} />
+				<StatusPill status={status} labels={statusLabels} />
 			) : (
-				<NotRecordedPill />
+				<NotRecordedPill label={labels?.notRecorded ?? "Not recorded"} />
 			)}
 			<div style={{ flex: 1 }} />
 			<span
@@ -291,12 +319,16 @@ export function PropertyCard({
 	paidCount,
 	totalRooms,
 	collected,
+	paidCountLabel,
+	collectedLabel = "collected",
 	children,
 }: {
 	name: string;
 	paidCount: number;
 	totalRooms: number;
 	collected: React.ReactNode;
+	paidCountLabel?: string;
+	collectedLabel?: string;
 	children: React.ReactNode;
 }): React.ReactElement {
 	const isFullyPaid = paidCount === totalRooms;
@@ -357,7 +389,7 @@ export function PropertyCard({
 						flexShrink: 0,
 					}}
 				>
-					{paidCount}/{totalRooms} paid
+					{paidCountLabel ?? `${paidCount}/${totalRooms} paid`}
 				</span>
 				<div style={{ flex: 1 }} />
 				<div style={{ textAlign: "right", flexShrink: 0 }}>
@@ -380,7 +412,7 @@ export function PropertyCard({
 							margin: "4px 0 0",
 						}}
 					>
-						collected
+						{collectedLabel}
 					</p>
 				</div>
 			</div>

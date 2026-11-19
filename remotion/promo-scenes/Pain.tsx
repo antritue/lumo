@@ -1,9 +1,16 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import type { Locale } from "@/lib/constants";
 import { BG, FG, FONT_SANS, PRIMARY } from "../design-tokens";
 import { MaskReveal } from "../primitives/MaskReveal";
+import { getPromoCopy } from "../promo-copy";
 
-export function Pain(): React.ReactElement {
+export function Pain({
+	locale = "en",
+}: {
+	locale?: Locale;
+}): React.ReactElement {
 	const frame = useCurrentFrame();
+	const copy = getPromoCopy(locale);
 	const scale = interpolate(frame, [0, 150], [1.0, 1.08], {
 		extrapolateRight: "clamp",
 	});
@@ -25,7 +32,7 @@ export function Pain(): React.ReactElement {
 					marginBottom: 32,
 				}}
 			>
-				For independent landlords
+				{copy.painEyebrow}
 			</div>
 			<MaskReveal startFrame={15}>
 				<div
@@ -38,9 +45,9 @@ export function Pain(): React.ReactElement {
 						lineHeight: 1.05,
 					}}
 				>
-					Still checking who paid
+					{copy.painHeadline[0]}
 					<br />
-					in spreadsheets?
+					{copy.painHeadline[1]}
 				</div>
 			</MaskReveal>
 		</AbsoluteFill>

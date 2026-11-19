@@ -129,7 +129,7 @@ We use a multi-project setup to balance development speed with production data s
 -   `npm test`: Run tests with Vitest.
 -   `npx fallow dead-code`: Run dead code analysis.
 -   `npm run remotion:studio`: Preview promo video in Remotion Studio.
--   `npm run remotion:render`: Render promo video to `public/promo.mp4`.
+-   `npm run remotion:render`: Render English and Vietnamese promo videos/thumbs to `public/`.
 
 ---
 
