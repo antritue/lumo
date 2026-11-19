@@ -16,7 +16,9 @@
 		"test:watch": "vitest",
 		"prepare": "husky",
 		"remotion:studio": "remotion studio remotion/index.ts",
-		"remotion:render": "remotion render remotion/index.ts Promo public/promo.mp4 --codec h264 --audio-codec aac --overwrite && npx remotion still remotion/index.ts Promo public/promo-thumb.jpg --frame 390 --overwrite"
+		"remotion:render:en": "remotion render remotion/index.ts Promo public/promo.mp4 --codec h264 --audio-codec aac --overwrite && npx remotion still remotion/index.ts Promo public/promo-thumb.jpg --frame 390 --overwrite",
+		"remotion:render:vi": "remotion render remotion/index.ts PromoVi public/promo-vi.mp4 --codec h264 --audio-codec aac --overwrite && npx remotion still remotion/index.ts PromoVi public/promo-vi-thumb.jpg --frame 390 --overwrite",
+		"remotion:render": "npm run remotion:render:en && npm run remotion:render:vi"
 	},
 	"dependencies": {
 		"@polar-sh/nextjs": "1.1.0",

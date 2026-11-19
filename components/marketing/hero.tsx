@@ -1,11 +1,14 @@
 import { ArrowRight, Sun } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
+import { getPromoAssets } from "@/lib/promo-assets";
 
 export async function Hero() {
 	const t = await getTranslations("hero");
+	const locale = await getLocale();
+	const promo = getPromoAssets(locale);
 
 	return (
 		<Section variant="transparent" className="relative overflow-hidden">
@@ -49,12 +52,13 @@ export async function Hero() {
 				<div className="mt-16 mx-auto w-full overflow-hidden rounded-2xl bg-white border border-border shadow-soft-lg animate-in fade-in zoom-in duration-1000 delay-500">
 					{/* biome-ignore lint/a11y/useMediaCaption: video has burned-in captions, external track overlaps them */}
 					<video
+						key={locale}
 						className="aspect-video w-full"
 						controls
 						playsInline
 						preload="metadata"
-						poster="/promo-thumb.jpg"
-						src="/promo.mp4"
+						poster={promo.poster}
+						src={promo.video}
 					/>
 				</div>
 			</div>

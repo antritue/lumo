@@ -45,19 +45,19 @@ describe("buildDemoSeedEn", () => {
 
 		expect(seed.period).toBe(PERIOD);
 		expect(seed.properties).toHaveLength(2);
-		expect(seed.properties[0].name).toContain("Sunshine");
+		expect(seed.properties[0].name).toContain("Vinhomes");
 		expect(seed.rooms).toHaveLength(5);
 		expect(seed.rooms[0].name).toBe("Room 101");
 
 		for (const room of seed.rooms) {
-			expect(room.monthlyRent).toBeGreaterThanOrEqual(1_000_000);
+			expect(room.monthlyRent).toBeGreaterThanOrEqual(8_000_000);
 		}
 
 		const elec = seed.propertyServicesByPropertyId["demo-prop-a"].find(
 			(s) => s.id === "demo-svc-elec-a",
 		);
 		expect(elec?.serviceName).toBe("Electricity");
-		expect(elec?.unitPrice).toBe(2500);
+		expect(elec?.unitPrice).toBe(3500);
 	});
 
 	it("has 2 paid and 2 pending payments with one room unrecorded", () => {
@@ -154,18 +154,18 @@ describe("buildDemoSeedVi", () => {
 		const seed = buildDemoSeedVi(PERIOD);
 
 		expect(seed.period).toBe(PERIOD);
-		expect(seed.properties[0].name).toContain("Nhà trọ");
+		expect(seed.properties[0].name).toContain("Vinhomes Central Park");
 		expect(seed.rooms[0].name).toBe("P.101");
 
 		for (const room of seed.rooms) {
-			expect(room.monthlyRent).toBeGreaterThanOrEqual(1000000);
+			expect(room.monthlyRent).toBeGreaterThanOrEqual(8_000_000);
 		}
 
 		const elec = seed.propertyServicesByPropertyId["demo-prop-a"].find(
 			(s) => s.id === "demo-svc-elec-a",
 		);
 		expect(elec?.serviceName).toBe("Điện");
-		expect(elec?.unitPrice).toBe(2500);
+		expect(elec?.unitPrice).toBe(3500);
 	});
 
 	it("mirrors EN topology with the same IDs and payment mix", () => {
@@ -238,7 +238,7 @@ describe("seedDemoStoresIfEmpty", () => {
 		seedDemoStoresIfEmpty("vi");
 
 		expect(usePropertiesStore.getState().properties[0].name).toContain(
-			"Nhà trọ",
+			"Vinhomes Central Park",
 		);
 	});
 
@@ -266,7 +266,7 @@ describe("seedDemoStoresIfEmpty", () => {
 
 		// First-seeded EN data is kept
 		expect(usePropertiesStore.getState().properties[0].name).toContain(
-			"Sunshine",
+			"Vinhomes",
 		);
 	});
 });

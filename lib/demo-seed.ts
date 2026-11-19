@@ -70,8 +70,8 @@ interface SeedAmounts {
 }
 
 const EN_TEXTS: SeedTexts = {
-	propAName: "Sunshine Boarding House – 12 Nguyen Hue",
-	propBName: "Phu Nhuan Mini Apartments",
+	propAName: "Vinhomes Central Park",
+	propBName: "Masteri Thao Dien",
 	roomNames: ["Room 101", "Room 102", "Room 103", "Room 201", "Room 202"],
 	roomNotes: [
 		"Corner room, large window",
@@ -90,8 +90,8 @@ const EN_TEXTS: SeedTexts = {
 };
 
 const VI_TEXTS: SeedTexts = {
-	propAName: "Nhà trọ Sunshine – Nguyễn Huệ",
-	propBName: "Căn hộ mini Phú Nhuận",
+	propAName: "Vinhomes Central Park",
+	propBName: "Masteri Thảo Điền",
 	roomNames: ["P.101", "P.102", "P.103", "P.201", "P.202"],
 	roomNotes: [
 		"Phòng góc, cửa sổ lớn",
@@ -110,24 +110,24 @@ const VI_TEXTS: SeedTexts = {
 };
 
 const VND_AMOUNTS: SeedAmounts = {
-	rents: [1700000, 2000000, 2500000, 5000000, 5500000],
-	elecUnitA: 2500,
+	rents: [12000000, 16000000, 25000000, 11000000, 15000000],
+	elecUnitA: 3500,
 	waterUnitA: 25000,
-	netFlatA: 50000,
-	cleanFlatA: 50000,
+	netFlatA: 150000,
+	cleanFlatA: 150000,
 	parkFlatA: 100000,
-	elecUnitB: 3800,
-	waterUnitB: 27000,
-	netFlatB: 120000,
-	cleanFlatB: 60000,
+	elecUnitB: 4000,
+	waterUnitB: 25000,
+	netFlatB: 150000,
+	cleanFlatB: 200000,
 	pay101ElecUsage: 100,
 	pay101WaterUsage: 10,
 	pay102ElecUsage: 100,
-	pay102WaterUsage: 10,
-	pay201ElecUsage: 110,
-	pay201WaterUsage: 14,
-	pay202ElecUsage: 95,
-	pay202WaterUsage: 11,
+	pay102WaterUsage: 14,
+	pay201ElecUsage: 100,
+	pay201WaterUsage: 10,
+	pay202ElecUsage: 100,
+	pay202WaterUsage: 10,
 };
 
 function round2(n: number): number {

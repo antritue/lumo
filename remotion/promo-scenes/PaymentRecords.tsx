@@ -1,4 +1,5 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import type { Locale } from "@/lib/constants";
 import { formatCurrency } from "@/lib/utils";
 import {
 	BG,
@@ -11,12 +12,13 @@ import {
 	ROW_RADIUS,
 } from "../design-tokens";
 import { PopIn } from "../primitives/PopIn";
+import { getPromoCopy } from "../promo-copy";
 import { Caption } from "../shared/caption";
 import {
 	ChevronIcon,
 	ChevronRightIcon,
+	getSnapshot,
 	StatusPill,
-	snapshot,
 } from "../shared/property-card";
 
 function formatPeriod(period: string): string {
@@ -42,8 +44,14 @@ const ICON_BOX: React.CSSProperties = {
 	flexShrink: 0,
 };
 
-export function PaymentRecords(): React.ReactElement {
+export function PaymentRecords({
+	locale = "en",
+}: {
+	locale?: Locale;
+}): React.ReactElement {
 	const frame = useCurrentFrame();
+	const copy = getPromoCopy(locale);
+	const snapshot = getSnapshot(locale);
 	const scale = interpolate(frame, [0, 150], [1.08, 1.0], {
 		extrapolateRight: "clamp",
 	});
@@ -58,6 +66,7 @@ export function PaymentRecords(): React.ReactElement {
 	const serviceTotal = charges.reduce((sum, c) => sum + c.total, 0);
 	const currentTotal = rent + serviceTotal;
 	const lastPeriod = prevPeriod(snapshot.period);
+	const statusLabels = { paid: copy.statusPaid, pending: copy.statusPending };
 	return (
 		<AbsoluteFill
 			style={{ backgroundColor: BG, padding: 120, justifyContent: "center" }}
@@ -94,7 +103,7 @@ export function PaymentRecords(): React.ReactElement {
 							color: MUTED_FG,
 						}}
 					>
-						Payment records
+						{copy.paymentRecordsTitle}
 					</span>
 				</div>
 				<div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -128,7 +137,7 @@ export function PaymentRecords(): React.ReactElement {
 								>
 									{formatPeriod(snapshot.period)}
 								</span>
-								<StatusPill status="paid" />
+								<StatusPill status="paid" labels={statusLabels} />
 								<div style={{ flex: 1 }} />
 								<div style={{ textAlign: "right", flexShrink: 0 }}>
 									<p
@@ -150,7 +159,7 @@ export function PaymentRecords(): React.ReactElement {
 											margin: "4px 0 0",
 										}}
 									>
-										inc. services
+										{copy.includesServices}
 									</p>
 								</div>
 							</div>
@@ -176,7 +185,7 @@ export function PaymentRecords(): React.ReactElement {
 										color: FG,
 									}}
 								>
-									<span style={{ color: MUTED_FG }}>Rent</span>
+									<span style={{ color: MUTED_FG }}>{copy.rent}</span>
 									<span style={{ flex: 1 }} />
 									<span style={{ fontWeight: 600 }}>
 										{formatCurrency(rent)}
@@ -237,7 +246,7 @@ export function PaymentRecords(): React.ReactElement {
 							>
 								{formatPeriod(lastPeriod)}
 							</span>
-							<StatusPill status="paid" />
+							<StatusPill status="paid" labels={statusLabels} />
 							<div style={{ flex: 1 }} />
 							<span
 								style={{
@@ -255,7 +264,7 @@ export function PaymentRecords(): React.ReactElement {
 				</div>
 			</div>
 			<Caption
-				text="Service charges calculated into the rent total"
+				text={copy.paymentRecordsCaption}
 				showFrom={15}
 				showUntil={165}
 			/>
