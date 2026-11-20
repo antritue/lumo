@@ -54,7 +54,7 @@
 		"fallow": "3.43.1",
 		"happy-dom": "21.0.4",
 		"husky": "9.1.7",
-		"supabase": "3.1.0",
+		"supabase": "3.2.0",
 		"tailwindcss": "4",
 		"remotion": "4.0.544",
 		"typescript": "6",
