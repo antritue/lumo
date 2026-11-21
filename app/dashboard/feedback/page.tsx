@@ -2,7 +2,7 @@
 
 import { Info, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { type SubmitEvent, useEffect, useState } from "react";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { isValidEmail } from "@/lib/utils";
 
 const FEEDBACK_TYPES = ["bug", "feature", "other"] as const;
 type FeedbackType = (typeof FEEDBACK_TYPES)[number];
@@ -38,16 +39,20 @@ export default function FeedbackPage() {
 		}
 	}, [user]);
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const trimmedEmail = email.trim();
+	const emailIsValid = trimmedEmail === "" || isValidEmail(trimmedEmail);
+
+	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
-		if (!name.trim() || !email.trim() || !message.trim()) return;
+		if (!name.trim() || !trimmedEmail || !emailIsValid || !message.trim())
+			return;
 
 		setSubmitting(true);
 		try {
 			const res = await fetch("/api/feedback", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ name, email, type, message }),
+				body: JSON.stringify({ name, email: trimmedEmail, type, message }),
 				credentials: "include",
 			});
 
@@ -117,7 +122,14 @@ export default function FeedbackPage() {
 						placeholder={t("emailPlaceholder")}
 						disabled={submitting}
 						required
+						aria-invalid={!emailIsValid}
+						aria-describedby={emailIsValid ? undefined : "feedback-email-error"}
 					/>
+					{!emailIsValid && (
+						<p id="feedback-email-error" className="text-xs text-destructive">
+							{t("emailInvalid")}
+						</p>
+					)}
 				</div>
 
 				<div className="space-y-2">
@@ -165,7 +177,11 @@ export default function FeedbackPage() {
 					/>
 				</div>
 
-				<Button type="submit" className="w-full" disabled={submitting}>
+				<Button
+					type="submit"
+					className="w-full"
+					disabled={submitting || !emailIsValid}
+				>
 					{submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 					{submitting ? t("submitting") : t("submit")}
 				</Button>

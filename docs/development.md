@@ -38,7 +38,7 @@ Our structure follows Next.js App Router conventions with a clear separation of 
 │   └── api/              # API endpoints
 ├── components/           # React Components
 │   ├── ui/               # Reusable primitives (Buttons, Inputs, etc.)
-│   ├── shared/           # Global shared components (Logo, ErrorDialog, DevelopmentBanner)
+│   ├── shared/           # Global shared components (Logo, ErrorDialog)
 │   ├── marketing/        # Landing page specific components
 │   └── dashboard/        # Core application logic components
 │       └── [feature]/    # Feature-based folders (e.g., properties/, rooms/)

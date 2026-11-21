@@ -1,6 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { RoomLimitReachedError, useRoomsStore } from "./store";
 import type { Room } from "./types";
 
@@ -38,6 +39,7 @@ describe("RoomsStore", () => {
 			fetchingRoomId: null,
 			isRoomsFetchFailed: false,
 		});
+		useTenantsStore.setState({ tenants: [] });
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
 	});
@@ -382,6 +384,29 @@ describe("RoomsStore", () => {
 			expect(rooms).toHaveLength(1);
 			expect(rooms[0].name).toBe("Keep");
 			expect(mockFetch).not.toHaveBeenCalled();
+		});
+
+		it("unassigns the room's tenant when the room is deleted locally", async () => {
+			useRoomsStore.setState({
+				rooms: [mockRoom({ id: "1", name: "Room 1" })],
+			});
+			useTenantsStore.setState({
+				tenants: [
+					{
+						id: "t1",
+						userId: "u1",
+						roomId: "1",
+						fullName: "Anh Nguyen",
+						phone: null,
+						email: null,
+						notes: null,
+					},
+				],
+			});
+
+			await useRoomsStore.getState().deleteRoom("1");
+
+			expect(useTenantsStore.getState().tenants[0].roomId).toBeNull();
 		});
 
 		it("calls API and removes room when authenticated", async () => {

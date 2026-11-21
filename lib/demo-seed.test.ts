@@ -6,6 +6,7 @@ import { usePropertiesStore } from "@/components/dashboard/properties/store";
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import { useRoomServicesStore } from "@/components/dashboard/rooms/room-services-store";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import {
 	buildDemoSeed,
 	buildDemoSeedEn,
@@ -24,6 +25,7 @@ function resetStores() {
 	useRoomsStore.getState().clearStore();
 	useRoomServicesStore.getState().clearStore();
 	useRentPaymentsStore.getState().clearStore();
+	useTenantsStore.getState().clearStore();
 }
 
 beforeEach(() => {
@@ -113,6 +115,35 @@ describe("buildDemoSeedEn", () => {
 		}
 	});
 
+	it("seeds active and inactive tenants with free rooms left over", () => {
+		const seed = buildDemoSeedEn(PERIOD);
+
+		expect(seed.tenants).toHaveLength(5);
+		expect(seed.tenants.filter((t) => t.roomId !== null)).toHaveLength(3);
+		expect(seed.tenants.filter((t) => t.roomId === null)).toHaveLength(2);
+
+		const roomIds = seed.tenants
+			.map((t) => t.roomId)
+			.filter((id): id is string => id !== null);
+		expect(new Set(roomIds).size).toBe(roomIds.length);
+		expect(roomIds.every((id) => seed.rooms.some((r) => r.id === id))).toBe(
+			true,
+		);
+
+		const freeRoomIds = seed.rooms
+			.filter((room) => !roomIds.includes(room.id))
+			.map((room) => room.id);
+		expect(freeRoomIds).toEqual(["demo-room-103", "demo-room-202"]);
+
+		// Covers the "No contact method" and "No email" row variants.
+		expect(seed.tenants.some((t) => t.phone === null && t.email === null)).toBe(
+			true,
+		);
+		expect(seed.tenants.some((t) => t.phone !== null && t.email === null)).toBe(
+			true,
+		);
+	});
+
 	it("disables parking for room 102 as a demo override", () => {
 		const seed = buildDemoSeedEn(PERIOD);
 
@@ -182,6 +213,10 @@ describe("buildDemoSeedVi", () => {
 		expect(vi.rentPayments.map((p) => p.status)).toEqual(
 			en.rentPayments.map((p) => p.status),
 		);
+		expect(vi.tenants.map((t) => t.id)).toEqual(en.tenants.map((t) => t.id));
+		expect(vi.tenants.map((t) => t.roomId)).toEqual(
+			en.tenants.map((t) => t.roomId),
+		);
 	});
 
 	it.each([
@@ -231,6 +266,7 @@ describe("seedDemoStoresIfEmpty", () => {
 		expect(
 			Object.keys(useRoomServicesStore.getState().roomServicesByRoomId),
 		).toHaveLength(5);
+		expect(useTenantsStore.getState().tenants).toHaveLength(5);
 		expect(isDemoSeeded()).toBe(true);
 	});
 
@@ -257,6 +293,7 @@ describe("seedDemoStoresIfEmpty", () => {
 
 		expect(usePropertiesStore.getState().properties).toHaveLength(0);
 		expect(useRoomsStore.getState().rooms).toHaveLength(0);
+		expect(useTenantsStore.getState().tenants).toHaveLength(0);
 		expect(isDemoSeeded()).toBe(false);
 	});
 

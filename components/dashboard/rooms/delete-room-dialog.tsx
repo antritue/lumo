@@ -3,6 +3,7 @@
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,9 @@ export function DeleteRoomDialog({
 	onDelete,
 }: DeleteRoomDialogProps) {
 	const t = useTranslations("app.rooms");
+	const assignedTenant = useTenantsStore((state) =>
+		state.tenants.find((tenant) => tenant.roomId === room?.id),
+	);
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [errorOpen, setErrorOpen] = useState(false);
@@ -78,9 +82,18 @@ export function DeleteRoomDialog({
 					</div>
 				) : (
 					<div className="space-y-4">
-						<p className="text-sm text-muted-foreground leading-relaxed">
-							{t("deleteMessage", { name: room.name })}
-						</p>
+						<div className="space-y-2">
+							<p className="text-sm text-muted-foreground leading-relaxed">
+								{t("deleteMessage", { name: room.name })}
+							</p>
+							{assignedTenant && (
+								<p className="text-sm leading-relaxed text-amber-700">
+									{t("deleteTenantWarning", {
+										name: assignedTenant.fullName,
+									})}
+								</p>
+							)}
+						</div>
 
 						<div className="flex gap-3">
 							<Button

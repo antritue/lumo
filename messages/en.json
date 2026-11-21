@@ -150,14 +150,6 @@
 				"retry": "Try again"
 			}
 		},
-		"development": {
-			"devBadge": "Coming Soon",
-			"title": "Work in Progress",
-			"inDevelopment": "This feature is coming soon",
-			"enabledBadge": "Feature Enabled",
-			"enabledTitle": "Tenant feature enabled",
-			"enabledDescription": "This page is unlocked because ?feature=tenant is in the URL"
-		},
 		"authBanner": {
 			"title": "You're not signed in",
 			"message": "You're viewing mock data. Feel free to explore, but nothing will be saved. Sign in to keep your real data",
@@ -240,6 +232,7 @@
 			"namePlaceholder": "So we know what to call you",
 			"emailLabel": "Email",
 			"emailPlaceholder": "So we can reply to your feedback",
+			"emailInvalid": "Enter a valid email address",
 			"typeLabel": "Type",
 			"typeBug": "Bug report",
 			"typeFeature": "Feature request",
@@ -349,7 +342,95 @@
 			"perMonth": "/month",
 			"unit": "unit"
 		},
-		"tenants": {},
+		"tenants": {
+			"listTitle": "Tenants",
+			"addButton": "Add tenant",
+			"editTitle": "Edit tenant",
+			"edit": "Edit",
+			"deactivate": "Deactivate",
+			"delete": "Delete",
+			"searchPlaceholder": "Search name, phone, room",
+			"filterLabel": "Filter tenants",
+			"tabActive": "Active",
+			"tabInactive": "Inactive",
+			"tabAll": "All",
+			"statusActive": "Active",
+			"statusInactive": "Inactive",
+			"notAssigned": "Not assigned",
+			"noEmail": "No email",
+			"noContact": "No contact method",
+			"paginationLabel": "Tenant list pages",
+			"pageOf": "Page {page} of {total}",
+			"previousPage": "Previous page",
+			"nextPage": "Next page",
+			"goToPage": "Go to page {page}",
+			"actionsFor": "Actions for {name}",
+			"clearSearch": "Clear search",
+			"emptyTitle": "No tenants yet",
+			"emptySubtitle": "Add your first tenant to keep their contact details in one place",
+			"emptyActiveTitle": "No active tenants",
+			"emptyActiveSubtitle": "Tenants appear here once they are assigned to a room",
+			"viewInactive": "View inactive tenants",
+			"emptyInactiveTitle": "No inactive tenants",
+			"emptyInactiveSubtitle": "Tenants removed from a room stay here so you keep their contact details",
+			"noResultsTitle": "No tenants match your search",
+			"noResultsSubtitle": "Try a different name, phone number, or room",
+			"columns": {
+				"tenant": "Tenant",
+				"room": "Room",
+				"contact": "Contact",
+				"status": "Status",
+				"actions": "Actions"
+			},
+			"form": {
+				"name": "Full name",
+				"namePlaceholder": "e.g. Anh Nguyen",
+				"room": "Room",
+				"roomPlaceholder": "No room — keep as inactive",
+				"roomHelper": "Leave without a room to save this tenant as inactive",
+				"roomHelperFull": "All rooms are currently occupied. This tenant will be saved as inactive",
+				"roomHelperEmpty": "You have no rooms yet. This tenant will be saved as inactive",
+				"contactDetails": "Contact details",
+				"optional": "optional",
+				"phone": "Phone",
+				"phonePlaceholder": "e.g. 0901 234 567",
+				"email": "Email",
+				"emailPlaceholder": "e.g. anh@example.com",
+				"emailInvalid": "Enter a valid email address",
+				"notes": "Notes",
+				"cancel": "Cancel"
+			},
+			"deactivateDialog": {
+				"title": "Move {name} to Inactive?",
+				"message": "Their contact record stays, the room becomes available, and payment records are not changed",
+				"confirm": "Deactivate",
+				"cancel": "Cancel"
+			},
+			"deleteDialog": {
+				"title": "Delete tenant?",
+				"message": "Delete {name}'s contact record? This cannot be undone. The room becomes available and payment records stay with the room",
+				"confirm": "Delete tenant",
+				"cancel": "Cancel"
+			},
+			"errors": {
+				"create": {
+					"title": "Failed to add tenant",
+					"description": "There was a problem adding this tenant. Please try again"
+				},
+				"update": {
+					"title": "Failed to update tenant",
+					"description": "There was a problem updating this tenant. Please try again"
+				},
+				"delete": {
+					"title": "Failed to delete tenant",
+					"description": "There was a problem deleting this tenant. Please try again"
+				},
+				"roomOccupied": {
+					"title": "Room already taken",
+					"description": "Someone else is already assigned to that room. Choose another room or save without one"
+				}
+			}
+		},
 		"rooms": {
 			"title": "Rooms",
 			"count": "{count, plural, =0 {0 rooms} =1 {1 room} other {# rooms}}",
@@ -383,6 +464,7 @@
 			"saveButton": "Save",
 			"deleteTitle": "Delete room?",
 			"deleteMessage": "This will permanently delete \"{name}\". This cannot be undone",
+			"deleteTenantWarning": "The tenant in this room, {name}, will be unassigned and kept as an inactive contact",
 			"deleteConfirm": "Delete room",
 			"backToProperties": "Back to properties",
 			"backToOverview": "Back to overview",

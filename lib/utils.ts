@@ -6,6 +6,12 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function isValidEmail(email: string): boolean {
+	return EMAIL_PATTERN.test(email);
+}
+
 export function formatCurrency(amount: number): string {
 	// Always display VND with en-US grouping: comma for thousands.
 	// e.g. ₫5,000 or ₫5,000,000 (even though vi locale would use dots)

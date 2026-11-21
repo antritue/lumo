@@ -11,7 +11,7 @@ quirks, deferred promises for loading states, and the 4-state page machine.
 
 # Component Test Patterns
 
-Follow these patterns when writing tests for dashboard features. Every feature follows the same testing structure — study existing tests (`services/`) as the reference example.
+Follow these patterns when writing dashboard tests. Study existing tests in `properties/` and `rooms/`.
 
 ## Test file organization
 
@@ -211,6 +211,8 @@ Don't test basic rendering (e.g. "displays item name") — the expand interactio
 
 ## List component testing
 
+Seed at least one item. Test filtering/sorting/counts in `select-visible-<feature>s.test.ts` and paging in `<feature>-list-pagination.test.tsx`; keep list tests to slicing, reset-on-search, rendering, and interactions.
+
 Scope hint queries to the hint buttons container to avoid false matches:
 
 ```typescript
@@ -226,7 +228,7 @@ Prefer verifying dialog state rather than the full submit flow (avoids Radix Dia
 
 ## Empty state testing
 
-Test only integration — do not duplicate dialog-internal tests (validation, disabled/enabled button state).
+Render `<EmptyState />` directly and reset its stores; assert the empty message and that add opens the dialog. Keep dialog validation in dialog tests and seed items in list tests.
 
 **Load `references/test-templates.md` for empty state template code.**
 

@@ -1,41 +1,53 @@
 import { screen } from "@testing-library/react";
-import { useSearchParams } from "next/navigation";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import { useAuthStore } from "@/components/dashboard/auth/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { renderWithProviders } from "@/test/render";
 import TenantsPage from "./page";
 
-vi.mock("next/navigation", () => ({
-	useSearchParams: vi.fn(),
-}));
-
-const setSearchParams = (value: string) => {
-	vi.mocked(useSearchParams).mockReturnValue(
-		new URLSearchParams(value) as unknown as ReturnType<typeof useSearchParams>,
-	);
-};
+const realFetchTenants = useTenantsStore.getState().fetchTenants;
 
 describe("TenantsPage", () => {
 	beforeEach(() => {
-		setSearchParams("");
+		useTenantsStore.getState().clearStore();
+		useTenantsStore.setState({ fetchTenants: realFetchTenants });
+		useAuthStore.setState({ user: null, loading: false });
 	});
 
-	it("shows the coming soon banner without the feature flag", () => {
+	it("shows the tenants page header and empty state", () => {
 		renderWithProviders(<TenantsPage />);
 
-		expect(screen.getByText("Coming Soon")).toBeInTheDocument();
 		expect(
-			screen.getByRole("heading", { name: /work in progress/i }),
+			screen.getByRole("heading", { name: "Tenants" }),
+		).toBeInTheDocument();
+		expect(screen.getByText("No tenants yet")).toBeInTheDocument();
+	});
+
+	it("shows the shared error state when fetching fails", () => {
+		useTenantsStore.setState({ isTenantsFetchFailed: true });
+
+		renderWithProviders(<TenantsPage />);
+
+		expect(
+			screen.getByRole("button", { name: "Try again" }),
 		).toBeInTheDocument();
 	});
 
-	it("shows the enabled banner with ?feature=tenant", () => {
-		setSearchParams("?feature=tenant");
+	it("shows skeleton rows while loading", () => {
+		useAuthStore.setState({
+			user: { id: "user-1" } as never,
+			loading: false,
+		});
+		useTenantsStore.setState({
+			isTenantsLoading: true,
+			hasTenantsFetched: false,
+			fetchTenants: async () => {},
+		});
 
-		renderWithProviders(<TenantsPage />);
+		const { container } = renderWithProviders(<TenantsPage />);
 
-		expect(screen.getByText("Feature Enabled")).toBeInTheDocument();
 		expect(
-			screen.getByRole("heading", { name: /tenant feature enabled/i }),
-		).toBeInTheDocument();
+			container.querySelectorAll(".animate-shimmer").length,
+		).toBeGreaterThan(0);
 	});
 });

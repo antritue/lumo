@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { renderWithProviders } from "@/test/render";
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import type { Room } from "./types";
@@ -13,6 +14,10 @@ describe("DeleteRoomDialog", () => {
 		monthlyRent: 1500,
 		notes: null,
 	};
+
+	beforeEach(() => {
+		useTenantsStore.setState({ tenants: [] });
+	});
 
 	describe("Display", () => {
 		it("displays confirmation message with room name", () => {
@@ -29,6 +34,46 @@ describe("DeleteRoomDialog", () => {
 				screen.getByRole("heading", { name: /delete/i }),
 			).toBeInTheDocument();
 			expect(screen.getByText(/master bedroom/i)).toBeInTheDocument();
+		});
+
+		it("warns that the assigned tenant will be unassigned", () => {
+			useTenantsStore.setState({
+				tenants: [
+					{
+						id: "t1",
+						userId: "u1",
+						roomId: "1",
+						fullName: "Anh Nguyen",
+						phone: null,
+						email: null,
+						notes: null,
+					},
+				],
+			});
+
+			renderWithProviders(
+				<DeleteRoomDialog
+					room={mockRoom}
+					open={true}
+					onOpenChange={vi.fn()}
+					onDelete={vi.fn()}
+				/>,
+			);
+
+			expect(screen.getByText(/anh nguyen/i)).toBeInTheDocument();
+		});
+
+		it("does not warn when no tenant is assigned", () => {
+			renderWithProviders(
+				<DeleteRoomDialog
+					room={mockRoom}
+					open={true}
+					onOpenChange={vi.fn()}
+					onDelete={vi.fn()}
+				/>,
+			);
+
+			expect(screen.queryByText(/will be unassigned/i)).not.toBeInTheDocument();
 		});
 	});
 

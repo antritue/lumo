@@ -6,6 +6,7 @@ import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store
 import { useRoomServicesStore } from "@/components/dashboard/rooms/room-services-store";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { useSettingsStore } from "@/components/dashboard/settings/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { useAuthStore } from "./store";
 
 type ClearableStore = {
@@ -18,6 +19,7 @@ const domainStores: ClearableStore[] = [
 	usePropertyServicesStore,
 	useRoomsStore,
 	useRoomServicesStore,
+	useTenantsStore,
 	useRentPaymentsStore,
 	useOverviewStore,
 	useBillingStore,
