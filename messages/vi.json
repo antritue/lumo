@@ -166,14 +166,6 @@
 				"retry": "Thử lại"
 			}
 		},
-		"development": {
-			"devBadge": "Sắp ra mắt",
-			"title": "Đang phát triển",
-			"inDevelopment": "Tính năng này sắp ra mắt",
-			"enabledBadge": "Đã bật tính năng",
-			"enabledTitle": "Đã bật tính năng người thuê",
-			"enabledDescription": "Trang này đã được mở khóa vì ?feature=tenant có trong URL"
-		},
 		"authBanner": {
 			"title": "Bạn chưa đăng nhập",
 			"message": "Đây là dữ liệu demo để bạn trải nghiệm. Dữ liệu thay đổi sẽ được reset khi tải lại trang. Đăng nhập để lưu lại dữ liệu",
@@ -324,7 +316,95 @@
 			"perMonth": "/tháng",
 			"unit": "đơn vị"
 		},
-		"tenants": {},
+		"tenants": {
+			"listTitle": "Người thuê",
+			"addButton": "Thêm người thuê",
+			"editTitle": "Sửa thông tin người thuê",
+			"edit": "Sửa",
+			"deactivate": "Trả phòng",
+			"delete": "Xóa",
+			"searchPlaceholder": "Tìm theo tên, số điện thoại hoặc phòng",
+			"filterLabel": "Lọc người thuê",
+			"tabActive": "Đang thuê",
+			"tabInactive": "Đã trả phòng",
+			"tabAll": "Tất cả",
+			"statusActive": "Đang thuê",
+			"statusInactive": "Đã trả phòng",
+			"notAssigned": "Chưa gán phòng",
+			"noEmail": "Chưa có email",
+			"noContact": "Chưa có thông tin liên hệ",
+			"paginationLabel": "Phân trang danh sách người thuê",
+			"pageOf": "Trang {page}/{total}",
+			"previousPage": "Trang trước",
+			"nextPage": "Trang sau",
+			"goToPage": "Đến trang {page}",
+			"actionsFor": "Thao tác với {name}",
+			"clearSearch": "Xóa tìm kiếm",
+			"emptyTitle": "Chưa có người thuê",
+			"emptySubtitle": "Thêm người thuê đầu tiên để lưu thông tin liên hệ tập trung",
+			"emptyActiveTitle": "Chưa có người đang thuê",
+			"emptyActiveSubtitle": "Người thuê sẽ xuất hiện ở đây sau khi được gán phòng",
+			"viewInactive": "Xem người đã trả phòng",
+			"emptyInactiveTitle": "Chưa có người đã trả phòng",
+			"emptyInactiveSubtitle": "Người thuê đã trả phòng vẫn được lưu ở đây để bạn giữ thông tin liên hệ",
+			"noResultsTitle": "Không tìm thấy người thuê phù hợp",
+			"noResultsSubtitle": "Hãy thử tên, số điện thoại hoặc phòng khác",
+			"columns": {
+				"tenant": "Người thuê",
+				"room": "Phòng",
+				"contact": "Liên hệ",
+				"status": "Trạng thái",
+				"actions": "Thao tác"
+			},
+			"form": {
+				"name": "Họ và tên",
+				"namePlaceholder": "ví dụ: Nguyễn Anh",
+				"room": "Phòng",
+				"roomPlaceholder": "Không gán phòng — đánh dấu đã trả phòng",
+				"roomHelper": "Để trống phòng nếu người này đã trả phòng",
+				"roomHelperFull": "Tất cả phòng đã có người thuê. Người này sẽ được đánh dấu là đã trả phòng",
+				"roomHelperEmpty": "Bạn chưa có phòng nào. Người này sẽ được đánh dấu là đã trả phòng",
+				"contactDetails": "Thông tin liên hệ",
+				"optional": "không bắt buộc",
+				"phone": "Số điện thoại",
+				"phonePlaceholder": "ví dụ: 0901 234 567",
+				"email": "Email",
+				"emailPlaceholder": "ví dụ: anh@example.com",
+				"emailInvalid": "Nhập địa chỉ email hợp lệ",
+				"notes": "Ghi chú",
+				"cancel": "Hủy"
+			},
+			"deactivateDialog": {
+				"title": "Đánh dấu {name} đã trả phòng?",
+				"message": "Thông tin liên hệ vẫn được giữ lại, phòng sẽ trống và các khoản thanh toán không bị ảnh hưởng",
+				"confirm": "Trả phòng",
+				"cancel": "Hủy"
+			},
+			"deleteDialog": {
+				"title": "Xóa người thuê?",
+				"message": "Xóa thông tin liên hệ của {name}? Không thể hoàn tác. Phòng sẽ trống và các khoản thanh toán vẫn gắn với phòng",
+				"confirm": "Xóa người thuê",
+				"cancel": "Hủy"
+			},
+			"errors": {
+				"create": {
+					"title": "Không thể thêm người thuê",
+					"description": "Đã xảy ra lỗi khi thêm người thuê. Vui lòng thử lại"
+				},
+				"update": {
+					"title": "Không thể cập nhật người thuê",
+					"description": "Đã xảy ra lỗi khi cập nhật người thuê. Vui lòng thử lại"
+				},
+				"delete": {
+					"title": "Không thể xóa người thuê",
+					"description": "Đã xảy ra lỗi khi xóa người thuê. Vui lòng thử lại"
+				},
+				"roomOccupied": {
+					"title": "Phòng đã có người thuê",
+					"description": "Phòng này đã có người thuê. Hãy chọn phòng khác hoặc lưu mà không gán phòng"
+				}
+			}
+		},
 		"rooms": {
 			"title": "Phòng",
 			"count": "{count, plural, =0 {0 phòng} =1 {1 phòng} other {# phòng}}",
@@ -358,6 +438,7 @@
 			"saveButton": "Lưu",
 			"deleteTitle": "Xóa phòng?",
 			"deleteMessage": "Phòng \"{name}\" sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
+			"deleteTenantWarning": "Người thuê {name} sẽ được gỡ khỏi phòng và vẫn được lưu để bạn giữ thông tin liên hệ",
 			"deleteConfirm": "Xóa phòng",
 			"backToProperties": "Quay lại nhà cho thuê",
 			"backToOverview": "Quay lại tổng quan",
@@ -448,6 +529,7 @@
 			"namePlaceholder": "Để chúng tôi biết cách xưng hô với bạn",
 			"emailLabel": "Email",
 			"emailPlaceholder": "Để chúng tôi có thể trả lời bạn",
+			"emailInvalid": "Nhập địa chỉ email hợp lệ",
 			"typeLabel": "Loại",
 			"typeBug": "Báo lỗi",
 			"typeFeature": "Đề xuất tính năng",

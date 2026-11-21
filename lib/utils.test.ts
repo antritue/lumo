@@ -3,6 +3,7 @@ import {
 	formatAmountInputDisplay,
 	formatCurrency,
 	formatServicePrice,
+	isValidEmail,
 	parseAmountInputValue,
 } from "./utils";
 
@@ -127,5 +128,17 @@ describe("parseAmountInputValue", () => {
 	it("limits decimals to two digits", () => {
 		expect(parseAmountInputValue("5000.123")).toBe("5000.12");
 		expect(parseAmountInputValue("5,000.129")).toBe("5000.12");
+	});
+});
+
+describe("isValidEmail", () => {
+	it("accepts simple addresses", () => {
+		expect(isValidEmail("anh@example.com")).toBe(true);
+	});
+
+	it("rejects malformed or incomplete addresses", () => {
+		expect(isValidEmail("not-an-email")).toBe(false);
+		expect(isValidEmail("anh@example")).toBe(false);
+		expect(isValidEmail("")).toBe(false);
 	});
 });

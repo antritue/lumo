@@ -47,6 +47,43 @@ export default function ItemsPage() {
 }
 ```
 
+## Empty state (`empty-state.tsx`)
+
+```typescript
+export function EmptyState() {
+  const t = useTranslations("app.<feature>");
+  const createItem = useItemsStore((s) => s.createItem);
+  const [isAdding, setIsAdding] = useState(false);
+
+  return (
+    <>
+      <div className="flex flex-col items-center justify-center py-16 sm:py-20">
+        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-secondary/50">
+          <Icon className="h-10 w-10 text-muted-foreground" />
+        </div>
+        <h2 className="mb-2 text-xl font-semibold text-foreground sm:text-2xl">
+          {t("emptyTitle")}
+        </h2>
+        <p className="mb-8 max-w-md text-center text-sm text-muted-foreground sm:text-base">
+          {t("emptySubtitle")}
+        </p>
+        <Button onClick={() => setIsAdding(true)} size="lg">
+          <Plus />
+          {t("addButton")}
+        </Button>
+      </div>
+
+      <UpsertDialog
+        mode="add"
+        open={isAdding}
+        onOpenChange={setIsAdding}
+        onSave={async (input) => createItem(input)}
+      />
+    </>
+  );
+}
+```
+
 ## List + Dialog pattern
 
 ```typescript

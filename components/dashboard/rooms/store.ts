@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import type { Room } from "./types";
 
 export class RoomLimitReachedError extends Error {
@@ -245,6 +246,8 @@ export const useRoomsStore = create<RoomsState>()(
 				set((state) => ({
 					rooms: state.rooms.filter((room) => room.id !== id),
 				}));
+				// Local mode has no database FK, so clear the assignment here too.
+				useTenantsStore.getState().unassignByRoomId(id);
 			},
 
 			clearStore: () =>

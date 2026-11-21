@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { usePropertiesStore } from "@/components/dashboard/properties/store";
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { clearAllDomainStores } from "./clear-domain-stores";
 import { useAuthStore } from "./store";
 
@@ -18,6 +19,19 @@ describe("clearAllDomainStores", () => {
 					propertyId: "1",
 					name: "R1",
 					monthlyRent: 1000,
+					notes: null,
+				},
+			],
+		});
+		useTenantsStore.setState({
+			tenants: [
+				{
+					id: "1",
+					userId: "123",
+					roomId: "1",
+					fullName: "Anh Nguyen",
+					phone: null,
+					email: null,
 					notes: null,
 				},
 			],
@@ -41,6 +55,7 @@ describe("clearAllDomainStores", () => {
 		expect(usePropertiesStore.getState().properties).toEqual([]);
 		expect(usePropertiesStore.getState().hasPropertiesFetched).toBe(false);
 		expect(useRoomsStore.getState().rooms).toEqual([]);
+		expect(useTenantsStore.getState().tenants).toEqual([]);
 		expect(useRentPaymentsStore.getState().rentPayments).toEqual([]);
 	});
 });

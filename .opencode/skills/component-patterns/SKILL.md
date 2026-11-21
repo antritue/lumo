@@ -11,7 +11,7 @@ dialog pattern, inline vs kebab action conventions, and directory structure.
 
 # Component Patterns
 
-Follow these patterns when creating new components in the dashboard. Every feature follows the same structure — study an existing one (properties, services, rent-payments) before building.
+Follow these patterns when creating new components in the dashboard. Study an existing feature (`properties/`, `rooms/`) before building.
 
 ## Directory structure
 
@@ -25,7 +25,8 @@ components/dashboard/<feature>/
   delete-<feature>-dialog.tsx — delete confirmation
   empty-state.tsx       — first-use state
   <feature>-list-skeleton.tsx  — loading skeleton wrapper
-  <feature>-card-skeleton.tsx  — single card skeleton
+  <feature>-card-skeleton.tsx  — single card skeleton (card lists only)
+  utils.ts              — optional pure helpers + co-located test
   *.test.tsx / *.test.ts       — co-located tests
 
 app/dashboard/<feature>/
@@ -56,11 +57,15 @@ Use Zustand with devtools. Three-flag pattern: `isItemsLoading`, `hasItemsFetche
 
 Every page follows an if/else pattern with a single return — the page title renders once outside all branches.
 
+`EmptyState` owns the first-use state and its add dialog; the list handles only non-empty states, including filtered no-results.
+
 **Load `references/page-and-dialog-templates.md` for the full page.tsx template.**
 
 ## List + Dialog pattern
 
 The list component manages all CRUD dialog state (isAdding, editingItem, deletingItem).
+
+For tabs, search, paging, or filtered-empty states, split into `-toolbar`, `-list-table`, `-list-pagination`, and `-filter-empty`; put filtering/sorting in a tested `select-visible-<feature>s.ts`.
 
 **Load `references/page-and-dialog-templates.md` for ItemList, detail panel, upsert dialog, delete dialog, and error dialog templates.**
 
@@ -90,6 +95,7 @@ Use `Card`, `CardHeader`, `CardContent` from `@/components/ui/card`. For collaps
 ## Common mistakes
 
 - **Using multiple `return` statements** in page.tsx instead of if/else with `let content`
+- **Naming list/item components** — use `<Feature>List` and `<Feature>Item`
 - **Gating on `!user` for empty state** — empty state triggers on `items.length === 0`, not auth status
 - **Using the full store object** as a selector instead of individual values → re-renders
 - **Missing `e.stopPropagation()`** on edit/delete buttons inside clickable cards
@@ -103,7 +109,7 @@ Use `Card`, `CardHeader`, `CardContent` from `@/components/ui/card`. For collaps
 2. [ ] Create `components/dashboard/<feature>/store.ts` with Zustand + devtools
 3. [ ] Create `app/dashboard/<feature>/page.tsx` with if/else pattern
 4. [ ] Create `components/dashboard/<feature>/empty-state.tsx`
-5. [ ] Create `components/dashboard/<feature>/<feature>-list-skeleton.tsx` + `-card-skeleton.tsx`
+5. [ ] Create `components/dashboard/<feature>/<feature>-list-skeleton.tsx` (+ `-card-skeleton.tsx` for card lists)
 6. [ ] Create `components/dashboard/<feature>/<feature>-list.tsx`
 7. [ ] Create `components/dashboard/<feature>/<feature>-item.tsx`
 8. [ ] Create `components/dashboard/<feature>/upsert-<feature>-dialog.tsx`

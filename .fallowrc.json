@@ -1,3 +1,4 @@
 {
-	"ignoreDependencies": ["tailwindcss"]
+	"ignoreDependencies": ["tailwindcss"],
+	"ignoreFindings": ["components/shared/use-feature-flag.ts"]
 }

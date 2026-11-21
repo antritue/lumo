@@ -33,6 +33,22 @@ describe("FeedbackPage", () => {
 		expect(screen.getByDisplayValue("john@example.com")).toBeInTheDocument();
 	});
 
+	it("blocks an invalid email before submitting", async () => {
+		const user = userEvent.setup();
+
+		renderWithProviders(<FeedbackPage />);
+
+		await user.type(screen.getByLabelText(/name/i), "John");
+		await user.type(screen.getByLabelText(/email/i), "not-an-email");
+		await user.type(screen.getByLabelText(/message/i), "Test feedback");
+
+		expect(screen.getByText("Enter a valid email address")).toBeInTheDocument();
+		expect(
+			screen.getByRole("button", { name: /send feedback/i }),
+		).toBeDisabled();
+		expect(mockFetch).not.toHaveBeenCalled();
+	});
+
 	it("shows error dialog when API returns non-ok response", async () => {
 		const user = userEvent.setup();
 		mockFetch.mockResolvedValue({ ok: false });

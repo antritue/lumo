@@ -16,6 +16,8 @@ import type {
 	EffectiveRoomService,
 	Room,
 } from "@/components/dashboard/rooms/types";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
+import type { Tenant } from "@/components/dashboard/tenants/types";
 import type { Locale } from "./constants";
 
 export interface DemoSeed {
@@ -27,6 +29,7 @@ export interface DemoSeed {
 	serviceChargesByPaymentId: Record<string, ServiceCharge[]>;
 	roomServicesByRoomId: Record<string, EffectiveRoomService[]>;
 	roomPropertyMap: Record<string, string>;
+	tenants: Tenant[];
 }
 
 export function getCurrentPeriod(): string {
@@ -46,6 +49,7 @@ interface SeedTexts {
 	parking: string;
 	kwh: string;
 	m3: string;
+	tenantNotes: [string, string];
 }
 
 interface SeedAmounts {
@@ -87,6 +91,7 @@ const EN_TEXTS: SeedTexts = {
 	parking: "Parking",
 	kwh: "kWh",
 	m3: "m³",
+	tenantNotes: ["Lease renewed in June", "Moved out last month"],
 };
 
 const VI_TEXTS: SeedTexts = {
@@ -107,6 +112,7 @@ const VI_TEXTS: SeedTexts = {
 	parking: "Giữ xe",
 	kwh: "kWh",
 	m3: "m³",
+	tenantNotes: ["Đã gia hạn hợp đồng tháng 6", "Đã chuyển đi tháng trước"],
 };
 
 const VND_AMOUNTS: SeedAmounts = {
@@ -440,6 +446,56 @@ function buildTopology(period: string, t: SeedTexts, a: SeedAmounts): DemoSeed {
 		"demo-room-202": "demo-prop-b",
 	};
 
+	// Three occupied rooms and two free rooms, so the room picker,
+	// assignment, deactivation, and the Inactive tab can all be exercised.
+	const tenants: Tenant[] = [
+		{
+			id: "demo-tenant-1",
+			userId: "",
+			roomId: "demo-room-101",
+			fullName: "Anh Nguyen",
+			phone: "0901 234 567",
+			email: "anh@example.com",
+			notes: t.tenantNotes[0],
+		},
+		{
+			id: "demo-tenant-2",
+			userId: "",
+			roomId: "demo-room-102",
+			fullName: "Binh Le",
+			phone: "0912 345 678",
+			email: null,
+			notes: null,
+		},
+		{
+			id: "demo-tenant-3",
+			userId: "",
+			roomId: "demo-room-201",
+			fullName: "Minh Ngo",
+			phone: null,
+			email: "minh@example.com",
+			notes: null,
+		},
+		{
+			id: "demo-tenant-4",
+			userId: "",
+			roomId: null,
+			fullName: "Lan Pham",
+			phone: "0944 123 456",
+			email: "lan@example.com",
+			notes: t.tenantNotes[1],
+		},
+		{
+			id: "demo-tenant-5",
+			userId: "",
+			roomId: null,
+			fullName: "Huy Tran",
+			phone: null,
+			email: null,
+			notes: null,
+		},
+	];
+
 	return {
 		period,
 		properties,
@@ -449,6 +505,7 @@ function buildTopology(period: string, t: SeedTexts, a: SeedAmounts): DemoSeed {
 		serviceChargesByPaymentId,
 		roomServicesByRoomId,
 		roomPropertyMap,
+		tenants,
 	};
 }
 
@@ -510,5 +567,11 @@ export function seedDemoStoresIfEmpty(locale: Locale = "en"): void {
 		isRoomServicesLoading: false,
 		fetchingRoomId: null,
 		isRoomServicesFetchFailed: false,
+	});
+	useTenantsStore.setState({
+		tenants: seed.tenants,
+		isTenantsLoading: false,
+		hasTenantsFetched: false,
+		isTenantsFetchFailed: false,
 	});
 }
