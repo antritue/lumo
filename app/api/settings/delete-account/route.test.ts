@@ -56,12 +56,13 @@ describe("DELETE /api/settings/delete-account", () => {
 		const res = await DELETE();
 
 		expect(res.status).toBe(204);
-		expect(mockFrom).toHaveBeenCalledTimes(7);
+		expect(mockFrom).toHaveBeenCalledTimes(8);
 		for (const table of [
 			"rent_payment_charges",
 			"rent_payments",
 			"room_service_overrides",
 			"property_services",
+			"tenants",
 			"rooms",
 			"properties",
 			"user_entitlements",
