@@ -21,7 +21,7 @@
 		"remotion:render": "npm run remotion:render:en && npm run remotion:render:vi"
 	},
 	"dependencies": {
-		"@polar-sh/nextjs": "1.1.0",
+		"@polar-sh/nextjs": "1.1.1",
 		"@polar-sh/sdk": "1.3.0",
 		"@radix-ui/react-dialog": "1.3.1",
 		"@radix-ui/react-popover": "1.3.1",
