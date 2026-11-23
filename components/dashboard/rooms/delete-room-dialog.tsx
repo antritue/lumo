@@ -4,6 +4,7 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useTenantsStore } from "@/components/dashboard/tenants/store";
+import { getTenantByRoomId } from "@/components/dashboard/tenants/utils";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +31,7 @@ export function DeleteRoomDialog({
 }: DeleteRoomDialogProps) {
 	const t = useTranslations("app.rooms");
 	const assignedTenant = useTenantsStore((state) =>
-		state.tenants.find((tenant) => tenant.roomId === room?.id),
+		getTenantByRoomId(state.tenants, room?.id ?? null),
 	);
 
 	const [isSubmitting, setIsSubmitting] = useState(false);

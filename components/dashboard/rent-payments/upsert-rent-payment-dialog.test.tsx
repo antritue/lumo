@@ -12,6 +12,8 @@ describe("UpsertRentPaymentDialog", () => {
 		period: "2026-01",
 		rentAmount: 1000,
 		status: "pending",
+		payerTenantId: null,
+		payerName: null,
 	};
 	const mockOnOpenChange = vi.fn();
 	const mockOnSave = vi.fn().mockResolvedValue("payment-1");
@@ -141,6 +143,8 @@ describe("UpsertRentPaymentDialog", () => {
 					period: "2026-01",
 					rentAmount: 1000,
 					status: "paid",
+					payerTenantId: null,
+					payerName: null,
 				},
 			];
 
@@ -464,6 +468,8 @@ describe("UpsertRentPaymentDialog", () => {
 					period: "2026-01",
 					rentAmount: 1000,
 					status: "pending" as const,
+					payerTenantId: null,
+					payerName: null,
 				};
 
 				renderWithProviders(

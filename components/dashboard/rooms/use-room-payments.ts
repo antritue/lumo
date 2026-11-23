@@ -31,7 +31,10 @@ type ChargesState = {
 	byPeriod: Record<string, ServiceCharge[]>;
 };
 
-export function useRoomPayments(roomId: string) {
+export function useRoomPayments(
+	roomId: string,
+	payer?: { tenantId: string | null; name: string | null },
+) {
 	const {
 		rentPayments: allRentPayments,
 		isPaymentsLoading,
@@ -147,7 +150,14 @@ export function useRoomPayments(roomId: string) {
 	): Promise<string> =>
 		id
 			? updateRentPayment(id, period, rentAmount, status)
-			: createRentPayment(roomId, period, rentAmount, status);
+			: createRentPayment(
+					roomId,
+					period,
+					rentAmount,
+					status,
+					payer?.tenantId ?? null,
+					payer?.name ?? null,
+				);
 
 	const handleToggleStatus = useCallback(
 		async (id: string) => {

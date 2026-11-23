@@ -3,6 +3,7 @@
 import {
 	ChevronDown,
 	ChevronRight,
+	Info,
 	MoreHorizontal,
 	Pencil,
 	Receipt,
@@ -191,6 +192,32 @@ export function RentPaymentsList({
 											</span>
 										</div>
 									))}
+									{payment.payerName && (
+										<div className="flex items-center justify-between border-t border-border pt-2 text-sm">
+											<span className="flex items-center gap-1.5 text-muted-foreground">
+												{t("paidBy")}
+												<Popover>
+													<PopoverTrigger asChild>
+														<button
+															type="button"
+															className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+															aria-label={t("payerSnapshotInfoLabel")}
+														>
+															<Info className="h-3.5 w-3.5" />
+														</button>
+													</PopoverTrigger>
+													<PopoverContent
+														side="top"
+														align="start"
+														className="max-w-64 text-xs leading-relaxed"
+													>
+														<p>{t("payerSnapshotTooltip")}</p>
+													</PopoverContent>
+												</Popover>
+											</span>
+											<span className="font-medium">{payment.payerName}</span>
+										</div>
+									)}
 								</div>
 							</div>
 						)}

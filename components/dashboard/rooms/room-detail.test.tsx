@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { renderWithProviders } from "@/test/render";
 import { RoomDetail } from "./room-detail";
 import { useRoomsStore } from "./store";
@@ -22,6 +23,19 @@ describe("RoomDetail", () => {
 
 	beforeEach(() => {
 		useRoomsStore.setState({ rooms: [mockRoom] });
+		useTenantsStore.setState({
+			tenants: [
+				{
+					id: "tenant-1",
+					userId: "",
+					roomId: "room-1",
+					fullName: "Anh Nguyen",
+					phone: "0901 234 567",
+					email: "anh@example.com",
+					notes: null,
+				},
+			],
+		});
 	});
 
 	describe("Display", () => {
@@ -37,6 +51,19 @@ describe("RoomDetail", () => {
 			expect(
 				screen.getByRole("heading", { name: /payment records/i }),
 			).toBeInTheDocument();
+			expect(screen.getByText("Tenant")).toBeInTheDocument();
+			expect(screen.getByText("Anh Nguyen")).toBeInTheDocument();
+			expect(screen.getByText("Note")).toBeInTheDocument();
+			expect(screen.getByText("Test notes")).toBeInTheDocument();
+		});
+
+		it("hides the tenant row when the room has no active tenant", () => {
+			useTenantsStore.setState({ tenants: [] });
+
+			renderWithProviders(<RoomDetail room={mockRoom} />);
+
+			expect(screen.queryByText("Tenant")).not.toBeInTheDocument();
+			expect(screen.getByText("Note")).toBeInTheDocument();
 		});
 	});
 

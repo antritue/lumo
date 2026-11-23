@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { compareNatural, getTenantSearchText } from "./utils";
+import type { Tenant } from "./types";
+import {
+	compareNatural,
+	getTenantByRoomId,
+	getTenantSearchText,
+} from "./utils";
 
 describe("compareNatural", () => {
 	it("orders numbered rooms naturally", () => {
@@ -8,6 +13,30 @@ describe("compareNatural", () => {
 			"Room 2",
 			"Room 10",
 		]);
+	});
+});
+
+describe("getTenantByRoomId", () => {
+	const tenant: Tenant = {
+		id: "1",
+		userId: "",
+		roomId: "room-1",
+		fullName: "Anh Nguyen",
+		phone: null,
+		email: null,
+		notes: null,
+	};
+
+	it("returns the tenant assigned to the room", () => {
+		expect(getTenantByRoomId([tenant], "room-1")).toBe(tenant);
+	});
+
+	it("returns undefined when no tenant is assigned to the room", () => {
+		expect(getTenantByRoomId([tenant], "room-2")).toBeUndefined();
+	});
+
+	it("returns undefined for a null room id", () => {
+		expect(getTenantByRoomId([tenant], null)).toBeUndefined();
 	});
 });
 

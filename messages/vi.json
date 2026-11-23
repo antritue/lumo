@@ -445,7 +445,12 @@
 			"notFound": "Không tìm thấy phòng",
 			"notFoundMessage": "Phòng không tồn tại hoặc đã bị xóa",
 			"details": {
-				"notes": "Ghi chú"
+				"notes": "Ghi chú",
+				"currentTenant": "Người thuê hiện tại",
+				"tenant": "Người thuê",
+				"note": "Ghi chú",
+				"showMore": "Xem thêm",
+				"showLess": "Thu gọn"
 			}
 		},
 		"rentPayments": {
@@ -469,6 +474,8 @@
 			},
 			"statusToggleInfoLabel": "Hướng dẫn chuyển đổi trạng thái",
 			"statusToggleTooltip": "Nhấn vào trạng thái để chuyển đổi nhanh giữa Chưa thanh toán và Đã thanh toán.",
+			"payerSnapshotInfoLabel": "Thông tin người thanh toán",
+			"payerSnapshotTooltip": "Thông tin người thanh toán được lưu lại khi tạo khoản thanh toán. Sau này nếu đổi người thuê, khoản này vẫn giữ nguyên người thanh toán ban đầu.",
 			"addButton": "Thêm thanh toán",
 			"listTitle": "Lịch sử thanh toán",
 			"emptyMessage": "Chưa có thanh toán",
@@ -480,6 +487,7 @@
 			"deleteDescription": "Thanh toán này sẽ bị xóa vĩnh viễn. Không thể hoàn tác",
 			"deleteConfirm": "Xóa thanh toán",
 			"includesServices": "gồm dịch vụ",
+			"paidBy": "Người thanh toán",
 			"serviceCharges": "Phí dịch vụ",
 			"totalWithServices": "Tổng (Tiền thuê + Dịch vụ)",
 			"rent": "Tiền thuê",

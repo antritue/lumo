@@ -279,6 +279,8 @@ function buildTopology(period: string, t: SeedTexts, a: SeedAmounts): DemoSeed {
 			period,
 			rentAmount: a.rents[0],
 			status: "paid",
+			payerTenantId: "demo-tenant-1",
+			payerName: "Anh Nguyen",
 		},
 		{
 			id: "demo-pay-102",
@@ -286,6 +288,8 @@ function buildTopology(period: string, t: SeedTexts, a: SeedAmounts): DemoSeed {
 			period,
 			rentAmount: a.rents[1],
 			status: "pending",
+			payerTenantId: "demo-tenant-2",
+			payerName: "Binh Le",
 		},
 		{
 			id: "demo-pay-201",
@@ -293,6 +297,8 @@ function buildTopology(period: string, t: SeedTexts, a: SeedAmounts): DemoSeed {
 			period,
 			rentAmount: a.rents[3],
 			status: "paid",
+			payerTenantId: "demo-tenant-3",
+			payerName: "Minh Ngo",
 		},
 		{
 			id: "demo-pay-202",
@@ -300,6 +306,8 @@ function buildTopology(period: string, t: SeedTexts, a: SeedAmounts): DemoSeed {
 			period,
 			rentAmount: a.rents[4],
 			status: "pending",
+			payerTenantId: null,
+			payerName: null,
 		},
 	];
 

@@ -81,6 +81,36 @@ describe("buildDemoSeedEn", () => {
 		}
 	});
 
+	it("snapshots the current tenant onto payments", () => {
+		const seed = buildDemoSeedEn(PERIOD);
+		const payerByPaymentId = new Map(
+			seed.rentPayments.map((p) => [
+				p.id,
+				{
+					payerTenantId: p.payerTenantId,
+					payerName: p.payerName,
+				},
+			]),
+		);
+
+		expect(payerByPaymentId.get("demo-pay-101")).toEqual({
+			payerTenantId: "demo-tenant-1",
+			payerName: "Anh Nguyen",
+		});
+		expect(payerByPaymentId.get("demo-pay-102")).toEqual({
+			payerTenantId: "demo-tenant-2",
+			payerName: "Binh Le",
+		});
+		expect(payerByPaymentId.get("demo-pay-201")).toEqual({
+			payerTenantId: "demo-tenant-3",
+			payerName: "Minh Ngo",
+		});
+		expect(payerByPaymentId.get("demo-pay-202")).toEqual({
+			payerTenantId: null,
+			payerName: null,
+		});
+	});
+
 	it("links charges to valid payments, rooms, and services", () => {
 		const seed = buildDemoSeedEn(PERIOD);
 
