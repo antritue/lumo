@@ -44,6 +44,8 @@ describe("clearAllDomainStores", () => {
 					period: "2025-03",
 					rentAmount: 1000,
 					status: "pending",
+					payerTenantId: null,
+					payerName: null,
 				},
 			],
 		});

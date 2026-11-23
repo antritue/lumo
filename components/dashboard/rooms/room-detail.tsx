@@ -9,10 +9,12 @@ import type {
 	PaymentStatus,
 } from "@/components/dashboard/rent-payments/types";
 import { UpsertRentPaymentDialog } from "@/components/dashboard/rent-payments/upsert-rent-payment-dialog";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
+import { getTenantByRoomId } from "@/components/dashboard/tenants/utils";
 import { ErrorDialog } from "@/components/shared/error-dialog";
 import { DeleteRoomDialog } from "./delete-room-dialog";
 import { RoomDetailHeader } from "./room-detail-header";
-import { RoomInfo } from "./room-info";
+import { RoomDetailsSummary } from "./room-details-summary";
 import { RoomPaymentsSection } from "./room-payments-section";
 import { RoomServicesSection } from "./room-services-section";
 import { useRoomsStore } from "./store";
@@ -29,6 +31,13 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	const router = useRouter();
 	const updateRoom = useRoomsStore((state) => state.updateRoom);
 	const deleteRoom = useRoomsStore((state) => state.deleteRoom);
+	const tenant = useTenantsStore((state) =>
+		getTenantByRoomId(state.tenants, room.id),
+	);
+	const paymentPayer = {
+		tenantId: tenant?.id ?? null,
+		name: tenant?.fullName ?? null,
+	};
 
 	const {
 		paymentDialogMode,
@@ -64,7 +73,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		chargesInitialized,
 		updateServiceCharges,
 		defaultCharges,
-	} = useRoomPayments(room.id);
+	} = useRoomPayments(room.id, paymentPayer);
 
 	const handleSaveRoom = async (
 		id: string | null,
@@ -120,7 +129,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 				onDelete={openDeleteRoom}
 			/>
 
-			<RoomInfo room={room} />
+			<RoomDetailsSummary tenant={tenant ?? null} notes={room.notes} />
 
 			<RoomServicesSection roomId={room.id} propertyId={room.propertyId} />
 

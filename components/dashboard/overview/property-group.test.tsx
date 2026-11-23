@@ -22,6 +22,8 @@ const mockProperty = (
 				period: "2026-08",
 				rentAmount: 3_200_000,
 				status: "paid",
+				payerTenantId: null,
+				payerName: null,
 			},
 			charges: [],
 			total: 3_200_000,

@@ -10,6 +10,8 @@ const mockPayment = (overrides = {}) => ({
 	period: "2026-08",
 	rentAmount: 800,
 	status: "pending" as const,
+	payerTenantId: null,
+	payerName: null,
 	...overrides,
 });
 

@@ -13,6 +13,8 @@ describe("RoomPaymentsSection", () => {
 			period: "2026-01",
 			rentAmount: 1500000,
 			status: "pending",
+			payerTenantId: null,
+			payerName: null,
 		},
 		{
 			id: "2",
@@ -20,6 +22,8 @@ describe("RoomPaymentsSection", () => {
 			period: "2025-12",
 			rentAmount: 1500000,
 			status: "paid",
+			payerTenantId: null,
+			payerName: null,
 		},
 	];
 
@@ -88,6 +92,23 @@ describe("RoomPaymentsSection", () => {
 	});
 
 	describe("Interactions", () => {
+		it("explains status toggling in the info popover", async () => {
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomPaymentsSection payments={mockPayments} {...defaultProps} />,
+			);
+
+			await user.click(
+				screen.getByRole("button", { name: /status toggle help/i }),
+			);
+
+			expect(screen.getByText(/click a status badge/i)).toBeInTheDocument();
+			expect(
+				screen.queryByText(/saved when the payment is created/i),
+			).not.toBeInTheDocument();
+		});
+
 		it("calls onAdd when add button clicked", async () => {
 			const user = userEvent.setup();
 

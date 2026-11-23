@@ -286,6 +286,8 @@ describe("PropertiesStore", () => {
 						period: "2026-09",
 						rentAmount: 100,
 						status: "pending",
+						payerTenantId: null,
+						payerName: null,
 					},
 					{
 						id: "pay-2",
@@ -293,6 +295,8 @@ describe("PropertiesStore", () => {
 						period: "2026-09",
 						rentAmount: 200,
 						status: "pending",
+						payerTenantId: null,
+						payerName: null,
 					},
 				],
 				serviceChargesByPaymentId: {},

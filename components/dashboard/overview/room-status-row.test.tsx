@@ -35,6 +35,8 @@ describe("RoomStatusRow", () => {
 						period: "2026-08",
 						rentAmount: 2_000_000,
 						status: "paid",
+						payerTenantId: null,
+						payerName: null,
 					},
 					charges: [
 						{
@@ -63,6 +65,8 @@ describe("RoomStatusRow", () => {
 						period: "2026-08",
 						rentAmount: 3_200_000,
 						status: "paid",
+						payerTenantId: null,
+						payerName: null,
 					},
 				})}
 			/>,
@@ -81,6 +85,8 @@ describe("RoomStatusRow", () => {
 						period: "2026-08",
 						rentAmount: 3_200_000,
 						status: "pending",
+						payerTenantId: null,
+						payerName: null,
 					},
 				})}
 			/>,

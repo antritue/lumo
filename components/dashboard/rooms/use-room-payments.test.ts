@@ -25,6 +25,8 @@ const mockPayment = (
 	period: "2026-01",
 	rentAmount: 1500,
 	status: "pending",
+	payerTenantId: null,
+	payerName: null,
 	...overrides,
 });
 
@@ -324,6 +326,93 @@ describe("useRoomPayments", () => {
 
 			expect(result.current.defaultCharges).toHaveLength(1);
 			expect(result.current.defaultCharges[0].serviceId).toBe("svc-1");
+		});
+	});
+
+	describe("handleSavePayment", () => {
+		it("passes the current payer snapshot when creating a payment", async () => {
+			const { result } = renderHook(() =>
+				useRoomPayments(ROOM_ID, {
+					tenantId: "tenant-1",
+					name: "Anh Nguyen",
+				}),
+			);
+
+			await act(async () => {
+				await result.current.handleSavePayment(
+					null,
+					"2026-02",
+					1500,
+					"pending",
+				);
+			});
+
+			const payment = useRentPaymentsStore.getState().rentPayments[0];
+			expect(payment).toMatchObject({
+				payerTenantId: "tenant-1",
+				payerName: "Anh Nguyen",
+			});
+		});
+
+		it("passes null payer fields when the room is vacant", async () => {
+			const { result } = renderHook(() => useRoomPayments(ROOM_ID));
+
+			await act(async () => {
+				await result.current.handleSavePayment(
+					null,
+					"2026-02",
+					1500,
+					"pending",
+				);
+			});
+
+			const payment = useRentPaymentsStore.getState().rentPayments[0];
+			expect(payment).toMatchObject({
+				payerTenantId: null,
+				payerName: null,
+			});
+		});
+
+		it("updates an existing payment without replacing its payer snapshot", async () => {
+			useRentPaymentsStore.setState({
+				rentPayments: [
+					mockPayment({
+						id: "payment-1",
+						period: "2026-01",
+						rentAmount: 1500,
+						status: "pending",
+						payerTenantId: "tenant-1",
+						payerName: "Anh Nguyen",
+					}),
+				],
+			});
+
+			const { result } = renderHook(() =>
+				useRoomPayments(ROOM_ID, {
+					tenantId: "tenant-2",
+					name: "New Tenant",
+				}),
+			);
+
+			await act(async () => {
+				await result.current.handleSavePayment(
+					"payment-1",
+					"2026-03",
+					1800,
+					"paid",
+				);
+			});
+
+			const payments = useRentPaymentsStore.getState().rentPayments;
+			expect(payments).toHaveLength(1);
+			expect(payments[0]).toMatchObject({
+				id: "payment-1",
+				period: "2026-03",
+				rentAmount: 1800,
+				status: "paid",
+				payerTenantId: "tenant-1",
+				payerName: "Anh Nguyen",
+			});
 		});
 	});
 

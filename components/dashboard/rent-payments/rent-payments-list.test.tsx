@@ -28,6 +28,8 @@ describe("RentPaymentsList", () => {
 			rentAmount: 5000000,
 			roomId: "room-1",
 			status: "pending",
+			payerTenantId: null,
+			payerName: null,
 		},
 		{
 			id: "2",
@@ -35,6 +37,8 @@ describe("RentPaymentsList", () => {
 			rentAmount: 4500000,
 			roomId: "room-1",
 			status: "paid",
+			payerTenantId: null,
+			payerName: null,
 		},
 	];
 
@@ -164,6 +168,78 @@ describe("RentPaymentsList", () => {
 			expect(screen.getByText("Electricity")).toBeInTheDocument();
 			expect(screen.getByText("₫75")).toBeInTheDocument();
 			expect(screen.getByText(/500 kWh.*₫0/)).toBeInTheDocument();
+		});
+
+		it("shows the payer snapshot in expanded details", async () => {
+			const user = userEvent.setup();
+			const payment = {
+				...mockPayments[0],
+				payerTenantId: "tenant-1",
+				payerName: "Anh Nguyen",
+			};
+
+			renderWithProviders(
+				<RentPaymentsList
+					payments={[payment]}
+					serviceChargesByPeriod={mockCharges}
+					{...defaultProps}
+				/>,
+			);
+
+			await user.click(screen.getByRole("button", { name: /01-2026/i }));
+
+			const paidByLabel = screen.getByText("Paid by");
+			expect(paidByLabel).toBeInTheDocument();
+			expect(screen.getByText("Anh Nguyen")).toBeInTheDocument();
+			expect(paidByLabel.parentElement).toHaveClass("text-sm");
+
+			const detailText =
+				screen.getByText("Rent").closest(".space-y-2")?.textContent ?? "";
+			expect(detailText.indexOf("Paid by")).toBeGreaterThan(
+				detailText.indexOf("Electricity"),
+			);
+		});
+
+		it("explains the payer snapshot from the payer row", async () => {
+			const user = userEvent.setup();
+			const payment = {
+				...mockPayments[0],
+				payerTenantId: "tenant-1",
+				payerName: "Anh Nguyen",
+			};
+
+			renderWithProviders(
+				<RentPaymentsList
+					payments={[payment]}
+					serviceChargesByPeriod={mockCharges}
+					{...defaultProps}
+				/>,
+			);
+
+			await user.click(screen.getByRole("button", { name: /01-2026/i }));
+			await user.click(
+				screen.getByRole("button", { name: /payer snapshot help/i }),
+			);
+
+			expect(
+				screen.getByText(/saved when the payment is created/i),
+			).toBeInTheDocument();
+		});
+
+		it("omits the payer line when the payment has no payer snapshot", async () => {
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RentPaymentsList
+					payments={[mockPayments[0]]}
+					serviceChargesByPeriod={mockCharges}
+					{...defaultProps}
+				/>,
+			);
+
+			await user.click(screen.getByRole("button", { name: /01-2026/i }));
+
+			expect(screen.queryByText(/paid by/i)).not.toBeInTheDocument();
 		});
 
 		it("collapses expanded payment when clicked again", async () => {

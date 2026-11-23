@@ -19,6 +19,8 @@ interface RentPaymentsState {
 		period: string,
 		rentAmount: number,
 		status?: PaymentStatus,
+		payerTenantId?: string | null,
+		payerName?: string | null,
 	) => Promise<string>;
 	updateRentPayment: (
 		id: string,
@@ -96,6 +98,8 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 				period,
 				rentAmount,
 				status = "pending",
+				payerTenantId = null,
+				payerName = null,
 			) => {
 				const user = useAuthStore.getState().user;
 
@@ -108,6 +112,8 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 							period,
 							rentAmount,
 							status,
+							payerTenantId,
+							payerName,
 						}),
 						credentials: "include",
 					});
@@ -136,6 +142,8 @@ export const useRentPaymentsStore = create<RentPaymentsState>()(
 								period,
 								rentAmount,
 								status,
+								payerTenantId,
+								payerName,
 							},
 						],
 					}));

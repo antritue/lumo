@@ -21,6 +21,8 @@ const mockPayment = (
 	period: "2026-01",
 	rentAmount: 1500,
 	status: "pending",
+	payerTenantId: null,
+	payerName: null,
 	...overrides,
 });
 
@@ -167,10 +169,17 @@ describe("RentPaymentsStore", () => {
 	});
 
 	describe("createRentPayment", () => {
-		it("creates a payment locally when unauthenticated", async () => {
+		it("creates a payment locally with a payer snapshot when unauthenticated", async () => {
 			await useRentPaymentsStore
 				.getState()
-				.createRentPayment("room-1", "2025-03", 1200);
+				.createRentPayment(
+					"room-1",
+					"2025-03",
+					1200,
+					"pending",
+					"tenant-1",
+					"Anh Nguyen",
+				);
 
 			const { rentPayments } = useRentPaymentsStore.getState();
 			expect(rentPayments).toHaveLength(1);
@@ -178,6 +187,8 @@ describe("RentPaymentsStore", () => {
 				mockPayment({
 					period: "2025-03",
 					rentAmount: 1200,
+					payerTenantId: "tenant-1",
+					payerName: "Anh Nguyen",
 				}),
 			);
 			expect(mockFetch).not.toHaveBeenCalled();
@@ -224,6 +235,8 @@ describe("RentPaymentsStore", () => {
 						period: "2025-03",
 						rentAmount: 1200,
 						status: "paid",
+						payerTenantId: null,
+						payerName: null,
 					}),
 				}),
 			);
@@ -251,13 +264,15 @@ describe("RentPaymentsStore", () => {
 	});
 
 	describe("updateRentPayment", () => {
-		it("updates payment locally when unauthenticated", async () => {
+		it("updates payment locally and preserves the payer snapshot", async () => {
 			useRentPaymentsStore.setState({
 				rentPayments: [
 					mockPayment({
 						id: "payment-1",
 						period: "2025-03",
 						rentAmount: 1200,
+						payerTenantId: "tenant-1",
+						payerName: "Anh Nguyen",
 					}),
 					mockPayment({
 						id: "payment-2",
@@ -280,6 +295,8 @@ describe("RentPaymentsStore", () => {
 					period: "2025-05",
 					rentAmount: 1500,
 					status: "paid",
+					payerTenantId: "tenant-1",
+					payerName: "Anh Nguyen",
 				}),
 			);
 			expect(updatedPayments.find((p) => p.id === "payment-2")).toEqual(

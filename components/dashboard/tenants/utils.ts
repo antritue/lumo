@@ -14,6 +14,14 @@ export function compareNatural(a: string, b: string): number {
 	return naturalCollator.compare(a, b);
 }
 
+export function getTenantByRoomId(
+	tenants: Tenant[],
+	roomId: string | null,
+): Tenant | undefined {
+	if (!roomId) return undefined;
+	return tenants.find((tenant) => tenant.roomId === roomId);
+}
+
 export function getTenantSearchText(
 	tenant: Tenant,
 	roomName: string | null,

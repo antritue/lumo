@@ -35,6 +35,8 @@ const mockPayment = (
 	period: "2026-08",
 	rentAmount: 800,
 	status: "pending",
+	payerTenantId: null,
+	payerName: null,
 	...overrides,
 });
 
