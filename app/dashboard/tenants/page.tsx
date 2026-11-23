@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { usePropertiesStore } from "@/components/dashboard/properties/store";
+import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { TenantEmptyState } from "@/components/dashboard/tenants/empty-state";
 import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { TenantList } from "@/components/dashboard/tenants/tenant-list";
@@ -18,14 +20,19 @@ export default function TenantsPage() {
 		(state) => state.isTenantsFetchFailed,
 	);
 	const fetchTenants = useTenantsStore((state) => state.fetchTenants);
+	const fetchProperties = usePropertiesStore((state) => state.fetchProperties);
+	const fetchAllRooms = useRoomsStore((state) => state.fetchAllRooms);
 	const user = useAuthStore((state) => state.user);
 	const authLoading = useAuthStore((state) => state.loading);
 
 	useEffect(() => {
-		if (user) {
-			fetchTenants();
-		}
-	}, [user, fetchTenants]);
+		if (!user) return;
+		void Promise.allSettled([
+			fetchTenants(),
+			fetchProperties(),
+			fetchAllRooms(),
+		]);
+	}, [user, fetchTenants, fetchProperties, fetchAllRooms]);
 
 	let content: React.JSX.Element;
 	if (isTenantsFetchFailed && !isTenantsLoading) {

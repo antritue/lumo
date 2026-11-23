@@ -142,6 +142,25 @@ components:
         - roomId
         - fullName
 
+    TenantInput:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        roomId:
+          type: ["string", "null"]
+          format: uuid
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+          format: email
+        notes:
+          type: ["string", "null"]
+      required:
+        - fullName
+
     RentPayment:
       type: object
       properties:
@@ -822,6 +841,44 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+    post:
+      summary: Create tenant
+      description: Creates a new tenant for the authenticated user
+      operationId: createTenant
+      tags:
+        - Tenants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TenantInput"
+      responses:
+        "201":
+          description: Tenant created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tenant"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Room already has an active tenant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /api/overview:
     get:
       summary: Get rent overview for a period
@@ -858,15 +915,15 @@ paths:
   /api/rooms:
     get:
       summary: List rooms
-      description: Returns all rooms for a specific property
+      description: Returns rooms for the authenticated user, optionally filtered by property
       operationId: listRooms
       tags:
         - Rooms
       parameters:
         - name: propertyId
           in: query
-          required: true
-          description: Property UUID to filter rooms by
+          required: false
+          description: Optional property UUID to filter rooms by. Omit to return all rooms.
           schema:
             type: string
             format: uuid
@@ -879,14 +936,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Room"
-        "400":
-          description: Missing propertyId
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                error: propertyId is required
         "401":
           $ref: "#/components/responses/Unauthorized"
         "500":

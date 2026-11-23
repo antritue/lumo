@@ -37,11 +37,93 @@ describe("RoomsStore", () => {
 			isRoomsLoading: false,
 			fetchingPropertyId: null,
 			fetchingRoomId: null,
+			isFetchingAllRooms: false,
+			hasAllRoomsFetched: false,
 			isRoomsFetchFailed: false,
 		});
 		useTenantsStore.setState({ tenants: [] });
 		useAuthStore.setState({ user: null });
 		mockFetch.mockReset();
+	});
+
+	describe("fetchAllRooms", () => {
+		it("does not fetch when unauthenticated", async () => {
+			await useRoomsStore.getState().fetchAllRooms();
+
+			expect(mockFetch).not.toHaveBeenCalled();
+			expect(useRoomsStore.getState().isRoomsLoading).toBe(false);
+		});
+
+		it("fetches and replaces rooms when authenticated", async () => {
+			authenticate();
+
+			useRoomsStore.setState({
+				rooms: [mockRoom({ id: "stale", name: "Stale Room" })],
+			});
+
+			const mockResponse = [
+				mockRoom({ id: "r1", propertyId: "prop-1", name: "Room 1" }),
+				mockRoom({ id: "r2", propertyId: "prop-2", name: "Room 2" }),
+			];
+
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => mockResponse,
+			});
+
+			await useRoomsStore.getState().fetchAllRooms();
+
+			const { rooms, isRoomsLoading, isFetchingAllRooms } =
+				useRoomsStore.getState();
+			expect(rooms).toEqual(mockResponse);
+			expect(isRoomsLoading).toBe(false);
+			expect(isFetchingAllRooms).toBe(false);
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rooms",
+				expect.objectContaining({
+					method: "GET",
+					credentials: "include",
+				}),
+			);
+		});
+
+		it("deduplicates concurrent fetches", async () => {
+			authenticate();
+
+			mockFetch.mockResolvedValue({
+				ok: true,
+				json: async () => [mockRoom({ id: "r1", name: "Room 1" })],
+			});
+
+			await Promise.all([
+				useRoomsStore.getState().fetchAllRooms(),
+				useRoomsStore.getState().fetchAllRooms(),
+			]);
+
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+		});
+
+		it("handles fetch error gracefully", async () => {
+			authenticate();
+
+			mockFetch.mockResolvedValueOnce({ ok: false });
+
+			const consoleSpy = mockErrorConsole();
+
+			await expect(useRoomsStore.getState().fetchAllRooms()).rejects.toThrow(
+				"Failed to fetch rooms",
+			);
+
+			const { rooms, isRoomsLoading, isFetchingAllRooms, isRoomsFetchFailed } =
+				useRoomsStore.getState();
+			expect(rooms).toEqual([]);
+			expect(isRoomsLoading).toBe(false);
+			expect(isFetchingAllRooms).toBe(false);
+			expect(isRoomsFetchFailed).toBe(true);
+			expect(consoleSpy).toHaveBeenCalled();
+
+			consoleSpy.mockRestore();
+		});
 	});
 
 	describe("fetchRoomsByPropertyId", () => {
@@ -596,6 +678,8 @@ describe("RoomsStore", () => {
 				isRoomsLoading: true,
 				fetchingPropertyId: "prop-1",
 				fetchingRoomId: "room-1",
+				isFetchingAllRooms: true,
+				hasAllRoomsFetched: true,
 				isRoomsFetchFailed: true,
 			});
 
@@ -606,6 +690,8 @@ describe("RoomsStore", () => {
 			expect(state.isRoomsLoading).toBe(false);
 			expect(state.fetchingPropertyId).toBeNull();
 			expect(state.fetchingRoomId).toBeNull();
+			expect(state.isFetchingAllRooms).toBe(false);
+			expect(state.hasAllRoomsFetched).toBe(false);
 			expect(state.isRoomsFetchFailed).toBe(false);
 		});
 	});

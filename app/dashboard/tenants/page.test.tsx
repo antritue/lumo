@@ -1,16 +1,24 @@
 import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
+import { usePropertiesStore } from "@/components/dashboard/properties/store";
+import { useRoomsStore } from "@/components/dashboard/rooms/store";
 import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { renderWithProviders } from "@/test/render";
 import TenantsPage from "./page";
 
 const realFetchTenants = useTenantsStore.getState().fetchTenants;
+const realFetchProperties = usePropertiesStore.getState().fetchProperties;
+const realFetchAllRooms = useRoomsStore.getState().fetchAllRooms;
 
 describe("TenantsPage", () => {
 	beforeEach(() => {
 		useTenantsStore.getState().clearStore();
+		usePropertiesStore.getState().clearStore();
+		useRoomsStore.getState().clearStore();
 		useTenantsStore.setState({ fetchTenants: realFetchTenants });
+		usePropertiesStore.setState({ fetchProperties: realFetchProperties });
+		useRoomsStore.setState({ fetchAllRooms: realFetchAllRooms });
 		useAuthStore.setState({ user: null, loading: false });
 	});
 
@@ -43,6 +51,8 @@ describe("TenantsPage", () => {
 			hasTenantsFetched: false,
 			fetchTenants: async () => {},
 		});
+		usePropertiesStore.setState({ fetchProperties: async () => {} });
+		useRoomsStore.setState({ fetchAllRooms: async () => {} });
 
 		const { container } = renderWithProviders(<TenantsPage />);
 
