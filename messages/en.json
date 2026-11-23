@@ -372,7 +372,7 @@
 			"emptyActiveSubtitle": "Tenants appear here once they are assigned to a room",
 			"viewInactive": "View inactive tenants",
 			"emptyInactiveTitle": "No inactive tenants",
-			"emptyInactiveSubtitle": "Tenants removed from a room stay here so you keep their contact details",
+			"emptyInactiveSubtitle": "Tenants without a room stay here so you keep their contact details",
 			"noResultsTitle": "No tenants match your search",
 			"noResultsSubtitle": "Try a different name, phone number, or room",
 			"columns": {

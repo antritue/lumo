@@ -22,18 +22,14 @@ export async function listRooms(request: NextRequest) {
 		const { searchParams } = new URL(request.url);
 		const propertyId = searchParams.get("propertyId");
 
-		if (!propertyId) {
-			return NextResponse.json(
-				{ error: "propertyId is required" },
-				{ status: 400 },
-			);
-		}
-
-		const { data, error } = await supabase
+		const query = supabase
 			.from(DATABASE_TABLES.ROOMS)
 			.select("*")
-			.eq("user_id", user.id)
-			.eq("property_id", propertyId);
+			.eq("user_id", user.id);
+
+		const { data, error } = propertyId
+			? await query.eq("property_id", propertyId)
+			: await query;
 
 		if (error) {
 			throw error;

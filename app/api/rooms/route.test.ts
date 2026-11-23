@@ -103,15 +103,49 @@ describe("GET /api/rooms", () => {
 		expect(data.error).toBe("Unauthorized");
 	});
 
-	it("should return 400 when propertyId is missing", async () => {
+	it("should return 200 with all rooms when propertyId is omitted", async () => {
 		mockAuthenticatedUser();
+		const mockRooms = [
+			{
+				id: "room-1",
+				name: "Room A",
+				property_id: "prop-1",
+				user_id: "test-user-id",
+			},
+			{
+				id: "room-2",
+				name: "Room B",
+				property_id: "prop-2",
+				user_id: "test-user-id",
+			},
+		];
+		mockEq.mockResolvedValueOnce({
+			data: mockRooms,
+			error: null,
+		});
 
 		const req = createRequest();
 		const res = await listRooms(req);
 		const data = await res.json();
 
-		expect(res.status).toBe(400);
-		expect(data.error).toBe("propertyId is required");
+		expect(res.status).toBe(200);
+		expect(data).toEqual([
+			{
+				id: "room-1",
+				name: "Room A",
+				propertyId: "prop-1",
+				userId: "test-user-id",
+			},
+			{
+				id: "room-2",
+				name: "Room B",
+				propertyId: "prop-2",
+				userId: "test-user-id",
+			},
+		]);
+		expect(mockSelect).toHaveBeenCalledWith("*");
+		expect(mockEq).toHaveBeenCalledWith("user_id", "test-user-id");
+		expect(mockEq2).not.toHaveBeenCalled();
 	});
 
 	it("should return 500 when database error occurs", async () => {

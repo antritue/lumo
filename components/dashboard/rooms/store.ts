@@ -17,8 +17,11 @@ interface RoomsState {
 	isRoomsFetchFailed: boolean;
 	fetchingPropertyId: string | null; // dedup: prevents duplicate room fetches for the same property (StrictMode, auto-select, etc.)
 	fetchingRoomId: string | null; // dedup: prevents duplicate room fetches for the same room (StrictMode)
+	isFetchingAllRooms: boolean; // dedup: prevents duplicate fetches of the full room list (StrictMode)
+	hasAllRoomsFetched: boolean; // dedup: prevents refetching the full room list on every navigation
 
 	// Actions
+	fetchAllRooms: () => Promise<void>;
 	fetchRoomsByPropertyId: (propertyId: string) => Promise<void>;
 	fetchRoomById: (roomId: string) => Promise<void>;
 	createRoom: (
@@ -46,6 +49,8 @@ export const useRoomsStore = create<RoomsState>()(
 			isRoomsLoading: false,
 			fetchingPropertyId: null,
 			fetchingRoomId: null,
+			isFetchingAllRooms: false,
+			hasAllRoomsFetched: false,
 			isRoomsFetchFailed: false,
 
 			fetchRoomById: async (roomId) => {
@@ -86,6 +91,47 @@ export const useRoomsStore = create<RoomsState>()(
 						fetchingRoomId: null,
 						isRoomsFetchFailed: true,
 					});
+				}
+			},
+
+			fetchAllRooms: async () => {
+				const user = useAuthStore.getState().user;
+				if (!user) return;
+
+				const { isFetchingAllRooms, hasAllRoomsFetched } = get();
+				if (isFetchingAllRooms || hasAllRoomsFetched) return;
+
+				try {
+					set({
+						isRoomsLoading: true,
+						isFetchingAllRooms: true,
+						isRoomsFetchFailed: false,
+					});
+					const res = await fetch("/api/rooms", {
+						method: "GET",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						throw new Error("Failed to fetch rooms");
+					}
+
+					const data = await res.json();
+
+					set({
+						rooms: data,
+						isRoomsLoading: false,
+						isFetchingAllRooms: false,
+						hasAllRoomsFetched: true,
+					});
+				} catch (error) {
+					console.error("Failed to fetch rooms:", error);
+					set({
+						isRoomsLoading: false,
+						isFetchingAllRooms: false,
+						isRoomsFetchFailed: true,
+					});
+					throw error;
 				}
 			},
 
@@ -256,6 +302,8 @@ export const useRoomsStore = create<RoomsState>()(
 					isRoomsLoading: false,
 					fetchingPropertyId: null,
 					fetchingRoomId: null,
+					isFetchingAllRooms: false,
+					hasAllRoomsFetched: false,
 					isRoomsFetchFailed: false,
 				}),
 
