@@ -78,7 +78,15 @@ export function DeleteTenantDialog({
 				) : (
 					<div className="space-y-4">
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							{t("deleteDialog.message", { name: tenant.fullName })}
+							{t.rich("deleteDialog.message", {
+								name: tenant.fullName,
+								strong: (chunks) => (
+									<strong className="font-semibold text-foreground">
+										{chunks}
+									</strong>
+								),
+							})}
+							{tenant.roomId ? ` ${t("deleteDialog.roomNote")}` : null}
 						</p>
 
 						<div className="flex gap-3">

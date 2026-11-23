@@ -408,7 +408,8 @@
 			},
 			"deleteDialog": {
 				"title": "Delete tenant?",
-				"message": "Delete {name}'s contact record? This cannot be undone. The room becomes available and payment records stay with the room",
+				"message": "Delete <strong>{name}</strong>'s contact record? This cannot be undone.",
+				"roomNote": "The room becomes available and payment records stay with the room",
 				"confirm": "Delete tenant",
 				"cancel": "Cancel"
 			},

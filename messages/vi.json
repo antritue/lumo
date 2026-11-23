@@ -382,7 +382,8 @@
 			},
 			"deleteDialog": {
 				"title": "Xóa người thuê?",
-				"message": "Xóa thông tin liên hệ của {name}? Không thể hoàn tác. Phòng sẽ trống và các khoản thanh toán vẫn gắn với phòng",
+				"message": "Xóa thông tin liên hệ của <strong>{name}</strong>? Không thể hoàn tác.",
+				"roomNote": "Phòng sẽ trống và các khoản thanh toán vẫn gắn với phòng",
 				"confirm": "Xóa người thuê",
 				"cancel": "Hủy"
 			},

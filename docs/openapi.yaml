@@ -879,6 +879,32 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /api/tenants/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Tenant UUID
+        schema:
+          type: string
+          format: uuid
+
+    delete:
+      summary: Delete tenant
+      description: Deletes a tenant belonging to the authenticated user
+      operationId: deleteTenant
+      tags:
+        - Tenants
+      responses:
+        "204":
+          description: Tenant deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /api/overview:
     get:
       summary: Get rent overview for a period
