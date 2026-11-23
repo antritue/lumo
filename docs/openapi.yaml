@@ -161,6 +161,23 @@ components:
       required:
         - fullName
 
+    TenantUpdateInput:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        roomId:
+          type: ["string", "null"]
+          format: uuid
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+          format: email
+        notes:
+          type: ["string", "null"]
+
     RentPayment:
       type: object
       properties:
@@ -888,6 +905,44 @@ paths:
         schema:
           type: string
           format: uuid
+
+    patch:
+      summary: Update tenant
+      description: Updates an existing tenant. All fields are optional.
+      operationId: updateTenant
+      tags:
+        - Tenants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TenantUpdateInput"
+      responses:
+        "200":
+          description: Tenant updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tenant"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Tenant or room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Room already has an active tenant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     delete:
       summary: Delete tenant
