@@ -1,6 +1,7 @@
 export const DATABASE_TABLES = {
 	PROPERTIES: "properties",
 	ROOMS: "rooms",
+	TENANTS: "tenants",
 	RENT_PAYMENTS: "rent_payments",
 	RENT_PAYMENT_CHARGES: "rent_payment_charges",
 	PROPERTY_SERVICES: "property_services",

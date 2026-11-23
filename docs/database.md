@@ -115,6 +115,22 @@ Stores information about rooms within properties.
 |      | `monthly_rent` | `numeric` | Optional monthly rent amount for the room.           |
 |      | `notes`        | `text`    | Optional additional notes about the room.            |
 
+### `tenants`
+
+Stores tenant contact records. A tenant is either active (assigned to a room) or inactive (`room_id` is `NULL`). At most one active tenant can be assigned to a room; the unique index on `room_id` enforces this while allowing any number of inactive tenants.
+
+| Key  | Column       | Type          | Description                                                                    |
+| :--- | :----------- | :------------ | :----------------------------------------------------------------------------- |
+| `PK` | `id`         | `uuid`        | Primary Key (Default: `gen_random_uuid()`)                                     |
+| `FK` | `user_id`    | `uuid`        | Foreign Key to `auth.users(id)`.                                               |
+| `FK` | `room_id`    | `uuid`        | Foreign Key to `rooms(id)`. Set to `NULL` on room delete. Unique when set.     |
+|      | `full_name`  | `text`        | The tenant's full name.                                                        |
+|      | `phone`      | `text`        | Optional contact phone number.                                                 |
+|      | `email`      | `text`        | Optional contact email address.                                                |
+|      | `notes`      | `text`        | Optional additional notes about the tenant.                                    |
+|      | `created_at` | `timestamptz` | When the tenant was recorded (Default: `now()`).                               |
+|      | `updated_at` | `timestamptz` | When the tenant was last modified (Default: `now()`, auto-updated by trigger). |
+
 ### `property_services`
 
 Stores property-level service configurations (the master catalog). Each row defines a service assigned to a property with its own name, pricing type, and amount. Rooms inherit these services by default; room-level rows in `room_service_overrides` only exist when a room deviates from the property default.
@@ -214,7 +230,7 @@ When a user deletes their account, data is cleaned up in FK-safe order:
 
 ```
 rent_payment_charges → rent_payments → room_service_overrides
-→ rooms → property_services → properties
+→ tenants → rooms → property_services → properties
 → user_entitlements
 ```
 
