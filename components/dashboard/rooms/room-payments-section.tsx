@@ -2,6 +2,7 @@
 
 import { Info, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { getPaymentStatusBadgeClasses } from "@/components/dashboard/rent-payments/payment-status-badge";
 import { RentPaymentsList } from "@/components/dashboard/rent-payments/rent-payments-list";
 import type {
 	PaymentRecord,
@@ -66,7 +67,28 @@ export function RoomPaymentsSection({
 							align="start"
 							className="max-w-64 text-xs leading-relaxed space-y-2"
 						>
-							<p>{t("statusToggleTooltip")}</p>
+							<p>
+								{t.rich("statusToggleTooltip", {
+									pending: (chunks) => (
+										<span
+											className={getPaymentStatusBadgeClasses("pending", {
+												interactive: false,
+											})}
+										>
+											{chunks}
+										</span>
+									),
+									paid: (chunks) => (
+										<span
+											className={getPaymentStatusBadgeClasses("paid", {
+												interactive: false,
+											})}
+										>
+											{chunks}
+										</span>
+									),
+								})}
+							</p>
 						</PopoverContent>
 					</Popover>
 					<div className="flex-1" />
