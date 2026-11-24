@@ -2,7 +2,10 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test/render";
-import { PaymentStatusBadge } from "./payment-status-badge";
+import {
+	getPaymentStatusBadgeClasses,
+	PaymentStatusBadge,
+} from "./payment-status-badge";
 
 describe("PaymentStatusBadge", () => {
 	it("displays pending status", () => {
@@ -58,5 +61,26 @@ describe("PaymentStatusBadge", () => {
 
 		await user.click(screen.getByText("Pending"));
 		expect(handleClick).toHaveBeenCalledTimes(1);
+	});
+});
+
+describe("getPaymentStatusBadgeClasses", () => {
+	it("includes interactive styles by default", () => {
+		const classes = getPaymentStatusBadgeClasses("paid");
+
+		expect(classes).toContain("text-green-500");
+		expect(classes).toContain("cursor-pointer");
+		expect(classes).toContain("hover:bg-green-500/10");
+	});
+
+	it("omits interactive styles for presentational chips", () => {
+		const classes = getPaymentStatusBadgeClasses("pending", {
+			interactive: false,
+		});
+
+		expect(classes).toContain("border-amber-500/40");
+		expect(classes).toContain("text-amber-500");
+		expect(classes).not.toContain("cursor-pointer");
+		expect(classes).not.toContain("hover:bg-amber-500/10");
 	});
 });

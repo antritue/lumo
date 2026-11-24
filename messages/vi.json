@@ -474,7 +474,7 @@
 				}
 			},
 			"statusToggleInfoLabel": "Hướng dẫn chuyển đổi trạng thái",
-			"statusToggleTooltip": "Nhấn vào trạng thái để chuyển đổi nhanh giữa Chưa thanh toán và Đã thanh toán.",
+			"statusToggleTooltip": "Nhấn vào trạng thái để chuyển đổi nhanh giữa <pending>Chưa thanh toán</pending> và <paid>Đã thanh toán</paid>.",
 			"payerSnapshotInfoLabel": "Thông tin người thanh toán",
 			"payerSnapshotTooltip": "Thông tin người thanh toán được lưu lại khi tạo khoản thanh toán. Sau này nếu đổi người thuê, khoản này vẫn giữ nguyên người thanh toán ban đầu.",
 			"addButton": "Thêm thanh toán",

@@ -1,6 +1,7 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { getPaymentStatusBadgeClasses } from "@/components/dashboard/rent-payments/payment-status-badge";
 import type { PaymentRecord } from "@/components/dashboard/rent-payments/types";
 import { renderWithProviders } from "@/test/render";
 import { RoomPaymentsSection } from "./room-payments-section";
@@ -107,6 +108,31 @@ describe("RoomPaymentsSection", () => {
 			expect(
 				screen.queryByText(/saved when the payment is created/i),
 			).not.toBeInTheDocument();
+		});
+
+		it("renders status words as styled chips in the info popover", async () => {
+			const user = userEvent.setup();
+
+			renderWithProviders(
+				<RoomPaymentsSection payments={mockPayments} {...defaultProps} />,
+			);
+
+			await user.click(
+				screen.getByRole("button", { name: /status toggle help/i }),
+			);
+
+			const tooltip = within(screen.getByRole("dialog"));
+			const pending = tooltip.getByText("Pending");
+			const paid = tooltip.getByText("Paid");
+
+			expect(pending.tagName).toBe("SPAN");
+			expect(paid.tagName).toBe("SPAN");
+			expect(pending.className).toBe(
+				getPaymentStatusBadgeClasses("pending", { interactive: false }),
+			);
+			expect(paid.className).toBe(
+				getPaymentStatusBadgeClasses("paid", { interactive: false }),
+			);
 		});
 
 		it("calls onAdd when add button clicked", async () => {

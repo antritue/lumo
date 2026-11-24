@@ -500,7 +500,7 @@
 				}
 			},
 			"statusToggleInfoLabel": "Status toggle help",
-			"statusToggleTooltip": "Click a status badge to toggle between Pending and Paid without opening the edit dialog.",
+			"statusToggleTooltip": "Click a status badge to toggle between <pending>Pending</pending> and <paid>Paid</paid> without opening the edit dialog.",
 			"payerSnapshotInfoLabel": "Payer snapshot help",
 			"payerSnapshotTooltip": "The payer is saved when the payment is created. Changing the tenant later won't change who paid for this record.",
 			"addButton": "Add payment record",
