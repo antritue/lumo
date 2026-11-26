@@ -25,7 +25,7 @@ interface OverviewState {
 	fetchingPeriod: string | null;
 	togglingPaymentId: string | null;
 
-	fetchOverview: (period: string, force?: boolean) => Promise<void>;
+	fetchOverview: (period: string) => Promise<void>;
 	togglePaymentStatus: (payment: PaymentRecord) => Promise<void>;
 	clearStore: () => void;
 }
@@ -62,10 +62,10 @@ export const useOverviewStore = create<OverviewState>()(
 			fetchingPeriod: null,
 			togglingPaymentId: null,
 
-			fetchOverview: async (period: string, force?: boolean) => {
+			fetchOverview: async (period: string) => {
 				const user = useAuthStore.getState().user;
 				const { fetchingPeriod } = get();
-				if (!force && fetchingPeriod === period) return;
+				if (fetchingPeriod === period) return;
 
 				if (!user) {
 					const { snapshot, summary } = recomputeSnapshot(period);

@@ -40,7 +40,7 @@ export default function OverviewPage() {
 	useEffect(() => {
 		if (authLoading) return;
 		void userId;
-		fetchOverview(period, true);
+		fetchOverview(period);
 	}, [period, fetchOverview, userId, authLoading]);
 
 	let content: React.JSX.Element;
