@@ -297,6 +297,138 @@ describe("TenantsStore", () => {
 		});
 	});
 
+	describe("fetchTenantByRoomId", () => {
+		it("does not fetch when unauthenticated", async () => {
+			await useTenantsStore.getState().fetchTenantByRoomId("room-1");
+
+			expect(mockFetch).not.toHaveBeenCalled();
+			expect(useTenantsStore.getState().fetchingTenantRoomId).toBeNull();
+		});
+
+		it("does not fetch when the full tenant list is already loaded", async () => {
+			authenticate();
+			useTenantsStore.setState({ hasTenantsFetched: true });
+
+			await useTenantsStore.getState().fetchTenantByRoomId("room-1");
+
+			expect(mockFetch).not.toHaveBeenCalled();
+		});
+
+		it("fetches a different room while another room tenant is loading", async () => {
+			authenticate();
+			let resolveRoomOne!: (value: unknown) => void;
+			mockFetch.mockImplementation((input: RequestInfo | URL) => {
+				const url = String(input);
+				if (url === "/api/rooms/room-1/tenant") {
+					return new Promise((resolve) => {
+						resolveRoomOne = resolve;
+					});
+				}
+				return Promise.resolve({
+					ok: true,
+					json: async () => mockTenant({ id: "tenant-2", roomId: "room-2" }),
+				});
+			});
+
+			const roomOneFetch = useTenantsStore
+				.getState()
+				.fetchTenantByRoomId("room-1");
+			await useTenantsStore.getState().fetchTenantByRoomId("room-2");
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rooms/room-2/tenant",
+				expect.objectContaining({ method: "GET" }),
+			);
+			expect(useTenantsStore.getState().tenants).toContainEqual(
+				expect.objectContaining({ id: "tenant-2", roomId: "room-2" }),
+			);
+
+			resolveRoomOne({
+				ok: true,
+				json: async () => mockTenant({ id: "tenant-1", roomId: "room-1" }),
+			});
+			await roomOneFetch;
+		});
+
+		it("fetches one tenant and merges it into the store", async () => {
+			authenticate();
+			useTenantsStore.setState({
+				tenants: [
+					mockTenant({ id: "old-tenant", roomId: "room-1" }),
+					mockTenant({ id: "other-tenant", roomId: "room-2" }),
+				],
+			});
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () =>
+					mockTenant({
+						id: "tenant-2",
+						roomId: "room-1",
+						fullName: "Binh Le",
+					}),
+			});
+
+			await useTenantsStore.getState().fetchTenantByRoomId("room-1");
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rooms/room-1/tenant",
+				expect.objectContaining({ method: "GET" }),
+			);
+			const tenants = useTenantsStore.getState().tenants;
+			expect(tenants).toHaveLength(2);
+			expect(tenants).toContainEqual(
+				expect.objectContaining({
+					id: "tenant-2",
+					roomId: "room-1",
+					fullName: "Binh Le",
+				}),
+			);
+			expect(tenants).toContainEqual(
+				expect.objectContaining({ id: "other-tenant", roomId: "room-2" }),
+			);
+			expect(useTenantsStore.getState().fetchingTenantRoomId).toBeNull();
+		});
+
+		it("removes a stale tenant when the room has no active tenant", async () => {
+			authenticate();
+			useTenantsStore.setState({
+				tenants: [
+					mockTenant({ id: "old-tenant", roomId: "room-1" }),
+					mockTenant({ id: "other-tenant", roomId: "room-2" }),
+				],
+			});
+			mockFetch.mockResolvedValueOnce({
+				ok: true,
+				json: async () => null,
+			});
+
+			await useTenantsStore.getState().fetchTenantByRoomId("room-1");
+
+			const tenants = useTenantsStore.getState().tenants;
+			expect(tenants).toHaveLength(1);
+			expect(tenants[0]).toMatchObject({
+				id: "other-tenant",
+				roomId: "room-2",
+			});
+		});
+
+		it("handles fetch error gracefully", async () => {
+			authenticate();
+			mockFetch.mockResolvedValueOnce({ ok: false });
+			const consoleSpy = vi
+				.spyOn(console, "error")
+				.mockImplementation(() => {});
+
+			await expect(
+				useTenantsStore.getState().fetchTenantByRoomId("room-1"),
+			).rejects.toThrow("Failed to fetch room tenant");
+
+			expect(useTenantsStore.getState().fetchingTenantRoomId).toBeNull();
+			expect(useTenantsStore.getState().failedTenantRoomId).toBe("room-1");
+			consoleSpy.mockRestore();
+		});
+	});
+
 	describe("clearStore", () => {
 		it("resets all store data to initial state", () => {
 			useTenantsStore.setState({
@@ -304,6 +436,8 @@ describe("TenantsStore", () => {
 				hasTenantsFetched: true,
 				isTenantsLoading: true,
 				isTenantsFetchFailed: true,
+				fetchingTenantRoomId: "room-1",
+				failedTenantRoomId: "room-1",
 			});
 
 			useTenantsStore.getState().clearStore();
@@ -313,6 +447,8 @@ describe("TenantsStore", () => {
 				hasTenantsFetched: false,
 				isTenantsLoading: false,
 				isTenantsFetchFailed: false,
+				fetchingTenantRoomId: null,
+				failedTenantRoomId: null,
 			});
 		});
 	});

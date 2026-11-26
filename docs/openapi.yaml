@@ -200,6 +200,11 @@ components:
         status:
           type: string
           enum: [pending, paid]
+        payerTenantId:
+          type: ["string", "null"]
+          format: uuid
+        payerName:
+          type: ["string", "null"]
       required:
         - id
         - roomId
@@ -224,6 +229,11 @@ components:
           type: string
           enum: [pending, paid]
           default: pending
+        payerTenantId:
+          type: ["string", "null"]
+          format: uuid
+        payerName:
+          type: ["string", "null"]
       required:
         - roomId
         - period
@@ -1164,6 +1174,37 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /api/rooms/{id}/tenant:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Room UUID
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: Get room tenant
+      description: Returns the active tenant assigned to the room, or null when vacant
+      operationId: getRoomTenant
+      tags:
+        - Rooms
+        - Tenants
+      responses:
+        "200":
+          description: Active tenant or null for a vacant room
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Tenant"
+                  - type: "null"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /api/rent-payments:
     get:
       summary: List rent payments
@@ -1225,6 +1266,8 @@ paths:
               roomId: 550e8400-e29b-41d4-a716-446655440000
               period: "2026-03"
               rentAmount: 3500000
+              payerTenantId: 550e8400-e29b-41d4-a716-446655440001
+              payerName: Anh Nguyen
       responses:
         "201":
           description: Payment record created

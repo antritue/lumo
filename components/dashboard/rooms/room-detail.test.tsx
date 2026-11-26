@@ -35,6 +35,8 @@ describe("RoomDetail", () => {
 					notes: null,
 				},
 			],
+			fetchingTenantRoomId: null,
+			failedTenantRoomId: null,
 		});
 	});
 

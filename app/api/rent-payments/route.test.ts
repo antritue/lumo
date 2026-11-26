@@ -132,6 +132,96 @@ describe("POST /api/rent-payments", () => {
 		expect(data.roomId).toBe("room-1");
 	});
 
+	it("should persist the payer snapshot when provided", async () => {
+		mockAuthenticatedUser();
+		mockRoomExists(true);
+		mockSingle.mockResolvedValue({
+			data: {
+				id: "payment-1",
+				room_id: "room-1",
+				user_id: "test-user-id",
+				period: "2026-03",
+				rent_amount: 500,
+				status: "pending",
+				payer_tenant_id: "550e8400-e29b-41d4-a716-446655440001",
+				payer_name: "Anh Nguyen",
+			},
+			error: null,
+		});
+
+		const req = createRequest({
+			roomId: "550e8400-e29b-41d4-a716-446655440000",
+			period: "2026-03",
+			rentAmount: 500,
+			payerTenantId: "550e8400-e29b-41d4-a716-446655440001",
+			payerName: "Anh Nguyen",
+		});
+		const res = await createRentPayment(req);
+		const data = await res.json();
+
+		expect(res.status).toBe(201);
+		expect(mockInsert).toHaveBeenCalledWith([
+			expect.objectContaining({
+				payer_tenant_id: "550e8400-e29b-41d4-a716-446655440001",
+				payer_name: "Anh Nguyen",
+			}),
+		]);
+		expect(data.payerTenantId).toBe("550e8400-e29b-41d4-a716-446655440001");
+		expect(data.payerName).toBe("Anh Nguyen");
+	});
+
+	it("should persist null payer fields when the room is vacant", async () => {
+		mockAuthenticatedUser();
+		mockRoomExists(true);
+		mockSingle.mockResolvedValue({
+			data: {
+				id: "payment-1",
+				room_id: "room-1",
+				user_id: "test-user-id",
+				period: "2026-03",
+				rent_amount: 500,
+				status: "pending",
+				payer_tenant_id: null,
+				payer_name: null,
+			},
+			error: null,
+		});
+
+		const req = createRequest({
+			roomId: "550e8400-e29b-41d4-a716-446655440000",
+			period: "2026-03",
+			rentAmount: 500,
+		});
+		const res = await createRentPayment(req);
+		const data = await res.json();
+
+		expect(res.status).toBe(201);
+		expect(mockInsert).toHaveBeenCalledWith([
+			expect.objectContaining({
+				payer_tenant_id: null,
+				payer_name: null,
+			}),
+		]);
+		expect(data.payerTenantId).toBeNull();
+		expect(data.payerName).toBeNull();
+	});
+
+	it("should return 400 when payerTenantId is not a valid UUID", async () => {
+		mockAuthenticatedUser();
+
+		const req = createRequest({
+			roomId: "550e8400-e29b-41d4-a716-446655440000",
+			period: "2026-03",
+			rentAmount: 500,
+			payerTenantId: "not-a-uuid",
+		});
+		const res = await createRentPayment(req);
+		const _data = await res.json();
+
+		expect(res.status).toBe(400);
+		expect(mockInsert).not.toHaveBeenCalled();
+	});
+
 	it("should return 401 when user is not authenticated", async () => {
 		mockUnauthenticated();
 

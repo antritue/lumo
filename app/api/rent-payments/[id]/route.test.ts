@@ -169,6 +169,33 @@ describe("PATCH /api/rent-payments/:id", () => {
 		});
 	});
 
+	it("should not update payer snapshot fields", async () => {
+		mockAuthenticatedUser();
+		mockSingle.mockResolvedValue({
+			data: {
+				id: "payment-1",
+				room_id: "room-1",
+				user_id: "test-user-id",
+				period: "2026-04",
+				rent_amount: 500,
+				status: "pending",
+				payer_tenant_id: "tenant-1",
+				payer_name: "Anh Nguyen",
+			},
+			error: null,
+		});
+
+		const req = createRequest("payment-1", {
+			period: "2026-04",
+			payerTenantId: "tenant-2",
+			payerName: "Binh Le",
+		});
+		const res = await updateRentPayment(req, createParams("payment-1"));
+
+		expect(res.status).toBe(200);
+		expect(mockUpdate).toHaveBeenCalledWith({ period: "2026-04" });
+	});
+
 	it("should return 401 when user is not authenticated", async () => {
 		mockUnauthenticated();
 

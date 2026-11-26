@@ -34,6 +34,17 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	const tenant = useTenantsStore((state) =>
 		getTenantByRoomId(state.tenants, room.id),
 	);
+	const fetchingTenantRoomId = useTenantsStore(
+		(state) => state.fetchingTenantRoomId,
+	);
+	const failedTenantRoomId = useTenantsStore(
+		(state) => state.failedTenantRoomId,
+	);
+	const fetchTenantByRoomId = useTenantsStore(
+		(state) => state.fetchTenantByRoomId,
+	);
+	const isTenantLoading = fetchingTenantRoomId === room.id;
+	const isTenantFetchFailed = failedTenantRoomId === room.id;
 	const paymentPayer = {
 		tenantId: tenant?.id ?? null,
 		name: tenant?.fullName ?? null,
@@ -74,6 +85,10 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		updateServiceCharges,
 		defaultCharges,
 	} = useRoomPayments(room.id, paymentPayer);
+
+	const handleRetryTenant = () => {
+		fetchTenantByRoomId(room.id);
+	};
 
 	const handleSaveRoom = async (
 		id: string | null,
@@ -129,7 +144,13 @@ export function RoomDetail({ room }: RoomDetailProps) {
 				onDelete={openDeleteRoom}
 			/>
 
-			<RoomDetailsSummary tenant={tenant ?? null} notes={room.notes} />
+			<RoomDetailsSummary
+				tenant={tenant ?? null}
+				notes={room.notes}
+				isTenantLoading={isTenantLoading}
+				isTenantFetchFailed={isTenantFetchFailed}
+				onRetryTenant={handleRetryTenant}
+			/>
 
 			<RoomServicesSection roomId={room.id} propertyId={room.propertyId} />
 

@@ -450,6 +450,8 @@
 				"currentTenant": "Người thuê hiện tại",
 				"tenant": "Người thuê",
 				"note": "Ghi chú",
+				"tenantLoadFailed": "Không thể tải người thuê",
+				"retry": "Thử lại",
 				"showMore": "Xem thêm",
 				"showLess": "Thu gọn"
 			}

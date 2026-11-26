@@ -4,6 +4,7 @@ import { use } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuthStore } from "@/components/dashboard/auth/store";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { renderWithProviders } from "@/test/render";
 import RoomDetailPage from "./page";
 
@@ -48,6 +49,14 @@ describe("RoomDetailPage", () => {
 			isRoomsFetchFailed: false,
 		});
 		useAuthStore.setState({ user: null, loading: false });
+		useTenantsStore.setState({
+			tenants: [],
+			isTenantsLoading: false,
+			hasTenantsFetched: false,
+			isTenantsFetchFailed: false,
+			fetchingTenantRoomId: null,
+			failedTenantRoomId: null,
+		});
 		vi.clearAllMocks();
 		mockFetch.mockResolvedValue({ ok: true, json: async () => [] });
 	});
@@ -100,6 +109,49 @@ describe("RoomDetailPage", () => {
 		});
 	});
 
+	it("fetches and displays the current tenant for the room", async () => {
+		mockUse.mockReturnValue({ roomId: "room-1" });
+		useAuthStore.setState({
+			user: { id: "user-1" } as User,
+			loading: false,
+		});
+
+		mockFetch.mockImplementation((input: RequestInfo | URL) => {
+			const url = String(input);
+			if (url === "/api/rooms/room-1/tenant") {
+				return Promise.resolve({
+					ok: true,
+					json: async () => ({
+						id: "tenant-1",
+						userId: "user-1",
+						roomId: "room-1",
+						fullName: "Anh Nguyen",
+						phone: null,
+						email: null,
+						notes: null,
+					}),
+				});
+			}
+			if (url === "/api/rooms/room-1") {
+				return Promise.resolve({ ok: true, json: async () => mockRoom });
+			}
+			return Promise.resolve({ ok: true, json: async () => [] });
+		});
+
+		renderWithProviders(<RoomDetailPage {...createParams("room-1")} />);
+
+		await waitFor(() => {
+			expect(mockFetch).toHaveBeenCalledWith(
+				"/api/rooms/room-1/tenant",
+				expect.objectContaining({
+					method: "GET",
+					credentials: "include",
+				}),
+			);
+		});
+		expect(await screen.findByText("Anh Nguyen")).toBeInTheDocument();
+	});
+
 	it("does not fetch room when user is not authenticated", () => {
 		mockUse.mockReturnValue({ roomId: "room-1" });
 
@@ -118,6 +170,33 @@ describe("RoomDetailPage", () => {
 		expect(
 			screen.getByRole("link", { name: /back to properties/i }),
 		).toBeInTheDocument();
+	});
+
+	it("does not block the room detail while tenants are loading", async () => {
+		mockUse.mockReturnValue({ roomId: "room-1" });
+		useAuthStore.setState({
+			user: { id: "user-1" } as User,
+			loading: false,
+		});
+		mockFetch.mockImplementation((input: RequestInfo | URL) => {
+			const url = String(input);
+			if (url === "/api/rooms/room-1/tenant") return new Promise(() => {});
+			if (url === "/api/rooms/room-1") {
+				return Promise.resolve({ ok: true, json: async () => mockRoom });
+			}
+			return Promise.resolve({ ok: true, json: async () => [] });
+		});
+
+		const { container } = renderWithProviders(
+			<RoomDetailPage {...createParams("room-1")} />,
+		);
+
+		expect(
+			await screen.findByRole("heading", { name: "Master Bedroom" }),
+		).toBeInTheDocument();
+		expect(screen.getByText("Large room with balcony")).toBeInTheDocument();
+		expect(screen.getByText("Tenant")).toBeInTheDocument();
+		expect(container.querySelector(".animate-shimmer")).toBeInTheDocument();
 	});
 
 	it("displays room detail when room exists", async () => {

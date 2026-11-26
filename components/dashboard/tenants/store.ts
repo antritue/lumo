@@ -16,9 +16,12 @@ interface TenantsState {
 	isTenantsLoading: boolean;
 	hasTenantsFetched: boolean;
 	isTenantsFetchFailed: boolean;
+	fetchingTenantRoomId: string | null;
+	failedTenantRoomId: string | null;
 
 	// Actions
 	fetchTenants: () => Promise<void>;
+	fetchTenantByRoomId: (roomId: string) => Promise<void>;
 	createTenant: (input: TenantInput) => Promise<void>;
 	updateTenant: (id: string, input: TenantInput) => Promise<void>;
 	deactivateTenant: (id: string) => Promise<void>;
@@ -45,6 +48,8 @@ export const useTenantsStore = create<TenantsState>()(
 			isTenantsLoading: false,
 			hasTenantsFetched: false,
 			isTenantsFetchFailed: false,
+			fetchingTenantRoomId: null,
+			failedTenantRoomId: null,
 
 			fetchTenants: async () => {
 				const { hasTenantsFetched, isTenantsLoading } = get();
@@ -79,6 +84,56 @@ export const useTenantsStore = create<TenantsState>()(
 						hasTenantsFetched: false,
 						isTenantsFetchFailed: true,
 					});
+					throw error;
+				}
+			},
+
+			fetchTenantByRoomId: async (roomId) => {
+				const { hasTenantsFetched, fetchingTenantRoomId } = get();
+				const user = useAuthStore.getState().user;
+
+				if (!user || hasTenantsFetched || fetchingTenantRoomId === roomId) {
+					return;
+				}
+
+				try {
+					set({ fetchingTenantRoomId: roomId });
+					const res = await fetch(`/api/rooms/${roomId}/tenant`, {
+						method: "GET",
+						credentials: "include",
+					});
+
+					if (!res.ok) {
+						throw new Error("Failed to fetch room tenant");
+					}
+
+					const data: Tenant | null = await res.json();
+
+					set((state) => ({
+						tenants: [
+							...state.tenants.filter(
+								(tenant) => tenant.roomId !== roomId && tenant.id !== data?.id,
+							),
+							...(data ? [data] : []),
+						],
+						fetchingTenantRoomId:
+							state.fetchingTenantRoomId === roomId
+								? null
+								: state.fetchingTenantRoomId,
+						failedTenantRoomId:
+							state.failedTenantRoomId === roomId
+								? null
+								: state.failedTenantRoomId,
+					}));
+				} catch (error) {
+					console.error("Failed to fetch room tenant:", error);
+					set((state) => ({
+						fetchingTenantRoomId:
+							state.fetchingTenantRoomId === roomId
+								? null
+								: state.fetchingTenantRoomId,
+						failedTenantRoomId: roomId,
+					}));
 					throw error;
 				}
 			},
@@ -215,6 +270,8 @@ export const useTenantsStore = create<TenantsState>()(
 					isTenantsLoading: false,
 					hasTenantsFetched: false,
 					isTenantsFetchFailed: false,
+					fetchingTenantRoomId: null,
+					failedTenantRoomId: null,
 				}),
 		}),
 		{ name: "tenants" },

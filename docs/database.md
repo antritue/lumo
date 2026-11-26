@@ -14,11 +14,14 @@ erDiagram
     "auth.users" ||--o{ room_service_overrides : "owns"
     "auth.users" ||--o{ rent_payments : "owns"
     "auth.users" ||--o{ rent_payment_charges : "owns"
+    "auth.users" ||--o{ tenants : "owns"
     "auth.users" ||--o| user_entitlements : "has"
     properties ||--o{ rooms : "contains"
     properties ||--o{ property_services : "has"
     property_services ||--o{ room_service_overrides : "overrides"
     rooms ||--o{ rent_payments : "has"
+    rooms ||--o| tenants : "houses"
+    tenants o|--o{ rent_payments : "payer"
     rent_payments ||--o{ rent_payment_charges : "has"
     "auth.users" {
         uuid id PK
@@ -36,6 +39,17 @@ erDiagram
         text name
         numeric monthly_rent
         text notes
+    }
+    tenants {
+        uuid id PK
+        uuid user_id FK
+        uuid room_id FK
+        text full_name
+        text phone
+        text email
+        text notes
+        timestamptz created_at
+        timestamptz updated_at
     }
     property_services {
         uuid id PK
@@ -61,6 +75,8 @@ erDiagram
         text period
         numeric rent_amount
         text status
+        uuid payer_tenant_id FK
+        text payer_name
     }
     rent_payment_charges {
         uuid id PK
@@ -168,14 +184,16 @@ Unique constraint on `(room_id, service_id)`.
 
 Stores rent payment records for rooms.
 
-| Key  | Column        | Type      | Description                                     |
-| :--- | :------------ | :-------- | :---------------------------------------------- |
-| `PK` | `id`          | `uuid`    | Primary Key (Default: `gen_random_uuid()`)      |
-| `FK` | `room_id`     | `uuid`    | Foreign Key to `rooms(id)`. Cascades on delete. |
-| `FK` | `user_id`     | `uuid`    | Foreign Key to `auth.users(id)`.                |
-|      | `period`      | `text`    | Payment period in `YYYY-MM` format.             |
-|      | `rent_amount` | `numeric` | The rent amount for this period.                |
-|      | `status`      | `text`    | `'pending'` or `'paid'`.                        |
+| Key  | Column            | Type      | Description                                                                                 |
+| :--- | :---------------- | :-------- | :------------------------------------------------------------------------------------------ |
+| `PK` | `id`              | `uuid`    | Primary Key (Default: `gen_random_uuid()`)                                                  |
+| `FK` | `room_id`         | `uuid`    | Foreign Key to `rooms(id)`. Cascades on delete.                                             |
+| `FK` | `user_id`         | `uuid`    | Foreign Key to `auth.users(id)`.                                                            |
+|      | `period`          | `text`    | Payment period in `YYYY-MM` format.                                                         |
+|      | `rent_amount`     | `numeric` | The rent amount for this period.                                                            |
+|      | `status`          | `text`    | `'pending'` or `'paid'`.                                                                    |
+| `FK` | `payer_tenant_id` | `uuid`    | Optional snapshot of the tenant who paid. Foreign Key to `tenants(id)`, nulls on delete.    |
+|      | `payer_name`      | `text`    | Tenant display name captured when the payment was created; preserved if the tenant changes. |
 
 Unique constraint on `(room_id, period)`.
 

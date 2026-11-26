@@ -5,6 +5,7 @@ import { useAuthStore } from "@/components/dashboard/auth/store";
 import { RoomDetail } from "@/components/dashboard/rooms/room-detail";
 import { RoomNotFound } from "@/components/dashboard/rooms/room-not-found";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { ErrorState } from "@/components/shared/error-state";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -18,14 +19,19 @@ export default function RoomDetailPage({
 	const isRoomsLoading = useRoomsStore((state) => state.isRoomsLoading);
 	const isRoomsFetchFailed = useRoomsStore((state) => state.isRoomsFetchFailed);
 	const fetchRoomById = useRoomsStore((state) => state.fetchRoomById);
+	const fetchTenantByRoomId = useTenantsStore(
+		(state) => state.fetchTenantByRoomId,
+	);
 	const user = useAuthStore((state) => state.user);
 	const authLoading = useAuthStore((state) => state.loading);
 
 	useEffect(() => {
-		if (user) {
-			fetchRoomById(roomId);
-		}
-	}, [roomId, user, fetchRoomById]);
+		if (!user) return;
+		void Promise.allSettled([
+			fetchRoomById(roomId),
+			fetchTenantByRoomId(roomId),
+		]);
+	}, [roomId, user, fetchRoomById, fetchTenantByRoomId]);
 
 	if (isRoomsLoading || authLoading) {
 		return (
