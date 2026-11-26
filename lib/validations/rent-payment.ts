@@ -5,6 +5,11 @@ export const rentPaymentSchema = z.object({
 	period: z.string().regex(/^\d{4}-\d{2}$/, "Period must be in YYYY-MM format"),
 	rentAmount: z.number().positive("Rent amount must be positive"),
 	status: z.enum(["pending", "paid"]).optional().default("pending"),
+	payerTenantId: z
+		.uuid("Payer tenant ID must be a valid UUID")
+		.nullable()
+		.optional(),
+	payerName: z.string().nullable().optional(),
 });
 
 export type RentPaymentInput = z.infer<typeof rentPaymentSchema>;

@@ -25,7 +25,7 @@ export async function updateRentPayment(
 		const body = await request.json();
 
 		const validation = rentPaymentSchema
-			.omit({ roomId: true })
+			.omit({ roomId: true, payerTenantId: true, payerName: true })
 			.extend({ status: z.enum(["pending", "paid"]).optional() })
 			.partial()
 			.safeParse(body);

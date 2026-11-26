@@ -476,6 +476,8 @@
 				"currentTenant": "Current tenant",
 				"tenant": "Tenant",
 				"note": "Note",
+				"tenantLoadFailed": "Could not load tenant",
+				"retry": "Try again",
 				"showMore": "Show more",
 				"showLess": "Show less"
 			}

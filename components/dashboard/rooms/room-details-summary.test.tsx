@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { Tenant } from "@/components/dashboard/tenants/types";
 import { renderWithProviders } from "@/test/render";
 import { RoomDetailsSummary } from "./room-details-summary";
@@ -37,6 +37,37 @@ describe("RoomDetailsSummary", () => {
 		expect(
 			screen.queryByRole("button", { name: /notes/i }),
 		).not.toBeInTheDocument();
+	});
+
+	it("renders a tenant skeleton without hiding the notes while loading", () => {
+		const { container } = renderWithProviders(
+			<RoomDetailsSummary tenant={null} notes="Test notes" isTenantLoading />,
+		);
+
+		expect(screen.getByText("Tenant")).toBeInTheDocument();
+		expect(screen.getByText("Note")).toBeInTheDocument();
+		expect(screen.getByText("Test notes")).toBeInTheDocument();
+		expect(container.querySelector(".animate-shimmer")).toBeInTheDocument();
+	});
+
+	it("renders a retry when the tenant fetch failed", async () => {
+		const user = userEvent.setup();
+		const onRetryTenant = vi.fn();
+		renderWithProviders(
+			<RoomDetailsSummary
+				tenant={null}
+				notes={null}
+				isTenantFetchFailed
+				onRetryTenant={onRetryTenant}
+			/>,
+		);
+
+		expect(screen.getByText("Tenant")).toBeInTheDocument();
+		expect(screen.getByText("Could not load tenant")).toBeInTheDocument();
+
+		await user.click(screen.getByRole("button", { name: "Try again" }));
+
+		expect(onRetryTenant).toHaveBeenCalledOnce();
 	});
 
 	it("omits missing contact details and separators", () => {
