@@ -119,6 +119,7 @@ describe("OverviewPage", () => {
 		expect(fetchOverviewSpy.mock.calls[0][0]).toMatch(
 			/^\d{4}-(0[1-9]|1[0-2])$/,
 		);
+		expect(fetchOverviewSpy.mock.calls[0]).toHaveLength(1);
 	});
 
 	describe("when fetching overview failed", () => {
@@ -227,7 +228,6 @@ describe("OverviewPage", () => {
 			const today = new Date();
 			expect(fetchOverviewSpy).toHaveBeenCalledWith(
 				`${today.getFullYear()}-03`,
-				true,
 			);
 		});
 	});

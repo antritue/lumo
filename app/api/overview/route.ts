@@ -36,31 +36,34 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		const { data: properties, error: propertiesError } = await supabase
-			.from(DATABASE_TABLES.PROPERTIES)
-			.select("id, name")
-			.eq("user_id", user.id);
-		if (propertiesError) throw propertiesError;
-
-		const { data: rooms, error: roomsError } = await supabase
-			.from(DATABASE_TABLES.ROOMS)
-			.select("id, property_id, name, monthly_rent")
-			.eq("user_id", user.id);
-		if (roomsError) throw roomsError;
-
-		const roomIds = rooms.map((r) => r.id);
-
-		let payments: Record<string, unknown>[] = [];
-		if (roomIds.length > 0) {
-			const { data, error } = await supabase
+		// Fire independent reads together
+		// The round-trips were previously waited serially, doubling the request latency.
+		const [propertiesResult, roomsResult, paymentsResult] = await Promise.all([
+			supabase
+				.from(DATABASE_TABLES.PROPERTIES)
+				.select("id, name")
+				.eq("user_id", user.id),
+			supabase
+				.from(DATABASE_TABLES.ROOMS)
+				.select("id, property_id, name, monthly_rent")
+				.eq("user_id", user.id),
+			supabase
 				.from(DATABASE_TABLES.RENT_PAYMENTS)
 				.select("id, room_id, period, rent_amount, status")
 				.eq("user_id", user.id)
-				.eq("period", period)
-				.in("room_id", roomIds);
-			if (error) throw error;
-			payments = data;
-		}
+				.eq("period", period),
+		]);
+
+		if (propertiesResult.error) throw propertiesResult.error;
+		if (roomsResult.error) throw roomsResult.error;
+		if (paymentsResult.error) throw paymentsResult.error;
+
+		const properties = propertiesResult.data;
+		const rooms = roomsResult.data;
+		const roomIds = new Set(rooms.map((r) => r.id));
+		const payments: Record<string, unknown>[] = (
+			paymentsResult.data ?? []
+		).filter((p) => roomIds.has(p.room_id));
 
 		const paymentIds = payments.map((p) => p.id);
 

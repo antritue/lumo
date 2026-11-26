@@ -14,7 +14,6 @@ const mockRoomsEq = vi.fn();
 const mockPaymentsSelect = vi.fn();
 const mockPaymentsEq1 = vi.fn();
 const mockPaymentsEq2 = vi.fn();
-const mockPaymentsIn = vi.fn();
 const mockChargesSelect = vi.fn();
 const mockChargesIn = vi.fn();
 
@@ -39,8 +38,7 @@ beforeEach(() => {
 	mockRoomsEq.mockResolvedValue({ data: [], error: null });
 	mockPaymentsSelect.mockReturnValue({ eq: mockPaymentsEq1 });
 	mockPaymentsEq1.mockReturnValue({ eq: mockPaymentsEq2 });
-	mockPaymentsEq2.mockReturnValue({ in: mockPaymentsIn });
-	mockPaymentsIn.mockResolvedValue({ data: [], error: null });
+	mockPaymentsEq2.mockResolvedValue({ data: [], error: null });
 	mockChargesSelect.mockReturnValue({ in: mockChargesIn });
 	mockChargesIn.mockResolvedValue({ data: [], error: null });
 });
@@ -102,7 +100,7 @@ describe("GET /api/overview", () => {
 			],
 			error: null,
 		});
-		mockPaymentsIn.mockResolvedValue({
+		mockPaymentsEq2.mockResolvedValue({
 			data: [
 				{
 					id: "pay-1",
@@ -179,20 +177,31 @@ describe("GET /api/overview", () => {
 		});
 	});
 
-	it("returns empty rooms without querying payments", async () => {
+	it("returns empty rooms when the user has no rooms", async () => {
 		mockAuthenticatedUser();
 		mockPropertiesEq.mockResolvedValue({
 			data: [{ id: "prop-1", name: "Villa Sunrise" }],
 			error: null,
 		});
 		mockRoomsEq.mockResolvedValue({ data: [], error: null });
+		mockPaymentsEq2.mockResolvedValue({
+			data: [
+				{
+					id: "pay-orphan",
+					room_id: "not-mine",
+					period: PERIOD,
+					rent_amount: 800,
+					status: "paid",
+				},
+			],
+			error: null,
+		});
 
 		const res = await GET(createRequest(`?period=${PERIOD}`));
 		const data = await res.json();
 
 		expect(res.status).toBe(200);
 		expect(data.rooms).toEqual([]);
-		expect(mockPaymentsSelect).not.toHaveBeenCalled();
 	});
 
 	it("returns 500 on supabase error", async () => {
