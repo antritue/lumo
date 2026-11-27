@@ -14,6 +14,7 @@ import { usePropertiesStore } from "@/components/dashboard/properties/store";
 import { useRentPaymentsStore } from "@/components/dashboard/rent-payments/store";
 import { useRoomServicesStore } from "@/components/dashboard/rooms/room-services-store";
 import { useRoomsStore } from "@/components/dashboard/rooms/store";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { getCurrentPeriod, seedDemoStoresIfEmpty } from "@/lib/demo-seed";
 import { renderWithProviders } from "@/test/render";
 import OverviewPage from "./page";
@@ -99,6 +100,8 @@ const fetchOverviewSpy = vi.fn();
 describe("OverviewPage", () => {
 	beforeEach(() => {
 		useAuthStore.setState({ user: null, loading: false });
+		useTenantsStore.getState().clearStore();
+		useTenantsStore.setState({ fetchTenants: vi.fn() });
 		useOverviewStore.setState({
 			period: null,
 			snapshot: null,
@@ -244,6 +247,7 @@ describe("OverviewPage", () => {
 			useRoomsStore.getState().clearStore();
 			useRoomServicesStore.getState().clearStore();
 			useRentPaymentsStore.getState().clearStore();
+			useTenantsStore.getState().clearStore();
 			useOverviewStore.getState().clearStore();
 			useOverviewStore.setState({ fetchOverview: realFetchOverview });
 			useAuthStore.setState({ user: null, loading: false });

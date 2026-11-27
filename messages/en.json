@@ -435,6 +435,7 @@
 		"rooms": {
 			"title": "Rooms",
 			"count": "{count, plural, =0 {0 rooms} =1 {1 room} other {# rooms}}",
+			"vacant": "Vacant",
 			"emptyTitle": "No rooms yet",
 			"emptySubtitle": "Add your first room to this property",
 			"name": "Room name",

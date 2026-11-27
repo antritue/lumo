@@ -18,8 +18,24 @@ const mockOverviewRoom = (
 });
 
 describe("RoomStatusRow", () => {
+	it("shows a vacancy badge when the room is vacant", () => {
+		renderWithProviders(<RoomStatusRow room={mockOverviewRoom()} isVacant />);
+
+		expect(screen.getByText("Vacant")).toBeInTheDocument();
+	});
+
+	it("does not show a vacancy badge when the room is occupied", () => {
+		renderWithProviders(
+			<RoomStatusRow room={mockOverviewRoom()} isVacant={false} />,
+		);
+
+		expect(screen.queryByText("Vacant")).not.toBeInTheDocument();
+	});
+
 	it("renders the room name and monthly rent", () => {
-		renderWithProviders(<RoomStatusRow room={mockOverviewRoom()} />);
+		renderWithProviders(
+			<RoomStatusRow room={mockOverviewRoom()} isVacant={false} />,
+		);
 
 		expect(screen.getByText("Room 101")).toBeInTheDocument();
 		expect(screen.getByText("₫3,200,000")).toBeInTheDocument();
@@ -48,6 +64,7 @@ describe("RoomStatusRow", () => {
 					],
 					total: 2_140_000,
 				})}
+				isVacant={false}
 			/>,
 		);
 
@@ -69,6 +86,7 @@ describe("RoomStatusRow", () => {
 						payerName: null,
 					},
 				})}
+				isVacant={false}
 			/>,
 		);
 
@@ -89,6 +107,7 @@ describe("RoomStatusRow", () => {
 						payerName: null,
 					},
 				})}
+				isVacant={false}
 			/>,
 		);
 
@@ -98,7 +117,9 @@ describe("RoomStatusRow", () => {
 	});
 
 	it("renders a not-recorded badge when there is no payment", () => {
-		renderWithProviders(<RoomStatusRow room={mockOverviewRoom()} />);
+		renderWithProviders(
+			<RoomStatusRow room={mockOverviewRoom()} isVacant={false} />,
+		);
 
 		expect(screen.getByText(/not recorded/i)).toBeInTheDocument();
 		expect(
@@ -110,7 +131,9 @@ describe("RoomStatusRow", () => {
 	});
 
 	it("links to the room detail page", () => {
-		renderWithProviders(<RoomStatusRow room={mockOverviewRoom()} />);
+		renderWithProviders(
+			<RoomStatusRow room={mockOverviewRoom()} isVacant={false} />,
+		);
 
 		expect(screen.getByRole("link", { name: /room 101/i })).toHaveAttribute(
 			"href",

@@ -6,15 +6,18 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/utils";
 import type { Room } from "./types";
+import { VacantBadge } from "./vacancy-badge";
 
 interface RoomDetailHeaderProps {
 	room: Room;
+	isVacant: boolean;
 	onEdit: () => void;
 	onDelete: () => void;
 }
 
 export function RoomDetailHeader({
 	room,
+	isVacant,
 	onEdit,
 	onDelete,
 }: RoomDetailHeaderProps) {
@@ -44,7 +47,10 @@ export function RoomDetailHeader({
 						<DoorOpen className="h-6 w-6 text-muted-foreground" />
 					</div>
 					<div className="min-w-0">
-						<h2 className="text-xl font-semibold truncate">{room.name}</h2>
+						<div className="flex items-center gap-2 min-w-0">
+							<h2 className="text-xl font-semibold truncate">{room.name}</h2>
+							{isVacant && <VacantBadge />}
+						</div>
 						{room.monthlyRent && (
 							<p className="text-sm text-muted-foreground mt-0.5">
 								{formatCurrency(room.monthlyRent)}

@@ -3,14 +3,16 @@
 import { DoorOpen } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
+import { VacantBadge } from "../rooms/vacancy-badge";
 import { NotRecordedBadge, StatusBadge } from "./status-badge";
 import type { OverviewRoom } from "./types";
 
 interface RoomStatusRowProps {
 	room: OverviewRoom;
+	isVacant: boolean;
 }
 
-export function RoomStatusRow({ room }: RoomStatusRowProps) {
+export function RoomStatusRow({ room, isVacant }: RoomStatusRowProps) {
 	const payment = room.payment;
 
 	return (
@@ -22,6 +24,7 @@ export function RoomStatusRow({ room }: RoomStatusRowProps) {
 				<span className="font-medium text-sm text-foreground truncate">
 					{room.name}
 				</span>
+				{isVacant && <VacantBadge />}
 				{payment ? <StatusBadge payment={payment} /> : <NotRecordedBadge />}
 				<div className="flex-1" />
 				<p className="text-sm font-semibold text-foreground shrink-0">

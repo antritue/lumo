@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { renderWithProviders } from "@/test/render";
@@ -42,42 +42,56 @@ const mockProperty = (
 	...overrides,
 });
 
+const renderGroup = (
+	property: OverviewProperty,
+	vacantRoomIds: ReadonlySet<string> = new Set<string>(),
+) =>
+	renderWithProviders(
+		<PropertyGroup property={property} vacantRoomIds={vacantRoomIds} />,
+	);
+
 describe("PropertyGroup", () => {
 	it("renders the property name and paid chip", () => {
-		renderWithProviders(<PropertyGroup property={mockProperty()} />);
+		renderGroup(mockProperty());
 
 		expect(screen.getByText("Sunset Villa")).toBeInTheDocument();
 		expect(screen.getByText(/1\/2 paid/i)).toBeInTheDocument();
 	});
 
 	it("colors the paid chip amber while partially paid", () => {
-		const { container } = renderWithProviders(
-			<PropertyGroup property={mockProperty()} />,
-		);
+		const { container } = renderGroup(mockProperty());
 
 		const chip = container.querySelector(".rounded-full");
 		expect(chip?.className).toContain("bg-amber-500/10");
 	});
 
 	it("colors the paid chip green when fully paid", () => {
-		const { container } = renderWithProviders(
-			<PropertyGroup property={mockProperty({ paidCount: 2 })} />,
-		);
+		const { container } = renderGroup(mockProperty({ paidCount: 2 }));
 
 		const chip = container.querySelector(".rounded-full");
 		expect(chip?.className).toContain("bg-green-500/10");
 	});
 
 	it("renders room rows", () => {
-		renderWithProviders(<PropertyGroup property={mockProperty()} />);
+		renderGroup(mockProperty());
 
 		expect(screen.getByText("Room 101")).toBeInTheDocument();
 		expect(screen.getByText("Room 102")).toBeInTheDocument();
 	});
 
+	it("marks only the vacant room", () => {
+		renderGroup(mockProperty(), new Set(["room-2"]));
+
+		const occupiedRow = screen.getByRole("link", { name: /room 101/i });
+		const vacantRow = screen.getByRole("link", { name: /room 102/i });
+
+		expect(within(vacantRow).getByText("Vacant")).toBeInTheDocument();
+		expect(within(occupiedRow).queryByText("Vacant")).not.toBeInTheDocument();
+	});
+
 	it("collapses and expands on header click", async () => {
 		const user = userEvent.setup();
-		renderWithProviders(<PropertyGroup property={mockProperty()} />);
+		renderGroup(mockProperty());
 
 		expect(screen.getByText("Room 101")).toBeInTheDocument();
 

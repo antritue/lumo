@@ -579,7 +579,7 @@ export function seedDemoStoresIfEmpty(locale: Locale = "en"): void {
 	useTenantsStore.setState({
 		tenants: seed.tenants,
 		isTenantsLoading: false,
-		hasTenantsFetched: false,
+		hasTenantsFetched: true,
 		isTenantsFetchFailed: false,
 	});
 }

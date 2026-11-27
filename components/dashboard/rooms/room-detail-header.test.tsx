@@ -26,6 +26,7 @@ describe("RoomDetailHeader", () => {
 			renderWithProviders(
 				<RoomDetailHeader
 					room={mockRoom}
+					isVacant={false}
 					onEdit={onEdit}
 					onDelete={onDelete}
 				/>,
@@ -42,6 +43,32 @@ describe("RoomDetailHeader", () => {
 				screen.getByRole("link", { name: /back to properties/i }),
 			).toBeInTheDocument();
 		});
+
+		it("shows a vacant badge when the room is vacant", () => {
+			renderWithProviders(
+				<RoomDetailHeader
+					room={mockRoom}
+					isVacant
+					onEdit={vi.fn()}
+					onDelete={vi.fn()}
+				/>,
+			);
+
+			expect(screen.getByText("Vacant")).toBeInTheDocument();
+		});
+
+		it("does not show a vacant badge when the room is occupied", () => {
+			renderWithProviders(
+				<RoomDetailHeader
+					room={mockRoom}
+					isVacant={false}
+					onEdit={vi.fn()}
+					onDelete={vi.fn()}
+				/>,
+			);
+
+			expect(screen.queryByText("Vacant")).not.toBeInTheDocument();
+		});
 	});
 
 	describe("Interactions", () => {
@@ -53,6 +80,7 @@ describe("RoomDetailHeader", () => {
 			renderWithProviders(
 				<RoomDetailHeader
 					room={mockRoom}
+					isVacant={false}
 					onEdit={onEdit}
 					onDelete={onDelete}
 				/>,

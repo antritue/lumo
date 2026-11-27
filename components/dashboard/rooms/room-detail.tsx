@@ -45,6 +45,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 	);
 	const isTenantLoading = fetchingTenantRoomId === room.id;
 	const isTenantFetchFailed = failedTenantRoomId === room.id;
+	const isVacant = !tenant && !isTenantLoading && !isTenantFetchFailed;
 	const paymentPayer = {
 		tenantId: tenant?.id ?? null,
 		name: tenant?.fullName ?? null,
@@ -140,6 +141,7 @@ export function RoomDetail({ room }: RoomDetailProps) {
 		<div className="space-y-8">
 			<RoomDetailHeader
 				room={room}
+				isVacant={isVacant}
 				onEdit={openEditRoom}
 				onDelete={openDeleteRoom}
 			/>

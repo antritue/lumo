@@ -17,6 +17,8 @@ import { DeleteRoomDialog } from "../rooms/delete-room-dialog";
 import { RoomLimitReachedError, useRoomsStore } from "../rooms/store";
 import type { Room } from "../rooms/types";
 import { UpsertRoomDialog } from "../rooms/upsert-room-dialog";
+import { VacantBadge } from "../rooms/vacancy-badge";
+import { useTenantsStore } from "../tenants/store";
 
 interface PropertyDetailRoomsProps {
 	propertyId: string;
@@ -35,10 +37,22 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 	const updateRoom = useRoomsStore((state) => state.updateRoom);
 	const deleteRoom = useRoomsStore((state) => state.deleteRoom);
 
+	const tenants = useTenantsStore((state) => state.tenants);
+	const hasTenantsFetched = useTenantsStore((state) => state.hasTenantsFetched);
+	const fetchTenants = useTenantsStore((state) => state.fetchTenants);
+
 	const propertyRooms = useMemo(
 		() => rooms.filter((r) => r.propertyId === propertyId),
 		[rooms, propertyId],
 	);
+
+	const vacantRoomIds = new Set<string>();
+	if (hasTenantsFetched) {
+		const occupied = new Set(tenants.map((tenant) => tenant.roomId));
+		for (const room of propertyRooms) {
+			if (!occupied.has(room.id)) vacantRoomIds.add(room.id);
+		}
+	}
 
 	const roomCount = propertyRooms.length;
 
@@ -47,8 +61,11 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 	const [upgradeOpen, setUpgradeOpen] = useState(false);
 
 	useEffect(() => {
-		fetchRoomsByPropertyId(propertyId);
-	}, [propertyId, fetchRoomsByPropertyId]);
+		void Promise.allSettled([
+			fetchRoomsByPropertyId(propertyId),
+			fetchTenants(),
+		]);
+	}, [propertyId, fetchRoomsByPropertyId, fetchTenants]);
 
 	const handleUpsertRoom = async (
 		id: string | null,
@@ -132,10 +149,11 @@ export function PropertyDetailRooms({ propertyId }: PropertyDetailRoomsProps) {
 										<div className="flex items-center justify-center rounded-lg bg-secondary p-2 shrink-0">
 											<DoorOpen className="h-4 w-4 text-muted-foreground" />
 										</div>
-										<div className="flex-1 min-w-0">
+										<div className="flex flex-1 min-w-0 items-center gap-2">
 											<p className="text-sm font-medium truncate">
 												{room.name}
 											</p>
+											{vacantRoomIds.has(room.id) && <VacantBadge />}
 										</div>
 										{room.monthlyRent ? (
 											<p className="text-sm font-semibold text-foreground">

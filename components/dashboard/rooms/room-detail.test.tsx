@@ -59,12 +59,13 @@ describe("RoomDetail", () => {
 			expect(screen.getByText("Test notes")).toBeInTheDocument();
 		});
 
-		it("hides the tenant row when the room has no active tenant", () => {
+		it("marks the room vacant in the header when it has no active tenant", () => {
 			useTenantsStore.setState({ tenants: [] });
 
 			renderWithProviders(<RoomDetail room={mockRoom} />);
 
 			expect(screen.queryByText("Tenant")).not.toBeInTheDocument();
+			expect(screen.getByText("Vacant")).toBeInTheDocument();
 			expect(screen.getByText("Note")).toBeInTheDocument();
 		});
 	});
