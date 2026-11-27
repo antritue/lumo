@@ -42,8 +42,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.6.8",
-		"@remotion/cli": "4.0.545",
-		"@remotion/google-fonts": "4.0.545",
+		"@remotion/cli": "4.0.546",
+		"@remotion/google-fonts": "4.0.546",
 		"@tailwindcss/postcss": "4",
 		"@testing-library/jest-dom": "8.0.0",
 		"@testing-library/react": "16.3.3",
@@ -56,7 +56,7 @@
 		"husky": "9.1.7",
 		"supabase": "3.2.0",
 		"tailwindcss": "4",
-		"remotion": "4.0.545",
+		"remotion": "4.0.546",
 		"typescript": "6",
 		"vitest": "5.1.1"
 	}
