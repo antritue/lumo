@@ -2,9 +2,11 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Tenant } from "@/components/dashboard/tenants/types";
 import { renderWithProviders } from "@/test/render";
 import { RoomLimitReachedError, useRoomsStore } from "../rooms/store";
 import type { Room } from "../rooms/types";
+import { useTenantsStore } from "../tenants/store";
 import { PropertyDetailRooms } from "./property-detail-rooms";
 
 const mockRoom = (overrides: Partial<Room> = {}): Room => ({
@@ -16,9 +18,22 @@ const mockRoom = (overrides: Partial<Room> = {}): Room => ({
 	...overrides,
 });
 
+const mockTenant = (overrides: Partial<Tenant> = {}): Tenant => ({
+	id: "tenant-1",
+	userId: "",
+	roomId: "1",
+	fullName: "Anh Nguyen",
+	phone: null,
+	email: null,
+	notes: null,
+	...overrides,
+});
+
 describe("PropertyDetailRooms", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		useTenantsStore.getState().clearStore();
+		useTenantsStore.setState({ fetchTenants: vi.fn() });
 		useRoomsStore.setState({
 			rooms: [],
 			isRoomsLoading: false,
@@ -105,6 +120,30 @@ describe("PropertyDetailRooms", () => {
 
 			expect(screen.getByText("Room 101")).toBeInTheDocument();
 			expect(screen.queryByText("Other Room")).not.toBeInTheDocument();
+		});
+	});
+
+	describe("Occupancy", () => {
+		it("does not show a vacancy badge for an occupied room", () => {
+			useRoomsStore.setState({ rooms: [mockRoom()] });
+			useTenantsStore.setState({
+				tenants: [mockTenant()],
+				hasTenantsFetched: true,
+			});
+
+			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
+
+			expect(screen.getByText("Room 101")).toBeInTheDocument();
+			expect(screen.queryByText("Vacant")).not.toBeInTheDocument();
+		});
+
+		it("shows a vacancy badge for a room without a tenant", () => {
+			useRoomsStore.setState({ rooms: [mockRoom()] });
+			useTenantsStore.setState({ tenants: [], hasTenantsFetched: true });
+
+			renderWithProviders(<PropertyDetailRooms propertyId="prop-1" />);
+
+			expect(screen.getByText("Vacant")).toBeInTheDocument();
 		});
 	});
 

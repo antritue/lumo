@@ -409,6 +409,7 @@
 		"rooms": {
 			"title": "Phòng",
 			"count": "{count, plural, =0 {0 phòng} =1 {1 phòng} other {# phòng}}",
+			"vacant": "Trống",
 			"emptyTitle": "Chưa có phòng",
 			"emptySubtitle": "Thêm phòng đầu tiên cho nhà này",
 			"name": "Tên phòng",

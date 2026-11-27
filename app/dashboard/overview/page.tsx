@@ -9,6 +9,7 @@ import { PropertyGroup } from "@/components/dashboard/overview/property-group";
 import { useOverviewStore } from "@/components/dashboard/overview/store";
 import { SummaryCards } from "@/components/dashboard/overview/summary-cards";
 import { MonthPicker } from "@/components/dashboard/rent-payments/month-picker";
+import { useTenantsStore } from "@/components/dashboard/tenants/store";
 import { ErrorState } from "@/components/shared/error-state";
 
 function defaultPeriod(): string {
@@ -30,6 +31,17 @@ export default function OverviewPage() {
 		(state) => state.isOverviewFetchFailed,
 	);
 	const fetchOverview = useOverviewStore((state) => state.fetchOverview);
+	const fetchTenants = useTenantsStore((state) => state.fetchTenants);
+	const tenants = useTenantsStore((state) => state.tenants);
+	const hasTenantsFetched = useTenantsStore((state) => state.hasTenantsFetched);
+
+	const vacantRoomIds = new Set<string>();
+	if (hasTenantsFetched && snapshot) {
+		const occupied = new Set(tenants.map((tenant) => tenant.roomId));
+		for (const room of snapshot.rooms) {
+			if (!occupied.has(room.id)) vacantRoomIds.add(room.id);
+		}
+	}
 
 	const [period, setPeriod] = useState(defaultPeriod);
 
@@ -40,8 +52,8 @@ export default function OverviewPage() {
 	useEffect(() => {
 		if (authLoading) return;
 		void userId;
-		fetchOverview(period);
-	}, [period, fetchOverview, userId, authLoading]);
+		void Promise.allSettled([fetchOverview(period), fetchTenants()]);
+	}, [period, fetchOverview, fetchTenants, userId, authLoading]);
 
 	let content: React.JSX.Element;
 	if (isOverviewFetchFailed && !isOverviewLoading) {
@@ -57,7 +69,11 @@ export default function OverviewPage() {
 				) : (
 					<div className="space-y-4">
 						{snapshot.properties.map((property) => (
-							<PropertyGroup key={property.id} property={property} />
+							<PropertyGroup
+								key={property.id}
+								property={property}
+								vacantRoomIds={vacantRoomIds}
+							/>
 						))}
 					</div>
 				)}

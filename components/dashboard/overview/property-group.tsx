@@ -9,9 +9,10 @@ import type { OverviewProperty } from "./types";
 
 interface PropertyGroupProps {
 	property: OverviewProperty;
+	vacantRoomIds: ReadonlySet<string>;
 }
 
-export function PropertyGroup({ property }: PropertyGroupProps) {
+export function PropertyGroup({ property, vacantRoomIds }: PropertyGroupProps) {
 	const t = useTranslations("app.overview");
 	const [isExpanded, setIsExpanded] = useState(true);
 
@@ -82,7 +83,11 @@ export function PropertyGroup({ property }: PropertyGroupProps) {
 			{isExpanded && (
 				<div className="border-t border-border p-2 space-y-2">
 					{property.rooms.map((room) => (
-						<RoomStatusRow key={room.id} room={room} />
+						<RoomStatusRow
+							key={room.id}
+							room={room}
+							isVacant={vacantRoomIds.has(room.id)}
+						/>
 					))}
 				</div>
 			)}
